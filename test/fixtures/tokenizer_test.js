@@ -45,12 +45,16 @@ function tokenize(html, initialState, lastStartTag) {
                     reformatedAttrs[attr.name] = attr.value;
                 });
 
-                out.push([
+                var startTagEntry = [
                     'StartTag',
                     nextToken.tagName,
-                    reformatedAttrs,
-                    nextToken.selfClosing
-                ]);
+                    reformatedAttrs
+                ];
+
+                if (nextToken.selfClosing)
+                    startTagEntry.push(true);
+
+                out.push(startTagEntry);
                 break;
 
             case Tokenizer.END_TAG_TOKEN:
@@ -152,7 +156,7 @@ function getFullTestName(test) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    if(test.index > 500)
+    if (test.index > 9000)
         return;
 
     exports[getFullTestName(test)] = function (t) {
