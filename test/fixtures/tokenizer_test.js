@@ -29,7 +29,7 @@ function tokenize(html, initialState, lastStartTag) {
             case Tokenizer.CHARACTER_TOKEN:
                 //NOTE: html5lib test suite concatenates all character tokens into one token.
                 //So if last entry in output sequence is a character token we just append obtained token
-                //to it's data string. In other case we create new character token entry.
+                //to it's data string. Otherwise we create a new character token entry.
                 var lastEntry = out[out.length - 1];
 
                 if (util.isArray(lastEntry) && lastEntry[0] === 'Character')
