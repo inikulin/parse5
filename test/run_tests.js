@@ -1,9 +1,5 @@
-var fs = require('fs'),
-    path = require('path');
+var reporter = require('nodeunit').reporters.default;
 
-var dirPath = path.join(__dirname,  './fixtures'),
-    testFiles = fs.readdirSync(dirPath),
-    reporter = require('nodeunit').reporters.default;
+process.chdir(__dirname);
+reporter.run(['tokenizer_test.js']);
 
-process.chdir(dirPath);
-reporter.run(testFiles);

@@ -1,7 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
     util = require('util'),
-    Tokenizer = require('../../lib/tokenizer').Tokenizer;
+    Tokenizer = require('../lib/tokenizer').Tokenizer;
 
 function tokenize(html, initialState, lastStartTag) {
     var tokenizer = new Tokenizer(html),
@@ -114,7 +114,7 @@ function getTokenizerSuitableStateName(testDataStateName) {
 }
 
 function loadTests() {
-    var dataDirPath = path.join(__dirname, '../data/tokenizer'),
+    var dataDirPath = path.join(__dirname, './data/tokenizer'),
         testSetFileNames = fs.readdirSync(dataDirPath),
         testIndex = 0,
         tests = [];
