@@ -123,7 +123,7 @@ function loadTests() {
         var filePath = path.join(dataDirPath, fileName),
             testSetJson = fs.readFileSync(filePath).toString(),
             testSet = JSON.parse(testSetJson),
-            testDescrs = testSet['tests'] || testSet['xmlViolationTests'],
+            testDescrs = testSet.tests,
             setName = fileName.replace('.test', '');
 
         testDescrs.forEach(function (descr) {

@@ -12,7 +12,7 @@
 {"description": "Invalid Unicode character U+DFFF with valid preceding character",
 "doubleEscaped":true,
 "input": "a\\uDFFF",
-"output":["ParseError", ["Character", "a\\uFFFD"]]},
+"output":[["Character", "a"], "ParseError", ["Character", "\\uFFFD"]]},
 
 {"description": "Invalid Unicode character U+D800 with valid following character",
 "doubleEscaped":true,
