@@ -156,7 +156,7 @@ function getFullTestName(test) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    if (test.index > 40702)
+    if (test.index !== 40)
         return;
 
     exports[getFullTestName(test)] = function (t) {
