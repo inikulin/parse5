@@ -163,3 +163,16 @@ exports['Has element in select scope'] = function (t) {
 
     t.done();
 };
+
+exports['Contains'] = function (t) {
+    var stack = new OpenElementStack('#document'),
+        element = '#element';
+
+    stack.push('#someElement');
+    t.ok(!stack.contains(element));
+
+    stack.push('#element');
+    t.ok(stack.contains(element));
+
+    t.done();
+};
