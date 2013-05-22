@@ -42,6 +42,24 @@ exports['Pop element'] = function (t) {
     t.done();
 };
 
+exports['Remove'] = function (t) {
+    var element = '#element',
+        stack = new OpenElementStack('#document');
+
+    stack.push(element);
+    stack.push('element1');
+    stack.push('element2');
+
+    stack.remove(element);
+
+    t.strictEqual(stack.stackTop, 1);
+
+    for (var i = stack.stackTop; i >= 0; i--)
+        t.notStrictEqual(stack.stack[i], element);
+
+    t.done();
+};
+
 exports['Pop all up to <html> element'] = function (t) {
     var htmlElement = '#html',
         stack = new OpenElementStack('#document');
