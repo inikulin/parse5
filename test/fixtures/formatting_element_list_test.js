@@ -19,7 +19,7 @@ exports['Insert marker'] = function (t) {
     t.done();
 };
 
-exports['Push'] = function (t) {
+exports['Push element'] = function (t) {
     var list = new FormattingElementList(),
         element1Token = 'token1',
         element2Token = 'token2',
@@ -49,7 +49,7 @@ exports['Push'] = function (t) {
     t.done();
 };
 
-exports['Push - Noah Ark condition'] = function (t) {
+exports['Push element - Noah Ark condition'] = function (t) {
     var list = new FormattingElementList(),
         token1 = 'token1',
         token2 = 'token2',
@@ -107,7 +107,7 @@ exports['Push - Noah Ark condition'] = function (t) {
     t.done();
 };
 
-exports['Clear to last marker'] = function (t) {
+exports['Clear to the last marker'] = function (t) {
     var list = new FormattingElementList(),
         token = 'token',
         element1 = {

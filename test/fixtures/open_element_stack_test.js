@@ -42,20 +42,71 @@ exports['Pop element'] = function (t) {
     t.done();
 };
 
-exports['Remove'] = function (t) {
-    var element = '#element',
+exports['Pop elements until popped with given tagName'] = function (t) {
+    var element1 = {tagName: '#element1'},
+        element2 = {tagName: '#element2'},
         stack = new OpenElementStack('#document');
 
-    stack.push(element);
-    stack.push('element1');
-    stack.push('element2');
+    stack.push(element2);
+    stack.push(element2);
+    stack.push(element2);
+    stack.push(element2);
+    stack.popUntilTagNamePopped(element1.tagName);
+    t.ok(!stack.current);
+    t.strictEqual(stack.stackTop, -1);
 
-    stack.remove(element);
+    stack.push(element2);
+    stack.push(element1);
+    stack.push(element2);
+    stack.popUntilTagNamePopped(element1.tagName);
+    t.strictEqual(stack.current, element2);
+    t.strictEqual(stack.stackTop, 0);
 
-    t.strictEqual(stack.stackTop, 1);
+    t.done();
+};
 
-    for (var i = stack.stackTop; i >= 0; i--)
-        t.notStrictEqual(stack.stack[i], element);
+exports['Pop elements until given element popped'] = function (t) {
+    var element1 = '#element1',
+        element2 = '#element2',
+        stack = new OpenElementStack('#document');
+
+    stack.push(element2);
+    stack.push(element2);
+    stack.push(element2);
+    stack.push(element2);
+    stack.popUntilElementPopped(element1);
+    t.ok(!stack.current);
+    t.strictEqual(stack.stackTop, -1);
+
+    stack.push(element2);
+    stack.push(element1);
+    stack.push(element2);
+    stack.popUntilElementPopped(element1);
+    t.strictEqual(stack.current, element2);
+    t.strictEqual(stack.stackTop, 0);
+
+    t.done();
+};
+
+exports['Pop elements until numbered header popped'] = function (t) {
+    var element1 = {tagName: 'h3'},
+        element2 = {tagName: '#element2'},
+        stack = new OpenElementStack('#document');
+
+    stack.push(element2);
+    stack.push(element2);
+    stack.push(element2);
+    stack.push(element2);
+    stack.popUntilNumberedHeaderPopped();
+    t.ok(!stack.current);
+    t.strictEqual(stack.stackTop, -1);
+
+    stack.push(element2);
+    stack.push(element1);
+    stack.push(element2);
+    stack.popUntilNumberedHeaderPopped();
+    t.strictEqual(stack.current, element2);
+    t.strictEqual(stack.stackTop, 0);
 
     t.done();
 };
@@ -70,6 +121,24 @@ exports['Pop all up to <html> element'] = function (t) {
 
     stack.popAllUpToHtmlElement();
     t.strictEqual(stack.current, htmlElement);
+
+    t.done();
+};
+
+exports['Remove element'] = function (t) {
+    var element = '#element',
+        stack = new OpenElementStack('#document');
+
+    stack.push(element);
+    stack.push('element1');
+    stack.push('element2');
+
+    stack.remove(element);
+
+    t.strictEqual(stack.stackTop, 1);
+
+    for (var i = stack.stackTop; i >= 0; i--)
+        t.notStrictEqual(stack.stack[i], element);
 
     t.done();
 };
@@ -90,6 +159,19 @@ exports['Try peek properly nested <body> element'] = function (t) {
     t.done();
 };
 
+exports['Contains element'] = function (t) {
+    var stack = new OpenElementStack('#document'),
+        element = '#element';
+
+    stack.push('#someElement');
+    t.ok(!stack.contains(element));
+
+    stack.push('#element');
+    t.ok(stack.contains(element));
+
+    t.done();
+};
+
 exports['Has element in scope'] = function (t) {
     var stack = new OpenElementStack('#document');
 
@@ -105,6 +187,28 @@ exports['Has element in scope'] = function (t) {
 
     stack.push({tagName: $.TITLE, namespaceURI: NAMESPACES.SVG});
     t.ok(!stack.hasInScope($.P));
+
+    t.done();
+};
+
+exports['Has numbered header in scope'] = function (t) {
+    var stack = new OpenElementStack('#document');
+
+    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    t.ok(!stack.hasNumberedHeaderInScope());
+
+    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.UL, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.H3, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    t.ok(stack.hasNumberedHeaderInScope());
+
+    stack.push({tagName: $.TITLE, namespaceURI: NAMESPACES.SVG});
+    t.ok(!stack.hasNumberedHeaderInScope());
+
+    stack.push({tagName: $.H6, namespaceURI: NAMESPACES.HTML});
+    t.ok(stack.hasNumberedHeaderInScope());
 
     t.done();
 };
@@ -182,15 +286,3 @@ exports['Has element in select scope'] = function (t) {
     t.done();
 };
 
-exports['Contains'] = function (t) {
-    var stack = new OpenElementStack('#document'),
-        element = '#element';
-
-    stack.push('#someElement');
-    t.ok(!stack.contains(element));
-
-    stack.push('#element');
-    t.ok(stack.contains(element));
-
-    t.done();
-};
