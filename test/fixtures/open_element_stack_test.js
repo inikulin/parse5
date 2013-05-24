@@ -125,6 +125,31 @@ exports['Pop all up to <html> element'] = function (t) {
     t.done();
 };
 
+exports['Clear back to a table context'] = function (t) {
+    var htmlElement = {tagName: 'html'},
+        tableElement = {tagName: 'table'},
+        divElement = {tagName: 'div'},
+        stack = new OpenElementStack({tagName: '#document'});
+
+    stack.push(htmlElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.clearBackToTableContext();
+    t.strictEqual(stack.current, htmlElement);
+    t.strictEqual(stack.stackTop, 0);
+
+    stack.push(divElement);
+    stack.push(tableElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.clearBackToTableContext();
+    t.strictEqual(stack.current, tableElement);
+    t.strictEqual(stack.stackTop, 2);
+
+    t.done();
+};
+
 exports['Remove element'] = function (t) {
     var element = '#element',
         stack = new OpenElementStack('#document');
