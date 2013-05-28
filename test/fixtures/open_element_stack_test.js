@@ -150,6 +150,31 @@ exports['Clear back to a table context'] = function (t) {
     t.done();
 };
 
+exports['Clear back to a table row context'] = function (t) {
+    var htmlElement = {tagName: 'html'},
+        trElement = {tagName: 'tr'},
+        divElement = {tagName: 'div'},
+        stack = new OpenElementStack({tagName: '#document'});
+
+    stack.push(htmlElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.clearBackToTableRowContext();
+    t.strictEqual(stack.current, htmlElement);
+    t.strictEqual(stack.stackTop, 0);
+
+    stack.push(divElement);
+    stack.push(trElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.clearBackToTableRowContext();
+    t.strictEqual(stack.current, trElement);
+    t.strictEqual(stack.stackTop, 2);
+
+    t.done();
+};
+
 exports['Remove element'] = function (t) {
     var element = '#element',
         stack = new OpenElementStack('#document');
@@ -180,6 +205,18 @@ exports['Try peek properly nested <body> element'] = function (t) {
     stack = new OpenElementStack('#document');
     stack.push('#html');
     t.ok(!stack.tryPeekProperlyNestedBodyElement());
+
+    t.done();
+};
+
+exports['Is root <html> element current'] = function (t) {
+    var stack = new OpenElementStack('#document');
+
+    stack.push({tagName: $.HTML});
+    t.ok(stack.isRootHtmlElementCurrent());
+
+    stack.push({tagName: $.DIV});
+    t.ok(!stack.isRootHtmlElementCurrent());
 
     t.done();
 };
