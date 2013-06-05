@@ -116,7 +116,7 @@ function getTokenizerSuitableStateName(testDataStateName) {
 function loadTests() {
     var dataDirPath = path.join(__dirname, '../data/tokenizer'),
         testSetFileNames = fs.readdirSync(dataDirPath),
-        testIndex = 0,
+        testIdx = 0,
         tests = [];
 
     testSetFileNames.forEach(function (fileName) {
@@ -135,7 +135,7 @@ function loadTests() {
 
             descr.initialStates.forEach(function (initialState) {
                 tests.push({
-                    index: ++testIndex,
+                    idx: ++testIdx,
                     setName: setName,
                     name: descr.description,
                     input: descr.input,
@@ -151,7 +151,7 @@ function loadTests() {
 }
 
 function getFullTestName(test) {
-    return [test.index, '.', test.setName, ' - ', test.name, ' - Initial state: ', test.initialState].join('');
+    return [test.idx, '.', test.setName, ' - ', test.name, ' - Initial state: ', test.initialState].join('');
 }
 
 //Here we go..

@@ -221,6 +221,28 @@ exports['Is root <html> element current'] = function (t) {
     t.done();
 };
 
+exports['Get common ancestor'] = function (t) {
+    var stack = new OpenElementStack('#document'),
+        element = '#element',
+        ancestor = "#ancestor";
+
+    stack.push('#someElement');
+    t.ok(!stack.getCommonAncestor(element));
+
+    stack.pop();
+    t.ok(!stack.getCommonAncestor(element));
+
+    stack.push(element);
+    t.ok(!stack.getCommonAncestor(element));
+
+    stack.push('#someElement');
+    stack.push(ancestor);
+    stack.push(element);
+    t.strictEqual(stack.getCommonAncestor(element), ancestor);
+
+    t.done();
+};
+
 exports['Contains element'] = function (t) {
     var stack = new OpenElementStack('#document'),
         element = '#element';

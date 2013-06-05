@@ -140,3 +140,61 @@ exports['Clear to the last marker'] = function (t) {
 
     t.done();
 };
+
+exports['Remove element'] = function (t) {
+    var list = new FormattingElementList(),
+        token = 'token',
+        element1 = {
+            tagName: $.DIV,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: [
+                {name: 'attr1', value: 'val1'},
+                {name: 'attr2', value: 'val2'}
+            ]
+        },
+        element2 = {
+            tagName: $.DIV,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: [
+                {name: 'attr1', value: 'val1'},
+                {name: 'attr2', value: 'someOtherValue'}
+            ]
+        };
+
+    list.push(element1, token);
+    list.push(element2, token);
+    list.push(element2, token);
+
+    list.remove(element1);
+
+    t.strictEqual(list.length, 2);
+
+    for (var i = list.length - 1; i >= 0; i--)
+        t.notStrictEqual(list.list[i].element, element1);
+
+    t.done();
+};
+
+exports['Get element in scope with given tag name'] = function (t) {
+    var list = new FormattingElementList(),
+        token = 'token',
+        element = {
+            tagName: $.DIV,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: []
+        };
+
+    t.ok(!list.getElementInScopeWithTagName($.DIV));
+
+    list.push(element, token);
+    list.push(element, token);
+    t.strictEqual(list.getElementInScopeWithTagName($.DIV), element);
+
+    list.insertMarker();
+    t.ok(!list.getElementInScopeWithTagName($.DIV));
+
+    list.push(element, token);
+    t.strictEqual(list.getElementInScopeWithTagName($.DIV), element);
+
+    t.done();
+};
