@@ -1,5 +1,6 @@
 var html = require('../../lib/html'),
-    OpenElementStack = require('../../lib/open_element_stack').OpenElementStack;
+    OpenElementStack = require('../../lib/open_element_stack').OpenElementStack,
+    defaultTreeAdapter = require('../../lib/default_tree_adapter');
 
 //Aliases
 var $ = html.TAG_NAMES,
@@ -7,36 +8,44 @@ var $ = html.TAG_NAMES,
 
 exports['Push element'] = function (t) {
     var document = '#document',
-        element1 = '#element1',
-        element2 = '#element2',
-        stack = new OpenElementStack(document);
+        element1 = {tagName: '#element1', namespaceURI: 'namespace1'},
+        element2 = {tagName: '#element2', namespaceURI: 'namespace2'},
+        stack = new OpenElementStack(document, defaultTreeAdapter);
 
     t.strictEqual(stack.current, document);
     t.strictEqual(stack.stackTop, -1);
 
     stack.push(element1);
     t.strictEqual(stack.current, element1);
+    t.strictEqual(stack.currentTagName, element1.tagName);
+    t.strictEqual(stack.currentNamespaceURI, element1.namespaceURI);
     t.strictEqual(stack.stackTop, 0);
 
     stack.push(element2);
     t.strictEqual(stack.current, element2);
+    t.strictEqual(stack.currentTagName, element2.tagName);
+    t.strictEqual(stack.currentNamespaceURI, element2.namespaceURI);
     t.strictEqual(stack.stackTop, 1);
 
     t.done();
 };
 
 exports['Pop element'] = function (t) {
-    var element = '#element',
-        stack = new OpenElementStack('#document');
+    var element = {tagName: '#element', namespaceURI: 'namespace1'},
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push(element);
     stack.push('#element2');
     stack.pop();
     t.strictEqual(stack.current, element);
+    t.strictEqual(stack.currentTagName, element.tagName);
+    t.strictEqual(stack.currentNamespaceURI, element.namespaceURI);
     t.strictEqual(stack.stackTop, 0);
 
     stack.pop();
     t.ok(!stack.current);
+    t.ok(!stack.currentTagName);
+    t.ok(!stack.currentNamespaceURI);
     t.strictEqual(stack.stackTop, -1);
 
     t.done();
@@ -45,7 +54,7 @@ exports['Pop element'] = function (t) {
 exports['Pop elements until popped with given tagName'] = function (t) {
     var element1 = {tagName: '#element1'},
         element2 = {tagName: '#element2'},
-        stack = new OpenElementStack('#document');
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push(element2);
     stack.push(element2);
@@ -68,7 +77,7 @@ exports['Pop elements until popped with given tagName'] = function (t) {
 exports['Pop elements until given element popped'] = function (t) {
     var element1 = '#element1',
         element2 = '#element2',
-        stack = new OpenElementStack('#document');
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push(element2);
     stack.push(element2);
@@ -91,7 +100,7 @@ exports['Pop elements until given element popped'] = function (t) {
 exports['Pop elements until numbered header popped'] = function (t) {
     var element1 = {tagName: 'h3'},
         element2 = {tagName: '#element2'},
-        stack = new OpenElementStack('#document');
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push(element2);
     stack.push(element2);
@@ -113,7 +122,7 @@ exports['Pop elements until numbered header popped'] = function (t) {
 
 exports['Pop all up to <html> element'] = function (t) {
     var htmlElement = '#html',
-        stack = new OpenElementStack('#document');
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push(htmlElement);
     stack.push('#element1');
@@ -129,7 +138,7 @@ exports['Clear back to a table context'] = function (t) {
     var htmlElement = {tagName: 'html'},
         tableElement = {tagName: 'table'},
         divElement = {tagName: 'div'},
-        stack = new OpenElementStack({tagName: '#document'});
+        stack = new OpenElementStack({tagName: '#document'}, defaultTreeAdapter);
 
     stack.push(htmlElement);
     stack.push(divElement);
@@ -154,7 +163,7 @@ exports['Clear back to a table row context'] = function (t) {
     var htmlElement = {tagName: 'html'},
         trElement = {tagName: 'tr'},
         divElement = {tagName: 'div'},
-        stack = new OpenElementStack({tagName: '#document'});
+        stack = new OpenElementStack({tagName: '#document'}, defaultTreeAdapter);
 
     stack.push(htmlElement);
     stack.push(divElement);
@@ -177,7 +186,7 @@ exports['Clear back to a table row context'] = function (t) {
 
 exports['Remove element'] = function (t) {
     var element = '#element',
-        stack = new OpenElementStack('#document');
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push(element);
     stack.push('element1');
@@ -195,14 +204,14 @@ exports['Remove element'] = function (t) {
 
 exports['Try peek properly nested <body> element'] = function (t) {
     var bodyElement = { tagName: $.BODY },
-        stack = new OpenElementStack('#document');
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push('#html');
     stack.push(bodyElement);
     stack.push('#element');
     t.strictEqual(stack.tryPeekProperlyNestedBodyElement(), bodyElement);
 
-    stack = new OpenElementStack('#document');
+    stack = new OpenElementStack('#document', defaultTreeAdapter);
     stack.push('#html');
     t.ok(!stack.tryPeekProperlyNestedBodyElement());
 
@@ -210,7 +219,7 @@ exports['Try peek properly nested <body> element'] = function (t) {
 };
 
 exports['Is root <html> element current'] = function (t) {
-    var stack = new OpenElementStack('#document');
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push({tagName: $.HTML});
     t.ok(stack.isRootHtmlElementCurrent());
@@ -222,7 +231,7 @@ exports['Is root <html> element current'] = function (t) {
 };
 
 exports['Get common ancestor'] = function (t) {
-    var stack = new OpenElementStack('#document'),
+    var stack = new OpenElementStack('#document', defaultTreeAdapter),
         element = '#element',
         ancestor = "#ancestor";
 
@@ -244,7 +253,7 @@ exports['Get common ancestor'] = function (t) {
 };
 
 exports['Contains element'] = function (t) {
-    var stack = new OpenElementStack('#document'),
+    var stack = new OpenElementStack('#document', defaultTreeAdapter),
         element = '#element';
 
     stack.push('#someElement');
@@ -257,7 +266,7 @@ exports['Contains element'] = function (t) {
 };
 
 exports['Has element in scope'] = function (t) {
-    var stack = new OpenElementStack('#document');
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
     stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
@@ -276,7 +285,7 @@ exports['Has element in scope'] = function (t) {
 };
 
 exports['Has numbered header in scope'] = function (t) {
-    var stack = new OpenElementStack('#document');
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
     stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
@@ -298,7 +307,7 @@ exports['Has numbered header in scope'] = function (t) {
 };
 
 exports['Has element in list item scope'] = function (t) {
-    var stack = new OpenElementStack('#document');
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
     stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
@@ -316,7 +325,7 @@ exports['Has element in list item scope'] = function (t) {
 };
 
 exports['Has element in button scope'] = function (t) {
-    var stack = new OpenElementStack('#document');
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
     stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
@@ -335,7 +344,7 @@ exports['Has element in button scope'] = function (t) {
 
 
 exports['Has element in table scope'] = function (t) {
-    var stack = new OpenElementStack('#document');
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
     stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
@@ -354,7 +363,7 @@ exports['Has element in table scope'] = function (t) {
 };
 
 exports['Has element in select scope'] = function (t) {
-    var stack = new OpenElementStack('#document');
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
     stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});

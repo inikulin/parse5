@@ -1,12 +1,13 @@
 var html = require('../../lib/html'),
-    FormattingElementList = require('../../lib/formatting_element_list').FormattingElementList;
+    FormattingElementList = require('../../lib/formatting_element_list').FormattingElementList,
+    defaultTreeAdapter = require('../../lib/default_tree_adapter');
 
 //Aliases
 var $ = html.TAG_NAMES,
     NAMESPACES = html.NAMESPACES;
 
 exports['Insert marker'] = function (t) {
-    var list = new FormattingElementList();
+    var list = new FormattingElementList(defaultTreeAdapter);
 
     list.insertMarker();
     t.strictEqual(list.length, 1);
@@ -20,7 +21,7 @@ exports['Insert marker'] = function (t) {
 };
 
 exports['Push element'] = function (t) {
-    var list = new FormattingElementList(),
+    var list = new FormattingElementList(defaultTreeAdapter),
         element1Token = 'token1',
         element2Token = 'token2',
         element1 = {
@@ -50,7 +51,7 @@ exports['Push element'] = function (t) {
 };
 
 exports['Push element - Noah Ark condition'] = function (t) {
-    var list = new FormattingElementList(),
+    var list = new FormattingElementList(defaultTreeAdapter),
         token1 = 'token1',
         token2 = 'token2',
         token3 = 'token3',
@@ -108,7 +109,7 @@ exports['Push element - Noah Ark condition'] = function (t) {
 };
 
 exports['Clear to the last marker'] = function (t) {
-    var list = new FormattingElementList(),
+    var list = new FormattingElementList(defaultTreeAdapter),
         token = 'token',
         element1 = {
             tagName: $.DIV,
@@ -142,7 +143,7 @@ exports['Clear to the last marker'] = function (t) {
 };
 
 exports['Remove element'] = function (t) {
-    var list = new FormattingElementList(),
+    var list = new FormattingElementList(defaultTreeAdapter),
         token = 'token',
         element1 = {
             tagName: $.DIV,
@@ -176,7 +177,7 @@ exports['Remove element'] = function (t) {
 };
 
 exports['Get element in scope with given tag name'] = function (t) {
-    var list = new FormattingElementList(),
+    var list = new FormattingElementList(defaultTreeAdapter),
         token = 'token',
         element = {
             tagName: $.DIV,
@@ -195,6 +196,82 @@ exports['Get element in scope with given tag name'] = function (t) {
 
     list.push(element, token);
     t.strictEqual(list.getElementInScopeWithTagName($.DIV), element);
+
+    t.done();
+};
+
+exports['Get element in scope with given tag name'] = function (t) {
+    var list = new FormattingElementList(defaultTreeAdapter),
+        token = 'token',
+        element = {
+            tagName: $.DIV,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: []
+        };
+
+    t.ok(!list.getElementInScopeWithTagName($.DIV));
+
+    list.push(element, token);
+    list.push(element, token);
+    t.strictEqual(list.getElementInScopeWithTagName($.DIV), element);
+
+    list.insertMarker();
+    t.ok(!list.getElementInScopeWithTagName($.DIV));
+
+    list.push(element, token);
+    t.strictEqual(list.getElementInScopeWithTagName($.DIV), element);
+
+    t.done();
+};
+
+exports['Get element bookmark'] = function (t) {
+    var list = new FormattingElementList(defaultTreeAdapter),
+        token = 'token',
+        element1 = {
+            tagName: $.DIV,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: []
+        },
+        element2 = {
+            tagName: $.A,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: []
+        };
+
+
+    list.push(element2, token);
+    list.push(element2, token);
+    list.insertMarker();
+    list.push(element1, token);
+    t.strictEqual(list.getElementBookmark(element1), 2);
+
+    t.done();
+};
+
+exports['Get element entry'] = function (t) {
+    var list = new FormattingElementList(defaultTreeAdapter),
+        token = 'token',
+        element1 = {
+            tagName: $.DIV,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: []
+        },
+        element2 = {
+            tagName: $.A,
+            namespaceURI: NAMESPACES.HTML,
+            attrs: []
+        };
+
+
+    list.push(element2, token);
+    list.push(element1, token);
+    list.push(element2, token);
+    list.insertMarker();
+
+    var entry = list.getElementEntry(element1);
+    t.strictEqual(entry.type, FormattingElementList.ELEMENT_ENTRY);
+    t.strictEqual(entry.token, token);
+    t.strictEqual(entry.element, element1);
 
     t.done();
 };
