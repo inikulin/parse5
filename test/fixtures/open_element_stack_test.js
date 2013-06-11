@@ -1,10 +1,10 @@
-var html = require('../../lib/html'),
+var HTML = require('../../lib/html'),
     OpenElementStack = require('../../lib/open_element_stack').OpenElementStack,
     defaultTreeAdapter = require('../../lib/default_tree_adapter');
 
 //Aliases
-var $ = html.TAG_NAMES,
-    NAMESPACES = html.NAMESPACES;
+var $ = HTML.TAG_NAMES,
+    NAMESPACES = HTML.NAMESPACES;
 
 exports['Push element'] = function (t) {
     var document = '#document',
@@ -375,6 +375,84 @@ exports['Has element in select scope'] = function (t) {
 
     stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
     t.ok(!stack.hasInSelectScope($.P));
+
+    t.done();
+};
+
+exports['Is MathML integration point'] = function (t) {
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    t.ok(!stack.isMathMLTextIntegrationPoint());
+
+    stack.push({tagName: $.MO, namespaceURI: NAMESPACES.MATHML});
+    t.ok(stack.isMathMLTextIntegrationPoint());
+
+    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    t.ok(!stack.isMathMLTextIntegrationPoint());
+
+    t.done();
+};
+
+exports['Is HTML integration point'] = function (t) {
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    t.ok(!stack.isHtmlIntegrationPoint());
+
+    stack.push({tagName: $.TITLE, namespaceURI: NAMESPACES.SVG});
+    t.ok(stack.isHtmlIntegrationPoint());
+
+    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    t.ok(!stack.isHtmlIntegrationPoint());
+
+    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NAMESPACES.MATHML, attrs: [
+        {name: 'encoding', value: 'apPlicAtion/xhtml+xml'}
+    ]});
+    t.ok(stack.isHtmlIntegrationPoint());
+
+    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NAMESPACES.MATHML, attrs: [
+        {name: 'encoding', value: 'someValues'}
+    ]});
+    t.ok(!stack.isHtmlIntegrationPoint());
+
+    t.done();
+};
+
+exports['Generate implied end tags'] = function (t) {
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
+
+    stack.generateImpliedEndTags();
+
+    t.strictEqual(stack.stackTop, 2);
+    t.strictEqual(stack.currentTagName, $.DIV);
+
+    t.done();
+};
+
+exports['Generate implied end tags with exclusion'] = function (t) {
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
+
+    stack.generateImpliedEndTagsWithExclusion($.LI);
+
+    t.strictEqual(stack.stackTop, 3);
+    t.strictEqual(stack.currentTagName, $.LI);
 
     t.done();
 };
