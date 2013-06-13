@@ -225,7 +225,7 @@ exports['Remove element'] = function (t) {
     t.strictEqual(stack.stackTop, 1);
 
     for (var i = stack.stackTop; i >= 0; i--)
-        t.notStrictEqual(stack.stack[i], element);
+        t.notStrictEqual(stack.items[i], element);
 
     t.done();
 };
