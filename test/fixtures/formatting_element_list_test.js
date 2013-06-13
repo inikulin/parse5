@@ -11,11 +11,11 @@ exports['Insert marker'] = function (t) {
 
     list.insertMarker();
     t.strictEqual(list.length, 1);
-    t.strictEqual(list.items[0].type, FormattingElementList.MARKER_ENTRY);
+    t.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
 
     list.insertMarker();
     t.strictEqual(list.length, 2);
-    t.strictEqual(list.items[1].type, FormattingElementList.MARKER_ENTRY);
+    t.strictEqual(list.entries[1].type, FormattingElementList.MARKER_ENTRY);
 
     t.done();
 };
@@ -37,15 +37,15 @@ exports['Push element'] = function (t) {
 
     list.push(element1, element1Token);
     t.strictEqual(list.length, 1);
-    t.strictEqual(list.items[0].type, FormattingElementList.ELEMENT_ENTRY);
-    t.strictEqual(list.items[0].element, element1);
-    t.strictEqual(list.items[0].token, element1Token);
+    t.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
+    t.strictEqual(list.entries[0].element, element1);
+    t.strictEqual(list.entries[0].token, element1Token);
 
     list.push(element2, element2Token);
     t.strictEqual(list.length, 2);
-    t.strictEqual(list.items[1].type, FormattingElementList.ELEMENT_ENTRY);
-    t.strictEqual(list.items[1].element, element2);
-    t.strictEqual(list.items[1].token, element2Token);
+    t.strictEqual(list.entries[1].type, FormattingElementList.ELEMENT_ENTRY);
+    t.strictEqual(list.entries[1].element, element2);
+    t.strictEqual(list.entries[1].token, element2Token);
 
     t.done();
 };
@@ -81,29 +81,29 @@ exports['Push element - Noah Ark condition'] = function (t) {
     list.push(element1, token4);
 
     t.strictEqual(list.length, 4);
-    t.strictEqual(list.items[0].token, token1);
-    t.strictEqual(list.items[1].token, token2);
-    t.strictEqual(list.items[2].token, token3);
-    t.strictEqual(list.items[3].token, token4);
+    t.strictEqual(list.entries[0].token, token1);
+    t.strictEqual(list.entries[1].token, token2);
+    t.strictEqual(list.entries[2].token, token3);
+    t.strictEqual(list.entries[3].token, token4);
 
     list.push(element1, token5);
 
     t.strictEqual(list.length, 4);
-    t.strictEqual(list.items[0].token, token2);
-    t.strictEqual(list.items[1].token, token3);
-    t.strictEqual(list.items[2].token, token4);
-    t.strictEqual(list.items[3].token, token5);
+    t.strictEqual(list.entries[0].token, token2);
+    t.strictEqual(list.entries[1].token, token3);
+    t.strictEqual(list.entries[2].token, token4);
+    t.strictEqual(list.entries[3].token, token5);
 
     list.insertMarker();
     list.push(element1, token6);
 
     t.strictEqual(list.length, 6);
-    t.strictEqual(list.items[0].token, token2);
-    t.strictEqual(list.items[1].token, token3);
-    t.strictEqual(list.items[2].token, token4);
-    t.strictEqual(list.items[3].token, token5);
-    t.strictEqual(list.items[4].type, FormattingElementList.MARKER_ENTRY);
-    t.strictEqual(list.items[5].token, token6);
+    t.strictEqual(list.entries[0].token, token2);
+    t.strictEqual(list.entries[1].token, token3);
+    t.strictEqual(list.entries[2].token, token4);
+    t.strictEqual(list.entries[3].token, token5);
+    t.strictEqual(list.entries[4].type, FormattingElementList.MARKER_ENTRY);
+    t.strictEqual(list.entries[5].token, token6);
 
     t.done();
 };
@@ -171,7 +171,7 @@ exports['Remove element'] = function (t) {
     t.strictEqual(list.length, 2);
 
     for (var i = list.length - 1; i >= 0; i--)
-        t.notStrictEqual(list.items[i].element, element1);
+        t.notStrictEqual(list.entries[i].element, element1);
 
     t.done();
 };
