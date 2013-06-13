@@ -4,7 +4,7 @@ var html = require('../../lib/html'),
 
 //Aliases
 var $ = html.TAG_NAMES,
-    NAMESPACES = html.NAMESPACES;
+    NS = html.NAMESPACES;
 
 exports['Insert marker'] = function (t) {
     var list = new FormattingElementList(defaultTreeAdapter);
@@ -26,12 +26,12 @@ exports['Push element'] = function (t) {
         element2Token = 'token2',
         element1 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         },
         element2 = {
             tagName: $.P,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         };
 
@@ -60,7 +60,7 @@ exports['Push element - Noah Ark condition'] = function (t) {
         token6 = 'token6',
         element1 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: [
                 {name: 'attr1', value: 'val1'},
                 {name: 'attr2', value: 'val2'}
@@ -68,7 +68,7 @@ exports['Push element - Noah Ark condition'] = function (t) {
         },
         element2 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: [
                 {name: 'attr1', value: 'val1'},
                 {name: 'attr2', value: 'someOtherValue'}
@@ -113,7 +113,7 @@ exports['Clear to the last marker'] = function (t) {
         token = 'token',
         element1 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: [
                 {name: 'attr1', value: 'val1'},
                 {name: 'attr2', value: 'val2'}
@@ -121,7 +121,7 @@ exports['Clear to the last marker'] = function (t) {
         },
         element2 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: [
                 {name: 'attr1', value: 'val1'},
                 {name: 'attr2', value: 'someOtherValue'}
@@ -147,7 +147,7 @@ exports['Remove element'] = function (t) {
         token = 'token',
         element1 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: [
                 {name: 'attr1', value: 'val1'},
                 {name: 'attr2', value: 'val2'}
@@ -155,7 +155,7 @@ exports['Remove element'] = function (t) {
         },
         element2 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: [
                 {name: 'attr1', value: 'val1'},
                 {name: 'attr2', value: 'someOtherValue'}
@@ -181,7 +181,7 @@ exports['Get element in scope with given tag name'] = function (t) {
         token = 'token',
         element = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         };
 
@@ -205,7 +205,7 @@ exports['Get element in scope with given tag name'] = function (t) {
         token = 'token',
         element = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         };
 
@@ -229,12 +229,12 @@ exports['Get element bookmark'] = function (t) {
         token = 'token',
         element1 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         },
         element2 = {
             tagName: $.A,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         };
 
@@ -253,12 +253,12 @@ exports['Get element entry'] = function (t) {
         token = 'token',
         element1 = {
             tagName: $.DIV,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         },
         element2 = {
             tagName: $.A,
-            namespaceURI: NAMESPACES.HTML,
+            namespaceURI: NS.HTML,
             attrs: []
         };
 

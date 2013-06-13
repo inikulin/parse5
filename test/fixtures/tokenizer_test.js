@@ -14,7 +14,7 @@ function tokenize(html, initialState, lastStartTag) {
         tokenizer.lastStartTagName = lastStartTag;
 
     do {
-        nextToken = tokenizer.getToken();
+        nextToken = tokenizer.getNextToken();
 
         //NOTE: if we have parse errors append them to the output sequence
         if (tokenizer.errs.length) {

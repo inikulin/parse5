@@ -4,7 +4,7 @@ var HTML = require('../../lib/html'),
 
 //Aliases
 var $ = HTML.TAG_NAMES,
-    NAMESPACES = HTML.NAMESPACES;
+    NS = HTML.NAMESPACES;
 
 exports['Push element'] = function (t) {
     var document = '#document',
@@ -98,7 +98,7 @@ exports['Pop elements until given element popped'] = function (t) {
 };
 
 exports['Pop elements until numbered header popped'] = function (t) {
-    var element1 = {tagName: 'h3'},
+    var element1 = {tagName: $.H3},
         element2 = {tagName: '#element2'},
         stack = new OpenElementStack('#document', defaultTreeAdapter);
 
@@ -135,9 +135,9 @@ exports['Pop all up to <html> element'] = function (t) {
 };
 
 exports['Clear back to a table context'] = function (t) {
-    var htmlElement = {tagName: 'html'},
-        tableElement = {tagName: 'table'},
-        divElement = {tagName: 'div'},
+    var htmlElement = {tagName: $.HTML},
+        tableElement = {tagName: $.TABLE},
+        divElement = {tagName: $.DIV},
         stack = new OpenElementStack({tagName: '#document'}, defaultTreeAdapter);
 
     stack.push(htmlElement);
@@ -160,9 +160,9 @@ exports['Clear back to a table context'] = function (t) {
 };
 
 exports['Clear back to a table row context'] = function (t) {
-    var htmlElement = {tagName: 'html'},
-        trElement = {tagName: 'tr'},
-        divElement = {tagName: 'div'},
+    var htmlElement = {tagName: $.HTML},
+        trElement = {tagName: $.TR},
+        divElement = {tagName: $.DIV},
         stack = new OpenElementStack({tagName: '#document'}, defaultTreeAdapter);
 
     stack.push(htmlElement);
@@ -183,6 +183,34 @@ exports['Clear back to a table row context'] = function (t) {
 
     t.done();
 };
+
+exports['Clear back to non-foreign context'] = function (t) {
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.B, namespaceURI: NS.SVG});
+    stack.clearBackToNonForeignContext();
+    t.strictEqual(stack.stackTop, 0);
+    t.strictEqual(stack.currentTagName, $.HTML);
+
+    stack.push({tagName: $.P, namespaceURI: NS.SVG});
+    stack.push({tagName: $.UL, namespaceURI: NS.SVG});
+    stack.push({tagName: $.MO, namespaceURI: NS.MATHML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.SVG});
+    stack.clearBackToNonForeignContext();
+    t.strictEqual(stack.stackTop, 3);
+    t.strictEqual(stack.currentTagName, $.MO);
+
+    stack.push({tagName: $.DESC, namespaceURI: NS.SVG});
+    stack.push({tagName: $.P, namespaceURI: NS.SVG});
+    stack.push({tagName: $.UL, namespaceURI: NS.SVG});
+    stack.clearBackToNonForeignContext();
+    t.strictEqual(stack.stackTop, 4);
+    t.strictEqual(stack.currentTagName, $.DESC);
+
+    t.done();
+};
+
 
 exports['Remove element'] = function (t) {
     var element = '#element',
@@ -268,17 +296,17 @@ exports['Contains element'] = function (t) {
 exports['Has element in scope'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasInScope($.P));
 
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.UL, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.BUTTON, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
+    stack.push({tagName: $.UL, namespaceURI: NS.HTML});
+    stack.push({tagName: $.BUTTON, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
     t.ok(stack.hasInScope($.P));
 
-    stack.push({tagName: $.TITLE, namespaceURI: NAMESPACES.SVG});
+    stack.push({tagName: $.TITLE, namespaceURI: NS.SVG});
     t.ok(!stack.hasInScope($.P));
 
     t.done();
@@ -287,20 +315,20 @@ exports['Has element in scope'] = function (t) {
 exports['Has numbered header in scope'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasNumberedHeaderInScope());
 
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.UL, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.H3, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
+    stack.push({tagName: $.UL, namespaceURI: NS.HTML});
+    stack.push({tagName: $.H3, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
     t.ok(stack.hasNumberedHeaderInScope());
 
-    stack.push({tagName: $.TITLE, namespaceURI: NAMESPACES.SVG});
+    stack.push({tagName: $.TITLE, namespaceURI: NS.SVG});
     t.ok(!stack.hasNumberedHeaderInScope());
 
-    stack.push({tagName: $.H6, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.H6, namespaceURI: NS.HTML});
     t.ok(stack.hasNumberedHeaderInScope());
 
     t.done();
@@ -309,16 +337,16 @@ exports['Has numbered header in scope'] = function (t) {
 exports['Has element in list item scope'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasInListItemScope($.P));
 
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.BUTTON, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
+    stack.push({tagName: $.BUTTON, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
     t.ok(stack.hasInListItemScope($.P));
 
-    stack.push({tagName: $.UL, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.UL, namespaceURI: NS.HTML});
     t.ok(!stack.hasInListItemScope($.P));
 
     t.done();
@@ -327,16 +355,16 @@ exports['Has element in list item scope'] = function (t) {
 exports['Has element in button scope'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasInButtonScope($.P));
 
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.UL, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
+    stack.push({tagName: $.UL, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
     t.ok(stack.hasInButtonScope($.P));
 
-    stack.push({tagName: $.BUTTON, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.BUTTON, namespaceURI: NS.HTML});
     t.ok(!stack.hasInButtonScope($.P));
 
     t.done();
@@ -346,17 +374,17 @@ exports['Has element in button scope'] = function (t) {
 exports['Has element in table scope'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasInTableScope($.P));
 
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.UL, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.TD, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
+    stack.push({tagName: $.UL, namespaceURI: NS.HTML});
+    stack.push({tagName: $.TD, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
     t.ok(stack.hasInTableScope($.P));
 
-    stack.push({tagName: $.TABLE, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.TABLE, namespaceURI: NS.HTML});
     t.ok(!stack.hasInTableScope($.P));
 
     t.done();
@@ -365,15 +393,15 @@ exports['Has element in table scope'] = function (t) {
 exports['Has element in select scope'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasInSelectScope($.P));
 
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
     t.ok(stack.hasInSelectScope($.P));
 
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasInSelectScope($.P));
 
     t.done();
@@ -382,14 +410,14 @@ exports['Has element in select scope'] = function (t) {
 exports['Is MathML integration point'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.isMathMLTextIntegrationPoint());
 
-    stack.push({tagName: $.MO, namespaceURI: NAMESPACES.MATHML});
+    stack.push({tagName: $.MO, namespaceURI: NS.MATHML});
     t.ok(stack.isMathMLTextIntegrationPoint());
 
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.isMathMLTextIntegrationPoint());
 
     t.done();
@@ -398,22 +426,22 @@ exports['Is MathML integration point'] = function (t) {
 exports['Is HTML integration point'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.isHtmlIntegrationPoint());
 
-    stack.push({tagName: $.TITLE, namespaceURI: NAMESPACES.SVG});
+    stack.push({tagName: $.TITLE, namespaceURI: NS.SVG});
     t.ok(stack.isHtmlIntegrationPoint());
 
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.isHtmlIntegrationPoint());
 
-    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NAMESPACES.MATHML, attrs: [
+    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NS.MATHML, attrs: [
         {name: 'encoding', value: 'apPlicAtion/xhtml+xml'}
     ]});
     t.ok(stack.isHtmlIntegrationPoint());
 
-    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NAMESPACES.MATHML, attrs: [
+    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NS.MATHML, attrs: [
         {name: 'encoding', value: 'someValues'}
     ]});
     t.ok(!stack.isHtmlIntegrationPoint());
@@ -424,12 +452,12 @@ exports['Is HTML integration point'] = function (t) {
 exports['Generate implied end tags'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
 
     stack.generateImpliedEndTags();
 
@@ -442,12 +470,12 @@ exports['Generate implied end tags'] = function (t) {
 exports['Generate implied end tags with exclusion'] = function (t) {
     var stack = new OpenElementStack('#document', defaultTreeAdapter);
 
-    stack.push({tagName: $.HTML, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.LI, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.OPTION, namespaceURI: NAMESPACES.HTML});
-    stack.push({tagName: $.P, namespaceURI: NAMESPACES.HTML});
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
+    stack.push({tagName: $.LI, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
+    stack.push({tagName: $.P, namespaceURI: NS.HTML});
 
     stack.generateImpliedEndTagsWithExclusion($.LI);
 
