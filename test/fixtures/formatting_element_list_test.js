@@ -224,30 +224,6 @@ exports['Get element in scope with given tag name'] = function (t) {
     t.done();
 };
 
-exports['Get element bookmark'] = function (t) {
-    var list = new FormattingElementList(defaultTreeAdapter),
-        token = 'token',
-        element1 = {
-            tagName: $.DIV,
-            namespaceURI: NS.HTML,
-            attrs: []
-        },
-        element2 = {
-            tagName: $.A,
-            namespaceURI: NS.HTML,
-            attrs: []
-        };
-
-
-    list.push(element2, token);
-    list.push(element2, token);
-    list.insertMarker();
-    list.push(element1, token);
-    t.strictEqual(list.getElementBookmark(element1), 2);
-
-    t.done();
-};
-
 exports['Get element entry'] = function (t) {
     var list = new FormattingElementList(defaultTreeAdapter),
         token = 'token',
