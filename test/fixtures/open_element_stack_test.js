@@ -51,6 +51,22 @@ exports['Pop element'] = function (t) {
     t.done();
 };
 
+exports['Replace element'] = function (t) {
+    var element = {tagName: '#element', namespaceURI: 'namespace1'},
+        newElement = {tagName: '#element', namespaceURI: 'namespace1'},
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push('#element2');
+    stack.push(element);
+    stack.replace(element, newElement);
+    t.strictEqual(stack.current, newElement);
+    t.strictEqual(stack.currentTagName, newElement.tagName);
+    t.strictEqual(stack.currentNamespaceURI, newElement.namespaceURI);
+    t.strictEqual(stack.stackTop, 1);
+
+    t.done();
+};
+
 exports['Pop elements until popped with given tagName'] = function (t) {
     var element1 = {tagName: '#element1'},
         element2 = {tagName: '#element2'},
@@ -154,6 +170,31 @@ exports['Clear back to a table context'] = function (t) {
     stack.push(divElement);
     stack.clearBackToTableContext();
     t.strictEqual(stack.current, tableElement);
+    t.strictEqual(stack.stackTop, 2);
+
+    t.done();
+};
+
+exports['Clear back to a table body context'] = function (t) {
+    var htmlElement = {tagName: $.HTML},
+        theadElement = {tagName: $.THEAD},
+        divElement = {tagName: $.DIV},
+        stack = new OpenElementStack({tagName: '#document'}, defaultTreeAdapter);
+
+    stack.push(htmlElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.clearBackToTableBodyContext();
+    t.strictEqual(stack.current, htmlElement);
+    t.strictEqual(stack.stackTop, 0);
+
+    stack.push(divElement);
+    stack.push(theadElement);
+    stack.push(divElement);
+    stack.push(divElement);
+    stack.clearBackToTableBodyContext();
+    t.strictEqual(stack.current, theadElement);
     t.strictEqual(stack.stackTop, 2);
 
     t.done();
@@ -386,6 +427,28 @@ exports['Has element in table scope'] = function (t) {
 
     stack.push({tagName: $.TABLE, namespaceURI: NS.HTML});
     t.ok(!stack.hasInTableScope($.P));
+
+    t.done();
+};
+
+exports['Has table body context in table scope'] = function (t) {
+    var stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
+    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
+    t.ok(!stack.hasTableBodyContextInTableScope());
+
+    stack.push({tagName: $.TABLE, namespaceURI: NS.HTML});
+    stack.push({tagName: $.UL, namespaceURI: NS.HTML});
+    stack.push({tagName: $.TBODY, namespaceURI: NS.HTML});
+    stack.push({tagName: $.OPTION, namespaceURI: NS.HTML});
+    t.ok(stack.hasTableBodyContextInTableScope());
+
+    stack.push({tagName: $.TABLE, namespaceURI: NS.HTML});
+    t.ok(!stack.hasTableBodyContextInTableScope());
+
+    stack.push({tagName: $.TFOOT, namespaceURI: NS.HTML});
+    t.ok(stack.hasTableBodyContextInTableScope());
 
     t.done();
 };
