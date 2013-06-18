@@ -52,8 +52,8 @@ exports['Pop element'] = function (t) {
 };
 
 exports['Replace element'] = function (t) {
-    var element = {tagName: '#element', namespaceURI: 'namespace1'},
-        newElement = {tagName: '#element', namespaceURI: 'namespace1'},
+    var element = {tagName: '#element', namespaceURI: 'namespace'},
+        newElement = {tagName: '#newElement', namespaceURI: 'newElementNamespace'},
         stack = new OpenElementStack('#document', defaultTreeAdapter);
 
     stack.push('#element2');
@@ -63,6 +63,27 @@ exports['Replace element'] = function (t) {
     t.strictEqual(stack.currentTagName, newElement.tagName);
     t.strictEqual(stack.currentNamespaceURI, newElement.namespaceURI);
     t.strictEqual(stack.stackTop, 1);
+
+    t.done();
+};
+
+exports['Insert element after element'] = function (t) {
+    var element1 = {tagName: '#element1', namespaceURI: 'namespace1'},
+        element2 = {tagName: '#element2', namespaceURI: 'namespace2'},
+        element3 = {tagName: '#element3', namespaceURI: 'namespace3'},
+        stack = new OpenElementStack('#document', defaultTreeAdapter);
+
+    stack.push(element1);
+    stack.push(element2);
+    stack.insertAfter(element1, element3);
+    t.strictEqual(stack.stackTop, 2);
+    t.strictEqual(stack.items[1], element3);
+
+    stack.insertAfter(element2, element1);
+    t.strictEqual(stack.stackTop, 3);
+    t.strictEqual(stack.current, element1);
+    t.strictEqual(stack.currentTagName, element1.tagName);
+    t.strictEqual(stack.currentNamespaceURI, element1.namespaceURI);
 
     t.done();
 };
