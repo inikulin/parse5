@@ -113,7 +113,7 @@ function getAssertionMessage(actual, expected) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    if (test.idx !== 6)
+    if (test.idx !== 11)
         return;
     exports[getFullTestName(test)] = function (t) {
         //TODO fragment parsing
