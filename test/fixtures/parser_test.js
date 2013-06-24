@@ -1,5 +1,6 @@
 var fs = require('fs'),
     path = require('path'),
+    HTML = require('../../lib/html'),
     Parser = require('../../lib/parser').Parser;
 
 function loadTests() {
@@ -35,7 +36,7 @@ function loadTests() {
             tests.push({
                 idx: ++testIdx,
                 setName: setName,
-                input: descr['#data'].join(''),
+                input: descr['#data'].join('\n'),
                 expected: descr['#document'].join('\n') + '\n',
                 expectedErrors: descr['#errors'],
                 fragmentCase: !!descr['#document-fragment'],
@@ -57,6 +58,17 @@ function getSerializedTreeIndent(indent) {
     return str;
 }
 
+function getElementSerializedNamespaceURI(element) {
+    switch (element.namespaceURI) {
+        case HTML.NAMESPACES.SVG:
+            return 'svg ';
+        case HTML.NAMESPACES.MATHML:
+            return 'math ';
+        default :
+            return '';
+    }
+}
+
 function serializeNode(node, indent) {
     var str = getSerializedTreeIndent(indent);
 
@@ -70,7 +82,7 @@ function serializeNode(node, indent) {
             break;
 
         default:
-            str += '<' + node.tagName + '>\n';
+            str += '<' + getElementSerializedNamespaceURI(node) + node.tagName + '>\n';
 
             var childrenIndent = indent + 2;
 
@@ -113,7 +125,7 @@ function getAssertionMessage(actual, expected) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    if (test.idx !== 11)
+    if (test.idx > 500)
         return;
     exports[getFullTestName(test)] = function (t) {
         //TODO fragment parsing
