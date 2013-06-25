@@ -69,8 +69,8 @@ function tokenize(html, initialState, lastStartTag) {
                 out.push([
                     'DOCTYPE',
                     nextToken.name,
-                    nextToken.publicID,
-                    nextToken.systemID,
+                    nextToken.publicId,
+                    nextToken.systemId,
                     !nextToken.forceQuirks
                 ]);
                 break;

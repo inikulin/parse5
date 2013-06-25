@@ -69,41 +69,52 @@ function getElementSerializedNamespaceURI(element) {
     }
 }
 
-function serializeNode(node, indent) {
-    var str = getSerializedTreeIndent(indent);
-
-    switch (node.nodeName) {
-        case '#comment':
-            str += '<!-- ' + node.data + ' -->\n';
-            break;
-
-        case '#text':
-            str += '"' + node.value + '"\n';
-            break;
-
-        default:
-            str += '<' + getElementSerializedNamespaceURI(node) + node.tagName + '>\n';
-
-            var childrenIndent = indent + 2;
-
-            for (var i = 0; i < node.attrs.length; i++) {
-                str += getSerializedTreeIndent(childrenIndent);
-                str += node.attrs[i].name + '="' + node.attrs[i].value + '"\n';
-            }
-
-            for (var i = 0; i < node.childNodes.length; i++)
-                str += serializeNode(node.childNodes[i], childrenIndent);
-    }
-
-    return str;
-}
-
-function serializeTree(document) {
-    //TODO serialize doctype here
+function serializeNodeList(nodes, indent) {
     var str = '';
 
-    for (var i = 0; i < document.childNodes.length; i++)
-        str += serializeNode(document.childNodes[i], 0);
+
+    for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+
+        str += getSerializedTreeIndent(indent);
+
+        switch (node.nodeName) {
+            case '#comment':
+                str += '<!-- ' + node.data + ' -->\n';
+                break;
+
+            case '#text':
+                str += '"' + node.value + '"\n';
+                break;
+
+            case "#documentType":
+                str += '<!DOCTYPE';
+
+                if (node.name)
+                    str += ' ' + node.name;
+
+                if (node.publicId)
+                    str += ' ' + node.publicId;
+
+                if (node.systemId)
+                    str += ' ' + node.systemId;
+
+                str += '>\n';
+                break;
+
+            default:
+                str += '<' + getElementSerializedNamespaceURI(node) + node.tagName + '>\n';
+
+                var childrenIndent = indent + 2;
+
+                for (var j = 0; j < node.attrs.length; j++) {
+                    str += getSerializedTreeIndent(childrenIndent);
+                    str += node.attrs[j].name + '="' + node.attrs[j].value + '"\n';
+                }
+
+                str += serializeNodeList(node.childNodes, childrenIndent);
+        }
+    }
 
     return str;
 }
@@ -133,7 +144,7 @@ loadTests().forEach(function (test) {
         if (!test.fragmentCase) {
             var parser = new Parser(test.input),
                 document = parser.parse(),
-                serializedDocument = serializeTree(document);
+                serializedDocument = serializeNodeList(document.childNodes, 0);
 
             t.strictEqual(serializedDocument, test.expected, getAssertionMessage(serializedDocument, test.expected));
         }
