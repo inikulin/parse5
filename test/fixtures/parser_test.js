@@ -17,7 +17,7 @@ function loadTests() {
             curDirective = '',
             curDescr = null;
 
-        testSet.split(/\n|\r/).forEach(function (line) {
+        testSet.split(/\r?\n/).forEach(function (line) {
             if (line === '#data') {
                 curDescr = {};
                 testDescrs.push(curDescr);
@@ -36,7 +36,7 @@ function loadTests() {
             tests.push({
                 idx: ++testIdx,
                 setName: setName,
-                input: descr['#data'].join('\n'),
+                input: descr['#data'].join('\r\n'),
                 expected: descr['#document'].join('\n') + '\n',
                 expectedErrors: descr['#errors'],
                 fragmentCase: !!descr['#document-fragment'],
@@ -88,16 +88,19 @@ function serializeNodeList(nodes, indent) {
                 break;
 
             case "#documentType":
+                var parts = [];
+
                 str += '<!DOCTYPE';
 
-                if (node.name)
-                    str += ' ' + node.name;
+                parts.push(node.name || '');
 
-                if (node.publicId)
-                    str += ' ' + node.publicId;
+                if (node.publicId !== null || node.systemId !== null) {
+                    parts.push('"' + (node.publicId || '') + '"');
+                    parts.push('"' + (node.systemId || '') + '"');
+                }
 
-                if (node.systemId)
-                    str += ' ' + node.systemId;
+                for (var j = 0; j < parts.length; j++)
+                    str += ' ' + parts[j];
 
                 str += '>\n';
                 break;
@@ -109,6 +112,10 @@ function serializeNodeList(nodes, indent) {
 
                 for (var j = 0; j < node.attrs.length; j++) {
                     str += getSerializedTreeIndent(childrenIndent);
+
+                    if (node.attrs[j].prefix)
+                        str += node.attrs[j].prefix + ' ';
+
                     str += node.attrs[j].name + '="' + node.attrs[j].value + '"\n';
                 }
 
@@ -136,7 +143,7 @@ function getAssertionMessage(actual, expected) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    if (test.idx > 500)
+    if (test.idx !== 272)
         return;
     exports[getFullTestName(test)] = function (t) {
         //TODO fragment parsing
