@@ -28,7 +28,7 @@ function loadTests() {
                 curDescr[curDirective] = [];
             }
 
-            else if (line !== '')
+            else
                 curDescr[curDirective].push(line);
         });
 
@@ -37,7 +37,7 @@ function loadTests() {
                 idx: ++testIdx,
                 setName: setName,
                 input: descr['#data'].join('\r\n'),
-                expected: descr['#document'].join('\n') + '\n',
+                expected: descr['#document'].join('\n'),
                 expectedErrors: descr['#errors'],
                 fragmentCase: !!descr['#document-fragment'],
                 contextElement: descr['#document-fragment'] || null
@@ -72,10 +72,7 @@ function getElementSerializedNamespaceURI(element) {
 function serializeNodeList(nodes, indent) {
     var str = '';
 
-
-    for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-
+    nodes.forEach(function (node) {
         str += getSerializedTreeIndent(indent);
 
         switch (node.nodeName) {
@@ -99,8 +96,9 @@ function serializeNodeList(nodes, indent) {
                     parts.push('"' + (node.systemId || '') + '"');
                 }
 
-                for (var j = 0; j < parts.length; j++)
-                    str += ' ' + parts[j];
+                parts.forEach(function (part) {
+                    str += ' ' + part;
+                });
 
                 str += '>\n';
                 break;
@@ -108,20 +106,24 @@ function serializeNodeList(nodes, indent) {
             default:
                 str += '<' + getElementSerializedNamespaceURI(node) + node.tagName + '>\n';
 
-                var childrenIndent = indent + 2;
+                var childrenIndent = indent + 2,
+                    serializedAttrs = [];
 
-                for (var j = 0; j < node.attrs.length; j++) {
-                    str += getSerializedTreeIndent(childrenIndent);
+                node.attrs.forEach(function (attr) {
+                    var attrStr = getSerializedTreeIndent(childrenIndent);
 
-                    if (node.attrs[j].prefix)
-                        str += node.attrs[j].prefix + ' ';
+                    if (attr.prefix)
+                        attrStr += attr.prefix + ' ';
 
-                    str += node.attrs[j].name + '="' + node.attrs[j].value + '"\n';
-                }
+                    attrStr += attr.name + '="' + attr.value + '"\n';
 
+                    serializedAttrs.push(attrStr);
+                });
+
+                str += serializedAttrs.sort().join('');
                 str += serializeNodeList(node.childNodes, childrenIndent);
         }
-    }
+    });
 
     return str;
 }
@@ -143,8 +145,8 @@ function getAssertionMessage(actual, expected) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    if (test.idx !== 272)
-        return;
+    //if (test.idx !== 974)
+    //    return;
     exports[getFullTestName(test)] = function (t) {
         //TODO fragment parsing
         //TODO handler errors
