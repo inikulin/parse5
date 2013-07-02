@@ -33,15 +33,15 @@ function loadTests() {
         });
 
         testDescrs.forEach(function (descr) {
-            tests.push({
-                idx: ++testIdx,
-                setName: setName,
-                input: descr['#data'].join('\r\n'),
-                expected: descr['#document'].join('\n'),
-                expectedErrors: descr['#errors'],
-                fragmentCase: !!descr['#document-fragment'],
-                contextElement: descr['#document-fragment'] || null
-            });
+            if (!descr['#document-fragment']) {
+                tests.push({
+                    idx: ++testIdx,
+                    setName: setName,
+                    input: descr['#data'].join('\r\n'),
+                    expected: descr['#document'].join('\n'),
+                    expectedErrors: descr['#errors']
+                });
+            }
         });
     });
 
@@ -146,16 +146,12 @@ function getAssertionMessage(actual, expected) {
 //Here we go..
 loadTests().forEach(function (test) {
     exports[getFullTestName(test)] = function (t) {
-        //TODO fragment parsing
         //TODO handler errors
-        if (!test.fragmentCase) {
-            var parser = new Parser(test.input),
-                document = parser.parse(),
-                serializedDocument = serializeNodeList(document.childNodes, 0);
+        var parser = new Parser(test.input),
+            document = parser.parse(),
+            serializedDocument = serializeNodeList(document.childNodes, 0);
 
-            t.strictEqual(serializedDocument, test.expected, getAssertionMessage(serializedDocument, test.expected));
-        }
-
+        t.strictEqual(serializedDocument, test.expected, getAssertionMessage(serializedDocument, test.expected));
         t.done();
     };
 });
