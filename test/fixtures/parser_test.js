@@ -145,8 +145,6 @@ function getAssertionMessage(actual, expected) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    //if (test.idx !== 974)
-    //    return;
     exports[getFullTestName(test)] = function (t) {
         //TODO fragment parsing
         //TODO handler errors
