@@ -246,34 +246,6 @@ exports['Clear back to a table row context'] = function (t) {
     t.done();
 };
 
-exports['Clear back to non-foreign context'] = function (t) {
-    var stack = new OpenElementStack('#document', defaultTreeAdapter);
-
-    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
-    stack.push({tagName: $.B, namespaceURI: NS.SVG});
-    stack.clearBackToNonForeignContext();
-    t.strictEqual(stack.stackTop, 0);
-    t.strictEqual(stack.currentTagName, $.HTML);
-
-    stack.push({tagName: $.P, namespaceURI: NS.SVG});
-    stack.push({tagName: $.UL, namespaceURI: NS.SVG});
-    stack.push({tagName: $.MO, namespaceURI: NS.MATHML});
-    stack.push({tagName: $.OPTION, namespaceURI: NS.SVG});
-    stack.clearBackToNonForeignContext();
-    t.strictEqual(stack.stackTop, 3);
-    t.strictEqual(stack.currentTagName, $.MO);
-
-    stack.push({tagName: $.DESC, namespaceURI: NS.SVG});
-    stack.push({tagName: $.P, namespaceURI: NS.SVG});
-    stack.push({tagName: $.UL, namespaceURI: NS.SVG});
-    stack.clearBackToNonForeignContext();
-    t.strictEqual(stack.stackTop, 4);
-    t.strictEqual(stack.currentTagName, $.DESC);
-
-    t.done();
-};
-
-
 exports['Remove element'] = function (t) {
     var element = '#element',
         stack = new OpenElementStack('#document', defaultTreeAdapter);
@@ -487,48 +459,6 @@ exports['Has element in select scope'] = function (t) {
 
     stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
     t.ok(!stack.hasInSelectScope($.P));
-
-    t.done();
-};
-
-exports['Is MathML integration point'] = function (t) {
-    var stack = new OpenElementStack('#document', defaultTreeAdapter);
-
-    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
-    t.ok(!stack.isMathMLTextIntegrationPoint());
-
-    stack.push({tagName: $.MO, namespaceURI: NS.MATHML});
-    t.ok(stack.isMathMLTextIntegrationPoint());
-
-    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
-    t.ok(!stack.isMathMLTextIntegrationPoint());
-
-    t.done();
-};
-
-exports['Is HTML integration point'] = function (t) {
-    var stack = new OpenElementStack('#document', defaultTreeAdapter);
-
-    stack.push({tagName: $.HTML, namespaceURI: NS.HTML});
-    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
-    t.ok(!stack.isHtmlIntegrationPoint());
-
-    stack.push({tagName: $.TITLE, namespaceURI: NS.SVG});
-    t.ok(stack.isHtmlIntegrationPoint());
-
-    stack.push({tagName: $.DIV, namespaceURI: NS.HTML});
-    t.ok(!stack.isHtmlIntegrationPoint());
-
-    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NS.MATHML, attrs: [
-        {name: 'encoding', value: 'apPlicAtion/xhtml+xml'}
-    ]});
-    t.ok(stack.isHtmlIntegrationPoint());
-
-    stack.push({tagName: $.ANNOTATION_XML, namespaceURI: NS.MATHML, attrs: [
-        {name: 'encoding', value: 'someValues'}
-    ]});
-    t.ok(!stack.isHtmlIntegrationPoint());
 
     t.done();
 };

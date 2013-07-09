@@ -1,6 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
     HTML = require('../../lib/html'),
+    treeAdapter = require('../../lib/default_tree_adapter'),
     Parser = require('../../lib/parser').Parser;
 
 function loadTests() {
@@ -33,15 +34,17 @@ function loadTests() {
         });
 
         testDescrs.forEach(function (descr) {
-            if (!descr['#document-fragment']) {
-                tests.push({
-                    idx: ++testIdx,
-                    setName: setName,
-                    input: descr['#data'].join('\r\n'),
-                    expected: descr['#document'].join('\n'),
-                    expectedErrors: descr['#errors']
-                });
-            }
+            var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
+
+            tests.push({
+                idx: ++testIdx,
+                setName: setName,
+                input: descr['#data'].join('\r\n'),
+                expected: descr['#document'].join('\n'),
+                expectedErrors: descr['#errors'],
+                fragmentContext: fragmentContextTagName ?
+                    treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, []) : null
+            });
         });
     });
 
@@ -146,8 +149,8 @@ function getAssertionMessage(actual, expected) {
 //Here we go..
 loadTests().forEach(function (test) {
     exports[getFullTestName(test)] = function (t) {
-        //TODO handler errors
-        var parser = new Parser(test.input),
+        //TODO handle errors
+        var parser = new Parser(test.input, test.fragmentContext),
             document = parser.parse(),
             serializedDocument = serializeNodeList(document.childNodes, 0);
 
