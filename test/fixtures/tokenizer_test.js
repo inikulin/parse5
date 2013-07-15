@@ -22,6 +22,8 @@ function tokenize(html, initialState, lastStartTag) {
         //NOTE: append current token to the output sequence in html5lib test suite compatible format
         switch (nextToken.type) {
             case Tokenizer.CHARACTER_TOKEN:
+            case Tokenizer.NULL_CHARACTER_TOKEN:
+            case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
                 out.tokens.push(['Character', nextToken.ch]);
                 break;
 
