@@ -6,7 +6,10 @@ var fs = require('fs'),
 function tokenize(html, initialState, lastStartTag) {
     var tokenizer = new Tokenizer(html),
         nextToken = null,
-        out = [];
+        out = {
+            tokens: [],
+            errCount: 0
+        };
 
     tokenizer.state = initialState;
 
@@ -16,26 +19,10 @@ function tokenize(html, initialState, lastStartTag) {
     do {
         nextToken = tokenizer.getNextToken();
 
-        //NOTE: if we have parse errors append them to the output sequence
-        if (tokenizer.errs.length) {
-            for (var i = 0; i < tokenizer.errs.length; i++)
-                out.push('ParseError');
-
-            tokenizer.errs = [];
-        }
-
         //NOTE: append current token to the output sequence in html5lib test suite compatible format
         switch (nextToken.type) {
             case Tokenizer.CHARACTER_TOKEN:
-                //NOTE: html5lib test suite concatenates all character tokens into one token.
-                //So if last entry in output sequence is a character token we just append obtained token
-                //to it's data string. Otherwise we create a new character token entry.
-                var lastEntry = out[out.length - 1];
-
-                if (util.isArray(lastEntry) && lastEntry[0] === 'Character')
-                    lastEntry[1] += nextToken.ch;
-                else
-                    out.push(['Character', nextToken.ch]);
+                out.tokens.push(['Character', nextToken.ch]);
                 break;
 
             case Tokenizer.START_TAG_TOKEN:
@@ -54,19 +41,19 @@ function tokenize(html, initialState, lastStartTag) {
                 if (nextToken.selfClosing)
                     startTagEntry.push(true);
 
-                out.push(startTagEntry);
+                out.tokens.push(startTagEntry);
                 break;
 
             case Tokenizer.END_TAG_TOKEN:
-                out.push(['EndTag', nextToken.tagName]);
+                out.tokens.push(['EndTag', nextToken.tagName]);
                 break;
 
             case Tokenizer.COMMENT_TOKEN:
-                out.push(['Comment', nextToken.data]);
+                out.tokens.push(['Comment', nextToken.data]);
                 break;
 
             case Tokenizer.DOCTYPE_TOKEN:
-                out.push([
+                out.tokens.push([
                     'DOCTYPE',
                     nextToken.name,
                     nextToken.publicId,
@@ -76,6 +63,9 @@ function tokenize(html, initialState, lastStartTag) {
                 break;
         }
     } while (nextToken.type !== Tokenizer.EOF_TOKEN);
+
+    out.errCount = tokenizer.errs.length;
+    out.tokens = concatCharacterTokens(out.tokens);
 
     return out;
 }
@@ -89,24 +79,43 @@ function unicodeUnescape(str) {
 function unescapeDescrIO(testDescr) {
     testDescr.input = unicodeUnescape(testDescr.input);
 
-    testDescr.output.forEach(function (token) {
-        if (token === 'ParseError')
+    testDescr.output.forEach(function (tokenEntry) {
+        if (tokenEntry === 'ParseError')
             return;
 
         //NOTE: unescape token tagName (for StartTag and EndTag tokens), comment data (for Comment token),
         //character token data (for Character token).
-        token[1] = unicodeUnescape(token[1]);
+        tokenEntry[1] = unicodeUnescape(tokenEntry[1]);
 
         //NOTE: unescape token attributes(if we have them).
-        if (token.length > 2) {
-            Object.keys(token).forEach(function (attrName) {
-                var attrVal = token[attrName];
+        if (tokenEntry.length > 2) {
+            Object.keys(tokenEntry).forEach(function (attrName) {
+                var attrVal = tokenEntry[attrName];
 
-                delete token[attrName];
-                token[unicodeUnescape(attrName)] = unicodeUnescape(attrVal);
+                delete tokenEntry[attrName];
+                tokenEntry[unicodeUnescape(attrName)] = unicodeUnescape(attrVal);
             });
         }
     });
+}
+
+function concatCharacterTokens(tokenEntries) {
+    var result = [];
+
+    tokenEntries.forEach(function (tokenEntry) {
+        if (tokenEntry[0] === 'Character') {
+            var lastEntry = result[result.length - 1];
+
+            if (lastEntry && lastEntry[0] === 'Character') {
+                lastEntry[1] += tokenEntry[1];
+                return;
+            }
+        }
+
+        result.push(tokenEntry);
+    });
+
+    return result;
 }
 
 function getTokenizerSuitableStateName(testDataStateName) {
@@ -133,13 +142,24 @@ function loadTests() {
             if (descr.doubleEscaped)
                 unescapeDescrIO(descr);
 
+            var expectedTokens = [],
+                expectedErrCount = 0;
+
+            descr.output.forEach(function (tokenEntry) {
+                if (tokenEntry === 'ParseError')
+                    expectedErrCount++;
+                else
+                    expectedTokens.push(tokenEntry);
+            });
+
             descr.initialStates.forEach(function (initialState) {
                 tests.push({
                     idx: ++testIdx,
                     setName: setName,
                     name: descr.description,
                     input: descr.input,
-                    expected: descr.output,
+                    expectedTokens: concatCharacterTokens(expectedTokens),
+                    expectedErrCount: expectedErrCount,
                     initialState: getTokenizerSuitableStateName(initialState),
                     lastStartTag: descr.lastStartTag
                 });
@@ -159,7 +179,9 @@ loadTests().forEach(function (test) {
     exports[getFullTestName(test)] = function (t) {
         var out = tokenize(test.input, test.initialState, test.lastStartTag);
 
-        t.deepEqual(out, test.expected);
+        t.deepEqual(out.tokens, test.expectedTokens);
+        t.strictEqual(out.errCount, test.expectedErrCount);
+
         t.done();
     };
 });
