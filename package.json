@@ -1,7 +1,7 @@
 {
 	"name": "parse5",
 	"description": "Fast full-featured HTML parser for Node. Based on WHATWG HTML5 specification.",
-	"version": "0.5.2",
+	"version": "0.5.3",
 	"author": "Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)",
 	"keywords": ["html", "parser", "html5", "WHATWG", "specification", "fast"],
 	"repository": {
