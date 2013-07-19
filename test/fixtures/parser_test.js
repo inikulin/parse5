@@ -149,7 +149,6 @@ function getAssertionMessage(actual, expected) {
 //Here we go..
 loadTests().forEach(function (test) {
     exports[getFullTestName(test)] = function (t) {
-        //TODO handle errors
         var parser = new Parser(test.input, test.fragmentContext),
             document = parser.parse(),
             serializedDocument = serializeNodeList(document.childNodes, 0);

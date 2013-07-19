@@ -6,10 +6,7 @@ var fs = require('fs'),
 function tokenize(html, initialState, lastStartTag) {
     var tokenizer = new Tokenizer(html),
         nextToken = null,
-        out = {
-            tokens: [],
-            errCount: 0
-        };
+        out = [];
 
     tokenizer.state = initialState;
 
@@ -24,7 +21,7 @@ function tokenize(html, initialState, lastStartTag) {
             case Tokenizer.CHARACTER_TOKEN:
             case Tokenizer.NULL_CHARACTER_TOKEN:
             case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
-                out.tokens.push(['Character', nextToken.ch]);
+                out.push(['Character', nextToken.ch]);
                 break;
 
             case Tokenizer.START_TAG_TOKEN:
@@ -43,19 +40,19 @@ function tokenize(html, initialState, lastStartTag) {
                 if (nextToken.selfClosing)
                     startTagEntry.push(true);
 
-                out.tokens.push(startTagEntry);
+                out.push(startTagEntry);
                 break;
 
             case Tokenizer.END_TAG_TOKEN:
-                out.tokens.push(['EndTag', nextToken.tagName]);
+                out.push(['EndTag', nextToken.tagName]);
                 break;
 
             case Tokenizer.COMMENT_TOKEN:
-                out.tokens.push(['Comment', nextToken.data]);
+                out.push(['Comment', nextToken.data]);
                 break;
 
             case Tokenizer.DOCTYPE_TOKEN:
-                out.tokens.push([
+                out.push([
                     'DOCTYPE',
                     nextToken.name,
                     nextToken.publicId,
@@ -66,10 +63,7 @@ function tokenize(html, initialState, lastStartTag) {
         }
     } while (nextToken.type !== Tokenizer.EOF_TOKEN);
 
-    out.errCount = tokenizer.errs.length;
-    out.tokens = concatCharacterTokens(out.tokens);
-
-    return out;
+    return concatCharacterTokens(out)
 }
 
 function unicodeUnescape(str) {
@@ -144,14 +138,11 @@ function loadTests() {
             if (descr.doubleEscaped)
                 unescapeDescrIO(descr);
 
-            var expectedTokens = [],
-                expectedErrCount = 0;
+            var expected = [];
 
             descr.output.forEach(function (tokenEntry) {
-                if (tokenEntry === 'ParseError')
-                    expectedErrCount++;
-                else
-                    expectedTokens.push(tokenEntry);
+                if (tokenEntry !== 'ParseError')
+                    expected.push(tokenEntry);
             });
 
             descr.initialStates.forEach(function (initialState) {
@@ -160,8 +151,7 @@ function loadTests() {
                     setName: setName,
                     name: descr.description,
                     input: descr.input,
-                    expectedTokens: concatCharacterTokens(expectedTokens),
-                    expectedErrCount: expectedErrCount,
+                    expected: concatCharacterTokens(expected),
                     initialState: getTokenizerSuitableStateName(initialState),
                     lastStartTag: descr.lastStartTag
                 });
@@ -181,8 +171,7 @@ loadTests().forEach(function (test) {
     exports[getFullTestName(test)] = function (t) {
         var out = tokenize(test.input, test.initialState, test.lastStartTag);
 
-        t.deepEqual(out.tokens, test.expectedTokens);
-        t.strictEqual(out.errCount, test.expectedErrCount);
+        t.deepEqual(out, test.expected);
 
         t.done();
     };
