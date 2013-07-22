@@ -1,19 +1,28 @@
 {
-	"name": "parse5",
-	"description": "Fast full-featured HTML parser for Node. Based on WHATWG HTML5 specification.",
-	"version": "0.5.4",
-	"author": "Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)",
-	"keywords": ["html", "parser", "html5", "WHATWG", "specification", "fast"],
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/inikulin/parse5.git"
-	},
-	"main": "./index.js",
-	"devDependencies": {
-		"nodeunit": "0.8.0"
-	},
-	"licenses": [{
-		"type": "MIT",
-		"url": "https://raw.github.com/inikulin/parse5/master/LICENSE"
-	}]
+  "name": "parse5",
+  "description": "Fast full-featured HTML parser for Node. Based on WHATWG HTML5 specification.",
+  "version": "0.5.4",
+  "author": "Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)",
+  "keywords": [
+    "html",
+    "parser",
+    "html5",
+    "WHATWG",
+    "specification",
+    "fast"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/inikulin/parse5.git"
+  },
+  "main": "./index.js",
+  "devDependencies": {
+    "nodeunit": "0.8.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/inikulin/parse5/master/LICENSE"
+    }
+  ]
 }
