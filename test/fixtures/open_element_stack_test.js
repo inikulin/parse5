@@ -18,13 +18,11 @@ exports['Push element'] = function (t) {
     stack.push(element1);
     t.strictEqual(stack.current, element1);
     t.strictEqual(stack.currentTagName, element1.tagName);
-    t.strictEqual(stack.currentNamespaceURI, element1.namespaceURI);
     t.strictEqual(stack.stackTop, 0);
 
     stack.push(element2);
     t.strictEqual(stack.current, element2);
     t.strictEqual(stack.currentTagName, element2.tagName);
-    t.strictEqual(stack.currentNamespaceURI, element2.namespaceURI);
     t.strictEqual(stack.stackTop, 1);
 
     t.done();
@@ -39,13 +37,11 @@ exports['Pop element'] = function (t) {
     stack.pop();
     t.strictEqual(stack.current, element);
     t.strictEqual(stack.currentTagName, element.tagName);
-    t.strictEqual(stack.currentNamespaceURI, element.namespaceURI);
     t.strictEqual(stack.stackTop, 0);
 
     stack.pop();
     t.ok(!stack.current);
     t.ok(!stack.currentTagName);
-    t.ok(!stack.currentNamespaceURI);
     t.strictEqual(stack.stackTop, -1);
 
     t.done();
@@ -61,7 +57,6 @@ exports['Replace element'] = function (t) {
     stack.replace(element, newElement);
     t.strictEqual(stack.current, newElement);
     t.strictEqual(stack.currentTagName, newElement.tagName);
-    t.strictEqual(stack.currentNamespaceURI, newElement.namespaceURI);
     t.strictEqual(stack.stackTop, 1);
 
     t.done();
@@ -83,7 +78,6 @@ exports['Insert element after element'] = function (t) {
     t.strictEqual(stack.stackTop, 3);
     t.strictEqual(stack.current, element1);
     t.strictEqual(stack.currentTagName, element1.tagName);
-    t.strictEqual(stack.currentNamespaceURI, element1.namespaceURI);
 
     t.done();
 };
