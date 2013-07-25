@@ -21,7 +21,7 @@ function tokenize(html, initialState, lastStartTag) {
             case Tokenizer.CHARACTER_TOKEN:
             case Tokenizer.NULL_CHARACTER_TOKEN:
             case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
-                out.push(['Character', nextToken.ch]);
+                out.push(['Character', nextToken.chars]);
                 break;
 
             case Tokenizer.START_TAG_TOKEN:
