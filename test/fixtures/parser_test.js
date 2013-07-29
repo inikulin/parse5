@@ -148,10 +148,9 @@ function getAssertionMessage(actual, expected) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    var parser = new Parser();
-
     exports[getFullTestName(test)] = function (t) {
-        var result = test.fragmentContext ? parser.parseFragment(test.input, test.fragmentContext) : parser.parse(test.input),
+        var parser = new Parser(),
+            result = test.fragmentContext ? parser.parseFragment(test.input, test.fragmentContext) : parser.parse(test.input),
             serializedResult = serializeNodeList(result.childNodes, 0);
 
         t.strictEqual(serializedResult, test.expected, getAssertionMessage(serializedResult, test.expected));
