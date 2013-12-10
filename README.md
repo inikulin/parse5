@@ -75,3 +75,7 @@ If you have any questions, please feel free to create an issue [here on github](
 Author
 ------
 [Ivan Nikulin](https://github.com/inikulin) (ifaaan@gmail.com)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/inikulin/parse5/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
