@@ -1,6 +1,6 @@
 var html = require('../../lib/html'),
     FormattingElementList = require('../../lib/formatting_element_list'),
-    defaultTreeAdapter = require('../../lib/default_tree_adapter');
+    defaultTreeAdapter = require('../../lib/tree_adapters/default');
 
 //Aliases
 var $ = html.TAG_NAMES,

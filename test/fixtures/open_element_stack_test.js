@@ -1,6 +1,6 @@
 var HTML = require('../../lib/html'),
     OpenElementStack = require('../../lib/open_element_stack'),
-    defaultTreeAdapter = require('../../lib/default_tree_adapter');
+    defaultTreeAdapter = require('../../lib/tree_adapters/default');
 
 //Aliases
 var $ = HTML.TAG_NAMES,

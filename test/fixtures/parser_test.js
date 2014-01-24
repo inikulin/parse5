@@ -1,7 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
     HTML = require('../../lib/html'),
-    treeAdapter = require('../../lib/default_tree_adapter'),
+    treeAdapter = require('../../lib/tree_adapters/default'),
     Parser = require('../../lib/parser');
 
 function loadTests() {
