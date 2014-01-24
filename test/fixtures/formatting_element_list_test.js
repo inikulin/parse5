@@ -1,5 +1,5 @@
 var html = require('../../lib/html'),
-    FormattingElementList = require('../../lib/formatting_element_list').FormattingElementList,
+    FormattingElementList = require('../../lib/formatting_element_list'),
     defaultTreeAdapter = require('../../lib/default_tree_adapter');
 
 //Aliases

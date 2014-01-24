@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git://github.com/inikulin/parse5.git"
   },
-  "main": "./lib/parser.js",
+  "main": "./index.js",
   "devDependencies": {
     "nodeunit": "0.8.0"
   },

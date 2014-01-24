@@ -2,7 +2,7 @@ var fs = require('fs'),
     path = require('path'),
     HTML = require('../../lib/html'),
     treeAdapter = require('../../lib/default_tree_adapter'),
-    Parser = require('../../lib/parser').Parser;
+    Parser = require('../../lib/parser');
 
 function loadTests() {
     var dataDirPath = path.join(__dirname, '../data/tree-construction'),

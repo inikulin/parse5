@@ -1,5 +1,5 @@
 var HTML = require('../../lib/html'),
-    OpenElementStack = require('../../lib/open_element_stack').OpenElementStack,
+    OpenElementStack = require('../../lib/open_element_stack'),
     defaultTreeAdapter = require('../../lib/default_tree_adapter');
 
 //Aliases
