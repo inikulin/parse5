@@ -1,102 +1,119 @@
 var fs = require('fs'),
     path = require('path'),
     HTML = require('../../lib/html'),
-    treeAdapter = require('../../lib/tree_adapters/default'),
-    Parser = require('../../lib/parser');
+    Parser = require('../../lib/parser'),
+    testGenerator = require('../test_generator');
 
-function loadTests() {
-    var dataDirPath = path.join(__dirname, '../data/tree-construction'),
-        testSetFileNames = fs.readdirSync(dataDirPath),
-        testIdx = 0,
-        tests = [];
+testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+    function loadTests() {
+        var dataDirPath = path.join(__dirname, '../data/tree-construction'),
+            testSetFileNames = fs.readdirSync(dataDirPath),
+            testIdx = 0,
+            tests = [];
 
-    testSetFileNames.forEach(function (fileName) {
-        var filePath = path.join(dataDirPath, fileName),
-            testSet = fs.readFileSync(filePath).toString(),
-            setName = fileName.replace('.dat', ''),
-            testDescrs = [],
-            curDirective = '',
-            curDescr = null;
+        testSetFileNames.forEach(function (fileName) {
+            var filePath = path.join(dataDirPath, fileName),
+                testSet = fs.readFileSync(filePath).toString(),
+                setName = fileName.replace('.dat', ''),
+                testDescrs = [],
+                curDirective = '',
+                curDescr = null;
 
-        testSet.split(/\r?\n/).forEach(function (line) {
-            if (line === '#data') {
-                curDescr = {};
-                testDescrs.push(curDescr);
-            }
+            testSet.split(/\r?\n/).forEach(function (line) {
+                if (line === '#data') {
+                    curDescr = {};
+                    testDescrs.push(curDescr);
+                }
 
-            if (line[0] === '#') {
-                curDirective = line;
-                curDescr[curDirective] = [];
-            }
+                if (line[0] === '#') {
+                    curDirective = line;
+                    curDescr[curDirective] = [];
+                }
 
-            else
-                curDescr[curDirective].push(line);
-        });
+                else
+                    curDescr[curDirective].push(line);
+            });
 
-        testDescrs.forEach(function (descr) {
-            var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
+            testDescrs.forEach(function (descr) {
+                var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
 
-            tests.push({
-                idx: ++testIdx,
-                setName: setName,
-                input: descr['#data'].join('\r\n'),
-                expected: descr['#document'].join('\n'),
-                expectedErrors: descr['#errors'],
-                fragmentContext: fragmentContextTagName ?
-                    treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, []) : null
+                tests.push({
+                    idx: ++testIdx,
+                    setName: setName,
+                    input: descr['#data'].join('\r\n'),
+                    expected: descr['#document'].join('\n'),
+                    expectedErrors: descr['#errors'],
+                    fragmentContext: fragmentContextTagName ?
+                        treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, []) : null
+                });
             });
         });
-    });
 
-    return tests;
-}
+        return tests;
+    }
 
 //Tree serialization
-function getSerializedTreeIndent(indent) {
-    var str = '|';
+    function getSerializedTreeIndent(indent) {
+        var str = '|';
 
-    for (var i = 0; i < indent + 1; i++)
-        str += ' ';
+        for (var i = 0; i < indent + 1; i++)
+            str += ' ';
 
-    return str;
-}
-
-function getElementSerializedNamespaceURI(element) {
-    switch (element.namespaceURI) {
-        case HTML.NAMESPACES.SVG:
-            return 'svg ';
-        case HTML.NAMESPACES.MATHML:
-            return 'math ';
-        default :
-            return '';
+        return str;
     }
-}
 
-function serializeNodeList(nodes, indent) {
-    var str = '';
+    function getElementSerializedNamespaceURI(element) {
+        switch (treeAdapter.getNamespaceURI(element)) {
+            case HTML.NAMESPACES.SVG:
+                return 'svg ';
+            case HTML.NAMESPACES.MATHML:
+                return 'math ';
+            default :
+                return '';
+        }
+    }
 
-    nodes.forEach(function (node) {
-        str += getSerializedTreeIndent(indent);
 
-        switch (node.nodeName) {
-            case '#comment':
-                str += '<!-- ' + node.data + ' -->\n';
-                break;
+    function getFullTestName(test) {
+        return [test.idx, '.', test.setName, ' - ', test.input].join('');
+    }
 
-            case '#text':
-                str += '"' + node.value + '"\n';
-                break;
+    function getAssertionMessage(actual, expected) {
+        var msg = '\nExpected:\n';
+        msg += '-----------------\n';
+        msg += expected + '\n';
+        msg += '\nActual:\n';
+        msg += '-----------------\n';
+        msg += actual + '\n';
 
-            case "#documentType":
-                var parts = [];
+        return msg;
+    }
+
+
+    function serializeNodeList(nodes, indent) {
+        var str = '';
+
+        nodes.forEach(function (node) {
+            str += getSerializedTreeIndent(indent);
+
+            if (treeAdapter.isCommentNode(node))
+                str += '<!-- ' + treeAdapter.getCommentNodeContent(node) + ' -->\n';
+
+            else if (treeAdapter.isTextNode(node))
+                str += '"' + treeAdapter.getTextNodeContent(node) + '"\n';
+
+            else if (treeAdapter.isDocumentTypeNode(node)) {
+                var parts = [],
+                    publicId = treeAdapter.getDocumentTypeNodePublicId(node),
+                    systemId = treeAdapter.getDocumentTypeNodeSystemId(node);
 
                 str += '<!DOCTYPE';
 
-                parts.push(node.name || '');
+                parts.push(treeAdapter.getDocumentTypeNodeName(node) || '');
 
-                if (node.publicId !== null || node.systemId !== null) {
-                    parts.push('"' + (node.publicId || '') + '"');
-                    parts.push('"' + (node.systemId || '') + '"');
+                if (publicId !== null || systemId !== null) {
+                    parts.push('"' + (publicId || '') + '"');
+                    parts.push('"' + (systemId || '') + '"');
                 }
 
                 parts.forEach(function (part) {
@@ -104,15 +121,15 @@ function serializeNodeList(nodes, indent) {
                 });
 
                 str += '>\n';
-                break;
+            }
 
-            default:
-                str += '<' + getElementSerializedNamespaceURI(node) + node.tagName + '>\n';
+            else {
+                str += '<' + getElementSerializedNamespaceURI(node) + treeAdapter.getTagName(node) + '>\n';
 
                 var childrenIndent = indent + 2,
                     serializedAttrs = [];
 
-                node.attrs.forEach(function (attr) {
+                treeAdapter.getAttrList(node).forEach(function (attr) {
                     var attrStr = getSerializedTreeIndent(childrenIndent);
 
                     if (attr.prefix)
@@ -124,37 +141,23 @@ function serializeNodeList(nodes, indent) {
                 });
 
                 str += serializedAttrs.sort().join('');
-                str += serializeNodeList(node.childNodes, childrenIndent);
-        }
+                str += serializeNodeList(treeAdapter.getChildNodes(node), childrenIndent);
+            }
+        });
+
+        return str;
+    }
+
+    //Here we go..
+    loadTests().forEach(function (test) {
+        _test[getFullTestName(test)] = function (t) {
+            var parser = new Parser(treeAdapter),
+                result = test.fragmentContext ? parser.parseFragment(test.input, test.fragmentContext) : parser.parse(test.input),
+                serializedResult = serializeNodeList(treeAdapter.getChildNodes(result), 0);
+
+            t.strictEqual(serializedResult, test.expected, getAssertionMessage(serializedResult, test.expected));
+            t.done();
+        };
     });
-
-    return str;
-}
-
-function getFullTestName(test) {
-    return [test.idx, '.', test.setName, ' - ', test.input].join('');
-}
-
-function getAssertionMessage(actual, expected) {
-    var msg = '\nExpected:\n';
-    msg += '-----------------\n';
-    msg += expected + '\n';
-    msg += '\nActual:\n';
-    msg += '-----------------\n';
-    msg += actual + '\n';
-
-    return msg;
-}
-
-//Here we go..
-loadTests().forEach(function (test) {
-    exports[getFullTestName(test)] = function (t) {
-        var parser = new Parser(),
-            result = test.fragmentContext ? parser.parseFragment(test.input, test.fragmentContext) : parser.parse(test.input),
-            serializedResult = serializeNodeList(result.childNodes, 0);
-
-        t.strictEqual(serializedResult, test.expected, getAssertionMessage(serializedResult, test.expected));
-        t.done();
-    };
 });
 
