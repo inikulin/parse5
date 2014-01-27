@@ -6,7 +6,7 @@ var html = require('../../lib/html'),
 var $ = html.TAG_NAMES,
     NS = html.NAMESPACES;
 
-testGenerator.define(module.exports, function (_test, treeAdapter) {
+testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     _test['Insert marker'] = function (t) {
         var list = new FormattingElementList(treeAdapter);
 
