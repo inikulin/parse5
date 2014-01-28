@@ -52,6 +52,21 @@ testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterN
         return tests;
     }
 
+    function getFullTestName(test) {
+        return ['Parser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
+    }
+
+    function getAssertionMessage(actual, expected) {
+        var msg = '\nExpected:\n';
+        msg += '-----------------\n';
+        msg += expected + '\n';
+        msg += '\nActual:\n';
+        msg += '-----------------\n';
+        msg += actual + '\n';
+
+        return msg;
+    }
+
     //Tree serialization
     function getSerializedTreeIndent(indent) {
         var str = '|';
@@ -72,23 +87,6 @@ testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterN
                 return '';
         }
     }
-
-
-    function getFullTestName(test) {
-        return ['Parser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
-    }
-
-    function getAssertionMessage(actual, expected) {
-        var msg = '\nExpected:\n';
-        msg += '-----------------\n';
-        msg += expected + '\n';
-        msg += '\nActual:\n';
-        msg += '-----------------\n';
-        msg += actual + '\n';
-
-        return msg;
-    }
-
 
     function serializeNodeList(nodes, indent) {
         var str = '';
