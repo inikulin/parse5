@@ -163,7 +163,7 @@ function loadTests() {
 }
 
 function getFullTestName(test) {
-    return [test.idx, '.', test.setName, ' - ', test.name, ' - Initial state: ', test.initialState].join('');
+    return ['Tokenizer - ' + test.idx, '.', test.setName, ' - ', test.name, ' - Initial state: ', test.initialState].join('');
 }
 
 //Here we go..
