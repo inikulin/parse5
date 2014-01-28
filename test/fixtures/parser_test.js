@@ -52,7 +52,7 @@ testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterN
         return tests;
     }
 
-//Tree serialization
+    //Tree serialization
     function getSerializedTreeIndent(indent) {
         var str = '|';
 
@@ -75,7 +75,7 @@ testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterN
 
 
     function getFullTestName(test) {
-        return [test.idx, '.', test.setName, ' - ', test.input].join('');
+        return ['Parser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }
 
     function getAssertionMessage(actual, expected) {
