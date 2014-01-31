@@ -1,12 +1,12 @@
 var fs = require('fs'),
     path = require('path'),
-    HTML = require('../../lib/html'),
-    Parser = require('../../lib/parser'),
+    HTML = require('../../lib/const/html'),
+    Parser = require('../../lib/tree_construction_stage/parser'),
     testGenerator = require('../test_generator');
 
 testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function loadTests() {
-        var dataDirPath = path.join(__dirname, '../data/tree-construction'),
+        var dataDirPath = path.join(__dirname, '../data/tree_construction'),
             testSetFileNames = fs.readdirSync(dataDirPath),
             testIdx = 0,
             tests = [];

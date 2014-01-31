@@ -1,6 +1,7 @@
-exports.Parser = require('./lib/parser');
-exports.Tokenizer = require('./lib/tokenizer');
-exports.Serializer = require('./lib/serializer');
+exports.Tokenizer = require('./lib/tokenization_stage/tokenizer');
+
+exports.Parser = require('./lib/tree_construction_stage/parser');
+exports.TreeSerializer = require('./lib/tree_construction_stage/tree_serializer');
 
 exports.TreeAdapters = {
     default: require('./lib/tree_adapters/default'),

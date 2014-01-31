@@ -1,7 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
     util = require('util'),
-    Tokenizer = require('../../lib/tokenizer');
+    Tokenizer = require('../../lib/tokenization_stage/tokenizer');
 
 function tokenize(html, initialState, lastStartTag) {
     var tokenizer = new Tokenizer(html),
