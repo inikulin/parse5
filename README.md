@@ -114,7 +114,7 @@ var serializer2 = new parse5.TreeSerializer(parse5.TreeAdapters.htmlparser2);
 ```
 
 
-####&bull; TreeSerializer.serializer(node)
+####&bull; TreeSerializer.serialize(node)
 Serializes the given `node`. Return HTML string.
 
 *Example:*
