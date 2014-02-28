@@ -42,12 +42,8 @@ So, parse5 is as fast as simple specification incompatible parsers and ~15-times
 
 ##API reference
 
----------------------------------------
-
-
 ###Enum: TreeAdapters
-Provides built-in tree adapters what can be passed as an optional argument to the `Parser` and `TreeSerializer` constructors.
-
+Provides built-in tree adapters which can be passed as an optional argument to the `Parser` and `TreeSerializer` constructors.   
 
 ####&bull; TreeAdapters.default 
 Default tree format for parse5.
@@ -56,12 +52,11 @@ Default tree format for parse5.
 ####&bull; TreeAdapters.htmlparser2
 Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.g. used in [cheerio](https://github.com/MatthewMueller/cheerio) and [jsdom](https://github.com/tmpvar/jsdom)).  
 
-
 ---------------------------------------
-
-
+    
+    
 ###Class: Parser
-
+Provides HTML parsing functionality.
 
 ####&bull; Parser.ctor([treeAdapter])
 Creates new reusable instance of the `Parser`. Optional `treeAdapter` argument specifies resulting tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
@@ -76,6 +71,7 @@ var parser1 = new parse5.Parser();
 //Instantiate new parser with htmlparser2 tree adapter
 var parser2 = new parse5.Parser(parse5.TreeAdapters.htmlparser2);
 ```
+
 
 
 ####&bull; Parser.parse(html)
@@ -98,12 +94,10 @@ var documentFragment = parser.parseFragment('<table></table>');
 var trFragment = parser.parseFragment('<tr><td>Shake it, baby</td></tr>', documentFragment.childNodes[0]);
 ```
 
-
 ---------------------------------------
 
-
 ###Class: TreeSerializer
-
+Provides tree-to-HTML serialization functionality.
 
 ####&bull; TreeSerializer.ctor([treeAdapter])
 Creates new reusable instance of the `TreeSerializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
@@ -133,7 +127,6 @@ var html = serializer.serialize(document);
 //Serialize <body> element content
 var bodyInnerHtml = serializer.serialize(document.childNodes[0].childNodes[1]);
 ```
-
 
 ---------------------------------------
 
