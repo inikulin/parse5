@@ -114,8 +114,8 @@ var serializer2 = new parse5.TreeSerializer(parse5.TreeAdapters.htmlparser2);
 ```
 
 
-####&bull; TreeSerializer.serializer(node)
-Serializes the given `node`. Return HTML string.
+####&bull; TreeSerializer.serialize(node)
+Serializes the given `node`. Returns HTML string.
 
 *Example:*
 ```js
@@ -163,7 +163,4 @@ If you have any questions, please feel free to create an issue [here on github](
 
 ##Author
 [Ivan Nikulin](https://github.com/inikulin) (ifaaan@gmail.com)
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/inikulin/parse5/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
