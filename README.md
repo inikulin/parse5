@@ -84,7 +84,7 @@ var document = parser.parse('<!DOCTYPE html><html><head></head><body>Hi there!</
 
 
 ####&bull; Parser.parseFragment(htmlFragment, [contextElement])
-Parses given `htmlFragment`. Returns `documentFragment` node. Optional `contextElement` argument specifies resulting tree format. If `contextElement` argument is not specified, `<div>` element will be used.
+Parses given `htmlFragment`. Returns `documentFragment` node. Optional `contextElement` argument specifies context in which given `htmlFragment` will be parsed (consider it as setting `contextElement.innerHTML` property). If `contextElement` argument is not specified, `<div>` element will be used.
 
 *Example:*
 ```js
