@@ -1,5 +1,5 @@
-var HTML = require('../../lib/const/html'),
-    OpenElementStack = require('../../lib/tree_construction_stage/open_element_stack'),
+var HTML = require('../../lib/common/html'),
+    OpenElementStack = require('../../lib/tree_construction/open_element_stack'),
     testGenerator = require('../test_generator');
 
 //Aliases

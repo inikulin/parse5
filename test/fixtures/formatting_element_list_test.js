@@ -1,5 +1,5 @@
-var html = require('../../lib/const/html'),
-    FormattingElementList = require('../../lib/tree_construction_stage/formatting_element_list'),
+var html = require('../../lib/common/html'),
+    FormattingElementList = require('../../lib/tree_construction/formatting_element_list'),
     testGenerator = require('../test_generator');
 
 //Aliases

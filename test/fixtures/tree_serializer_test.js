@@ -1,7 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
-    Parser = require('../../lib/tree_construction_stage/parser'),
-    Serializer = require('../../lib/tree_construction_stage/tree_serializer'),
+    Parser = require('../../lib/tree_construction/parser'),
+    Serializer = require('../../lib/tree_serialization/tree_serializer'),
     testGenerator = require('../test_generator');
 
 
@@ -71,7 +71,7 @@ exports['Regression - new line in <pre> tag'] = function (t) {
 
 testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function loadTests() {
-        var dataDirPath = path.join(__dirname, '../data/tree_serializer'),
+        var dataDirPath = path.join(__dirname, '../data/tree_serialization'),
             testSetFileDirs = fs.readdirSync(dataDirPath),
             tests = [],
             testIdx = 1;

@@ -1,5 +1,5 @@
-exports.Parser = require('./lib/tree_construction_stage/parser');
-exports.TreeSerializer = require('./lib/tree_construction_stage/tree_serializer');
+exports.Parser = require('./lib/tree_construction/parser');
+exports.TreeSerializer = require('./lib/tree_serialization/tree_serializer');
 
 exports.TreeAdapters = {
     default: require('./lib/tree_adapters/default'),
