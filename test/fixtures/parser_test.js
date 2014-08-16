@@ -6,12 +6,50 @@ var fs = require('fs'),
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function loadTests() {
-        return TestUtils.readParsingTestData().map(function (test) {
-            if (test.fragmentContext)
-                test.fragmentContext = treeAdapter.createElement(test.fragmentContext, HTML.NAMESPACES.HTML, []);
+        var dataDirPath = path.join(__dirname, '../data/tree_construction'),
+            testSetFileNames = fs.readdirSync(dataDirPath),
+            testIdx = 0,
+            tests = [];
 
-            return test;
+        testSetFileNames.forEach(function (fileName) {
+            var filePath = path.join(dataDirPath, fileName),
+                testSet = fs.readFileSync(filePath).toString(),
+                setName = fileName.replace('.dat', ''),
+                testDescrs = [],
+                curDirective = '',
+                curDescr = null;
+
+            testSet.split(/\r?\n/).forEach(function (line) {
+                if (line === '#data') {
+                    curDescr = {};
+                    testDescrs.push(curDescr);
+                }
+
+                if (line[0] === '#') {
+                    curDirective = line;
+                    curDescr[curDirective] = [];
+                }
+
+                else
+                    curDescr[curDirective].push(line);
+            });
+
+            testDescrs.forEach(function (descr) {
+                var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
+
+                tests.push({
+                    idx: ++testIdx,
+                    setName: setName,
+                    input: descr['#data'].join('\r\n'),
+                    expected: descr['#document'].join('\n'),
+                    expectedErrors: descr['#errors'],
+                    fragmentContext: fragmentContextTagName &&
+                                     treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, [])
+                });
+            });
         });
+
+        return tests;
     }
 
     function getFullTestName(test) {

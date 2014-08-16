@@ -71,7 +71,7 @@ exports['Regression - new line in <pre> tag'] = function (t) {
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function loadTests() {
-        var dataDirPath = path.join(__dirname, '../data/tree_serialization'),
+        var dataDirPath = path.join(__dirname, '../data/serialization'),
             testSetFileDirs = fs.readdirSync(dataDirPath),
             tests = [],
             testIdx = 1;
