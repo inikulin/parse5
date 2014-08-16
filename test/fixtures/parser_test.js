@@ -2,54 +2,16 @@ var fs = require('fs'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
     Parser = require('../../lib/tree_construction/parser'),
-    testGenerator = require('../test_generator');
+    TestUtils = require('../test_utils');
 
-testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function loadTests() {
-        var dataDirPath = path.join(__dirname, '../data/parsing'),
-            testSetFileNames = fs.readdirSync(dataDirPath),
-            testIdx = 0,
-            tests = [];
+        return TestUtils.readParsingTestData().map(function (test) {
+            if (test.fragmentContext)
+                test.fragmentContext = treeAdapter.createElement(test.fragmentContext, HTML.NAMESPACES.HTML, []);
 
-        testSetFileNames.forEach(function (fileName) {
-            var filePath = path.join(dataDirPath, fileName),
-                testSet = fs.readFileSync(filePath).toString(),
-                setName = fileName.replace('.dat', ''),
-                testDescrs = [],
-                curDirective = '',
-                curDescr = null;
-
-            testSet.split(/\r?\n/).forEach(function (line) {
-                if (line === '#data') {
-                    curDescr = {};
-                    testDescrs.push(curDescr);
-                }
-
-                if (line[0] === '#') {
-                    curDirective = line;
-                    curDescr[curDirective] = [];
-                }
-
-                else
-                    curDescr[curDirective].push(line);
-            });
-
-            testDescrs.forEach(function (descr) {
-                var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
-
-                tests.push({
-                    idx: ++testIdx,
-                    setName: setName,
-                    input: descr['#data'].join('\r\n'),
-                    expected: descr['#document'].join('\n'),
-                    expectedErrors: descr['#errors'],
-                    fragmentContext: fragmentContextTagName ?
-                        treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, []) : null
-                });
-            });
+            return test;
         });
-
-        return tests;
     }
 
     function getFullTestName(test) {

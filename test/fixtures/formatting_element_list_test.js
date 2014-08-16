@@ -1,12 +1,12 @@
 var html = require('../../lib/common/html'),
     FormattingElementList = require('../../lib/tree_construction/formatting_element_list'),
-    testGenerator = require('../test_generator');
+    TestUtils = require('../test_utils');
 
 //Aliases
 var $ = html.TAG_NAMES,
     NS = html.NAMESPACES;
 
-testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     _test['Insert marker'] = function (t) {
         var list = new FormattingElementList(treeAdapter);
 

@@ -2,7 +2,7 @@ var fs = require('fs'),
     path = require('path'),
     Parser = require('../../lib/tree_construction/parser'),
     Serializer = require('../../lib/tree_serialization/tree_serializer'),
-    testGenerator = require('../test_generator');
+    TestUtils = require('../test_utils');
 
 
 exports['Regression - SYSTEM-only doctype serialization'] = function (t) {
@@ -69,7 +69,7 @@ exports['Regression - new line in <pre> tag'] = function (t) {
     t.done();
 };
 
-testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function loadTests() {
         var dataDirPath = path.join(__dirname, '../data/tree_serialization'),
             testSetFileDirs = fs.readdirSync(dataDirPath),

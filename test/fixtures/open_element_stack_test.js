@@ -1,12 +1,12 @@
 var HTML = require('../../lib/common/html'),
     OpenElementStack = require('../../lib/tree_construction/open_element_stack'),
-    testGenerator = require('../test_generator');
+    TestUtils = require('../test_utils');
 
 //Aliases
 var $ = HTML.TAG_NAMES,
     NS = HTML.NAMESPACES;
 
-testGenerator.defineForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     _test['Push element'] = function (t) {
         var document = treeAdapter.createDocument(),
             element1 = treeAdapter.createElement('#element1', 'namespace1', []),
