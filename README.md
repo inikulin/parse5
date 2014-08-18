@@ -4,6 +4,11 @@ Fast full-featured HTML parsing/serialization toolset for Node. Based on WHATWG 
 To build [TestCafé](http://testcafe.devexpress.com/) we needed fast and ready for production HTML parser, which will parse HTML as a modern browser's parser.
 Existing solutions were either too slow or their output was too inaccurate. So, this is how parse5 was born.
 
+**Included tools:**
+*   [Parser]()
+*   [SimpleApiParser]()
+*   [TreeSerializer]()
+
 ##Install
 ```
 $ npm install parse5
@@ -92,6 +97,58 @@ var documentFragment = parser.parseFragment('<table></table>');
 
 //Parse html fragment in context of the parsed <table> element
 var trFragment = parser.parseFragment('<tr><td>Shake it, baby</td></tr>', documentFragment.childNodes[0]);
+```
+
+---------------------------------------
+    
+    
+###Class: SimpleApiParser
+Provides [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parsing functionality.
+
+####&bull; SimpleApiParser.ctor(handlers)
+Creates new reusable instance of the `SimpleApiParser`. `handlers` argument specifies object that contains parser's event handlers. Possible events and their signatures are shown in the example.
+
+*Example:*
+```js
+var parse5 = require('parse5');
+
+var parser = new parse5.SimpleApiParser({
+    doctype: function(name, publicId, systemId) {
+        //Handle doctype here
+    },
+    
+    startTag: function(tagName, attrs, selfClosing) {
+        //Handle start tags here
+    },
+    
+    endTag: function(tagName) {
+        //Handle end tags here
+    },
+    
+    text: function(text) {
+        //Handle texts here
+    },
+    
+    comment: function(text) {
+        //Handle comments here
+    }
+});
+```
+
+####&bull; SimpleApiParser.parse(html)
+Raises parser events for the given `html`.
+
+*Example:*
+```js
+var parse5 = require('parse5');
+
+var parser = new parse5.SimpleApiParser({
+    text: function(text) {
+        console.log(text);
+    }
+});
+
+parse.parse('<body>Yo!</body>');
 ```
 
 ---------------------------------------
