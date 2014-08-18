@@ -1,5 +1,7 @@
 ![logo](https://raw.github.com/inikulin/parse5/master/logo.png)  
 
+[![Build Status](http://img.shields.io/travis/inikulin/parse5.svg?style=flat-square)](https://travis-ci.org/inikulin/parse5)
+
 Fast full-featured HTML parsing/serialization toolset for Node. Based on WHATWG HTML5 specification.  
 To build [TestCafé](http://testcafe.devexpress.com/) we needed fast and ready for production HTML parser, which will parse HTML as a modern browser's parser.
 Existing solutions were either too slow or their output was too inaccurate. So, this is how parse5 was born.
