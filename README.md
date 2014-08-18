@@ -5,9 +5,9 @@ To build [TestCafé](http://testcafe.devexpress.com/) we needed fast and ready f
 Existing solutions were either too slow or their output was too inaccurate. So, this is how parse5 was born.
 
 **Included tools:**
-*   [Parser]()
-*   [SimpleApiParser]()
-*   [TreeSerializer]()
+*   [Parser](https://github.com/inikulin/parse5/blob/master/README.md#class-parser) - full-featured high quality HTML5 to DOM-tree parser.
+*   [SimpleApiParser](https://github.com/inikulin/parse5/blob/master/README.md#class-simpleapiparser) - [SAX](http://en.wikipedia.org/wiki/Simple_API_for_XML)-style parser for HTML5.
+*   [TreeSerializer](https://github.com/inikulin/parse5/blob/master/README.md#class-treeserializer) - DOM-tree to HTML serializer.
 
 ##Install
 ```
