@@ -33,5 +33,8 @@
             "type": "MIT",
             "url": "https://raw.github.com/inikulin/parse5/master/LICENSE"
         }
-    ]
+    ],
+    "scripts": {
+      "test": "node test/run_tests.js"
+    }
 }

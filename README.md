@@ -48,9 +48,9 @@ So, parse5 is as fast as simple specification incompatible parsers and ~15-times
 ##API reference
 
 ###Enum: TreeAdapters
-Provides built-in tree adapters which can be passed as an optional argument to the `Parser` and `TreeSerializer` constructors.   
+Provides built-in tree adapters which can be passed as an optional argument to the `Parser` and `TreeSerializer` constructors.
 
-####&bull; TreeAdapters.default 
+####&bull; TreeAdapters.default
 Default tree format for parse5.
 
 
@@ -58,8 +58,8 @@ Default tree format for parse5.
 Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.g. used in [cheerio](https://github.com/MatthewMueller/cheerio) and [jsdom](https://github.com/tmpvar/jsdom)).  
 
 ---------------------------------------
-    
-    
+
+
 ###Class: Parser
 Provides HTML parsing functionality.
 
@@ -100,8 +100,8 @@ var trFragment = parser.parseFragment('<tr><td>Shake it, baby</td></tr>', docume
 ```
 
 ---------------------------------------
-    
-    
+
+
 ###Class: SimpleApiParser
 Provides [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parsing functionality.
 
@@ -116,19 +116,19 @@ var parser = new parse5.SimpleApiParser({
     doctype: function(name, publicId, systemId) {
         //Handle doctype here
     },
-    
+
     startTag: function(tagName, attrs, selfClosing) {
         //Handle start tags here
     },
-    
+
     endTag: function(tagName) {
         //Handle end tags here
     },
-    
+
     text: function(text) {
         //Handle texts here
     },
-    
+
     comment: function(text) {
         //Handle comments here
     }
@@ -192,7 +192,7 @@ var bodyInnerHtml = serializer.serialize(document.childNodes[0].childNodes[1]);
 Test data is adopted from [html5lib project](https://github.com/html5lib). Parser is covered by more than 8000 test cases.
 To run tests:
 ```
-$ node test/run_tests.js
+$ npm test
 ```
 
 
@@ -220,4 +220,3 @@ If you have any questions, please feel free to create an issue [here on github](
 
 ##Author
 [Ivan Nikulin](https://github.com/inikulin) (ifaaan@gmail.com)
-
