@@ -150,7 +150,7 @@ var parser = new parse5.SimpleApiParser({
     }
 });
 
-parse.parse('<body>Yo!</body>');
+parser.parse('<body>Yo!</body>');
 ```
 
 ---------------------------------------
