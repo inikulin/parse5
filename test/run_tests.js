@@ -6,5 +6,9 @@ var dirName = path.join(__dirname, './fixtures'),
     testFiles = fs.readdirSync(dirName);
 
 process.chdir(dirName);
-reporter.run(testFiles);
+
+reporter.run(testFiles, null, function (err) {
+    if(err)
+        process.exit(1);
+});
 
