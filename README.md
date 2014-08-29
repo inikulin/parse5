@@ -17,7 +17,7 @@ $ npm install parse5
 ```
 
 
-##Simple usage
+##Usage
 ```js
 var Parser = require('parse5').Parser;
 
