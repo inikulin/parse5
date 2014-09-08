@@ -1,5 +1,7 @@
 .idea
+.travis.yml
+.gitignore
+.editorconfig
 node_modules
-benchmark
 test
 logo.png
