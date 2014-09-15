@@ -1,4 +1,6 @@
-![logo](https://raw.github.com/inikulin/parse5/master/logo.png)  
+<p align="center">
+  <img src="https://raw.github.com/inikulin/parse5/master/logo.png" alt="parse5" />
+</p>
 
 [![Build Status](http://img.shields.io/travis/inikulin/parse5.svg?style=flat-square)](https://travis-ci.org/inikulin/parse5) 
 
