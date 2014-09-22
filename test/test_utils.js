@@ -1,6 +1,7 @@
-var parse5 = require('../index'),
-    fs = require('fs'),
-    path = require('path');
+var fs = require('fs'),
+    path = require('path'),
+    parse5 = require('../index'),
+    HTML = require('../lib/common/html');
 
 function addSlashes(str) {
     return str
@@ -80,6 +81,52 @@ exports.loadSerializationTestData = function (dataDirPath) {
         });
 
         testIdx++;
+    });
+
+    return tests;
+};
+
+exports.loadTreeConstructionTestData = function (dataDirPath, treeAdapter) {
+    var testSetFileNames = fs.readdirSync(dataDirPath),
+        testIdx = 0,
+        tests = [];
+
+    testSetFileNames.forEach(function (fileName) {
+        var filePath = path.join(dataDirPath, fileName),
+            testSet = fs.readFileSync(filePath).toString(),
+            setName = fileName.replace('.dat', ''),
+            testDescrs = [],
+            curDirective = '',
+            curDescr = null;
+
+        testSet.split(/\r?\n/).forEach(function (line) {
+            if (line === '#data') {
+                curDescr = {};
+                testDescrs.push(curDescr);
+            }
+
+            if (line[0] === '#') {
+                curDirective = line;
+                curDescr[curDirective] = [];
+            }
+
+            else
+                curDescr[curDirective].push(line);
+        });
+
+        testDescrs.forEach(function (descr) {
+            var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
+
+            tests.push({
+                idx: ++testIdx,
+                setName: setName,
+                input: descr['#data'].join('\r\n'),
+                expected: descr['#document'].join('\n'),
+                expectedErrors: descr['#errors'],
+                fragmentContext: fragmentContextTagName &&
+                                 treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, [])
+            });
+        });
     });
 
     return tests;

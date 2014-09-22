@@ -73,8 +73,10 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         return ['TreeSerializer - ', test.idx, '.', test.name].join('');
     }
 
+    var testDataDir = path.join(__dirname, '../data/tree_serialization');
+
     //Here we go..
-    TestUtils.loadSerializationTestData(path.join(__dirname, '../data/tree_serialization')).forEach(function (test) {
+    TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
         _test[getFullTestName(test)] = function (t) {
             var parser = new Parser(treeAdapter),
                 serializer = new Serializer(treeAdapter),

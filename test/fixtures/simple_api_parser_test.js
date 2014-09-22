@@ -13,7 +13,9 @@ function sanitizeForComparison(str) {
         .toLowerCase();
 }
 
-TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_parsing')).forEach(function (test) {
+var testDataDir = path.join(__dirname, '../data/simple_api_parsing');
+
+TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
     exports[getFullTestName(test)] = function (t) {
         //NOTE: the idea of the test is to serialize back given HTML using SimpleApiParser handlers
         var result = '',

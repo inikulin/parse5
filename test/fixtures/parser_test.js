@@ -5,53 +5,6 @@ var fs = require('fs'),
     TestUtils = require('../test_utils');
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
-    function loadTests() {
-        var dataDirPath = path.join(__dirname, '../data/tree_construction'),
-            testSetFileNames = fs.readdirSync(dataDirPath),
-            testIdx = 0,
-            tests = [];
-
-        testSetFileNames.forEach(function (fileName) {
-            var filePath = path.join(dataDirPath, fileName),
-                testSet = fs.readFileSync(filePath).toString(),
-                setName = fileName.replace('.dat', ''),
-                testDescrs = [],
-                curDirective = '',
-                curDescr = null;
-
-            testSet.split(/\r?\n/).forEach(function (line) {
-                if (line === '#data') {
-                    curDescr = {};
-                    testDescrs.push(curDescr);
-                }
-
-                if (line[0] === '#') {
-                    curDirective = line;
-                    curDescr[curDirective] = [];
-                }
-
-                else
-                    curDescr[curDirective].push(line);
-            });
-
-            testDescrs.forEach(function (descr) {
-                var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
-
-                tests.push({
-                    idx: ++testIdx,
-                    setName: setName,
-                    input: descr['#data'].join('\r\n'),
-                    expected: descr['#document'].join('\n'),
-                    expectedErrors: descr['#errors'],
-                    fragmentContext: fragmentContextTagName &&
-                                     treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, [])
-                });
-            });
-        });
-
-        return tests;
-    }
-
     function getFullTestName(test) {
         return ['Parser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }
@@ -146,11 +99,15 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         return str;
     }
 
+    var testDataDir = path.join(__dirname, '../data/tree_construction');
+
     //Here we go..
-    loadTests().forEach(function (test) {
+    TestUtils.loadTreeConstructionTestData(testDataDir, treeAdapter).forEach(function (test) {
         _test[getFullTestName(test)] = function (t) {
             var parser = new Parser(treeAdapter),
-                result = test.fragmentContext ? parser.parseFragment(test.input, test.fragmentContext) : parser.parse(test.input),
+                result = test.fragmentContext ?
+                    parser.parseFragment(test.input, test.fragmentContext) :
+                    parser.parse(test.input),
                 serializedResult = serializeNodeList(treeAdapter.getChildNodes(result), 0);
 
             t.strictEqual(serializedResult, test.expected, getAssertionMessage(serializedResult, test.expected));
