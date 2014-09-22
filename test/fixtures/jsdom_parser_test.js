@@ -101,10 +101,8 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
             if (script && script.trim() && script.indexOf('console.log') === -1) {
                 setTimeout(function () {
                     //NOTE: mock document for script evaluation
-                    var document = {
-                        write: function (html) {
-                            parsing.documentWrite(html);
-                        }
+                    document.write = function (html) {
+                        parsing.documentWrite(html);
                     };
 
                     try {
