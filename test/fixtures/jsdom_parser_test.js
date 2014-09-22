@@ -1,13 +1,13 @@
 var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
-    UAEmbeddableParser = require('../../index').UAEmbeddableParser,
+    JsDomParser = require('../../index').JsDomParser,
     Serializer = require('../../index').TreeSerializer,
     TestUtils = require('../test_utils');
 
 exports['State guard'] = function () {
     var docHtml = '<script>Yoyo</script>',
-        parser = new UAEmbeddableParser(),
+        parser = new JsDomParser(),
         getParserController = function () {
             return parser.parseDocument(docHtml, function () {
                 //NOTE: unreachable =)
@@ -30,7 +30,7 @@ exports['State guard'] = function () {
 };
 
 exports['Reentrancy'] = function (done) {
-    var parser = new UAEmbeddableParser(),
+    var parser = new JsDomParser(),
         serializer = new Serializer(),
         asyncAssertionCount = 0,
         docHtml1 = '<!DOCTYPE html><html><head><script>Yoyo</script></head><body></body></html>',
@@ -71,7 +71,7 @@ exports['Reentrancy'] = function (done) {
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function getFullTestName(test) {
-        return ['UAEmbeddableParser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
+        return ['JsDomParser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }
 
     var testDataDir = path.join(__dirname, '../data/tree_construction'),
@@ -82,7 +82,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         testDataDir,
         scriptedTestDataDir
     ], treeAdapter).forEach(function (test) {
-            var parser = new UAEmbeddableParser(treeAdapter);
+            var parser = new JsDomParser(treeAdapter);
 
             _test[getFullTestName(test)] = function (done) {
                 function assertResult(result) {
