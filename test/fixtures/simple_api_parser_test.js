@@ -1,4 +1,5 @@
-var path = require('path'),
+var assert = require('assert'),
+    path = require('path'),
     SimpleApiParser = require('../../index').SimpleApiParser,
     TestUtils = require('../test_utils');
 
@@ -16,7 +17,7 @@ function sanitizeForComparison(str) {
 var testDataDir = path.join(__dirname, '../data/simple_api_parsing');
 
 TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
-    exports[getFullTestName(test)] = function (t) {
+    exports[getFullTestName(test)] = function () {
         //NOTE: the idea of the test is to serialize back given HTML using SimpleApiParser handlers
         var result = '',
             parser = new SimpleApiParser({
@@ -66,7 +67,6 @@ TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
         result = sanitizeForComparison(result);
 
         //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-        t.ok(result === expected, TestUtils.getStringDiffMsg(result, expected));
-        t.done();
+        assert.ok(result === expected, TestUtils.getStringDiffMsg(result, expected));
     }
 });

@@ -1,4 +1,5 @@
-var html = require('../../lib/common/html'),
+var assert = require('assert'),
+    html = require('../../lib/common/html'),
     FormattingElementList = require('../../lib/tree_construction/formatting_element_list'),
     TestUtils = require('../test_utils');
 
@@ -7,21 +8,19 @@ var $ = html.TAG_NAMES,
     NS = html.NAMESPACES;
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
-    _test['Insert marker'] = function (t) {
+    _test['Insert marker'] = function () {
         var list = new FormattingElementList(treeAdapter);
 
         list.insertMarker();
-        t.strictEqual(list.length, 1);
-        t.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.length, 1);
+        assert.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
 
         list.insertMarker();
-        t.strictEqual(list.length, 2);
-        t.strictEqual(list.entries[1].type, FormattingElementList.MARKER_ENTRY);
-
-        t.done();
+        assert.strictEqual(list.length, 2);
+        assert.strictEqual(list.entries[1].type, FormattingElementList.MARKER_ENTRY);
     };
 
-    _test['Push element'] = function (t) {
+    _test['Push element'] = function () {
         var list = new FormattingElementList(treeAdapter),
             element1Token = 'token1',
             element2Token = 'token2',
@@ -29,21 +28,19 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
             element2 = treeAdapter.createElement($.P, NS.HTML, []);
 
         list.pushElement(element1, element1Token);
-        t.strictEqual(list.length, 1);
-        t.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
-        t.strictEqual(list.entries[0].element, element1);
-        t.strictEqual(list.entries[0].token, element1Token);
+        assert.strictEqual(list.length, 1);
+        assert.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(list.entries[0].element, element1);
+        assert.strictEqual(list.entries[0].token, element1Token);
 
         list.pushElement(element2, element2Token);
-        t.strictEqual(list.length, 2);
-        t.strictEqual(list.entries[1].type, FormattingElementList.ELEMENT_ENTRY);
-        t.strictEqual(list.entries[1].element, element2);
-        t.strictEqual(list.entries[1].token, element2Token);
-
-        t.done();
+        assert.strictEqual(list.length, 2);
+        assert.strictEqual(list.entries[1].type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(list.entries[1].element, element2);
+        assert.strictEqual(list.entries[1].token, element2Token);
     };
 
-    _test['Insert element after bookmark'] = function (t) {
+    _test['Insert element after bookmark'] = function () {
         var list = new FormattingElementList(treeAdapter),
             token = 'token1',
             element1 = treeAdapter.createElement($.DIV, NS.HTML, []),
@@ -59,13 +56,11 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
 
         list.insertElementAfterBookmark(element4, token);
 
-        t.strictEqual(list.length, 4);
-        t.strictEqual(list.entries[1].element, element4);
-
-        t.done();
+        assert.strictEqual(list.length, 4);
+        assert.strictEqual(list.entries[1].element, element4);
     };
 
-    _test['Push element - Noah Ark condition'] = function (t) {
+    _test['Push element - Noah Ark condition'] = function () {
         var list = new FormattingElementList(treeAdapter),
             token1 = 'token1',
             token2 = 'token2',
@@ -87,35 +82,33 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         list.pushElement(element2, token3);
         list.pushElement(element1, token4);
 
-        t.strictEqual(list.length, 4);
-        t.strictEqual(list.entries[0].token, token1);
-        t.strictEqual(list.entries[1].token, token2);
-        t.strictEqual(list.entries[2].token, token3);
-        t.strictEqual(list.entries[3].token, token4);
+        assert.strictEqual(list.length, 4);
+        assert.strictEqual(list.entries[0].token, token1);
+        assert.strictEqual(list.entries[1].token, token2);
+        assert.strictEqual(list.entries[2].token, token3);
+        assert.strictEqual(list.entries[3].token, token4);
 
         list.pushElement(element1, token5);
 
-        t.strictEqual(list.length, 4);
-        t.strictEqual(list.entries[0].token, token2);
-        t.strictEqual(list.entries[1].token, token3);
-        t.strictEqual(list.entries[2].token, token4);
-        t.strictEqual(list.entries[3].token, token5);
+        assert.strictEqual(list.length, 4);
+        assert.strictEqual(list.entries[0].token, token2);
+        assert.strictEqual(list.entries[1].token, token3);
+        assert.strictEqual(list.entries[2].token, token4);
+        assert.strictEqual(list.entries[3].token, token5);
 
         list.insertMarker();
         list.pushElement(element1, token6);
 
-        t.strictEqual(list.length, 6);
-        t.strictEqual(list.entries[0].token, token2);
-        t.strictEqual(list.entries[1].token, token3);
-        t.strictEqual(list.entries[2].token, token4);
-        t.strictEqual(list.entries[3].token, token5);
-        t.strictEqual(list.entries[4].type, FormattingElementList.MARKER_ENTRY);
-        t.strictEqual(list.entries[5].token, token6);
-
-        t.done();
+        assert.strictEqual(list.length, 6);
+        assert.strictEqual(list.entries[0].token, token2);
+        assert.strictEqual(list.entries[1].token, token3);
+        assert.strictEqual(list.entries[2].token, token4);
+        assert.strictEqual(list.entries[3].token, token5);
+        assert.strictEqual(list.entries[4].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.entries[5].token, token6);
     };
 
-    _test['Clear to the last marker'] = function (t) {
+    _test['Clear to the last marker'] = function () {
         var list = new FormattingElementList(treeAdapter),
             token = 'token',
             element1 = treeAdapter.createElement($.DIV, NS.HTML, [
@@ -136,12 +129,10 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
 
         list.clearToLastMarker();
 
-        t.strictEqual(list.length, 2);
-
-        t.done();
+        assert.strictEqual(list.length, 2);
     };
 
-    _test['Remove entry'] = function (t) {
+    _test['Remove entry'] = function () {
         var list = new FormattingElementList(treeAdapter),
             token = 'token',
             element1 = treeAdapter.createElement($.DIV, NS.HTML, [
@@ -159,35 +150,31 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
 
         list.removeEntry(list.entries[0]);
 
-        t.strictEqual(list.length, 2);
+        assert.strictEqual(list.length, 2);
 
         for (var i = list.length - 1; i >= 0; i--)
-            t.notStrictEqual(list.entries[i].element, element1);
-
-        t.done();
+            assert.notStrictEqual(list.entries[i].element, element1);
     };
 
-    _test['Get entry in scope with given tag name'] = function (t) {
+    _test['Get entry in scope with given tag name'] = function () {
         var list = new FormattingElementList(treeAdapter),
             token = 'token',
             element = treeAdapter.createElement($.DIV, NS.HTML, []);
 
-        t.ok(!list.getElementEntryInScopeWithTagName($.DIV));
+        assert.ok(!list.getElementEntryInScopeWithTagName($.DIV));
 
         list.pushElement(element, token);
         list.pushElement(element, token);
-        t.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[1]);
+        assert.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[1]);
 
         list.insertMarker();
-        t.ok(!list.getElementEntryInScopeWithTagName($.DIV));
+        assert.ok(!list.getElementEntryInScopeWithTagName($.DIV));
 
         list.pushElement(element, token);
-        t.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[3]);
-
-        t.done();
+        assert.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[3]);
     };
 
-    _test['Get element entry'] = function (t) {
+    _test['Get element entry'] = function () {
         var list = new FormattingElementList(treeAdapter),
             token = 'token',
             element1 = treeAdapter.createElement($.DIV, NS.HTML, []),
@@ -199,10 +186,8 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         list.insertMarker();
 
         var entry = list.getElementEntry(element1);
-        t.strictEqual(entry.type, FormattingElementList.ELEMENT_ENTRY);
-        t.strictEqual(entry.token, token);
-        t.strictEqual(entry.element, element1);
-
-        t.done();
+        assert.strictEqual(entry.type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(entry.token, token);
+        assert.strictEqual(entry.element, element1);
     };
 });

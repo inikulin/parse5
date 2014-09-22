@@ -8,7 +8,7 @@
     "Sean Lang <slang800@gmail.com> (http://slang.cx)"
   ],
   "devDependencies": {
-    "nodeunit": "0.8.0"
+    "mocha": "1.21.4"
   },
   "keywords": [
     "html",

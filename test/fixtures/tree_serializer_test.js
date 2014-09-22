@@ -1,10 +1,11 @@
-var path = require('path'),
+var assert = require('assert'),
+    path = require('path'),
     Parser = require('../../lib/tree_construction/parser'),
     Serializer = require('../../index').TreeSerializer,
     TestUtils = require('../test_utils');
 
 
-exports['Regression - SYSTEM-only doctype serialization'] = function (t) {
+exports['Regression - SYSTEM-only doctype serialization'] = function () {
     var html = '<!DOCTYPE html SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
                '<html><head></head><body></body></html>',
         parser = new Parser(),
@@ -12,11 +13,10 @@ exports['Regression - SYSTEM-only doctype serialization'] = function (t) {
         document = parser.parse(html),
         serializedResult = serializer.serialize(document);
 
-    t.strictEqual(serializedResult, html);
-    t.done();
+    assert.strictEqual(serializedResult, html);
 };
 
-exports['Regression - Escaping of doctypes with quotes in them'] = function (t) {
+exports['Regression - Escaping of doctypes with quotes in them'] = function () {
     var htmlStrs = [
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
             '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
@@ -37,13 +37,11 @@ exports['Regression - Escaping of doctypes with quotes in them'] = function (t) 
         var document = parser.parse(html),
             serializedResult = serializer.serialize(document);
 
-        t.strictEqual(serializedResult, html);
+        assert.strictEqual(serializedResult, html);
     });
-
-    t.done();
 };
 
-exports['Regression - new line in <pre> tag'] = function (t) {
+exports['Regression - new line in <pre> tag'] = function () {
     var htmlStrs = [
             {
                 src: '<!DOCTYPE html><html><head></head><body><pre>\ntest</pre></body></html>',
@@ -62,10 +60,8 @@ exports['Regression - new line in <pre> tag'] = function (t) {
         var document = parser.parse(htmlStr.src),
             serializedResult = serializer.serialize(document);
 
-        t.strictEqual(serializedResult, htmlStr.expected);
+        assert.strictEqual(serializedResult, htmlStr.expected);
     });
-
-    t.done();
 };
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
@@ -77,7 +73,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
 
     //Here we go..
     TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
-        _test[getFullTestName(test)] = function (t) {
+        _test[getFullTestName(test)] = function () {
             var parser = new Parser(treeAdapter),
                 serializer = new Serializer(treeAdapter),
                 document = parser.parse(test.src),
@@ -85,8 +81,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
                 expected = TestUtils.removeNewLines(test.expected);
 
             //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-            t.ok(serializedResult === expected, TestUtils.getStringDiffMsg(serializedResult, expected));
-            t.done();
+            assert.ok(serializedResult === expected, TestUtils.getStringDiffMsg(serializedResult, expected));
         };
     });
 
