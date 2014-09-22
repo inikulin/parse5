@@ -1,5 +1,5 @@
 var path = require('path'),
-    SimpleApiParser = require('../../lib/simple_api/simple_api_parser'),
+    SimpleApiParser = require('../../index').SimpleApiParser,
     TestUtils = require('../test_utils');
 
 function getFullTestName(test) {

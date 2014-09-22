@@ -1,6 +1,6 @@
 var path = require('path'),
     Parser = require('../../lib/tree_construction/parser'),
-    Serializer = require('../../lib/tree_serialization/tree_serializer'),
+    Serializer = require('../../index').TreeSerializer,
     TestUtils = require('../test_utils');
 
 

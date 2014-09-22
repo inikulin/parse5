@@ -1,6 +1,6 @@
 var fs = require('fs'),
     path = require('path'),
-    reporter = require('nodeunit').reporters.default;
+    reporter = require('nodeunit').reporters.minimal;
 
 var dirName = path.join(__dirname, './fixtures'),
     testFiles = fs.readdirSync(dirName);
@@ -8,7 +8,10 @@ var dirName = path.join(__dirname, './fixtures'),
 process.chdir(dirName);
 
 reporter.run(testFiles, null, function (err) {
-    if(err)
-        process.exit(1);
+    if (err) {
+        setTimeout(function () {
+            process.exit(1);
+        });
+    }
 });
 
