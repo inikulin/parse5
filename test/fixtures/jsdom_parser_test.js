@@ -41,37 +41,37 @@ exports['Reentrancy'] = function (done) {
             '<p><a href="#"></a></p>'
         ];
 
-    var parsing1 = JsDomParser.parseDocument(docHtml1);
+    var parsing1 = JsDomParser.parseDocument(docHtml1)
 
-    parsing1.done(function (document1) {
-        var actual = serializer.serialize(document1);
+        .done(function (document1) {
+            var actual = serializer.serialize(document1);
 
-        assert.strictEqual(asyncAssertionCount, 3);
-        assert.ok(actual === docHtml1, TestUtils.getStringDiffMsg(actual, docHtml1));
-        done();
-    });
+            assert.strictEqual(asyncAssertionCount, 3);
+            assert.ok(actual === docHtml1, TestUtils.getStringDiffMsg(actual, docHtml1));
+            done();
+        })
 
-    parsing1.handleScripts(function () {
-        parsing1.suspend();
+        .handleScripts(function () {
+            parsing1.suspend();
 
-        setTimeout(function () {
-            fragments.forEach(function (fragment) {
-                var actual = serializer.serialize(JsDomParser.parseInnerHtml(fragment));
-                assert.ok(actual === fragment, TestUtils.getStringDiffMsg(actual, fragment));
-                asyncAssertionCount++;
-            });
+            setTimeout(function () {
+                fragments.forEach(function (fragment) {
+                    var actual = serializer.serialize(JsDomParser.parseInnerHtml(fragment));
+                    assert.ok(actual === fragment, TestUtils.getStringDiffMsg(actual, fragment));
+                    asyncAssertionCount++;
+                });
 
-            var parsing2 = JsDomParser.parseDocument(docHtml2);
+                var parsing2 = JsDomParser.parseDocument(docHtml2);
 
-            parsing2.done(function (document2) {
-                var actual = serializer.serialize(document2);
+                parsing2.done(function (document2) {
+                    var actual = serializer.serialize(document2);
 
-                assert.ok(actual === docHtml2, TestUtils.getStringDiffMsg(actual, docHtml2));
-                asyncAssertionCount++;
-                parsing1.resume();
+                    assert.ok(actual === docHtml2, TestUtils.getStringDiffMsg(actual, docHtml2));
+                    asyncAssertionCount++;
+                    parsing1.resume();
+                });
             });
         });
-    });
 };
 
 
@@ -84,40 +84,40 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         scriptedTestDataDir = path.join(__dirname, '../data/scripted_tree_construction');
 
     function parseDocument(input, callback) {
-        var parsing = JsDomParser.parseDocument(input, treeAdapter);
+        var parsing = JsDomParser.parseDocument(input, treeAdapter)
 
-        parsing.done(callback);
+            .done(callback)
 
-        parsing.handleScripts(function (document, scriptElement) {
-            parsing.suspend();
+            .handleScripts(function (document, scriptElement) {
+                parsing.suspend();
 
-            //NOTE: test parser suspension in different modes (sync and async).
-            //If we have script then execute it and resume parser asynchronously.
-            //Otherwise - resume synchronously.
-            var scriptTextNode = treeAdapter.getChildNodes(scriptElement)[0],
-                script = scriptTextNode && treeAdapter.getTextNodeContent(scriptTextNode);
+                //NOTE: test parser suspension in different modes (sync and async).
+                //If we have script then execute it and resume parser asynchronously.
+                //Otherwise - resume synchronously.
+                var scriptTextNode = treeAdapter.getChildNodes(scriptElement)[0],
+                    script = scriptTextNode && treeAdapter.getTextNodeContent(scriptTextNode);
 
-            //NOTE: don't pollute test runner output by console.log() calls from test scripts
-            if (script && script.trim() && script.indexOf('console.log') === -1) {
-                setTimeout(function () {
-                    //NOTE: mock document for script evaluation
-                    document.write = function (html) {
-                        parsing.documentWrite(html);
-                    };
+                //NOTE: don't pollute test runner output by console.log() calls from test scripts
+                if (script && script.trim() && script.indexOf('console.log') === -1) {
+                    setTimeout(function () {
+                        //NOTE: mock document for script evaluation
+                        document.write = function (html) {
+                            parsing.documentWrite(html);
+                        };
 
-                    try {
-                        eval(script);
-                    } catch (err) {
-                        //NOTE: ignore broken scripts from test data
-                    }
+                        try {
+                            eval(script);
+                        } catch (err) {
+                            //NOTE: ignore broken scripts from test data
+                        }
 
+                        parsing.resume();
+                    });
+                }
+
+                else
                     parsing.resume();
-                });
-            }
-
-            else
-                parsing.resume();
-        });
+            });
     }
 
     //Here we go..
