@@ -7,6 +7,7 @@
     "Sebastian Mayr <sebmaster16@gmail.com> (http://blog.smayr.name)",
     "Sean Lang <slang800@gmail.com> (http://slang.cx)"
   ],
+  "homepage": "http://inikulin.github.io/parse5/", 
   "devDependencies": {
     "nodeunit": "0.8.0"
   },
