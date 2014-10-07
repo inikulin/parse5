@@ -1,4 +1,5 @@
-var fs = require('fs'),
+var assert = require('assert'),
+    fs = require('fs'),
     path = require('path'),
     util = require('util'),
     Tokenizer = require('../../lib/tokenization/tokenizer');
@@ -168,11 +169,9 @@ function getFullTestName(test) {
 
 //Here we go..
 loadTests().forEach(function (test) {
-    exports[getFullTestName(test)] = function (t) {
+    exports[getFullTestName(test)] = function () {
         var out = tokenize(test.input, test.initialState, test.lastStartTag);
 
-        t.deepEqual(out, test.expected);
-
-        t.done();
+        assert.deepEqual(out, test.expected);
     };
 });

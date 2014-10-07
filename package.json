@@ -9,7 +9,7 @@
   ],
   "homepage": "http://inikulin.github.io/parse5/", 
   "devDependencies": {
-    "nodeunit": "0.8.0"
+    "mocha": "1.21.4"
   },
   "keywords": [
     "html",

@@ -1,5 +1,6 @@
-var path = require('path'),
-    SimpleApiParser = require('../../lib/simple_api/simple_api_parser'),
+var assert = require('assert'),
+    path = require('path'),
+    SimpleApiParser = require('../../index').SimpleApiParser,
     TestUtils = require('../test_utils');
 
 function getFullTestName(test) {
@@ -13,8 +14,10 @@ function sanitizeForComparison(str) {
         .toLowerCase();
 }
 
-TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_parsing')).forEach(function (test) {
-    exports[getFullTestName(test)] = function (t) {
+var testDataDir = path.join(__dirname, '../data/simple_api_parsing');
+
+TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
+    exports[getFullTestName(test)] = function () {
         //NOTE: the idea of the test is to serialize back given HTML using SimpleApiParser handlers
         var result = '',
             parser = new SimpleApiParser({
@@ -64,7 +67,6 @@ TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_par
         result = sanitizeForComparison(result);
 
         //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-        t.ok(result === expected, TestUtils.getStringDiffMsg(result, expected));
-        t.done();
+        assert.ok(result === expected, TestUtils.getStringDiffMsg(result, expected));
     }
 });

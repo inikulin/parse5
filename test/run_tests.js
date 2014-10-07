@@ -1,14 +1,18 @@
 var fs = require('fs'),
     path = require('path'),
-    reporter = require('nodeunit').reporters.default;
+    Mocha = require('mocha');
 
-var dirName = path.join(__dirname, './fixtures'),
-    testFiles = fs.readdirSync(dirName);
+var fixturesDir = path.join(__dirname, './fixtures'),
+    mocha = new Mocha()
+        .ui('exports')
+        .reporter('progress');
 
-process.chdir(dirName);
-
-reporter.run(testFiles, null, function (err) {
-    if(err)
-        process.exit(1);
+fs.readdirSync(fixturesDir).forEach(function (file) {
+    mocha.addFile(path.join(fixturesDir, file));
 });
 
+mocha.run(function (failed) {
+    process.on('exit', function () {
+        process.exit(failed);
+    });
+});
