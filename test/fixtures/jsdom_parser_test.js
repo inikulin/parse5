@@ -38,7 +38,9 @@ exports['Reentrancy'] = function (done) {
         docHtml2 = '<!DOCTYPE html><html><head></head><body>Beep boop</body></html>',
         fragments = [
             '<div>Hey ya!</div>',
-            '<p><a href="#"></a></p>'
+            '<p><a href="#"></a></p>',
+            '<template><td>yo</td></template>',
+            '<select><template><option></option></template></select>'
         ];
 
     var parsing1 = JsDomParser.parseDocument(docHtml1)
@@ -46,7 +48,7 @@ exports['Reentrancy'] = function (done) {
         .done(function (document1) {
             var actual = serializer.serialize(document1);
 
-            assert.strictEqual(asyncAssertionCount, 3);
+            assert.strictEqual(asyncAssertionCount, 5);
             assert.ok(actual === docHtml1, TestUtils.getStringDiffMsg(actual, docHtml1));
             done();
         })
