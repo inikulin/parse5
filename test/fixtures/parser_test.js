@@ -15,16 +15,18 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
     TestUtils.loadTreeConstructionTestData([
         testDataDir
     ], treeAdapter).forEach(function (test) {
-            _test[getFullTestName(test)] = function () {
-                var parser = new Parser(treeAdapter),
-                    result = test.fragmentContext ?
-                        parser.parseFragment(test.input, test.fragmentContext) :
-                        parser.parse(test.input),
-                    actual = TestUtils.serializeToTestDataFormat(result, treeAdapter),
-                    msg = TestUtils.prettyPrintParserAssertionArgs(actual, test.expected);
+        if (test.idx !== 326)
+            return;
+        _test[getFullTestName(test)] = function () {
+            var parser = new Parser(treeAdapter),
+                result = test.fragmentContext ?
+                         parser.parseFragment(test.input, test.fragmentContext) :
+                         parser.parse(test.input),
+                actual = TestUtils.serializeToTestDataFormat(result, treeAdapter),
+                msg = TestUtils.prettyPrintParserAssertionArgs(actual, test.expected);
 
-                assert.strictEqual(actual, test.expected, msg);
-            };
-        });
+            assert.strictEqual(actual, test.expected, msg);
+        };
+    });
 });
 

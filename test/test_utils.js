@@ -190,7 +190,9 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
             }
 
             else {
-                str += '<' + getElementSerializedNamespaceURI(node) + treeAdapter.getTagName(node) + '>\n';
+                var tn = treeAdapter.getTagName(node);
+
+                str += '<' + getElementSerializedNamespaceURI(node) + tn + '>\n';
 
                 var childrenIndent = indent + 2,
                     serializedAttrs = [];
@@ -207,6 +209,13 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
                 });
 
                 str += serializedAttrs.sort().join('');
+
+                if (tn === HTML.TAG_NAMES.TEMPLATE) {
+                    str += getSerializedTreeIndent(childrenIndent) + 'content\n';
+                    childrenIndent += 2;
+                    node = treeAdapter.getChildNodes(node)[0];
+                }
+
                 str += serializeNodeList(treeAdapter.getChildNodes(node), childrenIndent);
             }
         });

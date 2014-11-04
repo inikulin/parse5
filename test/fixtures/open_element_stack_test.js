@@ -444,4 +444,28 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         assert.strictEqual(stack.stackTop, 3);
         assert.strictEqual(stack.currentTagName, $.LI);
     };
+
+    _test['Template count'] = function () {
+        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+
+        stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
+        stack.push(treeAdapter.createElement($.TEMPLATE, NS.MATHML, []));
+        assert.strictEqual(stack.tmplCount, 0);
+
+        stack.push(treeAdapter.createElement($.TEMPLATE, NS.HTML, []));
+        stack.push(treeAdapter.createElement($.LI, NS.HTML, []));
+        assert.strictEqual(stack.tmplCount, 1);
+
+        stack.push(treeAdapter.createElement($.OPTION, NS.HTML, []));
+        stack.push(treeAdapter.createElement($.TEMPLATE, NS.HTML, []));
+        assert.strictEqual(stack.tmplCount, 2);
+
+        stack.pop();
+        assert.strictEqual(stack.tmplCount, 1);
+
+        stack.pop();
+        stack.pop();
+        stack.pop();
+        assert.strictEqual(stack.tmplCount, 0);
+    };
 });
