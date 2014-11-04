@@ -2,7 +2,7 @@
   <img src="https://raw.github.com/inikulin/parse5/master/logo.png" alt="parse5" />
 </p>
 
-[![Build Status](https://api.travis-ci.org/inikulin/parse5.svg)](https://travis-ci.org/inikulin/parse5) 
+[![Build Status](https://api.travis-ci.org/inikulin/parse5.svg)](https://travis-ci.org/inikulin/parse5)
 
 *WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.*
 
@@ -60,7 +60,7 @@ Default tree format for parse5.
 
 
 ####&bull; TreeAdapters.htmlparser2
-Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.g. used in [cheerio](https://github.com/MatthewMueller/cheerio) and [jsdom](https://github.com/tmpvar/jsdom)).  
+Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.g. used in [cheerio](https://github.com/MatthewMueller/cheerio) and [jsdom](https://github.com/tmpvar/jsdom)).
 
 ---------------------------------------
 
@@ -94,7 +94,7 @@ var document = parser.parse('<!DOCTYPE html><html><head></head><body>Hi there!</
 
 
 ####&bull; Parser.parseFragment(htmlFragment, [contextElement])
-Parses given `htmlFragment`. Returns `documentFragment` node. Optional `contextElement` argument specifies context in which given `htmlFragment` will be parsed (consider it as setting `contextElement.innerHTML` property). If `contextElement` argument is not specified, `<div>` element will be used.
+Parses given `htmlFragment`. Returns `documentFragment` node. Optional `contextElement` argument specifies context in which given `htmlFragment` will be parsed (consider it as setting `contextElement.innerHTML` property). If `contextElement` argument is not specified then `<template>` element will be used as a context and fragment will be parsed in 'forgiving' manner.
 
 *Example:*
 ```js
