@@ -15,8 +15,6 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
     TestUtils.loadTreeConstructionTestData([
         testDataDir
     ], treeAdapter).forEach(function (test) {
-        if (test.idx !== 326)
-            return;
         _test[getFullTestName(test)] = function () {
             var parser = new Parser(treeAdapter),
                 result = test.fragmentContext ?

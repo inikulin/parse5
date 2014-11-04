@@ -210,7 +210,7 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
 
                 str += serializedAttrs.sort().join('');
 
-                if (tn === HTML.TAG_NAMES.TEMPLATE) {
+                if (tn === HTML.TAG_NAMES.TEMPLATE && treeAdapter.getNamespaceURI(node) === HTML.NAMESPACES.HTML) {
                     str += getSerializedTreeIndent(childrenIndent) + 'content\n';
                     childrenIndent += 2;
                     node = treeAdapter.getChildNodes(node)[0];
