@@ -1,9 +1,14 @@
 var assert = require('assert'),
     path = require('path'),
-    Parser = require('../../lib/tree_construction/parser'),
-    Serializer = require('../../index').TreeSerializer,
+    parse5 = require('../../index'),
+    Parser = parse5.Parser,
+    Serializer = parse5.Serializer,
     TestUtils = require('../test_utils');
 
+
+exports['Backward compatibility - parse5.TreeSerializer'] = function () {
+    assert.strictEqual(Serializer, parse5.TreeSerializer);
+};
 
 exports['Regression - SYSTEM-only doctype serialization'] = function () {
     var html = '<!DOCTYPE html SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
@@ -66,10 +71,10 @@ exports['Regression - new line in <pre> tag'] = function () {
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function getFullTestName(test) {
-        return ['TreeSerializer - ', test.idx, '.', test.name].join('');
+        return ['Serializer - ', test.idx, '.', test.name].join('');
     }
 
-    var testDataDir = path.join(__dirname, '../data/tree_serialization');
+    var testDataDir = path.join(__dirname, '../data/serialization');
 
     //Here we go..
     TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {

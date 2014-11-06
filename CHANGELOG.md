@@ -32,7 +32,7 @@
  * Fix: siblings calculation bug in `appendChild` in `htmlparser2` tree adapter.
 
 ## 0.8.1
- * Add: [TreeSerializer](https://github.com/inikulin/parse5/#class-treeserializer).
+ * Add: [TreeSerializer](https://github.com/inikulin/parse5/#class-serializer).
  * Add: [htmlparser2 tree adapter](https://github.com/inikulin/parse5/#-treeadaptershtmlparser2).
 
 ## 0.6.1

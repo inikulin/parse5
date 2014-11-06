@@ -2,7 +2,8 @@
 
 exports.Parser = require('./lib/tree_construction/parser');
 exports.SimpleApiParser = require('./lib/simple_api/simple_api_parser');
-exports.TreeSerializer = require('./lib/tree_serialization/tree_serializer');
+exports.TreeSerializer =
+exports.Serializer = require('./lib/serialization/serializer');
 exports.JsDomParser = require('./lib/jsdom/jsdom_parser');
 
 exports.TreeAdapters = {

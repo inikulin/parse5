@@ -12,7 +12,7 @@ Existing solutions were either too slow or their output was too inaccurate. So, 
 **Included tools:**
 *   [Parser](#class-parser) - HTML to DOM-tree parser.
 *   [SimpleApiParser](#class-simpleapiparser) - [SAX](http://en.wikipedia.org/wiki/Simple_API_for_XML)-style parser for HTML.
-*   [TreeSerializer](#class-treeserializer) - DOM-tree to HTML serializer.
+*   [Serializer](#class-serializer) - DOM-tree to HTML code serializer.
 
 ##Install
 ```
@@ -53,7 +53,7 @@ So, parse5 is as fast as simple specification incompatible parsers and ~15-times
 ##API reference
 
 ###Enum: TreeAdapters
-Provides built-in tree adapters which can be passed as an optional argument to the `Parser` and `TreeSerializer` constructors.
+Provides built-in tree adapters which can be passed as an optional argument to the `Parser` and `Serializer` constructors.
 
 ####&bull; TreeAdapters.default
 Default tree format for parse5.
@@ -158,25 +158,26 @@ parser.parse('<body>Yo!</body>');
 
 ---------------------------------------
 
-###Class: TreeSerializer
+###Class: Serializer
 Provides tree-to-HTML serialization functionality.
+**Note:** prior to v1.2.0 this class was called `TreeSerializer`. However, it's still accessible as `parse5.TreeSerializer` for backward compatibility.
 
-####&bull; TreeSerializer.ctor([treeAdapter])
-Creates new reusable instance of the `TreeSerializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
+####&bull; Serializer.ctor([treeAdapter])
+Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
 *Example:*
 ```js
 var parse5 = require('parse5');
 
 //Instantiate new serializer with default tree adapter
-var serializer1 = new parse5.TreeSerializer();
+var serializer1 = new parse5.Serializer();
 
 //Instantiate new serializer with htmlparser2 tree adapter
-var serializer2 = new parse5.TreeSerializer(parse5.TreeAdapters.htmlparser2);
+var serializer2 = new parse5.Serializer(parse5.TreeAdapters.htmlparser2);
 ```
 
 
-####&bull; TreeSerializer.serialize(node)
+####&bull; Serializer.serialize(node)
 Serializes the given `node`. Returns HTML string.
 
 *Example:*
