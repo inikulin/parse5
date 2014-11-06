@@ -6,4 +6,5 @@
 .npmignore
 .travis.yml
 logo.png
+benchmark/
 test/
