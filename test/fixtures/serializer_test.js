@@ -69,6 +69,43 @@ exports['Regression - new line in <pre> tag'] = function () {
     });
 };
 
+exports['Extra options - encodeHtmlEntities option'] = function () {
+    var testHtmlCases = [
+            {
+                options: { encodeHtmlEntities: true },
+                src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
+                expected: '<!DOCTYPE html><html><head></head><body>&amp;</body></html>'
+            },
+
+            {
+                options: { encodeHtmlEntities: false },
+                src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
+                expected: '<!DOCTYPE html><html><head></head><body>&</body></html>'
+            },
+            {
+                options: { encodeHtmlEntities: true },
+                src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
+                expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&amp;world=2"></a></body></html>'
+            },
+
+            {
+                options: { encodeHtmlEntities: false },
+                src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
+                expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>'
+            }
+        ],
+        parser = new Parser();
+
+    testHtmlCases.forEach(function (testCase) {
+        var serializer = new Serializer(null, testCase.options);
+        var document = parser.parse(testCase.src),
+            serializedResult = serializer.serialize(document);
+
+        assert.strictEqual(serializedResult, testCase.expected);
+    });
+};
+
+
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
     function getFullTestName(test) {
         return ['Serializer - ', test.idx, '.', test.name].join('');
