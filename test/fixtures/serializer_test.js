@@ -69,8 +69,8 @@ exports['Regression - new line in <pre> tag'] = function () {
     });
 };
 
-exports['Regression - escapeEntities option'] = function () {
-    var testCases = [
+exports['Extra options - encodeHtmlEntities option'] = function () {
+    var testHtmlCases = [
             {
                 options: { encodeHtmlEntities: true },
                 src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
@@ -81,11 +81,22 @@ exports['Regression - escapeEntities option'] = function () {
                 options: { encodeHtmlEntities: false },
                 src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
                 expected: '<!DOCTYPE html><html><head></head><body>&</body></html>'
+            },
+            {
+                options: { encodeHtmlEntities: true },
+                src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
+                expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&amp;world=2"></a></body></html>'
+            },
+
+            {
+                options: { encodeHtmlEntities: false },
+                src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
+                expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>'
             }
         ],
         parser = new Parser();
 
-    testCases.forEach(function (testCase) {
+    testHtmlCases.forEach(function (testCase) {
         var serializer = new Serializer(null, testCase.options);
         var document = parser.parse(testCase.src),
             serializedResult = serializer.serialize(document);
