@@ -69,7 +69,7 @@ exports['Regression - new line in <pre> tag'] = function () {
     });
 };
 
-exports['Extra options - encodeHtmlEntities option'] = function () {
+exports['Options - encodeHtmlEntities'] = function () {
     var testHtmlCases = [
             {
                 options: { encodeHtmlEntities: true },
