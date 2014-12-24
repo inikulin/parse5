@@ -5,7 +5,8 @@
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
   "contributors": [
     "Sebastian Mayr <sebmaster16@gmail.com> (http://blog.smayr.name)",
-    "Sean Lang <slang800@gmail.com> (http://slang.cx)"
+    "Sean Lang <slang800@gmail.com> (http://slang.cx)",
+    "Alan Clarke (https://github.com/alanclarke)"
   ],
   "homepage": "http://inikulin.github.io/parse5/",
   "devDependencies": {
