@@ -1,3 +1,6 @@
+## 1.3.0
+ * Add: Serializer `encodeHtmlEntities` option.
+
 ## 1.2.0
  * Add: `<template>` support
  * `parseFragment` now uses `<template>` as default `contextElement`. This leads to the more "forgiving" parsing manner.
