@@ -162,8 +162,9 @@ parser.parse('<body>Yo!</body>');
 Provides tree-to-HTML serialization functionality.
 **Note:** prior to v1.2.0 this class was called `TreeSerializer`. However, it's still accessible as `parse5.TreeSerializer` for backward compatibility.
 
-####&bull; Serializer.ctor([treeAdapter])
+####&bull; Serializer.ctor([treeAdapter, options])
 Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
+
 
 *Example:*
 ```js
