@@ -1,3 +1,6 @@
+## 1.3.1
+ * Fix: text node in `<template>` serialization problem with custom tree adapter (GH #38)
+
 ## 1.3.0
  * Add: Serializer `encodeHtmlEntities` option.
 

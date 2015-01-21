@@ -10,6 +10,27 @@ exports['Backward compatibility - parse5.TreeSerializer'] = function () {
     assert.strictEqual(Serializer, parse5.TreeSerializer);
 };
 
+exports['Regression - Get text node\'s parent tagName only if it\'s an Element node (GH-38)'] = {
+    test: function () {
+        var parser = new Parser(),
+            serializer = new Serializer(),
+            document = parser.parse('<template>yo<div></div>42</template>'),
+            originalGetTagName = this.originalGetTagName = parse5.TreeAdapters.default.getTagName;
+
+        parse5.TreeAdapters.default.getTagName = function (element) {
+            assert.ok(element.tagName);
+
+            return originalGetTagName(element);
+        };
+
+        serializer.serialize(document);
+    },
+
+    after: function () {
+        parse5.TreeAdapters.default.getTagName = this.originalGetTagName;
+    }
+};
+
 exports['Regression - SYSTEM-only doctype serialization'] = function () {
     var html = '<!DOCTYPE html SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
                '<html><head></head><body></body></html>',
@@ -23,17 +44,17 @@ exports['Regression - SYSTEM-only doctype serialization'] = function () {
 
 exports['Regression - Escaping of doctypes with quotes in them'] = function () {
     var htmlStrs = [
-            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
-            '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-            '<html><head></head><body></body></html>',
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
+                '<html><head></head><body></body></html>',
 
-            '<!DOCTYPE html PUBLIC \'-//W3C//"DTD" XHTML 1.0 Transitional//EN\' ' +
-            '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-            '<html><head></head><body></body></html>',
+                '<!DOCTYPE html PUBLIC \'-//W3C//"DTD" XHTML 1.0 Transitional//EN\' ' +
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
+                '<html><head></head><body></body></html>',
 
-            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
-            '\'http://www.w3.org/TR/xhtml1/DTD/"xhtml1-transitional.dtd"\'>' +
-            '<html><head></head><body></body></html>'
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
+                '\'http://www.w3.org/TR/xhtml1/DTD/"xhtml1-transitional.dtd"\'>' +
+                '<html><head></head><body></body></html>'
         ],
         parser = new Parser(),
         serializer = new Serializer();
