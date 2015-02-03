@@ -14,13 +14,13 @@ Existing solutions were either too slow or their output was too inaccurate. So, 
 *   [SimpleApiParser](#class-simpleapiparser) - [SAX](http://en.wikipedia.org/wiki/Simple_API_for_XML)-style parser for HTML.
 *   [Serializer](#class-serializer) - DOM-tree to HTML code serializer.
 
-##Install
+## Install
 ```
 $ npm install parse5
 ```
 
 
-##Usage
+## Usage
 ```js
 var Parser = require('parse5').Parser;
 
@@ -35,7 +35,7 @@ var fragment = parser.parseFragment('<title>Parse5 is &#102;&#117;&#99;&#107;ing
 
 ```
 
-##Is it fast?
+## Is it fast?
 Check out [this benchmark](https://github.com/inikulin/node-html-parser-bench).
 
 ```
@@ -50,25 +50,25 @@ Fastest is htmlparser2 (https://github.com/fb55/htmlparser2),parse5 (https://git
 So, parse5 is as fast as simple specification incompatible parsers and ~15-times(!) faster than the current specification compatible parser available for the node.
 
 
-##API reference
+## API reference
 
-###Enum: TreeAdapters
+### Enum: TreeAdapters
 Provides built-in tree adapters which can be passed as an optional argument to the `Parser` and `Serializer` constructors.
 
-####&bull; TreeAdapters.default
+#### &bull; TreeAdapters.default
 Default tree format for parse5.
 
 
-####&bull; TreeAdapters.htmlparser2
+#### &bull; TreeAdapters.htmlparser2
 Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.g. used in [cheerio](https://github.com/MatthewMueller/cheerio) and [jsdom](https://github.com/tmpvar/jsdom)).
 
 ---------------------------------------
 
 
-###Class: Parser
+### Class: Parser
 Provides HTML parsing functionality.
 
-####&bull; Parser.ctor([treeAdapter])
+#### &bull; Parser.ctor([treeAdapter])
 Creates new reusable instance of the `Parser`. Optional `treeAdapter` argument specifies resulting tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
 *Example:*
@@ -84,7 +84,7 @@ var parser2 = new parse5.Parser(parse5.TreeAdapters.htmlparser2);
 
 
 
-####&bull; Parser.parse(html)
+#### &bull; Parser.parse(html)
 Parses specified `html` string. Returns `document` node.
 
 *Example:*
@@ -93,7 +93,7 @@ var document = parser.parse('<!DOCTYPE html><html><head></head><body>Hi there!</
 ```
 
 
-####&bull; Parser.parseFragment(htmlFragment, [contextElement])
+#### &bull; Parser.parseFragment(htmlFragment, [contextElement])
 Parses given `htmlFragment`. Returns `documentFragment` node. Optional `contextElement` argument specifies context in which given `htmlFragment` will be parsed (consider it as setting `contextElement.innerHTML` property). If `contextElement` argument is not specified then `<template>` element will be used as a context and fragment will be parsed in 'forgiving' manner.
 
 *Example:*
@@ -107,10 +107,10 @@ var trFragment = parser.parseFragment('<tr><td>Shake it, baby</td></tr>', docume
 ---------------------------------------
 
 
-###Class: SimpleApiParser
+### Class: SimpleApiParser
 Provides [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parsing functionality.
 
-####&bull; SimpleApiParser.ctor(handlers)
+#### &bull; SimpleApiParser.ctor(handlers)
 Creates new reusable instance of the `SimpleApiParser`. `handlers` argument specifies object that contains parser's event handlers. Possible events and their signatures are shown in the example.
 
 *Example:*
@@ -140,7 +140,7 @@ var parser = new parse5.SimpleApiParser({
 });
 ```
 
-####&bull; SimpleApiParser.parse(html)
+#### &bull; SimpleApiParser.parse(html)
 Raises parser events for the given `html`.
 
 *Example:*
@@ -158,11 +158,11 @@ parser.parse('<body>Yo!</body>');
 
 ---------------------------------------
 
-###Class: Serializer
+### Class: Serializer
 Provides tree-to-HTML serialization functionality.
 **Note:** prior to v1.2.0 this class was called `TreeSerializer`. However, it's still accessible as `parse5.TreeSerializer` for backward compatibility.
 
-####&bull; Serializer.ctor([treeAdapter, options])
+#### &bull; Serializer.ctor([treeAdapter, options])
 Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
 `options` object provides the serialization algorithm modifications (**Warning:** switching default options causes HTML5 specification violation. However, it may be useful in some cases, e.g. markup instrumentation. Use it on your own risk.)
@@ -182,7 +182,7 @@ var serializer2 = new parse5.Serializer(parse5.TreeAdapters.htmlparser2);
 ```
 
 
-####&bull; Serializer.serialize(node)
+#### &bull; Serializer.serialize(node)
 Serializes the given `node`. Returns HTML string.
 
 *Example:*
@@ -199,7 +199,7 @@ var bodyInnerHtml = serializer.serialize(document.childNodes[0].childNodes[1]);
 ---------------------------------------
 
 
-##Testing
+## Testing
 Test data is adopted from [html5lib project](https://github.com/html5lib). Parser is covered by more than 8000 test cases.
 To run tests:
 ```
@@ -207,7 +207,7 @@ $ npm test
 ```
 
 
-##Custom tree adapter
+## Custom tree adapter
 You can create a custom tree adapter so parse5 can work with your own DOM-tree implementation.
 Just pass your adapter implementation to the parser's constructor as an argument:
 
@@ -225,9 +225,9 @@ var parser = new Parser(myTreeAdapter);
 Sample implementation can be found [here](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters/default.js).
 The custom tree adapter should implement all methods exposed via `exports` in the sample implementation.
 
-##Questions or suggestions?
+## Questions or suggestions?
 If you have any questions, please feel free to create an issue [here on github](https://github.com/inikulin/parse5/issues).
 
 
-##Author
+## Author
 [Ivan Nikulin](https://github.com/inikulin) (ifaaan@gmail.com)
