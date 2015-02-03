@@ -44,17 +44,17 @@ exports['Regression - SYSTEM-only doctype serialization'] = function () {
 
 exports['Regression - Escaping of doctypes with quotes in them'] = function () {
     var htmlStrs = [
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
-                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-                '<html><head></head><body></body></html>',
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
+            '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
+            '<html><head></head><body></body></html>',
 
-                '<!DOCTYPE html PUBLIC \'-//W3C//"DTD" XHTML 1.0 Transitional//EN\' ' +
-                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-                '<html><head></head><body></body></html>',
+            '<!DOCTYPE html PUBLIC \'-//W3C//"DTD" XHTML 1.0 Transitional//EN\' ' +
+            '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
+            '<html><head></head><body></body></html>',
 
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
-                '\'http://www.w3.org/TR/xhtml1/DTD/"xhtml1-transitional.dtd"\'>' +
-                '<html><head></head><body></body></html>'
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
+            '\'http://www.w3.org/TR/xhtml1/DTD/"xhtml1-transitional.dtd"\'>' +
+            '<html><head></head><body></body></html>'
         ],
         parser = new Parser(),
         serializer = new Serializer();
@@ -93,24 +93,24 @@ exports['Regression - new line in <pre> tag'] = function () {
 exports['Options - encodeHtmlEntities'] = function () {
     var testHtmlCases = [
             {
-                options: { encodeHtmlEntities: true },
+                options: {encodeHtmlEntities: true},
                 src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
                 expected: '<!DOCTYPE html><html><head></head><body>&amp;</body></html>'
             },
 
             {
-                options: { encodeHtmlEntities: false },
+                options: {encodeHtmlEntities: false},
                 src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
                 expected: '<!DOCTYPE html><html><head></head><body>&</body></html>'
             },
             {
-                options: { encodeHtmlEntities: true },
+                options: {encodeHtmlEntities: true},
                 src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
                 expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&amp;world=2"></a></body></html>'
             },
 
             {
-                options: { encodeHtmlEntities: false },
+                options: {encodeHtmlEntities: false},
                 src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
                 expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>'
             }

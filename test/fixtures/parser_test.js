@@ -1,10 +1,25 @@
 var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
-    Parser = require('../../index').Parser,
-    TestUtils = require('../test_utils');
+    parse5 = require('../../index'),
+    TestUtils = require('../test_utils'),
+    Parser = parse5.Parser,
+    Serializer = parse5.Serializer;
 
 TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+
+    _test['Regression - <form> in <template> (GH-40)'] = function () {
+        var parser = new Parser(treeAdapter),
+            serializer = new Serializer(treeAdapter),
+            src = '<template><form><input name="q"></form><div>second</div></template>',
+            fragment = parser.parseFragment(src),
+            actual = serializer.serialize(fragment);
+
+        assert.strictEqual(actual, src, TestUtils.getStringDiffMsg(actual, src));
+    };
+
+    //html5lib test suite
+    //------------------------------------------------------------------------------
     function getFullTestName(test) {
         return ['Parser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }

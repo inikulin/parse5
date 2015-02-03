@@ -1,3 +1,6 @@
+## 1.3.2
+ * Fix: `<form>` processing in `<template>` (GH [#40](https://github.com/inikulin/parse5/issues/40))
+
 ## 1.3.1
  * Fix: text node in `<template>` serialization problem with custom tree adapter (GH [#38](https://github.com/inikulin/parse5/issues/38))
 
