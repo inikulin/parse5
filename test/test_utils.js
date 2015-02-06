@@ -91,7 +91,8 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
         tests = [];
 
     dataDirs.forEach(function (dataDirPath) {
-        var testSetFileNames = fs.readdirSync(dataDirPath);
+        var testSetFileNames = fs.readdirSync(dataDirPath),
+            dirName = path.basename(dataDirPath);
 
         testSetFileNames.forEach(function (fileName) {
             var filePath = path.join(dataDirPath, fileName),
@@ -122,9 +123,11 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
                 tests.push({
                     idx: ++testIdx,
                     setName: setName,
+                    dirName: dirName,
                     input: descr['#data'].join('\r\n'),
                     expected: descr['#document'].join('\n'),
                     expectedErrors: descr['#errors'],
+                    disableHtmlEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
                     fragmentContext: fragmentContextTagName &&
                                      treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, [])
                 });

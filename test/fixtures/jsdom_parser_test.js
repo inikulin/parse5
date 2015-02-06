@@ -82,9 +82,6 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
         return ['JsDomParser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }
 
-    var testDataDir = path.join(__dirname, '../data/tree_construction'),
-        scriptedTestDataDir = path.join(__dirname, '../data/scripted_tree_construction');
-
     function parseDocument(input, callback) {
         var parsing = JsDomParser.parseDocument(input, treeAdapter)
 
@@ -123,7 +120,10 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
     }
 
     //Here we go..
-    TestUtils.loadTreeConstructionTestData([testDataDir, scriptedTestDataDir], treeAdapter).forEach(function (test) {
+    TestUtils.loadTreeConstructionTestData([
+        path.join(__dirname, '../data/tree_construction'),
+        path.join(__dirname, '../data/tree_construction_jsdom')
+    ], treeAdapter).forEach(function (test) {
         _test[getFullTestName(test)] = function (done) {
             function assertResult(result) {
                 var actual = TestUtils.serializeToTestDataFormat(result, treeAdapter),

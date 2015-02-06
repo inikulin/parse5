@@ -165,7 +165,7 @@ Provides tree-to-HTML serialization functionality.
 #### &bull; Serializer.ctor([treeAdapter, options])
 Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
-`options` object provides the serialization algorithm modifications (**Warning:** switching default options causes HTML5 specification violation. However, it may be useful in some cases, e.g. markup instrumentation. Use it on your own risk.)
+`options` object provides the serialization algorithm modifications **Warning:** switching default options causes HTML5 specification violation. However, it may be useful in some cases, e.g. markup instrumentation. Use it on your own risk.
 
 *  **options.encodeHtmlEntities** - HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.
 

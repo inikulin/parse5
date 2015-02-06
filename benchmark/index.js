@@ -13,7 +13,7 @@ new Benchmark.Suite()
         wcParser.parse(testHtml);
     })
 
-    .add('upstream', function () {
+    .add('Upstream', function () {
         usParser.parse(testHtml);
     })
 
