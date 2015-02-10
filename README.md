@@ -72,7 +72,8 @@ Provides HTML parsing functionality.
 Creates new reusable instance of the `Parser`. Optional `treeAdapter` argument specifies resulting tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
 `options` object provides the parsing algorithm modifications:
-*  **options.decodeHtmlEntities** - decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
+#####  options.decodeHtmlEntities 
+Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
 
 *Example:*
 ```js
@@ -117,7 +118,8 @@ Provides [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML pars
 Creates new reusable instance of the `SimpleApiParser`. `handlers` argument specifies object that contains parser's event handlers. Possible events and their signatures are shown in the example.
 
 `options` object provides the parsing algorithm modifications:
-*  **options.decodeHtmlEntities** - decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
+##### options.decodeHtmlEntities  
+Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
 
 *Example:*
 ```js
@@ -172,7 +174,8 @@ Provides tree-to-HTML serialization functionality.
 Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
 `options` object provides the serialization algorithm modifications:
-*  **options.encodeHtmlEntities** - HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.  **Warning:** disabling this option may cause output which not conform HTML5 specification.
+##### options.encodeHtmlEntities 
+HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.  **Warning:** disabling this option may cause output which not conform HTML5 specification.
 
 
 *Example:*
