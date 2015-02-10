@@ -3,8 +3,8 @@ var assert = require('assert'),
     SimpleApiParser = require('../../index').SimpleApiParser,
     TestUtils = require('../test_utils');
 
-function getFullTestName(test) {
-    return ['SimpleApiParser - ', test.idx, '.', test.name].join('');
+function getFullTestName(test, idx) {
+    return ['SimpleApiParser - ', idx, '.', test.name].join('');
 }
 
 function sanitizeForComparison(str) {
@@ -14,59 +14,84 @@ function sanitizeForComparison(str) {
         .toLowerCase();
 }
 
-var testDataDir = path.join(__dirname, '../data/simple_api_parsing');
 
-TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
-    exports[getFullTestName(test)] = function () {
+function createTest(html, expected, options) {
+    return function () {
         //NOTE: the idea of the test is to serialize back given HTML using SimpleApiParser handlers
-        var result = '',
+        var actual = '',
             parser = new SimpleApiParser({
                 doctype: function (name, publicId, systemId) {
-                    result += '<!DOCTYPE ' + name;
+                    actual += '<!DOCTYPE ' + name;
 
                     if (publicId !== null)
-                        result += ' PUBLIC "' + publicId + '"';
+                        actual += ' PUBLIC "' + publicId + '"';
 
                     else if (systemId !== null)
-                        result += ' SYSTEM';
+                        actual += ' SYSTEM';
 
                     if (systemId !== null)
-                        result += ' "' + systemId + '"';
+                        actual += ' "' + systemId + '"';
 
 
-                    result += '>';
+                    actual += '>';
                 },
 
                 startTag: function (tagName, attrs, selfClosing) {
-                    result += '<' + tagName;
+                    actual += '<' + tagName;
 
                     if (attrs.length) {
                         for (var i = 0; i < attrs.length; i++)
-                            result += ' ' + attrs[i].name + '="' + attrs[i].value + '"';
+                            actual += ' ' + attrs[i].name + '="' + attrs[i].value + '"';
                     }
 
-                    result += selfClosing ? '/>' : '>';
+                    actual += selfClosing ? '/>' : '>';
                 },
 
                 endTag: function (tagName) {
-                    result += '</' + tagName + '>';
+                    actual += '</' + tagName + '>';
                 },
 
                 text: function (text) {
-                    result += text;
+                    actual += text;
                 },
 
                 comment: function (text) {
-                    result += '<!--' + text + '-->';
+                    actual += '<!--' + text + '-->';
                 }
-            }),
-            expected = sanitizeForComparison(test.expected);
+            }, options);
 
-        parser.parse(test.src);
+        parser.parse(html);
 
-        result = sanitizeForComparison(result);
+        expected = sanitizeForComparison(expected);
+        actual = sanitizeForComparison(actual);
 
         //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-        assert.ok(result === expected, TestUtils.getStringDiffMsg(result, expected));
-    }
-});
+        assert.ok(actual === expected, TestUtils.getStringDiffMsg(actual, expected));
+    };
+}
+
+TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_parsing'))
+    .concat([
+        {
+            name: 'Options - decodeHtmlEntities (text)',
+            src: '<div>&amp;&copy;</div>',
+            expected: '<div>&amp;&copy;</div>',
+            options: {
+                decodeHtmlEntities: false
+            }
+        },
+
+        {
+            name: 'Options - decodeHtmlEntities (attributes)',
+            src: '<a href = "&amp;test&lt;" &copy;>Yo</a>',
+            expected: '<a href = "&amp;test&lt;" &copy;="">Yo</a>',
+            options: {
+                decodeHtmlEntities: false
+            }
+        }
+    ])
+    .forEach(function (test, idx) {
+        exports[getFullTestName(test, idx)] = createTest(test.src, test.expected, test.options);
+    });
+
+

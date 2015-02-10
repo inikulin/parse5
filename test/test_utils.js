@@ -64,8 +64,7 @@ exports.removeNewLines = function (str) {
 
 exports.loadSerializationTestData = function (dataDirPath) {
     var testSetFileDirs = fs.readdirSync(dataDirPath),
-        tests = [],
-        testIdx = 1;
+        tests = [];
 
     testSetFileDirs.forEach(function (dirName) {
         var srcFilePath = path.join(dataDirPath, dirName, 'src.html'),
@@ -74,13 +73,10 @@ exports.loadSerializationTestData = function (dataDirPath) {
             expected = fs.readFileSync(expectedFilePath).toString();
 
         tests.push({
-            idx: testIdx,
             name: dirName,
             src: src,
             expected: expected
         });
-
-        testIdx++;
     });
 
     return tests;

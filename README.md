@@ -68,8 +68,11 @@ Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.
 ### Class: Parser
 Provides HTML parsing functionality.
 
-#### &bull; Parser.ctor([treeAdapter])
+#### &bull; Parser.ctor([treeAdapter, options])
 Creates new reusable instance of the `Parser`. Optional `treeAdapter` argument specifies resulting tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
+
+`options` object provides the parsing algorithm modifications:
+*  **options.decodeHtmlEntities** - decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
 
 *Example:*
 ```js
@@ -110,8 +113,11 @@ var trFragment = parser.parseFragment('<tr><td>Shake it, baby</td></tr>', docume
 ### Class: SimpleApiParser
 Provides [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parsing functionality.
 
-#### &bull; SimpleApiParser.ctor(handlers)
+#### &bull; SimpleApiParser.ctor(handlers, [options])
 Creates new reusable instance of the `SimpleApiParser`. `handlers` argument specifies object that contains parser's event handlers. Possible events and their signatures are shown in the example.
+
+`options` object provides the parsing algorithm modifications:
+*  **options.decodeHtmlEntities** - decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
 
 *Example:*
 ```js
@@ -165,9 +171,8 @@ Provides tree-to-HTML serialization functionality.
 #### &bull; Serializer.ctor([treeAdapter, options])
 Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
-`options` object provides the serialization algorithm modifications **Warning:** switching default options causes HTML5 specification violation. However, it may be useful in some cases, e.g. markup instrumentation. Use it on your own risk.
-
-*  **options.encodeHtmlEntities** - HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.
+`options` object provides the serialization algorithm modifications:
+*  **options.encodeHtmlEntities** - HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.  **Warning:** disabling this option may cause output which not conform HTML5 specification.
 
 
 *Example:*

@@ -1,3 +1,7 @@
+## 1.4.0
+ * Add: Parser `decodeHtmlEntities` option.
+ * Add: SimpleApiParser `decodeHtmlEntities` option.
+
 ## 1.3.2
  * Fix: `<form>` processing in `<template>` (GH [#40](https://github.com/inikulin/parse5/issues/40))
 
