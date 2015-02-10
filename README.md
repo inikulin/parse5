@@ -73,7 +73,7 @@ Creates new reusable instance of the `Parser`. Optional `treeAdapter` argument s
 
 `options` object provides the parsing algorithm modifications:
 #####  options.decodeHtmlEntities 
-Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
+Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which is not conform HTML5 specification.
 
 *Example:*
 ```js
@@ -119,7 +119,7 @@ Creates new reusable instance of the `SimpleApiParser`. `handlers` argument spec
 
 `options` object provides the parsing algorithm modifications:
 ##### options.decodeHtmlEntities  
-Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which not conform HTML5 specification.
+Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which is not conform HTML5 specification.
 
 *Example:*
 ```js
@@ -175,7 +175,7 @@ Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argume
 
 `options` object provides the serialization algorithm modifications:
 ##### options.encodeHtmlEntities 
-HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.  **Warning:** disabling this option may cause output which not conform HTML5 specification.
+HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.  **Warning:** disabling this option may cause output which is not conform HTML5 specification.
 
 
 *Example:*
