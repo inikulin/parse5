@@ -123,7 +123,7 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
                     input: descr['#data'].join('\r\n'),
                     expected: descr['#document'].join('\n'),
                     expectedErrors: descr['#errors'],
-                    disableHtmlEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
+                    disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
                     fragmentContext: fragmentContextTagName &&
                                      treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, [])
                 });

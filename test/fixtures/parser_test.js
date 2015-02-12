@@ -18,7 +18,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapt
     ], treeAdapter).forEach(function (test) {
         _test[getFullTestName(test)] = function () {
             var parser = new Parser(treeAdapter, {
-                    decodeHtmlEntities: !test.disableHtmlEntitiesDecoding
+                    decodeHtmlEntities: !test.disableEntitiesDecoding
                 }),
                 result = test.fragmentContext ?
                          parser.parseFragment(test.input, test.fragmentContext) :
