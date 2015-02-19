@@ -181,6 +181,7 @@ exports['Options - locationInfo'] = function () {
     var testCases = [
         {
             initialMode: Tokenizer.MODE.DATA,
+            lastStartTagName: '',
             htmlChunks: [
                 '<!DOCTYPE html>', '\n',
                 '<!-- Test -->', '\n',
@@ -198,6 +199,35 @@ exports['Options - locationInfo'] = function () {
                 '</div>',
                 '<body>'
             ]
+        },
+        {
+            initialMode: Tokenizer.MODE.RCDATA,
+            lastStartTagName: 'title',
+            htmlChunks: [
+                '<div>Test',
+                ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->'
+            ]
+        },
+        {
+            initialMode: Tokenizer.MODE.RAWTEXT,
+            lastStartTagName: 'style',
+            htmlChunks: [
+                '.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text'
+            ]
+        },
+        {
+            initialMode: Tokenizer.MODE.SCRIPT_DATA,
+            lastStartTagName: 'script',
+            htmlChunks: [
+                'var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>'
+            ]
+        },
+        {
+            initialMode: Tokenizer.MODE.PLAINTEXT,
+            lastStartTagName: 'plaintext',
+            htmlChunks: [
+                'Text', ' \n', 'Test</plaintext><div>'
+            ]
         }
 
     ];
@@ -205,6 +235,9 @@ exports['Options - locationInfo'] = function () {
     testCases.forEach(function (testCase) {
         var html = testCase.htmlChunks.join(''),
             tokenizer = new Tokenizer(html, {locationInfo: true});
+
+        tokenizer.state = testCase.initialMode;
+        tokenizer.lastStartTagName = testCase.lastStartTagName;
 
         for (var token = tokenizer.getNextToken(), i = 0; token.type !== Tokenizer.EOF_TOKEN;) {
             var chunk = html.substring(token.location.start, token.location.end);
