@@ -178,23 +178,41 @@ loadTests().forEach(function (test) {
 
 
 exports['Options - locationInfo'] = function () {
-    var html = '<!DOCTYPE html>' +
-               '<!-- Test -->' +
-               '<head><meta charset="utf-8"><title>   node.js\u0000</title></head>' +
-               '<body id="front">' +
-               '<div id="intro">' +
-               '<p>Node.js is a platform built on <a href="http://code.google.com/p/v8/">Chrome\'s JavaScript runtime</a>' +
-               '</div>' +
-               '<body>',
-        tokenizer = new Tokenizer(html, {locationInfo: true}),
-        expected = [
-            0, 15, 28, 34, 56, 63, 66, 73, 74, 82, 89, 106, 122, 125, 132, 133, 135, 136,
-            137, 138, 146, 147, 152, 153, 155, 156, 195, 203, 204, 214, 215, 222, 226, 232
-        ];
+    var testCases = [
+        {
+            initialMode: Tokenizer.MODE.DATA,
+            htmlChunks: [
+                '<!DOCTYPE html>', '\n',
+                '<!-- Test -->', '\n',
+                '<head>',
+                '\n   ', '<meta charset="utf-8">', '<title>', '   ', 'node.js', '\u0000', '</title>', '\n',
+                '</head>', '\n',
+                '<body id="front">', '\n',
+                '<div id="intro">',
+                '\n   ', '<p>',
+                '\n       ', 'Node.js', ' ', 'is', ' ', 'a',
+                '\n       ', 'platform', ' ', 'built', ' ', 'on',
+                '\n       ', '<a href="http://code.google.com/p/v8/">',
+                '\n       ', 'Chrome\'s', ' ', 'JavaScript', ' ', 'runtime',
+                '\n       ', '</a>', '\n',
+                '</div>',
+                '<body>'
+            ]
+        }
 
-    for (var token = tokenizer.getNextToken(), i = 0; token.type !== Tokenizer.EOF_TOKEN;) {
-        assert.strictEqual(token.location.start, expected[i]);
-        token = tokenizer.getNextToken();
-        i++;
-    }
+    ];
+
+    testCases.forEach(function (testCase) {
+        var html = testCase.htmlChunks.join(''),
+            tokenizer = new Tokenizer(html, {locationInfo: true});
+
+        for (var token = tokenizer.getNextToken(), i = 0; token.type !== Tokenizer.EOF_TOKEN;) {
+            var chunk = html.substring(token.location.start, token.location.end);
+
+            assert.strictEqual(chunk, testCase.htmlChunks[i]);
+
+            token = tokenizer.getNextToken();
+            i++;
+        }
+    });
 };
