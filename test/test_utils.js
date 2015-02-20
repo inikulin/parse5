@@ -26,7 +26,7 @@ exports.generateTestsForEachTreeAdapter = function (moduleExports, ctor) {
         var tests = {},
             adapter = parse5.TreeAdapters[adapterName];
 
-        ctor(tests, adapterName, adapter);
+        ctor(tests, adapter);
 
         Object.keys(tests).forEach(function (testName) {
             moduleExports['Tree adapter: ' + adapterName + ' - ' + testName] = tests[testName];

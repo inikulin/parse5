@@ -127,7 +127,7 @@ exports['Options - encodeHtmlEntities'] = function () {
 };
 
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     function getFullTestName(test) {
         return ['Serializer - ', test.idx, '.', test.name].join('');
     }

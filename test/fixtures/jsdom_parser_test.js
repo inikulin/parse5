@@ -77,7 +77,7 @@ exports['Reentrancy'] = function (done) {
 };
 
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     function getFullTestName(test) {
         return ['JsDomParser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }

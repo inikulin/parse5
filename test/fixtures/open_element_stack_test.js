@@ -7,7 +7,7 @@ var assert = require('assert'),
 var $ = HTML.TAG_NAMES,
     NS = HTML.NAMESPACES;
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     _test['Push element'] = function () {
         var document = treeAdapter.createDocument(),
             element1 = treeAdapter.createElement('#element1', 'namespace1', []),

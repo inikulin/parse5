@@ -7,7 +7,7 @@ var assert = require('assert'),
 var $ = html.TAG_NAMES,
     NS = html.NAMESPACES;
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, adapterName, treeAdapter) {
+TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     _test['Insert marker'] = function () {
         var list = new FormattingElementList(treeAdapter);
 

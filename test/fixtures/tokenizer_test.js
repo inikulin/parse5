@@ -183,7 +183,7 @@ exports['Options - locationInfo'] = function () {
             initialMode: Tokenizer.MODE.DATA,
             lastStartTagName: '',
             htmlChunks: [
-                '<!DOCTYPE html>', '\n',
+                '\r\n', '<!DOCTYPE html>', '\n',
                 '<!-- Test -->', '\n',
                 '<head>',
                 '\n   ', '<meta charset="utf-8">', '<title>', '   ', 'node.js', '\u0000', '</title>', '\n',
