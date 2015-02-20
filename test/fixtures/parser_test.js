@@ -59,7 +59,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     treeAdapter.appendChild(fragment, node);
 
                     var expected = serializer.serialize(fragment),
-                        actual = html.substring(node.location.start, node.location.end);
+                        actual = html.substring(node.__location.start, node.__location.end);
 
                     expected = TestUtils.removeNewLines(expected);
                     actual = TestUtils.removeNewLines(actual);
