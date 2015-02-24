@@ -14,7 +14,6 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
     function getLocationFullTestName(test) {
         return ['Parser(Location info) - ', test.name].join('');
-
     }
 
     //Here we go..
@@ -44,8 +43,13 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         //Then for each node in the tree we run serializer and compare results with the substring
         //obtained via location info from the expected serialization results.
         _test[getLocationFullTestName(test)] = function () {
-            var parser = new Parser(treeAdapter, {locationInfo: true}),
-                serializer = new Serializer(treeAdapter),
+            var parser = new Parser(treeAdapter, {
+                    locationInfo: true,
+                    decodeHtmlEntities: false
+                }),
+                serializer = new Serializer(treeAdapter, {
+                    encodeHtmlEntities: false
+                }),
                 html = test.expected,
                 document = parser.parse(html);
 
@@ -53,7 +57,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                 var node = stack.shift(),
                     children = treeAdapter.getChildNodes(node);
 
-                if (node.location) {
+                if (node !== document && node.__location !== null) {
                     var fragment = treeAdapter.createDocumentFragment();
 
                     treeAdapter.appendChild(fragment, node);
