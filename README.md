@@ -72,8 +72,10 @@ Provides HTML parsing functionality.
 Creates new reusable instance of the `Parser`. Optional `treeAdapter` argument specifies resulting tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
 `options` object provides the parsing algorithm modifications:
-#####  options.decodeHtmlEntities 
+#####  options.decodeHtmlEntities
 Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which is not conform HTML5 specification.
+#####  options.locationInfo
+Enables source code location information for the nodes. Default: `false`. When enabled, each node (except root node) has `__location` property, which contains `start` and `end` indices of the node in the source code.
 
 *Example:*
 ```js
@@ -118,31 +120,34 @@ Provides [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML pars
 Creates new reusable instance of the `SimpleApiParser`. `handlers` argument specifies object that contains parser's event handlers. Possible events and their signatures are shown in the example.
 
 `options` object provides the parsing algorithm modifications:
-##### options.decodeHtmlEntities  
+##### options.decodeHtmlEntities
 Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which is not conform HTML5 specification.
+##### options.locationInfo
+Enables source code location information for the tokens. Default: `false`. When enabled, each node handler receives `location` object as it's last argument. `location` object contains `start` and `end` indices of the token in the source code.
+
 
 *Example:*
 ```js
 var parse5 = require('parse5');
 
 var parser = new parse5.SimpleApiParser({
-    doctype: function(name, publicId, systemId) {
+    doctype: function(name, publicId, systemId, [location]) {
         //Handle doctype here
     },
 
-    startTag: function(tagName, attrs, selfClosing) {
+    startTag: function(tagName, attrs, selfClosing, [location]) {
         //Handle start tags here
     },
 
-    endTag: function(tagName) {
+    endTag: function(tagName, [location]) {
         //Handle end tags here
     },
 
-    text: function(text) {
+    text: function(text, [location]) {
         //Handle texts here
     },
 
-    comment: function(text) {
+    comment: function(text, [location]) {
         //Handle comments here
     }
 });
@@ -174,7 +179,7 @@ Provides tree-to-HTML serialization functionality.
 Creates new reusable instance of the `Serializer`. Optional `treeAdapter` argument specifies input tree format. If `treeAdapter` argument is not specified, `default` tree adapter will be used.
 
 `options` object provides the serialization algorithm modifications:
-##### options.encodeHtmlEntities 
+##### options.encodeHtmlEntities
 HTML-encode characters like `<`, `>`, `&`, etc.  Default: `true`.  **Warning:** disabling this option may cause output which is not conform HTML5 specification.
 
 
