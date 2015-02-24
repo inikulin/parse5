@@ -131,23 +131,23 @@ Enables source code location information for the tokens. Default: `false`. When 
 var parse5 = require('parse5');
 
 var parser = new parse5.SimpleApiParser({
-    doctype: function(name, publicId, systemId, [location]) {
+    doctype: function(name, publicId, systemId /*, [location] */) {
         //Handle doctype here
     },
 
-    startTag: function(tagName, attrs, selfClosing, [location]) {
+    startTag: function(tagName, attrs, selfClosing /*, [location] */) {
         //Handle start tags here
     },
 
-    endTag: function(tagName, [location]) {
+    endTag: function(tagName /*, [location] */) {
         //Handle end tags here
     },
 
-    text: function(text, [location]) {
+    text: function(text /*, [location] */) {
         //Handle texts here
     },
 
-    comment: function(text, [location]) {
+    comment: function(text /*, [location] */) {
         //Handle comments here
     }
 });
