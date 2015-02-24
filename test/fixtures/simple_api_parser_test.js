@@ -91,7 +91,27 @@ TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_par
         }
     ])
     .forEach(function (test, idx) {
-        exports[getFullTestName(test, idx)] = createTest(test.src, test.expected, test.options);
+        var testName = getFullTestName(test, idx);
+
+        exports[testName] = createTest(test.src, test.expected, test.options);
+
+        exports['Options - locationInfo - ' + testName] = function () {
+            //NOTE: we've already tested the correctness of the location info with the Tokenizer tests.
+            //So here we just check that SimpleApiParser provides this info in the handlers.
+            var handlers = ['doctype', 'startTag', 'endTag', 'text', 'comment'].reduce(function (handlers, key) {
+                    handlers[key] = function () {
+                        var locationInfo = arguments[arguments.length - 1];
+
+                        assert.strictEqual(typeof locationInfo.start, 'number');
+                        assert.strictEqual(typeof locationInfo.end, 'number');
+                    };
+                    return handlers;
+                }, {}),
+                parser = new SimpleApiParser(handlers, {locationInfo: true});
+
+            parser.parse(test.src);
+        };
     });
+
 
 
