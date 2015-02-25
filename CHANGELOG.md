@@ -1,3 +1,6 @@
+## 1.4.1
+ * Fix: Location info handling for the implicitly generated `<html>` and `<body>` elements (GH [#44](https://github.com/inikulin/parse5/issues/44)).
+
 ## 1.4.0
  * Add: Parser [decodeHtmlEntities](https://github.com/inikulin/parse5#optionsdecodehtmlentities) option.
  * Add: SimpleApiParser [decodeHtmlEntities](https://github.com/inikulin/parse5#optionsdecodehtmlentities-1) option.
@@ -5,10 +8,10 @@
  * Add: SimpleApiParser [locationInfo](https://github.com/inikulin/parse5#optionslocationinfo-1) option.
 
 ## 1.3.2
- * Fix: `<form>` processing in `<template>` (GH [#40](https://github.com/inikulin/parse5/issues/40))
+ * Fix: `<form>` processing in `<template>` (GH [#40](https://github.com/inikulin/parse5/issues/40)).
 
 ## 1.3.1
- * Fix: text node in `<template>` serialization problem with custom tree adapter (GH [#38](https://github.com/inikulin/parse5/issues/38))
+ * Fix: text node in `<template>` serialization problem with custom tree adapter (GH [#38](https://github.com/inikulin/parse5/issues/38)).
 
 ## 1.3.0
  * Add: Serializer `encodeHtmlEntities` option.
@@ -32,13 +35,13 @@
  * Development files (e.g. `.travis.yml`, `.editorconfig`) are removed from NPM package.
 
 ## 1.1.2
- * Fix: crash on Linux due to upper-case leading character in module name used in `require()`
+ * Fix: crash on Linux due to upper-case leading character in module name used in `require()`.
 
 ## 1.1.1
- * Add: [SimpleApiParser](https://github.com/inikulin/parse5/#class-simpleapiparser)
- * Fix: new line serialization in `<pre>`
- * Fix: `SYSTEM`-only `DOCTYPE` serialization
- * Fix: quotes serialization in `DOCTYPE` IDs
+ * Add: [SimpleApiParser](https://github.com/inikulin/parse5/#class-simpleapiparser).
+ * Fix: new line serialization in `<pre>`.
+ * Fix: `SYSTEM`-only `DOCTYPE` serialization.
+ * Fix: quotes serialization in `DOCTYPE` IDs.
 
 ## 1.0.0
  * First stable release, switch to semantic versioning.

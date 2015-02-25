@@ -16,6 +16,18 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         return ['Parser(Location info) - ', test.name].join('');
     }
 
+    function walkTree(document, handler) {
+        for (var stack = treeAdapter.getChildNodes(document).slice(); stack.length;) {
+            var node = stack.shift(),
+                children = treeAdapter.getChildNodes(node);
+
+            handler(node);
+
+            if (children && children.length)
+                stack = children.concat(stack);
+        }
+    }
+
     //Here we go..
     TestUtils.loadTreeConstructionTestData([
         path.join(__dirname, '../data/tree_construction'),
@@ -53,11 +65,8 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                 html = test.expected,
                 document = parser.parse(html);
 
-            for (var stack = [document]; stack.length;) {
-                var node = stack.shift(),
-                    children = treeAdapter.getChildNodes(node);
-
-                if (node !== document && node.__location !== null) {
+            walkTree(document, function (node) {
+                if (node.__location !== null) {
                     var fragment = treeAdapter.createDocumentFragment();
 
                     treeAdapter.appendChild(fragment, node);
@@ -71,12 +80,24 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
                     assert.ok(actual === expected, TestUtils.getStringDiffMsg(actual, expected));
                 }
-
-                if (children && children.length)
-                    stack = children.concat(stack);
-            }
+            });
         };
     });
+
+    exports['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
+        var html = '</head><div class="test"></div></body></html>',
+            parser = new Parser(treeAdapter, {
+                locationInfo: true,
+                decodeHtmlEntities: false
+            }),
+            document = parser.parse(html);
+
+        //NOTE: location info for all implicitly generated elements should be null
+        walkTree(document, function (node) {
+            if (treeAdapter.getTagName(node) !== HTML.TAG_NAMES.DIV)
+                assert.strictEqual(node.__location, null);
+        });
+    };
 });
 
 
