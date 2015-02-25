@@ -4,9 +4,9 @@
 
 [![Build Status](https://api.travis-ci.org/inikulin/parse5.svg)](https://travis-ci.org/inikulin/parse5)
 
-*WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.*
+*WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node and io.js.*
 
-To build [TestCafé](http://testcafe.devexpress.com/) we needed fast and ready for production HTML parser, which will parse HTML as a modern browser's parser.
+I needed fast and ready for production HTML parser, which will parse HTML as a modern browser's parser.
 Existing solutions were either too slow or their output was too inaccurate. So, this is how parse5 was born.
 
 **Included tools:**
