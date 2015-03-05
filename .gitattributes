@@ -1,2 +1,1 @@
-# GitHub's Linguist exclusions
-test/data/* linguist-vendored
+test/* linguist-vendored
