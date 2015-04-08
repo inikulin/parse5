@@ -1,3 +1,6 @@
+## 1.4.2
+ * Fix: htmlparser2 tree adapter `DocumentType.data` property rendering (GH [#45](https://github.com/inikulin/parse5/issues/45)).
+
 ## 1.4.1
  * Fix: Location info handling for the implicitly generated `<html>` and `<body>` elements (GH [#44](https://github.com/inikulin/parse5/issues/44)).
 

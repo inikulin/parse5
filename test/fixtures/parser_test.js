@@ -101,3 +101,12 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 });
 
 
+exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function () {
+    var html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>',
+        parser = new Parser(parse5.TreeAdapters.htmlparser2),
+        document = parser.parse(html);
+
+    assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
+};
+
+
