@@ -79,6 +79,30 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
                     //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
                     assert.ok(actual === expected, TestUtils.getStringDiffMsg(actual, expected));
+
+                    if (node.__location.startTag) {
+                        //NOTE: Based on the idea that the serialized fragment starts with the startTag
+                        var length = node.__location.startTag.end - node.__location.startTag.start,
+                            expectedStartTag = serializer.serialize(fragment).substring(0, length),
+                            actualStartTag = html.substring(node.__location.startTag.start, node.__location.startTag.end);
+
+                        expectedStartTag = TestUtils.removeNewLines(expectedStartTag);
+                        actualStartTag = TestUtils.removeNewLines(actualStartTag);
+
+                        assert.ok(expectedStartTag === actualStartTag, TestUtils.getStringDiffMsg(actualStartTag, expectedStartTag));
+                    }
+
+                    if (node.__location.endTag) {
+                        //NOTE: Based on the idea that the serialized fragment ends with the endTag
+                        var length = node.__location.endTag.end - node.__location.endTag.start,
+                            expectedEndTag = serializer.serialize(fragment).slice(-length),
+                            actualEndTag = html.substring(node.__location.endTag.start, node.__location.endTag.end);
+
+                        expectedEndTag = TestUtils.removeNewLines(expectedEndTag);
+                        actualEndTag = TestUtils.removeNewLines(actualEndTag);
+
+                        assert.ok(expectedEndTag === actualEndTag, TestUtils.getStringDiffMsg(actualEndTag, expectedEndTag));
+                    }
                 }
             });
         };
