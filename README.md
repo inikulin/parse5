@@ -76,7 +76,7 @@ Creates new reusable instance of the `Parser`. Optional `treeAdapter` argument s
 #####  options.decodeHtmlEntities
 Decode HTML-entities like `&amp;`, `&nbsp;`, etc.  Default: `true`. **Warning:** disabling this option may cause output which is not conform HTML5 specification.
 #####  options.locationInfo
-Enables source code location information for the nodes. Default: `false`. When enabled, each node (except root node) has `__location` property, which contains `start` and `end` indices of the node in the source code. If element was implicitly created by the parser it's `__location` property will be `null`.
+Enables source code location information for the nodes. Default: `false`. When enabled, each node (except root node) has `__location` property, which contains `start` and `end` indices of the node in the source code. If element was implicitly created by the parser it's `__location` property will be `null`. In case the node is not an empty element, `__location` has two addition properties `startTag` and `endTag` which contain location information for individual tags in a fashion similar to `__location` property.
 
 *Example:*
 ```js
