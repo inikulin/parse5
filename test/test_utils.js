@@ -62,6 +62,10 @@ exports.removeNewLines = function (str) {
         .replace(/\n/g, '');
 };
 
+function normalizeNewLine(str) {
+    return str.replace(/\r\n/g, '\n');
+}
+
 exports.loadSerializationTestData = function (dataDirPath) {
     var testSetFileDirs = fs.readdirSync(dataDirPath),
         tests = [];
@@ -74,8 +78,8 @@ exports.loadSerializationTestData = function (dataDirPath) {
 
         tests.push({
             name: dirName,
-            src: src,
-            expected: expected
+            src: normalizeNewLine(src),
+            expected: normalizeNewLine(expected)
         });
     });
 

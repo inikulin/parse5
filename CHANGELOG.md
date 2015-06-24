@@ -1,3 +1,6 @@
+## 1.5.0
+ * Add: Location info for the element start and end tags (by @sakagg).
+
 ## 1.4.2
  * Fix: htmlparser2 tree adapter `DocumentType.data` property rendering (GH [#45](https://github.com/inikulin/parse5/issues/45)).
 
