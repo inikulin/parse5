@@ -5,30 +5,32 @@ var fileData = fs.readFileSync(path.join(__dirname, 'entities.json')).toString()
     entitiesData = JSON.parse(fileData);
 
 var trie = Object.keys(entitiesData).reduce(function (trie, entity) {
-    var resultCp = entitiesData[entity].codepoints;
+    var resultCodepoints = entitiesData[entity].codepoints;
 
     entity = entity.replace(/^&/, '');
 
-    var entityLength = entity.length,
-        last = entityLength - 1,
+    var last = entity.length - 1,
         leaf = trie;
 
-    for (var i = 0; i < entityLength; i++) {
-        var key = entity.charCodeAt(i);
+    entity
+        .split('')
+        .map(function (ch) {
+            return ch.charCodeAt(0);
+        })
+        .forEach(function (key, idx) {
+            if (!leaf[key])
+                leaf[key] = {};
 
-        if (!leaf[key])
-            leaf[key] = {};
+            if (idx === last)
+                leaf[key].c = resultCodepoints;
 
-        if (i === last)
-            leaf[key].c = resultCp;
+            else {
+                if (!leaf[key].l)
+                    leaf[key].l = {};
 
-        else {
-            if (!leaf[key].l)
-                leaf[key].l = {};
-
-            leaf = leaf[key].l;
-        }
-    }
+                leaf = leaf[key].l;
+            }
+        });
 
     return trie;
 }, {});
