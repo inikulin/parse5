@@ -1,0 +1,28 @@
+{
+  "whitelist": [
+    "es6.arrowFunctions",
+    "es6.classes",
+    "es6.properties.computed",
+    "es6.properties.shorthand",
+    "es6.constants",
+    "es6.blockScoping",
+    "es6.destructuring",
+    "es6.modules",
+    "es6.parameters",
+    "es6.templateLiterals",
+    "es6.forOf",
+    "strict"
+  ],
+  "loose": [
+    "es6.arrowFunctions",
+    "es6.classes",
+    "es6.properties.computed",
+    "es6.properties.shorthand",
+    "es6.constants",
+    "es6.blockScoping",
+    "es6.destructuring",
+    "es6.modules",
+    "es6.parameters",
+    "es6.templateLiterals"
+  ]
+}
