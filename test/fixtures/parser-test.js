@@ -103,6 +103,18 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
                         assert.ok(expectedEndTag === actualEndTag, TestUtils.getStringDiffMsg(actualEndTag, expectedEndTag));
                     }
+
+                    if (node.attrs) {
+                        node.attrs.forEach(function (attr) {
+                            var expectedAttr = attr.name + '="' + attr.value + '"',
+                                actualAttr = html.substring(attr.location.start, attr.location.end);
+
+                            expectedAttr = TestUtils.removeNewLines(expectedAttr);
+                            actualAttr = TestUtils.removeNewLines(actualAttr);
+
+                            assert.ok(expectedAttr == actualAttr, TestUtils.getStringDiffMsg(actualAttr, expectedAttr));
+                        });
+                    }
                 }
             });
         };
