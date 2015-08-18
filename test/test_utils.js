@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs'),
     path = require('path'),
     parse5 = require('../index'),
@@ -231,6 +233,7 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
 
 exports.prettyPrintParserAssertionArgs = function (actual, expected) {
     var msg = '\nExpected:\n';
+
     msg += '-----------------\n';
     msg += expected + '\n';
     msg += '\nActual:\n';

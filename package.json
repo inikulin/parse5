@@ -11,7 +11,14 @@
   ],
   "homepage": "http://inikulin.github.io/parse5/",
   "devDependencies": {
-    "mocha": "1.21.4"
+    "gulp": "^3.9.0",
+    "gulp-benchmark": "^1.1.1",
+    "gulp-download": "0.0.1",
+    "gulp-eslint": "^1.0.0",
+    "gulp-install": "^0.5.0",
+    "gulp-mocha": "^2.1.3",
+    "gulp-rename": "^1.2.2",
+    "through2": "^2.0.0"
   },
   "keywords": [
     "html",
@@ -30,18 +37,13 @@
     "sax",
     "simple api"
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://raw.github.com/inikulin/parse5/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "main": "./index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/inikulin/parse5.git"
   },
   "scripts": {
-    "test": "node test/run_tests.js"
+    "test": "gulp test"
   }
 }

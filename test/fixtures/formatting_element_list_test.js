@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert'),
     html = require('../../lib/common/html'),
     FormattingElementList = require('../../lib/tree_construction/formatting_element_list'),
@@ -186,6 +188,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         list.insertMarker();
 
         var entry = list.getElementEntry(element1);
+
         assert.strictEqual(entry.type, FormattingElementList.ELEMENT_ENTRY);
         assert.strictEqual(entry.token, token);
         assert.strictEqual(entry.element, element1);

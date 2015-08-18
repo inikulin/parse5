@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
@@ -43,8 +45,9 @@ exports['Reentrancy'] = function (done) {
             '<select><template><option></option></template></select>'
         ];
 
-    var parsing1 = JsDomParser.parseDocument(docHtml1)
+    var parsing1 = JsDomParser.parseDocument(docHtml1);
 
+    parsing1
         .done(function (document1) {
             var actual = serializer.serialize(document1);
 
@@ -52,13 +55,13 @@ exports['Reentrancy'] = function (done) {
             assert.ok(actual === docHtml1, TestUtils.getStringDiffMsg(actual, docHtml1));
             done();
         })
-
         .handleScripts(function () {
             parsing1.suspend();
 
             setTimeout(function () {
                 fragments.forEach(function (fragment) {
                     var actual = serializer.serialize(JsDomParser.parseInnerHtml(fragment));
+
                     assert.ok(actual === fragment, TestUtils.getStringDiffMsg(actual, fragment));
                     asyncAssertionCount++;
                 });
@@ -83,10 +86,10 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     }
 
     function parseDocument(input, callback) {
-        var parsing = JsDomParser.parseDocument(input, treeAdapter)
+        var parsing = JsDomParser.parseDocument(input, treeAdapter);
 
+        parsing
             .done(callback)
-
             .handleScripts(function (document, scriptElement) {
                 parsing.suspend();
 
@@ -106,7 +109,8 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
                         try {
                             eval(script);
-                        } catch (err) {
+                        }
+                        catch (err) {
                             //NOTE: ignore broken scripts from test data
                         }
 
@@ -136,6 +140,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
             if (test.fragmentContext) {
                 var result = JsDomParser.parseInnerHtml(test.input, test.fragmentContext, treeAdapter);
+
                 assertResult(result);
             }
 

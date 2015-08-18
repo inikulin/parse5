@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert'),
     path = require('path'),
     SimpleApiParser = require('../../index').SimpleApiParser,
@@ -112,6 +114,3 @@ TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_par
             parser.parse(test.src);
         };
     });
-
-
-

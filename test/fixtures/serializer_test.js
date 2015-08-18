@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert'),
     path = require('path'),
     parse5 = require('../../index'),
@@ -68,19 +70,20 @@ exports['Regression - Escaping of doctypes with quotes in them'] = function () {
 };
 
 exports['Regression - new line in <pre> tag'] = function () {
-    var htmlStrs = [
-            {
-                src: '<!DOCTYPE html><html><head></head><body><pre>\ntest</pre></body></html>',
-                expected: '<!DOCTYPE html><html><head></head><body><pre>test</pre></body></html>'
-            },
-
-            {
-                src: '<!DOCTYPE html><html><head></head><body><pre>\n\ntest</pre></body></html>',
-                expected: '<!DOCTYPE html><html><head></head><body><pre>\n\ntest</pre></body></html>'
-            }
-        ],
-        parser = new Parser(),
+    var parser = new Parser(),
         serializer = new Serializer();
+
+    var htmlStrs = [
+        {
+            src: '<!DOCTYPE html><html><head></head><body><pre>\ntest</pre></body></html>',
+            expected: '<!DOCTYPE html><html><head></head><body><pre>test</pre></body></html>'
+        },
+
+        {
+            src: '<!DOCTYPE html><html><head></head><body><pre>\n\ntest</pre></body></html>',
+            expected: '<!DOCTYPE html><html><head></head><body><pre>\n\ntest</pre></body></html>'
+        }
+    ];
 
     htmlStrs.forEach(function (htmlStr) {
         var document = parser.parse(htmlStr.src),
@@ -91,31 +94,32 @@ exports['Regression - new line in <pre> tag'] = function () {
 };
 
 exports['Options - encodeHtmlEntities'] = function () {
+    var parser = new Parser();
+
     var testHtmlCases = [
-            {
-                options: {encodeHtmlEntities: true},
-                src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
-                expected: '<!DOCTYPE html><html><head></head><body>&amp;</body></html>'
-            },
+        {
+            options: {encodeHtmlEntities: true},
+            src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
+            expected: '<!DOCTYPE html><html><head></head><body>&amp;</body></html>'
+        },
 
-            {
-                options: {encodeHtmlEntities: false},
-                src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
-                expected: '<!DOCTYPE html><html><head></head><body>&</body></html>'
-            },
-            {
-                options: {encodeHtmlEntities: true},
-                src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
-                expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&amp;world=2"></a></body></html>'
-            },
+        {
+            options: {encodeHtmlEntities: false},
+            src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
+            expected: '<!DOCTYPE html><html><head></head><body>&</body></html>'
+        },
+        {
+            options: {encodeHtmlEntities: true},
+            src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
+            expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&amp;world=2"></a></body></html>'
+        },
 
-            {
-                options: {encodeHtmlEntities: false},
-                src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
-                expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>'
-            }
-        ],
-        parser = new Parser();
+        {
+            options: {encodeHtmlEntities: false},
+            src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
+            expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>'
+        }
+    ];
 
     testHtmlCases.forEach(function (testCase) {
         var serializer = new Serializer(null, testCase.options);

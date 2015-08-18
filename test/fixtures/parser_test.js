@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),

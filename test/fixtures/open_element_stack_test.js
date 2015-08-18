@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert'),
     HTML = require('../../lib/common/html'),
     OpenElementStack = require('../../lib/tree_construction/open_element_stack'),
