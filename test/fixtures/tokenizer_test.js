@@ -3,17 +3,31 @@
 var assert = require('assert'),
     fs = require('fs'),
     path = require('path'),
-    Tokenizer = require('../../lib/tokenizer');
+    Tokenizer = require('../../lib/tokenizer'),
+    testUtils = require('../test_utils');
 
-function tokenize(html, initialState, lastStartTag) {
-    var tokenizer = new Tokenizer(html),
+function tokenize(chunks, initialState, lastStartTag) {
+    var tokenizer = new Tokenizer(),
         nextToken = null,
-        out = [];
+        out = [],
+        chunkIdx = 0;
 
     tokenizer.state = initialState;
 
     if (lastStartTag)
         tokenizer.lastStartTagName = lastStartTag;
+
+    function writeChunk() {
+        var chunk = chunks[chunkIdx];
+
+        if (++chunkIdx === chunks.length)
+            tokenizer.end(chunk);
+        else
+            tokenizer.write(chunk);
+    }
+
+
+    writeChunk();
 
     do {
         nextToken = tokenizer.getNextToken();
@@ -61,6 +75,10 @@ function tokenize(html, initialState, lastStartTag) {
                     nextToken.systemId,
                     !nextToken.forceQuirks
                 ]);
+                break;
+
+            case Tokenizer.HIBERNATION_TOKEN:
+                writeChunk();
                 break;
         }
     } while (nextToken.type !== Tokenizer.EOF_TOKEN);
@@ -172,9 +190,10 @@ function getFullTestName(test) {
 //Here we go..
 loadTests().forEach(function (test) {
     exports[getFullTestName(test)] = function () {
-        var out = tokenize(test.input, test.initialState, test.lastStartTag);
+        var chunks = testUtils.makeChunks(test.input);
+        var out = tokenize(chunks, test.initialState, test.lastStartTag);
 
-        assert.deepEqual(out, test.expected);
+        assert.deepEqual(out, test.expected, 'Chunks: ' + JSON.stringify(chunks));
     };
 });
 
@@ -236,8 +255,9 @@ exports['Options - locationInfo'] = function () {
 
     testCases.forEach(function (testCase) {
         var html = testCase.htmlChunks.join(''),
-            tokenizer = new Tokenizer(html, {locationInfo: true});
+            tokenizer = new Tokenizer({locationInfo: true});
 
+        tokenizer.end(html);
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 

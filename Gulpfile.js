@@ -92,7 +92,7 @@ gulp.task('lint', function () {
 
 gulp.task('test', ['lint'], function () {
     return gulp
-        .src('test/fixtures/*_test.js')
+        .src('test/fixtures/tokenizer_test.js')
         .pipe(mocha({
             ui: 'exports',
             reporter: 'progress',

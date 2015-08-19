@@ -22,6 +22,14 @@ function createDiffMarker(markerPosition) {
     return marker + '^\n';
 }
 
+function getRandomChunkSize() {
+    var MIN = 1,
+        MAX = 10;
+
+    return MIN + Math.floor(Math.random() * (MAX - MIN + 1));
+}
+
+
 //NOTE: creates test suites for each available tree adapter.
 exports.generateTestsForEachTreeAdapter = function (moduleExports, ctor) {
     Object.keys(parse5.TreeAdapters).forEach(function (adapterName) {
@@ -242,3 +250,21 @@ exports.prettyPrintParserAssertionArgs = function (actual, expected) {
 
     return msg;
 };
+
+exports.makeChunks = function (str) {
+    if (!str.length)
+        return [''];
+
+    var chunks = [],
+        start = 0,
+        end = Math.min(getRandomChunkSize(), str.length);
+
+    while (start < str.length) {
+        chunks.push(str.substring(start, end));
+        start = end;
+        end = Math.min(end + getRandomChunkSize(), str.length);
+    }
+
+    return chunks;
+};
+
