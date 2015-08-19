@@ -45,5 +45,8 @@
   },
   "scripts": {
     "test": "gulp test"
-  }
+  },
+  "files": [
+    "lib/"
+  ]
 }

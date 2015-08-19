@@ -1,0 +1,2 @@
+lib/tokenizer/named_entity_trie.js
+test/benchmark/node_modules/**/*.js

@@ -81,9 +81,8 @@ gulp.task('benchmark', ['install-upstream-parse5'], function () {
 gulp.task('lint', function () {
     return gulp
         .src([
-            'src/**/*.js',
+            'lib/**/*.js',
             'test/**/*.js',
-            '!test/benchmark/node_modules/**/*.js',
             'Gulpfile.js'
         ])
         .pipe(eslint())
