@@ -3,8 +3,7 @@
 var path = require('path'),
     fs = require('fs'),
     upstream = require('parse5'),
-    workingCopy = require('../../index'),
-    testUtils = require('../test_utils');
+    workingCopy = require('../../lib');
 
 var wcParser = new workingCopy.Parser(),
     usParser = new upstream.Parser(),

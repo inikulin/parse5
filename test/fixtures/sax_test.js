@@ -2,15 +2,15 @@
 
 var assert = require('assert'),
     path = require('path'),
-    SimpleApiParser = require('../../index').SimpleApiParser,
-    TestUtils = require('../test_utils');
+    SAXParser = require('../../lib').SAXParser,
+    testUtils = require('../test_utils');
 
 function getFullTestName(test, idx) {
     return ['SimpleApiParser - ', idx, '.', test.name].join('');
 }
 
 function sanitizeForComparison(str) {
-    return TestUtils.removeNewLines(str)
+    return testUtils.removeNewLines(str)
         .replace(/\s/g, '')
         .replace(/'/g, '"')
         .toLowerCase();
@@ -21,7 +21,7 @@ function createTest(html, expected, options) {
     return function () {
         //NOTE: the idea of the test is to serialize back given HTML using SimpleApiParser handlers
         var actual = '',
-            parser = new SimpleApiParser({
+            parser = new SAXParser({
                 doctype: function (name, publicId, systemId) {
                     actual += '<!DOCTYPE ' + name;
 
@@ -68,11 +68,11 @@ function createTest(html, expected, options) {
         actual = sanitizeForComparison(actual);
 
         //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-        assert.ok(actual === expected, TestUtils.getStringDiffMsg(actual, expected));
+        assert.ok(actual === expected, testUtils.getStringDiffMsg(actual, expected));
     };
 }
 
-TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_parsing'))
+testUtils.loadSerializationTestData(path.join(__dirname, '../data/sax'))
     .concat([
         {
             name: 'Options - decodeHtmlEntities (text)',
@@ -109,7 +109,7 @@ TestUtils.loadSerializationTestData(path.join(__dirname, '../data/simple_api_par
                     };
                     return handlers;
                 }, {}),
-                parser = new SimpleApiParser(handlers, {locationInfo: true});
+                parser = new SAXParser(handlers, {locationInfo: true});
 
             parser.parse(test.src);
         };

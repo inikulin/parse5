@@ -1,15 +1,15 @@
 'use strict';
 
 var assert = require('assert'),
-    html = require('../../lib/common/html'),
-    FormattingElementList = require('../../lib/tree_construction/formatting_element_list'),
-    TestUtils = require('../test_utils');
+    HTML = require('../../lib/common/html'),
+    FormattingElementList = require('../../lib/parser/formatting_element_list'),
+    testUtils = require('../test_utils');
 
 //Aliases
-var $ = html.TAG_NAMES,
-    NS = html.NAMESPACES;
+var $ = HTML.TAG_NAMES,
+    NS = HTML.NAMESPACES;
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     _test['Insert marker'] = function () {
         var list = new FormattingElementList(treeAdapter);
 

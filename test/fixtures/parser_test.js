@@ -3,13 +3,13 @@
 var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
-    parse5 = require('../../index'),
+    parse5 = require('../../lib'),
     Parser = parse5.Parser,
     Serializer = parse5.Serializer,
-    TestUtils = require('../test_utils');
+    testUtils = require('../test_utils');
 
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     function getFullTestName(test) {
         return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }
@@ -31,7 +31,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     }
 
     //Here we go..
-    TestUtils.loadTreeConstructionTestData([
+    testUtils.loadTreeConstructionTestData([
         path.join(__dirname, '../data/tree_construction'),
         path.join(__dirname, '../data/tree_construction_regression'),
         path.join(__dirname, '../data/tree_construction_options')
@@ -43,8 +43,8 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                 result = test.fragmentContext ?
                          parser.parseFragment(test.input, test.fragmentContext) :
                          parser.parse(test.input),
-                actual = TestUtils.serializeToTestDataFormat(result, treeAdapter),
-                msg = TestUtils.prettyPrintParserAssertionArgs(actual, test.expected);
+                actual = testUtils.serializeToTestDataFormat(result, treeAdapter),
+                msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected);
 
             assert.strictEqual(actual, test.expected, msg);
         };
@@ -52,7 +52,7 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
 
     //Location info tests
-    TestUtils.loadSerializationTestData(path.join(__dirname, '../data/serialization')).forEach(function (test) {
+    testUtils.loadSerializationTestData(path.join(__dirname, '../data/serialization')).forEach(function (test) {
         //NOTE: the idea of this test is the following: we parse document with the location info.
         //Then for each node in the tree we run serializer and compare results with the substring
         //obtained via location info from the expected serialization results.
@@ -76,11 +76,11 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     var expected = serializer.serialize(fragment),
                         actual = html.substring(node.__location.start, node.__location.end);
 
-                    expected = TestUtils.removeNewLines(expected);
-                    actual = TestUtils.removeNewLines(actual);
+                    expected = testUtils.removeNewLines(expected);
+                    actual = testUtils.removeNewLines(actual);
 
                     //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-                    assert.ok(actual === expected, TestUtils.getStringDiffMsg(actual, expected));
+                    assert.ok(actual === expected, testUtils.getStringDiffMsg(actual, expected));
 
                     if (node.__location.startTag) {
                         //NOTE: Based on the idea that the serialized fragment starts with the startTag
@@ -88,10 +88,10 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                             expectedStartTag = serializer.serialize(fragment).substring(0, length),
                             actualStartTag = html.substring(node.__location.startTag.start, node.__location.startTag.end);
 
-                        expectedStartTag = TestUtils.removeNewLines(expectedStartTag);
-                        actualStartTag = TestUtils.removeNewLines(actualStartTag);
+                        expectedStartTag = testUtils.removeNewLines(expectedStartTag);
+                        actualStartTag = testUtils.removeNewLines(actualStartTag);
 
-                        assert.ok(expectedStartTag === actualStartTag, TestUtils.getStringDiffMsg(actualStartTag, expectedStartTag));
+                        assert.ok(expectedStartTag === actualStartTag, testUtils.getStringDiffMsg(actualStartTag, expectedStartTag));
                     }
 
                     if (node.__location.endTag) {
@@ -100,10 +100,10 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                             expectedEndTag = serializer.serialize(fragment).slice(-length),
                             actualEndTag = html.substring(node.__location.endTag.start, node.__location.endTag.end);
 
-                        expectedEndTag = TestUtils.removeNewLines(expectedEndTag);
-                        actualEndTag = TestUtils.removeNewLines(actualEndTag);
+                        expectedEndTag = testUtils.removeNewLines(expectedEndTag);
+                        actualEndTag = testUtils.removeNewLines(actualEndTag);
 
-                        assert.ok(expectedEndTag === actualEndTag, TestUtils.getStringDiffMsg(actualEndTag, expectedEndTag));
+                        assert.ok(expectedEndTag === actualEndTag, testUtils.getStringDiffMsg(actualEndTag, expectedEndTag));
                     }
                 }
             });

@@ -3,7 +3,7 @@
 var assert = require('assert'),
     fs = require('fs'),
     path = require('path'),
-    Tokenizer = require('../../lib/tokenization/tokenizer');
+    Tokenizer = require('../../lib/tokenizer');
 
 function tokenize(html, initialState, lastStartTag) {
     var tokenizer = new Tokenizer(html),

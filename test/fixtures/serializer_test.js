@@ -2,10 +2,10 @@
 
 var assert = require('assert'),
     path = require('path'),
-    parse5 = require('../../index'),
+    parse5 = require('../../lib'),
     Parser = parse5.Parser,
     Serializer = parse5.Serializer,
-    TestUtils = require('../test_utils');
+    testUtils = require('../test_utils');
 
 
 exports['Backward compatibility - parse5.TreeSerializer'] = function () {
@@ -131,7 +131,7 @@ exports['Options - encodeHtmlEntities'] = function () {
 };
 
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     function getFullTestName(test) {
         return ['Serializer - ', test.idx, '.', test.name].join('');
     }
@@ -139,16 +139,16 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     var testDataDir = path.join(__dirname, '../data/serialization');
 
     //Here we go..
-    TestUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
+    testUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
         _test[getFullTestName(test)] = function () {
             var parser = new Parser(treeAdapter),
                 serializer = new Serializer(treeAdapter),
                 document = parser.parse(test.src),
-                serializedResult = TestUtils.removeNewLines(serializer.serialize(document)),
-                expected = TestUtils.removeNewLines(test.expected);
+                serializedResult = testUtils.removeNewLines(serializer.serialize(document)),
+                expected = testUtils.removeNewLines(test.expected);
 
             //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-            assert.ok(serializedResult === expected, TestUtils.getStringDiffMsg(serializedResult, expected));
+            assert.ok(serializedResult === expected, testUtils.getStringDiffMsg(serializedResult, expected));
         };
     });
 

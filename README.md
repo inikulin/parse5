@@ -217,7 +217,7 @@ var bodyInnerHtml = serializer.serialize(document.childNodes[0].childNodes[1]);
 Test data is adopted from [html5lib project](https://github.com/html5lib). Parser is covered by more than 8000 test cases.
 To run tests:
 ```
-$ npm test
+$ gulp test
 ```
 
 

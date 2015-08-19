@@ -2,7 +2,7 @@
 
 var fs = require('fs'),
     path = require('path'),
-    parse5 = require('../index'),
+    parse5 = require('../lib/index'),
     HTML = require('../lib/common/html');
 
 function addSlashes(str) {

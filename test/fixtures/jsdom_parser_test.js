@@ -3,9 +3,9 @@
 var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
-    JsDomParser = require('../../index').JsDomParser,
-    Serializer = require('../../index').TreeSerializer,
-    TestUtils = require('../test_utils');
+    JsDomParser = require('../../lib').JsDomParser,
+    Serializer = require('../../lib').Serializer,
+    testUtils = require('../test_utils');
 
 exports['State guard'] = function () {
     var docHtml = '<script>Yoyo</script>',
@@ -52,7 +52,7 @@ exports['Reentrancy'] = function (done) {
             var actual = serializer.serialize(document1);
 
             assert.strictEqual(asyncAssertionCount, 5);
-            assert.ok(actual === docHtml1, TestUtils.getStringDiffMsg(actual, docHtml1));
+            assert.ok(actual === docHtml1, testUtils.getStringDiffMsg(actual, docHtml1));
             done();
         })
         .handleScripts(function () {
@@ -62,7 +62,7 @@ exports['Reentrancy'] = function (done) {
                 fragments.forEach(function (fragment) {
                     var actual = serializer.serialize(JsDomParser.parseInnerHtml(fragment));
 
-                    assert.ok(actual === fragment, TestUtils.getStringDiffMsg(actual, fragment));
+                    assert.ok(actual === fragment, testUtils.getStringDiffMsg(actual, fragment));
                     asyncAssertionCount++;
                 });
 
@@ -71,7 +71,7 @@ exports['Reentrancy'] = function (done) {
                 parsing2.done(function (document2) {
                     var actual = serializer.serialize(document2);
 
-                    assert.ok(actual === docHtml2, TestUtils.getStringDiffMsg(actual, docHtml2));
+                    assert.ok(actual === docHtml2, testUtils.getStringDiffMsg(actual, docHtml2));
                     asyncAssertionCount++;
                     parsing1.resume();
                 });
@@ -80,7 +80,7 @@ exports['Reentrancy'] = function (done) {
 };
 
 
-TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     function getFullTestName(test) {
         return ['JsDomParser - ', test.idx, '.', test.setName, ' - ', test.input].join('');
     }
@@ -124,14 +124,14 @@ TestUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     }
 
     //Here we go..
-    TestUtils.loadTreeConstructionTestData([
+    testUtils.loadTreeConstructionTestData([
         path.join(__dirname, '../data/tree_construction'),
         path.join(__dirname, '../data/tree_construction_jsdom')
     ], treeAdapter).forEach(function (test) {
         _test[getFullTestName(test)] = function (done) {
             function assertResult(result) {
-                var actual = TestUtils.serializeToTestDataFormat(result, treeAdapter),
-                    msg = TestUtils.prettyPrintParserAssertionArgs(actual, test.expected);
+                var actual = testUtils.serializeToTestDataFormat(result, treeAdapter),
+                    msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected);
 
                 assert.strictEqual(actual, test.expected, msg);
 

@@ -3,13 +3,13 @@
 var path = require('path'),
     fs = require('fs'),
     upstream = require('parse5'),
-    workingCopy = require('../../index'),
+    workingCopy = require('../../lib'),
     testUtils = require('../test_utils');
 
 var wcParser = new workingCopy.Parser(),
     usParser = new upstream.Parser(),
     pages = testUtils
-        .loadSerializationTestData(path.join(__dirname, '../data/simple_api_parsing'))
+        .loadSerializationTestData(path.join(__dirname, '../data/sax'))
         .map(function (test) {
             return test.src;
         });
