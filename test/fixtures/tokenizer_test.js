@@ -20,12 +20,8 @@ function tokenize(chunks, initialState, lastStartTag) {
     function writeChunk() {
         var chunk = chunks[chunkIdx];
 
-        if (++chunkIdx === chunks.length)
-            tokenizer.end(chunk);
-        else
-            tokenizer.write(chunk);
+        tokenizer.write(chunk, ++chunkIdx === chunks.length);
     }
-
 
     writeChunk();
 
@@ -255,19 +251,25 @@ exports['Options - locationInfo'] = function () {
 
     testCases.forEach(function (testCase) {
         var html = testCase.htmlChunks.join(''),
-            tokenizer = new Tokenizer({locationInfo: true});
+            tokenizer = new Tokenizer({locationInfo: true}),
+            lastChunkIdx = testCase.htmlChunks.length - 1;
 
-        tokenizer.end(html);
+        for (var i = 0; i < testCase.htmlChunks.length; i++)
+            tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);
+
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (var token = tokenizer.getNextToken(), i = 0; token.type !== Tokenizer.EOF_TOKEN;) {
+        for (var token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN;) {
+            if(token.type === Tokenizer.HIBERNATION_TOKEN)
+                continue;
+
             var chunk = html.substring(token.location.start, token.location.end);
 
-            assert.strictEqual(chunk, testCase.htmlChunks[i]);
+            assert.strictEqual(chunk, testCase.htmlChunks[j]);
 
             token = tokenizer.getNextToken();
-            i++;
+            j++;
         }
     });
 };

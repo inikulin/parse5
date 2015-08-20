@@ -22,11 +22,13 @@ function createDiffMarker(markerPosition) {
     return marker + '^\n';
 }
 
-function getRandomChunkSize() {
+function getRandomChunkSize(min) {
     var MIN = 1,
         MAX = 10;
 
-    return MIN + Math.floor(Math.random() * (MAX - MIN + 1));
+    min = min === void 0 ? MIN : min;
+
+    return min + Math.floor(Math.random() * (MAX - min + 1));
 }
 
 
@@ -239,7 +241,7 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
     return serializeNodeList(treeAdapter.getChildNodes(rootNode), 0);
 };
 
-exports.prettyPrintParserAssertionArgs = function (actual, expected) {
+exports.prettyPrintParserAssertionArgs = function (actual, expected, chunks) {
     var msg = '\nExpected:\n';
 
     msg += '-----------------\n';
@@ -248,21 +250,28 @@ exports.prettyPrintParserAssertionArgs = function (actual, expected) {
     msg += '-----------------\n';
     msg += actual + '\n';
 
+    if (chunks) {
+        msg += 'Chunks:\n'
+        msg += JSON.stringify(chunks);
+    }
+
     return msg;
 };
 
-exports.makeChunks = function (str) {
+exports.makeChunks = function (str, minChunkSize) {
     if (!str.length)
         return [''];
 
     var chunks = [],
-        start = 0,
-        end = Math.min(getRandomChunkSize(), str.length);
+        start = 0;
+
+    // NOTE: add 1 as well, so we avoid situation when we have just one huge chunk
+    var end = Math.min(getRandomChunkSize(minChunkSize), str.length, 1);
 
     while (start < str.length) {
         chunks.push(str.substring(start, end));
         start = end;
-        end = Math.min(end + getRandomChunkSize(), str.length);
+        end = Math.min(end + getRandomChunkSize(minChunkSize), str.length);
     }
 
     return chunks;
