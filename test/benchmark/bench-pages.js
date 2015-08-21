@@ -6,8 +6,7 @@ var path = require('path'),
     workingCopy = require('../../lib'),
     testUtils = require('../test_utils');
 
-var wcParser = new workingCopy.Parser(),
-    usParser = new upstream.Parser(),
+var usParser = new upstream.Parser(),
     pages = testUtils
         .loadSerializationTestData(path.join(__dirname, '../data/sax'))
         .map(function (test) {
@@ -26,7 +25,7 @@ module.exports = {
             name: 'Working copy',
 
             fn: function () {
-                runPages(wcParser);
+                runPages(workingCopy);
             }
         },
         {

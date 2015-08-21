@@ -35,9 +35,9 @@ function getRandomChunkSize(min, max) {
 
 //NOTE: creates test suites for each available tree adapter.
 exports.generateTestsForEachTreeAdapter = function (moduleExports, ctor) {
-    Object.keys(parse5.TreeAdapters).forEach(function (adapterName) {
+    Object.keys(parse5.treeAdapters).forEach(function (adapterName) {
         var tests = {},
-            adapter = parse5.TreeAdapters[adapterName];
+            adapter = parse5.treeAdapters[adapterName];
 
         ctor(tests, adapter);
 

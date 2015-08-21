@@ -4,7 +4,6 @@ var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
     parse5 = require('../../lib'),
-    ParserStream = parse5.ParserStream,
     testUtils = require('../test_utils');
 
 function getFullTestName(test) {
@@ -29,7 +28,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     msg = null;
 
                 if (test.fragmentContext) {
-                    var fragment = ParserStream.parseFragment(test.input, test.fragmentContext, opts);
+                    var fragment = parse5.parseFragment(test.input, test.fragmentContext, opts);
 
                     actual = testUtils.serializeToTestDataFormat(fragment, treeAdapter);
                     msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected);
@@ -49,7 +48,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
 exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function () {
     var html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>',
-        result = testUtils.parseChunked(html, {treeAdapter: parse5.TreeAdapters.htmlparser2});
+        result = testUtils.parseChunked(html, {treeAdapter: parse5.treeAdapters.htmlparser2});
 
     assert.strictEqual(result.document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
 };

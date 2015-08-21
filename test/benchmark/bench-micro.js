@@ -6,10 +6,9 @@ var path = require('path'),
     workingCopy = require('../../lib'),
     testUtils = require('../test_utils');
 
-var wcParser = new workingCopy.Parser(),
-    usParser = new upstream.Parser(),
+var usParser = new upstream.Parser(),
     micro = testUtils
-        .loadTreeConstructionTestData([path.join(__dirname, '../data/tree_construction')], workingCopy.TreeAdapters.default)
+        .loadTreeConstructionTestData([path.join(__dirname, '../data/tree_construction')], workingCopy.treeAdapters.default)
         .map(function (test) {
             return {
                 html: test.input,
@@ -34,7 +33,7 @@ module.exports = {
             name: 'Working copy',
 
             fn: function () {
-                runMicro(wcParser);
+                runMicro(workingCopy);
             }
         },
         {

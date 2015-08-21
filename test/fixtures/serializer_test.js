@@ -17,9 +17,9 @@ exports['Regression - Get text node\'s parent tagName only if it\'s an Element n
         var parser = new Parser(),
             serializer = new Serializer(),
             document = parser.parse('<template>yo<div></div>42</template>'),
-            originalGetTagName = this.originalGetTagName = parse5.TreeAdapters.default.getTagName;
+            originalGetTagName = this.originalGetTagName = parse5.treeAdapters.default.getTagName;
 
-        parse5.TreeAdapters.default.getTagName = function (element) {
+        parse5.treeAdapters.default.getTagName = function (element) {
             assert.ok(element.tagName);
 
             return originalGetTagName(element);
@@ -29,7 +29,7 @@ exports['Regression - Get text node\'s parent tagName only if it\'s an Element n
     },
 
     after: function () {
-        parse5.TreeAdapters.default.getTagName = this.originalGetTagName;
+        parse5.treeAdapters.default.getTagName = this.originalGetTagName;
     }
 };
 

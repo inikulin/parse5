@@ -5,8 +5,7 @@ var path = require('path'),
     upstream = require('parse5'),
     workingCopy = require('../../lib');
 
-var wcParser = new workingCopy.Parser(),
-    usParser = new upstream.Parser(),
+var usParser = new upstream.Parser(),
     hugePage = fs.readFileSync(path.join(__dirname, '../data/benchmark/huge-page.html')).toString();
 
 function runHugePage(parser) {
@@ -20,7 +19,7 @@ module.exports = {
             name: 'Working copy',
 
             fn: function () {
-                runHugePage(wcParser);
+                runHugePage(workingCopy);
             }
         },
         {
