@@ -278,3 +278,17 @@ exports.makeChunks = function (str, minSize, maxSize) {
     return chunks;
 };
 
+exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
+    var parser = new parse5.ParserStream(opts),
+        chunks = exports.makeChunks(html, minChunkSize, maxChunkSize);
+
+    for (var i = 0; i < chunks.length - 1; i++)
+        parser.write(chunks[i]);
+
+    parser.end(chunks[chunks.length - 1]);
+
+    return {
+        document: parser.document,
+        chunks: chunks
+    };
+};
