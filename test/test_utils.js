@@ -22,13 +22,14 @@ function createDiffMarker(markerPosition) {
     return marker + '^\n';
 }
 
-function getRandomChunkSize(min) {
+function getRandomChunkSize(min, max) {
     var MIN = 1,
         MAX = 10;
 
-    min = min === void 0 ? MIN : min;
+    min = min || MIN;
+    max = max || MAX;
 
-    return min + Math.floor(Math.random() * (MAX - min + 1));
+    return min + Math.floor(Math.random() * (max - min + 1));
 }
 
 
@@ -258,7 +259,7 @@ exports.prettyPrintParserAssertionArgs = function (actual, expected, chunks) {
     return msg;
 };
 
-exports.makeChunks = function (str, minChunkSize) {
+exports.makeChunks = function (str, minSize, maxSize) {
     if (!str.length)
         return [''];
 
@@ -266,12 +267,12 @@ exports.makeChunks = function (str, minChunkSize) {
         start = 0;
 
     // NOTE: add 1 as well, so we avoid situation when we have just one huge chunk
-    var end = Math.min(getRandomChunkSize(minChunkSize), str.length, 1);
+    var end = Math.min(getRandomChunkSize(minSize, maxSize), str.length, 1);
 
     while (start < str.length) {
         chunks.push(str.substring(start, end));
         start = end;
-        end = Math.min(end + getRandomChunkSize(minChunkSize), str.length);
+        end = Math.min(end + getRandomChunkSize(minSize, maxSize), str.length);
     }
 
     return chunks;

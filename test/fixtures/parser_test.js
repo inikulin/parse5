@@ -9,9 +9,9 @@ var assert = require('assert'),
     testUtils = require('../test_utils');
 
 
-function parseChunked(html, opts, minChunkSize) {
+function parseChunked(html, opts, minChunkSize, maxChunkSize) {
     var parser = new ParserStream(opts),
-        chunks = testUtils.makeChunks(html, minChunkSize);
+        chunks = testUtils.makeChunks(html, minChunkSize, maxChunkSize);
 
     for (var i = 0; i < chunks.length - 1; i++)
         parser.write(chunks[i]);
@@ -90,11 +90,14 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     encodeHtmlEntities: false
                 }),
                 html = test.expected,
-                parsingResult = parseChunked(html, {
+                parserOpts = {
                     treeAdapter: treeAdapter,
                     locationInfo: true,
                     decodeHtmlEntities: false
-                }, 200),
+                };
+
+            // NOTE: because of performance use bigger chunks here
+            var parsingResult = parseChunked(html, parserOpts, 100, 400),
                 document = parsingResult.document;
 
             //NOTE: Based on the idea that the serialized fragment starts with the startTag
@@ -176,4 +179,4 @@ exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapt
 };
 
 //TODO test document.write and events
-
+//TODO move location info tests into separate fixture
