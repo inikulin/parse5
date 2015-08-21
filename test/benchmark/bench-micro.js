@@ -2,21 +2,22 @@
 
 var path = require('path'),
     fs = require('fs'),
-    upstream = require('parse5'),
-    workingCopy = require('../../lib'),
+    upstreamParse5 = require('parse5'),
     testUtils = require('../test_utils');
 
-var usParser = new upstream.Parser(),
-    micro = testUtils
-        .loadTreeConstructionTestData([path.join(__dirname, '../data/tree_construction')], workingCopy.treeAdapters.default)
-        .map(function (test) {
-            return {
-                html: test.input,
-                fragmentContext: test.fragmentContext
-            }
-        });
+//HACK: https://github.com/bestiejs/benchmark.js/issues/51
+global.upstreamParser = new upstreamParse5.Parser();
+global.workingCopy = require('../../lib');
+global.micro = testUtils
+    .loadTreeConstructionTestData([path.join(__dirname, '../data/tree_construction')], workingCopy.treeAdapters.default)
+    .map(function (test) {
+        return {
+            html: test.input,
+            fragmentContext: test.fragmentContext
+        }
+    });
 
-function runMicro(parser) {
+global.runMicro = function (parser) {
     for (var i = 0; i < micro.length; i++) {
         if (micro[i].fragmentContext)
             parser.parseFragment(micro[i].html, micro[i].fragmentContext);
@@ -24,7 +25,7 @@ function runMicro(parser) {
             parser.parse(micro[i].html);
 
     }
-}
+};
 
 module.exports = {
     name: 'parse5 regression benchmark - MICRO',
@@ -40,7 +41,7 @@ module.exports = {
             name: 'Upstream',
 
             fn: function () {
-                runMicro(usParser);
+                runMicro(upstreamParser);
             }
         }
     ]
