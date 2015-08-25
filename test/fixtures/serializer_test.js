@@ -2,8 +2,64 @@
 
 var assert = require('assert'),
     path = require('path'),
+    WritableStream = require('stream').Writable,
+    Promise = require('promise'),
     parse5 = require('../../lib'),
     testUtils = require('../test_utils');
+
+function getFullTestName(test) {
+    return ['Serializer - ', test.idx, '.', test.name].join('');
+}
+
+function serializeStreaming(node, opts) {
+    return new Promise(function (resolve) {
+        var stream = new parse5.SerializerStream(node, opts),
+            result = '',
+            writable = new WritableStream();
+
+        //NOTE: use pipe to the WritableStream to test stream
+        //in the `flowing` mode.
+        writable._write = function (chunk, encoding, callback) {
+            result += chunk.toString();
+            callback();
+        };
+
+        stream.pipe(writable);
+
+        writable.once('finish', function () {
+            resolve(result);
+        });
+    });
+}
+
+
+testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
+    //Here we go..
+    testUtils
+        .loadSerializationTestData(path.join(__dirname, '../data/serialization'))
+        .forEach(function (test) {
+            _test[getFullTestName(test)] = function (done) {
+                var opts = {treeAdapter: treeAdapter},
+                    document = parse5.parse(test.src, opts),
+                    serializedResult = testUtils.removeNewLines(parse5.serialize(document, opts)),
+                    expected = testUtils.removeNewLines(test.expected);
+
+                //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
+                assert.ok(serializedResult === expected, testUtils.getStringDiffMsg(serializedResult, expected));
+
+                //NOTE: test SerializerStream
+                serializeStreaming(document, opts)
+                    .then(testUtils.removeNewLines)
+                    .then(function (serializedResult) {
+                        var msg = 'STREAMING: ' + testUtils.getStringDiffMsg(serializedResult, expected);
+
+                        assert.ok(serializedResult === expected, msg);
+                        done();
+                    })
+                    .catch(done);
+            };
+        });
+});
 
 exports['Regression - Get text node\'s parent tagName only if it\'s an Element node (GH-38)'] = {
     test: function () {
@@ -110,26 +166,3 @@ exports['Options - encodeHtmlEntities'] = function () {
         assert.strictEqual(serializedResult, testCase.expected);
     });
 };
-
-
-testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
-    function getFullTestName(test) {
-        return ['Serializer - ', test.idx, '.', test.name].join('');
-    }
-
-    var testDataDir = path.join(__dirname, '../data/serialization');
-
-    //Here we go..
-    testUtils.loadSerializationTestData(testDataDir).forEach(function (test) {
-        _test[getFullTestName(test)] = function () {
-            var opts = {treeAdapter: treeAdapter},
-                document = parse5.parse(test.src, opts),
-                serializedResult = testUtils.removeNewLines(parse5.serialize(document, opts)),
-                expected = testUtils.removeNewLines(test.expected);
-
-            //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-            assert.ok(serializedResult === expected, testUtils.getStringDiffMsg(serializedResult, expected));
-        };
-    });
-
-});
