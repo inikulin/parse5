@@ -96,7 +96,8 @@ gulp.task('test', ['lint'], function () {
             'test/fixtures/parser_test.js',
             'test/fixtures/tokenizer_test.js',
             'test/fixtures/location_info_tokenizer_test.js',
-            'test/fixtures/location_info_parser_test.js'
+            'test/fixtures/location_info_parser_test.js',
+            'test/fixtures/scripting_test.js'
         ])
         .pipe(mocha({
             ui: 'exports',
