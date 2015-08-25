@@ -4,7 +4,6 @@ var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
     parse5 = require('../../lib'),
-    Serializer = parse5.Serializer,
     testUtils = require('../test_utils');
 
 function getFullLocationTestName(test) {
@@ -65,9 +64,10 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             //Then for each node in the tree we run serializer and compare results with the substring
             //obtained via location info from the expected serialization results.
             _test[getFullLocationTestName(test)] = function () {
-                var serializer = new Serializer(treeAdapter, {
+                var serializerOpts = {
+                        treeAdapter: treeAdapter,
                         encodeHtmlEntities: false
-                    }),
+                    },
                     html = test.expected,
                     parserOpts = {
                         treeAdapter: treeAdapter,
@@ -85,7 +85,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
                         treeAdapter.appendChild(fragment, node);
 
-                        var serializedNode = serializer.serialize(fragment);
+                        var serializedNode = parse5.serialize(fragment, serializerOpts);
 
                         assertNodeLocation(node, serializedNode, html);
 
