@@ -4,135 +4,70 @@ var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
     parse5 = require('../../lib'),
-    Parser = parse5.Parser,
-    Serializer = parse5.Serializer,
     testUtils = require('../test_utils');
 
+function getFullTestName(test) {
+    return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
+}
+
+function assertFragmentParsing(input, fragmentContext, expected, opts) {
+    var fragment = parse5.parseFragment(input, fragmentContext, opts),
+        actual = testUtils.serializeToTestDataFormat(fragment, opts.treeAdapter),
+        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
+
+    assert.strictEqual(actual, expected, msg);
+}
+
+function assertStreamingParsing(input, expected, opts) {
+    var result = testUtils.parseChunked(input, opts),
+        actual = testUtils.serializeToTestDataFormat(result.document, opts.treeAdapter),
+        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected, result.chunks);
+
+    msg = 'STREAMING: ' + msg;
+
+    assert.strictEqual(actual, expected, msg);
+}
+
+function assertParsing(input, expected, opts) {
+    var document = parse5.parse(input, opts),
+        actual = testUtils.serializeToTestDataFormat(document, opts.treeAdapter),
+        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
+
+    assert.strictEqual(actual, expected, msg);
+}
 
 testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
-    function getFullTestName(test) {
-        return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
-    }
-
-    function getLocationFullTestName(test) {
-        return ['Parser(Location info) - ', test.name].join('');
-    }
-
-    function walkTree(document, handler) {
-        for (var stack = treeAdapter.getChildNodes(document).slice(); stack.length;) {
-            var node = stack.shift(),
-                children = treeAdapter.getChildNodes(node);
-
-            handler(node);
-
-            if (children && children.length)
-                stack = children.concat(stack);
-        }
-    }
-
     //Here we go..
-    testUtils.loadTreeConstructionTestData([
-        path.join(__dirname, '../data/tree_construction'),
-        path.join(__dirname, '../data/tree_construction_regression'),
-        path.join(__dirname, '../data/tree_construction_options')
-    ], treeAdapter).forEach(function (test) {
-        _test[getFullTestName(test)] = function () {
-            var parser = new Parser(treeAdapter, {
-                    decodeHtmlEntities: !test.disableEntitiesDecoding
-                }),
-                result = test.fragmentContext ?
-                         parser.parseFragment(test.input, test.fragmentContext) :
-                         parser.parse(test.input),
-                actual = testUtils.serializeToTestDataFormat(result, treeAdapter),
-                msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected);
-
-            assert.strictEqual(actual, test.expected, msg);
-        };
-    });
+    testUtils
+        .loadTreeConstructionTestData([
+            path.join(__dirname, '../data/tree_construction'),
+            path.join(__dirname, '../data/tree_construction_regression'),
+            path.join(__dirname, '../data/tree_construction_options')
+        ], treeAdapter)
+        .forEach(function (test) {
+            _test[getFullTestName(test)] = function () {
+                var opts = {
+                    decodeHtmlEntities: !test.disableEntitiesDecoding,
+                    treeAdapter: treeAdapter
+                };
 
 
-    //Location info tests
-    testUtils.loadSerializationTestData(path.join(__dirname, '../data/serialization')).forEach(function (test) {
-        //NOTE: the idea of this test is the following: we parse document with the location info.
-        //Then for each node in the tree we run serializer and compare results with the substring
-        //obtained via location info from the expected serialization results.
-        _test[getLocationFullTestName(test)] = function () {
-            var parser = new Parser(treeAdapter, {
-                    locationInfo: true,
-                    decodeHtmlEntities: false
-                }),
-                serializer = new Serializer(treeAdapter, {
-                    encodeHtmlEntities: false
-                }),
-                html = test.expected,
-                document = parser.parse(html);
+                if (test.fragmentContext)
+                    assertFragmentParsing(test.input, test.fragmentContext, test.expected, opts);
 
-            walkTree(document, function (node) {
-                if (node.__location !== null) {
-                    var fragment = treeAdapter.createDocumentFragment();
-
-                    treeAdapter.appendChild(fragment, node);
-
-                    var expected = serializer.serialize(fragment),
-                        actual = html.substring(node.__location.start, node.__location.end);
-
-                    expected = testUtils.removeNewLines(expected);
-                    actual = testUtils.removeNewLines(actual);
-
-                    //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-                    assert.ok(actual === expected, testUtils.getStringDiffMsg(actual, expected));
-
-                    if (node.__location.startTag) {
-                        //NOTE: Based on the idea that the serialized fragment starts with the startTag
-                        var length = node.__location.startTag.end - node.__location.startTag.start,
-                            expectedStartTag = serializer.serialize(fragment).substring(0, length),
-                            actualStartTag = html.substring(node.__location.startTag.start, node.__location.startTag.end);
-
-                        expectedStartTag = testUtils.removeNewLines(expectedStartTag);
-                        actualStartTag = testUtils.removeNewLines(actualStartTag);
-
-                        assert.ok(expectedStartTag === actualStartTag, testUtils.getStringDiffMsg(actualStartTag, expectedStartTag));
-                    }
-
-                    if (node.__location.endTag) {
-                        //NOTE: Based on the idea that the serialized fragment ends with the endTag
-                        var length = node.__location.endTag.end - node.__location.endTag.start,
-                            expectedEndTag = serializer.serialize(fragment).slice(-length),
-                            actualEndTag = html.substring(node.__location.endTag.start, node.__location.endTag.end);
-
-                        expectedEndTag = testUtils.removeNewLines(expectedEndTag);
-                        actualEndTag = testUtils.removeNewLines(actualEndTag);
-
-                        assert.ok(expectedEndTag === actualEndTag, testUtils.getStringDiffMsg(actualEndTag, expectedEndTag));
-                    }
+                else {
+                    assertStreamingParsing(test.input, test.expected, opts);
+                    assertParsing(test.input, test.expected, opts);
                 }
-            });
-        };
-    });
-
-    exports['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
-        var html = '</head><div class="test"></div></body></html>',
-            parser = new Parser(treeAdapter, {
-                locationInfo: true,
-                decodeHtmlEntities: false
-            }),
-            document = parser.parse(html);
-
-        //NOTE: location info for all implicitly generated elements should be null
-        walkTree(document, function (node) {
-            if (treeAdapter.getTagName(node) !== HTML.TAG_NAMES.DIV)
-                assert.strictEqual(node.__location, null);
+            };
         });
-    };
 });
 
 
 exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function () {
     var html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>',
-        parser = new Parser(parse5.TreeAdapters.htmlparser2),
-        document = parser.parse(html);
+        document = parse5.parse(html, {treeAdapter: parse5.treeAdapters.htmlparser2});
 
     assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
 };
-
 

@@ -92,10 +92,13 @@ gulp.task('lint', function () {
 
 gulp.task('test', ['lint'], function () {
     return gulp
-        .src('test/fixtures/*_test.js')
+        .src([
+            'test/fixtures/*_test.js',
+            '!test/fixtures/sax_test.js'
+        ])
         .pipe(mocha({
             ui: 'exports',
             reporter: 'progress',
-            timeout: typeof v8debug === 'undefined' ? 2000 : Infinity // NOTE: disable timeouts in debug
+            timeout: typeof v8debug === 'undefined' ? 10000 : Infinity // NOTE: disable timeouts in debug
         }));
 });

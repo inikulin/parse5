@@ -2,16 +2,13 @@
 
 var path = require('path'),
     fs = require('fs'),
-    upstream = require('parse5'),
-    workingCopy = require('../../lib');
+    upstreamParse5 = require('parse5');
 
-var wcParser = new workingCopy.Parser(),
-    usParser = new upstream.Parser(),
-    hugePage = fs.readFileSync(path.join(__dirname, '../data/benchmark/huge-page.html')).toString();
+//HACK: https://github.com/bestiejs/benchmark.js/issues/51
+global.workingCopy = require('../../lib');
+global.upstreamParser = new upstreamParse5.Parser();
+global.hugePage = fs.readFileSync(path.join(__dirname, '../data/benchmark/huge-page.html')).toString();
 
-function runHugePage(parser) {
-    parser.parse(hugePage);
-}
 
 module.exports = {
     name: 'parse5 regression benchmark - HUGE',
@@ -20,14 +17,13 @@ module.exports = {
             name: 'Working copy',
 
             fn: function () {
-                runHugePage(wcParser);
+                workingCopy.parse(hugePage)
             }
         },
         {
             name: 'Upstream',
-
             fn: function () {
-                runHugePage(usParser);
+                upstreamParser.parse(hugePage);
             }
         }
     ]

@@ -3,17 +3,27 @@
 var assert = require('assert'),
     fs = require('fs'),
     path = require('path'),
-    Tokenizer = require('../../lib/tokenizer');
+    Tokenizer = require('../../lib/tokenizer'),
+    testUtils = require('../test_utils');
 
-function tokenize(html, initialState, lastStartTag) {
-    var tokenizer = new Tokenizer(html),
+function tokenize(chunks, initialState, lastStartTag) {
+    var tokenizer = new Tokenizer(),
         nextToken = null,
-        out = [];
+        out = [],
+        chunkIdx = 0;
 
     tokenizer.state = initialState;
 
     if (lastStartTag)
         tokenizer.lastStartTagName = lastStartTag;
+
+    function writeChunk() {
+        var chunk = chunks[chunkIdx];
+
+        tokenizer.write(chunk, ++chunkIdx === chunks.length);
+    }
+
+    writeChunk();
 
     do {
         nextToken = tokenizer.getNextToken();
@@ -61,6 +71,10 @@ function tokenize(html, initialState, lastStartTag) {
                     nextToken.systemId,
                     !nextToken.forceQuirks
                 ]);
+                break;
+
+            case Tokenizer.HIBERNATION_TOKEN:
+                writeChunk();
                 break;
         }
     } while (nextToken.type !== Tokenizer.EOF_TOKEN);
@@ -172,82 +186,9 @@ function getFullTestName(test) {
 //Here we go..
 loadTests().forEach(function (test) {
     exports[getFullTestName(test)] = function () {
-        var out = tokenize(test.input, test.initialState, test.lastStartTag);
+        var chunks = testUtils.makeChunks(test.input);
+        var out = tokenize(chunks, test.initialState, test.lastStartTag);
 
-        assert.deepEqual(out, test.expected);
+        assert.deepEqual(out, test.expected, 'Chunks: ' + JSON.stringify(chunks));
     };
 });
-
-
-exports['Options - locationInfo'] = function () {
-    var testCases = [
-        {
-            initialMode: Tokenizer.MODE.DATA,
-            lastStartTagName: '',
-            htmlChunks: [
-                '\r\n', '<!DOCTYPE html>', '\n',
-                '<!-- Test -->', '\n',
-                '<head>',
-                '\n   ', '<meta charset="utf-8">', '<title>', '   ', 'node.js', '\u0000', '</title>', '\n',
-                '</head>', '\n',
-                '<body id="front">', '\n',
-                '<div id="intro">',
-                '\n   ', '<p>',
-                '\n       ', 'Node.js', ' ', 'is', ' ', 'a',
-                '\n       ', 'platform', ' ', 'built', ' ', 'on',
-                '\n       ', '<a href="http://code.google.com/p/v8/">',
-                '\n       ', 'Chrome\'s', ' ', 'JavaScript', ' ', 'runtime',
-                '\n       ', '</a>', '\n',
-                '</div>',
-                '<body>'
-            ]
-        },
-        {
-            initialMode: Tokenizer.MODE.RCDATA,
-            lastStartTagName: 'title',
-            htmlChunks: [
-                '<div>Test',
-                ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->'
-            ]
-        },
-        {
-            initialMode: Tokenizer.MODE.RAWTEXT,
-            lastStartTagName: 'style',
-            htmlChunks: [
-                '.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text'
-            ]
-        },
-        {
-            initialMode: Tokenizer.MODE.SCRIPT_DATA,
-            lastStartTagName: 'script',
-            htmlChunks: [
-                'var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>'
-            ]
-        },
-        {
-            initialMode: Tokenizer.MODE.PLAINTEXT,
-            lastStartTagName: 'plaintext',
-            htmlChunks: [
-                'Text', ' \n', 'Test</plaintext><div>'
-            ]
-        }
-
-    ];
-
-    testCases.forEach(function (testCase) {
-        var html = testCase.htmlChunks.join(''),
-            tokenizer = new Tokenizer(html, {locationInfo: true});
-
-        tokenizer.state = testCase.initialMode;
-        tokenizer.lastStartTagName = testCase.lastStartTagName;
-
-        for (var token = tokenizer.getNextToken(), i = 0; token.type !== Tokenizer.EOF_TOKEN;) {
-            var chunk = html.substring(token.location.start, token.location.end);
-
-            assert.strictEqual(chunk, testCase.htmlChunks[i]);
-
-            token = tokenizer.getNextToken();
-            i++;
-        }
-    });
-};

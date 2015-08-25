@@ -2,22 +2,22 @@
 
 var path = require('path'),
     fs = require('fs'),
-    upstream = require('parse5'),
-    workingCopy = require('../../lib'),
+    upstreamParse5 = require('parse5'),
     testUtils = require('../test_utils');
 
-var wcParser = new workingCopy.Parser(),
-    usParser = new upstream.Parser(),
-    pages = testUtils
-        .loadSerializationTestData(path.join(__dirname, '../data/sax'))
-        .map(function (test) {
-            return test.src;
-        });
+//HACK: https://github.com/bestiejs/benchmark.js/issues/51
+global.upstreamParser = new upstreamParse5.Parser();
+global.workingCopy = require('../../lib');
+global.pages = testUtils
+    .loadSerializationTestData(path.join(__dirname, '../data/sax'))
+    .map(function (test) {
+        return test.src;
+    });
 
-function runPages(parser) {
+global.runPages = function (parser) {
     for (var j = 0; j < pages.length; j++)
         parser.parse(pages[j]);
-}
+};
 
 module.exports = {
     name: 'parse5 regression benchmark - PAGES',
@@ -26,14 +26,14 @@ module.exports = {
             name: 'Working copy',
 
             fn: function () {
-                runPages(wcParser);
+                runPages(workingCopy);
             }
         },
         {
             name: 'Upstream',
 
             fn: function () {
-                runPages(usParser);
+                runPages(upstreamParser);
             }
         }
     ]

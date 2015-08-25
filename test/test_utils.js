@@ -22,11 +22,22 @@ function createDiffMarker(markerPosition) {
     return marker + '^\n';
 }
 
+function getRandomChunkSize(min, max) {
+    var MIN = 1,
+        MAX = 10;
+
+    min = min || MIN;
+    max = max || MAX;
+
+    return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+
 //NOTE: creates test suites for each available tree adapter.
 exports.generateTestsForEachTreeAdapter = function (moduleExports, ctor) {
-    Object.keys(parse5.TreeAdapters).forEach(function (adapterName) {
+    Object.keys(parse5.treeAdapters).forEach(function (adapterName) {
         var tests = {},
-            adapter = parse5.TreeAdapters[adapterName];
+            adapter = parse5.treeAdapters[adapterName];
 
         ctor(tests, adapter);
 
@@ -231,7 +242,7 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
     return serializeNodeList(treeAdapter.getChildNodes(rootNode), 0);
 };
 
-exports.prettyPrintParserAssertionArgs = function (actual, expected) {
+exports.prettyPrintParserAssertionArgs = function (actual, expected, chunks) {
     var msg = '\nExpected:\n';
 
     msg += '-----------------\n';
@@ -240,5 +251,44 @@ exports.prettyPrintParserAssertionArgs = function (actual, expected) {
     msg += '-----------------\n';
     msg += actual + '\n';
 
+    if (chunks) {
+        msg += 'Chunks:\n'
+        msg += JSON.stringify(chunks);
+    }
+
     return msg;
+};
+
+exports.makeChunks = function (str, minSize, maxSize) {
+    if (!str.length)
+        return [''];
+
+    var chunks = [],
+        start = 0;
+
+    // NOTE: add 1 as well, so we avoid situation when we have just one huge chunk
+    var end = Math.min(getRandomChunkSize(minSize, maxSize), str.length, 1);
+
+    while (start < str.length) {
+        chunks.push(str.substring(start, end));
+        start = end;
+        end = Math.min(end + getRandomChunkSize(minSize, maxSize), str.length);
+    }
+
+    return chunks;
+};
+
+exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
+    var parser = new parse5.ParserStream(opts),
+        chunks = exports.makeChunks(html, minChunkSize, maxChunkSize);
+
+    for (var i = 0; i < chunks.length - 1; i++)
+        parser.write(chunks[i]);
+
+    parser.end(chunks[chunks.length - 1]);
+
+    return {
+        document: parser.document,
+        chunks: chunks
+    };
 };
