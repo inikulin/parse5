@@ -10,6 +10,32 @@ function getFullTestName(test) {
     return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
 }
 
+function assertFragmentParsing(input, fragmentContext, expected, opts) {
+    var fragment = parse5.parseFragment(input, fragmentContext, opts),
+        actual = testUtils.serializeToTestDataFormat(fragment, opts.treeAdapter),
+        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
+
+    assert.strictEqual(actual, expected, msg);
+}
+
+function assertStreamingParsing(input, expected, opts) {
+    var result = testUtils.parseChunked(input, opts),
+        actual = testUtils.serializeToTestDataFormat(result.document, opts.treeAdapter),
+        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected, result.chunks);
+
+    msg = 'STREAMING: ' + msg;
+
+    assert.strictEqual(actual, expected, msg);
+}
+
+function assertParsing(input, expected, opts) {
+    var document = parse5.parse(input, opts),
+        actual = testUtils.serializeToTestDataFormat(document, opts.treeAdapter),
+        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
+
+    assert.strictEqual(actual, expected, msg);
+}
+
 testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     //Here we go..
     testUtils
@@ -21,26 +47,18 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         .forEach(function (test) {
             _test[getFullTestName(test)] = function () {
                 var opts = {
-                        decodeHtmlEntities: !test.disableEntitiesDecoding,
-                        treeAdapter: treeAdapter
-                    },
-                    actual = null,
-                    msg = null;
+                    decodeHtmlEntities: !test.disableEntitiesDecoding,
+                    treeAdapter: treeAdapter
+                };
 
-                if (test.fragmentContext) {
-                    var fragment = parse5.parseFragment(test.input, test.fragmentContext, opts);
 
-                    actual = testUtils.serializeToTestDataFormat(fragment, treeAdapter);
-                    msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected);
-                }
+                if (test.fragmentContext)
+                    assertFragmentParsing(test.input, test.fragmentContext, test.expected, opts);
+
                 else {
-                    var result = testUtils.parseChunked(test.input, opts);
-
-                    actual = testUtils.serializeToTestDataFormat(result.document, treeAdapter);
-                    msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected, result.chunks);
+                    assertStreamingParsing(test.input, test.expected, opts);
+                    assertParsing(test.input, test.expected, opts);
                 }
-
-                assert.strictEqual(actual, test.expected, msg);
             };
         });
 });
