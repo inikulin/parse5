@@ -1,12 +1,14 @@
 'use strict';
 
 var assert = require('assert'),
+    fs = require('fs'),
     path = require('path'),
+    WritableStream = require('stream').Writable,
     SAXParser = require('../../lib').SAXParser,
     testUtils = require('../test_utils');
 
 function getFullTestName(test, idx) {
-    return ['SimpleApiParser - ', idx, '.', test.name].join('');
+    return ['SAX - ', idx, '.', test.name].join('');
 }
 
 function sanitizeForComparison(str) {
@@ -16,63 +18,73 @@ function sanitizeForComparison(str) {
         .toLowerCase();
 }
 
-
-function createTest(html, expected, options) {
+function createBasicTest(html, expected, options) {
     return function () {
-        //NOTE: the idea of the test is to serialize back given HTML using SimpleApiParser handlers
+        //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         var actual = '',
-            parser = new SAXParser({
-                doctype: function (name, publicId, systemId) {
-                    actual += '<!DOCTYPE ' + name;
+            parser = new SAXParser(options),
+            chunks = testUtils.makeChunks(html),
+            lastChunkIdx = chunks.length - 1;
 
-                    if (publicId !== null)
-                        actual += ' PUBLIC "' + publicId + '"';
+        parser.on('doctype', function (name, publicId, systemId) {
+            actual += '<!DOCTYPE ' + name;
 
-                    else if (systemId !== null)
-                        actual += ' SYSTEM';
+            if (publicId !== null)
+                actual += ' PUBLIC "' + publicId + '"';
 
-                    if (systemId !== null)
-                        actual += ' "' + systemId + '"';
+            else if (systemId !== null)
+                actual += ' SYSTEM';
+
+            if (systemId !== null)
+                actual += ' "' + systemId + '"';
 
 
-                    actual += '>';
-                },
+            actual += '>';
+        });
 
-                startTag: function (tagName, attrs, selfClosing) {
-                    actual += '<' + tagName;
+        parser.on('startTag', function (tagName, attrs, selfClosing) {
+            actual += '<' + tagName;
 
-                    if (attrs.length) {
-                        for (var i = 0; i < attrs.length; i++)
-                            actual += ' ' + attrs[i].name + '="' + attrs[i].value + '"';
-                    }
+            if (attrs.length) {
+                for (var i = 0; i < attrs.length; i++)
+                    actual += ' ' + attrs[i].name + '="' + attrs[i].value + '"';
+            }
 
-                    actual += selfClosing ? '/>' : '>';
-                },
+            actual += selfClosing ? '/>' : '>';
+        });
 
-                endTag: function (tagName) {
-                    actual += '</' + tagName + '>';
-                },
+        parser.on('endTag', function (tagName) {
+            actual += '</' + tagName + '>';
+        });
 
-                text: function (text) {
-                    actual += text;
-                },
+        parser.on('text', function (text) {
+            actual += text;
+        });
 
-                comment: function (text) {
-                    actual += '<!--' + text + '-->';
-                }
-            }, options);
+        parser.on('comment', function (text) {
+            actual += '<!--' + text + '-->';
+        });
 
-        parser.parse(html);
+        parser.once('finish', function () {
+            expected = sanitizeForComparison(expected);
+            actual = sanitizeForComparison(actual);
 
-        expected = sanitizeForComparison(expected);
-        actual = sanitizeForComparison(actual);
+            //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
+            assert.ok(actual === expected, testUtils.getStringDiffMsg(actual, expected));
+        });
 
-        //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-        assert.ok(actual === expected, testUtils.getStringDiffMsg(actual, expected));
+        chunks.forEach(function (chunk, idx) {
+            if (idx === lastChunkIdx)
+                parser.end(chunk);
+            else
+                parser.write(chunk);
+        });
     };
 }
 
-testUtils.loadSerializationTestData(path.join(__dirname, '../data/sax'))
+//Basic tests
+testUtils
+    .loadSerializationTestData(path.join(__dirname, '../data/sax'))
     .concat([
         {
             name: 'Options - decodeHtmlEntities (text)',
@@ -95,22 +107,43 @@ testUtils.loadSerializationTestData(path.join(__dirname, '../data/sax'))
     .forEach(function (test, idx) {
         var testName = getFullTestName(test, idx);
 
-        exports[testName] = createTest(test.src, test.expected, test.options);
-
-        exports['Options - locationInfo - ' + testName] = function () {
-            //NOTE: we've already tested the correctness of the location info with the Tokenizer tests.
-            //So here we just check that SimpleApiParser provides this info in the handlers.
-            var handlers = ['doctype', 'startTag', 'endTag', 'text', 'comment'].reduce(function (handlers, key) {
-                    handlers[key] = function () {
-                        var locationInfo = arguments[arguments.length - 1];
-
-                        assert.strictEqual(typeof locationInfo.start, 'number');
-                        assert.strictEqual(typeof locationInfo.end, 'number');
-                    };
-                    return handlers;
-                }, {}),
-                parser = new SAXParser(handlers, {locationInfo: true});
-
-            parser.parse(test.src);
-        };
+        exports[testName] = createBasicTest(test.src, test.expected, test.options);
     });
+
+
+exports['SAX - Piping and .stop()'] = function (done) {
+    var parser = new SAXParser(),
+        writable = new WritableStream(),
+        handlerCallCount = 0,
+        data = '',
+        handler = function () {
+            handlerCallCount++;
+
+            if (handlerCallCount === 10)
+                parser.stop();
+        };
+
+    writable._write = function (chunk, encoding, callback) {
+        data += chunk;
+        callback();
+    };
+
+    fs
+        .createReadStream(path.join(__dirname, '../data/huge-page/huge-page.html'))
+        .pipe(parser)
+        .pipe(writable);
+
+    parser.on('startTag', handler);
+    parser.on('endTag', handler);
+    parser.on('doctype', handler);
+    parser.on('comment', handler);
+    parser.on('text', handler);
+
+    writable.once('finish', function () {
+        var expected = fs.readFileSync(path.join(__dirname, '../data/huge-page/huge-page.html')).toString();
+
+        assert.strictEqual(handlerCallCount, 10);
+        assert.strictEqual(data, expected);
+        done();
+    });
+};

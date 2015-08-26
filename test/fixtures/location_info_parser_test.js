@@ -7,7 +7,7 @@ var assert = require('assert'),
     testUtils = require('../test_utils');
 
 function getFullLocationTestName(test) {
-    return ['Parser(Location info) - ', test.name].join('');
+    return ['Location info (Parser) - ', test.name].join('');
 }
 
 function walkTree(document, treeAdapter, handler) {

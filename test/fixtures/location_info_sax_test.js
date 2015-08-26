@@ -1,0 +1,38 @@
+'use strict';
+
+var assert = require('assert'),
+    path = require('path'),
+    SAXParser = require('../../lib').SAXParser,
+    testUtils = require('../test_utils');
+
+exports['Location info (SAX)'] = function () {
+    testUtils
+        .loadSerializationTestData(path.join(__dirname, '../data/sax'))
+        .forEach(function (test) {
+            //NOTE: we've already tested the correctness of the location info with the Tokenizer tests.
+            //So here we just check that SAXParser provides this info in the handlers.
+            var parser = new SAXParser({locationInfo: true}),
+                chunks = testUtils.makeChunks(test.src),
+                lastChunkIdx = chunks.length - 1,
+                handler = function () {
+                    var locationInfo = arguments[arguments.length - 1];
+
+                    assert.strictEqual(typeof locationInfo.start, 'number');
+                    assert.strictEqual(typeof locationInfo.end, 'number');
+                    assert.ok(locationInfo.start < locationInfo.end);
+                };
+
+            parser.on('startTag', handler);
+            parser.on('endTag', handler);
+            parser.on('doctype', handler);
+            parser.on('comment', handler);
+            parser.on('text', handler);
+
+            chunks.forEach(function (chunk, idx) {
+                if (idx === lastChunkIdx)
+                    parser.end(chunk);
+                else
+                    parser.write(chunk);
+            });
+        });
+};
