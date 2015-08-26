@@ -7,7 +7,7 @@ var path = require('path'),
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 global.workingCopy = require('../../lib');
 global.upstreamParser = new upstreamParse5.Parser();
-global.hugePage = fs.readFileSync(path.join(__dirname, '../data/benchmark/huge-page.html')).toString();
+global.hugePage = fs.readFileSync(path.join(__dirname, '../data/huge-page/huge-page.html')).toString();
 
 
 module.exports = {

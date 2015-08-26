@@ -3,7 +3,7 @@
 var assert = require('assert'),
     Tokenizer = require('../../lib/tokenizer');
 
-exports['Tokenizer location info mixin'] = function () {
+exports['Location info (Tokenizer)'] = function () {
     var testCases = [
         {
             initialMode: Tokenizer.MODE.DATA,

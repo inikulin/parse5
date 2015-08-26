@@ -11,7 +11,7 @@ var through = require('through2');
 
 
 gulp.task('generate-trie', function () {
-    function trieGenerator(file, enc, callback) {
+    function trieGenerator(file, encoding, callback) {
         var entitiesData = JSON.parse(file.contents.toString());
 
         var trie = Object.keys(entitiesData).reduce(function (trie, entity) {
@@ -92,10 +92,7 @@ gulp.task('lint', function () {
 
 gulp.task('test', ['lint'], function () {
     return gulp
-        .src([
-            'test/fixtures/*_test.js',
-            '!test/fixtures/sax_test.js'
-        ])
+        .src('test/fixtures/*_test.js')
         .pipe(mocha({
             ui: 'exports',
             reporter: 'progress',
