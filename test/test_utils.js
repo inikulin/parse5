@@ -33,6 +33,31 @@ function getRandomChunkSize(min, max) {
 }
 
 
+function normalizeNewLine(str) {
+    return str.replace(/\r\n/g, '\n');
+}
+
+function createFragmentContext(tagName, treeAdapter) {
+    if (!tagName)
+        return null;
+
+    var namespace = HTML.NAMESPACES.HTML,
+        parts = tagName.split(' ');
+
+    if (parts.length > 1) {
+        tagName = parts[1];
+
+        if (parts[0] === 'svg')
+            namespace = HTML.NAMESPACES.SVG;
+
+        else if (parts[0] === 'math')
+            namespace = HTML.NAMESPACES.MATHML;
+    }
+
+    return treeAdapter.createElement(tagName, namespace, []);
+}
+
+
 //NOTE: creates test suites for each available tree adapter.
 exports.generateTestsForEachTreeAdapter = function (moduleExports, ctor) {
     Object.keys(parse5.treeAdapters).forEach(function (adapterName) {
@@ -74,10 +99,6 @@ exports.removeNewLines = function (str) {
         .replace(/\r/g, '')
         .replace(/\n/g, '');
 };
-
-function normalizeNewLine(str) {
-    return str.replace(/\r\n/g, '\n');
-}
 
 exports.loadSerializationTestData = function (dataDirPath) {
     var testSetFileDirs = fs.readdirSync(dataDirPath),
@@ -131,7 +152,7 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
             });
 
             testDescrs.forEach(function (descr) {
-                var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'].join('');
+                var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
                 tests.push({
                     idx: ++testIdx,
@@ -141,8 +162,7 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
                     expected: descr['#document'].join('\n'),
                     expectedErrors: descr['#errors'],
                     disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
-                    fragmentContext: fragmentContextTagName &&
-                                     treeAdapter.createElement(fragmentContextTagName, HTML.NAMESPACES.HTML, [])
+                    fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter)
                 });
             });
         });
