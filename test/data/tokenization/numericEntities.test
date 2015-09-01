@@ -1,5 +1,41 @@
 {"tests": [
 
+{"description": "Invalid unterminated numeric entity character overflow before EOF",
+"input": "&#11111111111",
+"output": ["ParseError", "ParseError", ["Character", "\uFFFD"]]},
+
+{"description": "Invalid unterminated numeric entity character overflow before EOF",
+"input": "&#1111111111",
+"output": ["ParseError", "ParseError", ["Character", "\uFFFD"]]},
+
+{"description": "Invalid unterminated numeric entity character overflow before EOF",
+"input": "&#111111111111",
+"output": ["ParseError", "ParseError", ["Character", "\uFFFD"]]},
+
+{"description": "Invalid unterminated numeric entity character overflow",
+"input": "&#11111111111x",
+"output": ["ParseError", "ParseError", ["Character", "\uFFFDx"]]},
+
+{"description": "Invalid unterminated numeric entity character overflow",
+"input": "&#1111111111x",
+"output": ["ParseError", "ParseError", ["Character", "\uFFFDx"]]},
+
+{"description": "Invalid unterminated numeric entity character overflow",
+"input": "&#111111111111x",
+"output": ["ParseError", "ParseError", ["Character", "\uFFFDx"]]},
+
+{"description": "Invalid numeric entity character overflow",
+"input": "&#11111111111;",
+"output": ["ParseError", ["Character", "\uFFFD"]]},
+
+{"description": "Invalid numeric entity character overflow",
+"input": "&#1111111111;",
+"output": ["ParseError", ["Character", "\uFFFD"]]},
+
+{"description": "Invalid numeric entity character overflow",
+"input": "&#111111111111;",
+"output": ["ParseError", ["Character", "\uFFFD"]]},
+
 {"description": "Invalid numeric entity character U+0000",
 "input": "&#x0000;",
 "output": ["ParseError", ["Character", "\uFFFD"]]},

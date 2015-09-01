@@ -2,11 +2,11 @@
 
 {"description": "Undefined named entity in attribute value ending in semicolon and whose name starts with a known entity name.",
 "input":"<h a='&noti;'>",
-"output": ["ParseError", ["StartTag", "h", {"a": "&noti;"}]]},
+"output": [["StartTag", "h", {"a": "&noti;"}]]},
 
 {"description": "Entity name followed by the equals sign in an attribute value.",
 "input":"<h a='&lang='>",
-"output": ["ParseError", ["StartTag", "h", {"a": "&lang="}]]},
+"output": [["StartTag", "h", {"a": "&lang="}]]},
 
 {"description": "CR as numeric entity",
 "input":"&#013;",

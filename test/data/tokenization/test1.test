@@ -115,7 +115,7 @@
 
 {"description":"Unfinished entity",
 "input":"&f",
-"output":["ParseError", ["Character", "&f"]]},
+"output":[["Character", "&f"]]},
 
 {"description":"Ampersand, number sign",
 "input":"&#",
@@ -143,11 +143,11 @@
 
 {"description":"Partial entity match at end of file",
 "input":"I'm &no",
-"output":[["Character","I'm "], "ParseError", ["Character", "&no"]]},
+"output":[["Character","I'm &no"]]},
 
 {"description":"Non-ASCII character reference name",
 "input":"&\u00AC;",
-"output":["ParseError", ["Character", "&\u00AC;"]]},
+"output":[["Character", "&\u00AC;"]]},
 
 {"description":"ASCII decimal entity",
 "input":"&#0036;",
@@ -163,15 +163,15 @@
 
 {"description":"Entity in attribute without semicolon ending in x",
 "input":"<h a='&notx'>",
-"output":["ParseError", ["StartTag", "h", {"a":"&notx"}]]},
+"output":[["StartTag", "h", {"a":"&notx"}]]},
 
 {"description":"Entity in attribute without semicolon ending in 1",
 "input":"<h a='&not1'>",
-"output":["ParseError", ["StartTag", "h", {"a":"&not1"}]]},
+"output":[["StartTag", "h", {"a":"&not1"}]]},
 
 {"description":"Entity in attribute without semicolon ending in i",
 "input":"<h a='&noti'>",
-"output":["ParseError", ["StartTag", "h", {"a":"&noti"}]]},
+"output":[["StartTag", "h", {"a":"&noti"}]]},
 
 {"description":"Entity in attribute without semicolon",
 "input":"<h a='&COPY'>",

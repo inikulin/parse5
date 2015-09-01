@@ -11,6 +11,11 @@
             "output":["ParseError", ["Comment", "?\u000a"]]
         },
         {
+            "description":"CRLFLF in bogus comment state",
+            "input":"<?\u000d\u000a\u000a",
+            "output":["ParseError", ["Comment", "?\u000a\u000a"]]
+        },
+        {
             "description":"NUL in RCDATA and RAWTEXT",
             "doubleEscaped":true,
             "initialStates":["RCDATA state", "RAWTEXT state"],
@@ -18,9 +23,10 @@
             "output":["ParseError", ["Character", "\\uFFFD"]]
         },
         {
-            "description":"skip first BOM but not later ones",
-            "input":"\uFEFFfoo\uFEFFbar",
-            "output":[["Character", "foo\uFEFFbar"]]
+            "description":"leading U+FEFF must pass through",
+            "doubleEscaped":true,
+            "input":"\\uFEFFfoo\\uFEFFbar",
+            "output":[["Character", "\\uFEFFfoo\\uFEFFbar"]]
         },
         {
             "description":"Non BMP-charref in in RCDATA",

@@ -914,7 +914,7 @@
 
 {"description":"<!DOCTYPE",
 "input":"<!DOCTYPE",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE\\u0000",
 "input":"<!DOCTYPE\u0000",
@@ -926,11 +926,11 @@
 
 {"description":"<!DOCTYPE\\u0009",
 "input":"<!DOCTYPE\u0009",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE\\u000A",
 "input":"<!DOCTYPE\u000A",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE\\u000B",
 "input":"<!DOCTYPE\u000B",
@@ -938,11 +938,11 @@
 
 {"description":"<!DOCTYPE\\u000C",
 "input":"<!DOCTYPE\u000C",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE\\u000D",
 "input":"<!DOCTYPE\u000D",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE\\u001F",
 "input":"<!DOCTYPE\u001F",
@@ -950,7 +950,7 @@
 
 {"description":"<!DOCTYPE ",
 "input":"<!DOCTYPE ",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE \\u0000",
 "input":"<!DOCTYPE \u0000",
@@ -962,11 +962,11 @@
 
 {"description":"<!DOCTYPE \\u0009",
 "input":"<!DOCTYPE \u0009",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE \\u000A",
 "input":"<!DOCTYPE \u000A",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE \\u000B",
 "input":"<!DOCTYPE \u000B",
@@ -974,11 +974,11 @@
 
 {"description":"<!DOCTYPE \\u000C",
 "input":"<!DOCTYPE \u000C",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE \\u000D",
 "input":"<!DOCTYPE \u000D",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE \\u001F",
 "input":"<!DOCTYPE \u001F",
@@ -986,7 +986,7 @@
 
 {"description":"<!DOCTYPE  ",
 "input":"<!DOCTYPE  ",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE !",
 "input":"<!DOCTYPE !",
@@ -1034,7 +1034,7 @@
 
 {"description":"<!DOCTYPE >",
 "input":"<!DOCTYPE >",
-"output":["ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE ?",
 "input":"<!DOCTYPE ?",
@@ -2626,7 +2626,7 @@
 
 {"description":"<!DOCTYPE>",
 "input":"<!DOCTYPE>",
-"output":["ParseError", "ParseError", ["DOCTYPE", "", null, null, false]]},
+"output":["ParseError", "ParseError", ["DOCTYPE", null, null, null, false]]},
 
 {"description":"<!DOCTYPE?",
 "input":"<!DOCTYPE?",
