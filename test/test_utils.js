@@ -154,6 +154,11 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
             testDescrs.forEach(function (descr) {
                 var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
+                // NOTE: skip tests with the scripting disabled, since we are always act as the
+                // interactive user agent.
+                if (descr['#script-off'])
+                    return;
+
                 tests.push({
                     idx: ++testIdx,
                     setName: setName,
