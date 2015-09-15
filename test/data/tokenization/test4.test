@@ -28,25 +28,25 @@
 "input":"<z ====>",
 "output":["ParseError", "ParseError", "ParseError", ["StartTag", "z", {"=": "=="}]]},
 
-{"description":"Allowed \" after ampersand in attribute value",
+{"description":"\" after ampersand in double-quoted attribute value",
 "input":"<z z=\"&\">",
 "output":[["StartTag", "z", {"z": "&"}]]},
 
-{"description":"Non-allowed ' after ampersand in attribute value",
+{"description":"' after ampersand in double-quoted attribute value",
 "input":"<z z=\"&'\">",
-"output":["ParseError", ["StartTag", "z", {"z": "&'"}]]},
+"output":[["StartTag", "z", {"z": "&'"}]]},
 
-{"description":"Allowed ' after ampersand in attribute value",
+{"description":"' after ampersand in single-quoted attribute value",
 "input":"<z z='&'>",
 "output":[["StartTag", "z", {"z": "&"}]]},
 
-{"description":"Non-allowed \" after ampersand in attribute value",
+{"description":"\" after ampersand in single-quoted attribute value",
 "input":"<z z='&\"'>",
-"output":["ParseError", ["StartTag", "z", {"z": "&\""}]]},
+"output":[["StartTag", "z", {"z": "&\""}]]},
 
 {"description":"Text after bogus character reference",
 "input":"<z z='&xlink_xmlns;'>bar<z>",
-"output":["ParseError",["StartTag","z",{"z":"&xlink_xmlns;"}],["Character","bar"],["StartTag","z",{}]]},
+"output":[["StartTag","z",{"z":"&xlink_xmlns;"}],["Character","bar"],["StartTag","z",{}]]},
 
 {"description":"Text after hex character reference",
 "input":"<z z='&#x0020; foo'>bar<z>",

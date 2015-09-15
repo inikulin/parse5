@@ -48,6 +48,12 @@
 "input":"</foo>bar</xmp>",
 "output":[["Character", "</foo>bar"], ["EndTag", "xmp"]]},
 
+{"description":"Partial end tags leading straight into partial end tags",
+"initialStates":["RCDATA state", "RAWTEXT state"],
+"lastStartTag":"xmp",
+"input":"</xmp</xmp</xmp>",
+"output":[["Character", "</xmp</xmp"], ["EndTag", "xmp"]]},
+
 {"description":"End tag with incorrect name in RCDATA or RAWTEXT (starting like correct name)",
 "initialStates":["RCDATA state", "RAWTEXT state"],
 "lastStartTag":"xmp",
