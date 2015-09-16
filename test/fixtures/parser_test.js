@@ -2,7 +2,6 @@
 
 var assert = require('assert'),
     path = require('path'),
-    HTML = require('../../lib/common/html'),
     parse5 = require('../../lib'),
     testUtils = require('../test_utils');
 

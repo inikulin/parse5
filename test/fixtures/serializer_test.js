@@ -33,6 +33,18 @@ function serializeStreaming(node, opts) {
 }
 
 
+function testStreamingSerialization(document, opts, expected, done) {
+    serializeStreaming(document, opts)
+        .then(testUtils.removeNewLines)
+        .then(function (serializedResult) {
+            var msg = 'STREAMING: ' + testUtils.getStringDiffMsg(serializedResult, expected);
+
+            assert.ok(serializedResult === expected, msg);
+            done();
+        })
+        .catch(done);
+}
+
 testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     //Here we go..
     testUtils
@@ -47,16 +59,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                 //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
                 assert.ok(serializedResult === expected, testUtils.getStringDiffMsg(serializedResult, expected));
 
-                //NOTE: test SerializerStream
-                serializeStreaming(document, opts)
-                    .then(testUtils.removeNewLines)
-                    .then(function (serializedResult) {
-                        var msg = 'STREAMING: ' + testUtils.getStringDiffMsg(serializedResult, expected);
-
-                        assert.ok(serializedResult === expected, msg);
-                        done();
-                    })
-                    .catch(done);
+                testStreamingSerialization(document, opts, expected, done);
             };
         });
 });

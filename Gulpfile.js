@@ -11,41 +11,41 @@ var through = require('through2');
 
 
 gulp.task('generate-trie', function () {
-    function trieGenerator(file, encoding, callback) {
-        var entitiesData = JSON.parse(file.contents.toString());
-
-        var trie = Object.keys(entitiesData).reduce(function (trie, entity) {
-            var codepoints = entitiesData[entity].codepoints;
+    function createTrie(entitiesData) {
+        return Object.keys(entitiesData).reduce(function (trie, entity) {
+            var resultCp = entitiesData[entity].codepoints;
 
             entity = entity.replace(/^&/, '');
 
-            var last = entity.length - 1,
+            var entityLength = entity.length,
+                last = entityLength - 1,
                 leaf = trie;
 
-            entity
-                .split('')
-                .map(function (ch) {
-                    return ch.charCodeAt(0);
-                })
-                .forEach(function (key, idx) {
-                    if (!leaf[key])
-                        leaf[key] = {};
+            for (var i = 0; i < entityLength; i++) {
+                var key = entity.charCodeAt(i);
 
-                    if (idx === last)
-                        leaf[key].c = codepoints;
+                if (!leaf[key])
+                    leaf[key] = {};
 
-                    else {
-                        if (!leaf[key].l)
-                            leaf[key].l = {};
+                if (i === last)
+                    leaf[key].c = resultCp;
 
-                        leaf = leaf[key].l;
-                    }
-                });
+                else {
+                    if (!leaf[key].l)
+                        leaf[key].l = {};
+
+                    leaf = leaf[key].l;
+                }
+            }
 
             return trie;
         }, {});
+    }
 
-        var out = '\'use strict\';\n\n' +
+    function trieCodeGen(file, encoding, callback) {
+        var entitiesData = JSON.parse(file.contents.toString()),
+            trie = createTrie(entitiesData),
+            out = '\'use strict\';\n\n' +
                   '//NOTE: this file contains auto-generated trie structure that is used for named entity references consumption\n' +
                   '//(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/tokenization.html#tokenizing-character-references and\n' +
                   '//http://www.whatwg.org/specs/web-apps/current-work/multipage/named-character-references.html#named-character-references)\n' +
@@ -58,9 +58,9 @@ gulp.task('generate-trie', function () {
     }
 
     return download('https://html.spec.whatwg.org/multipage/entities.json')
-        .pipe(through.obj(trieGenerator))
+        .pipe(through.obj(trieCodeGen))
         .pipe(rename('named_entity_trie.js'))
-        .pipe(gulp.dest('lib/tokenization'));
+        .pipe(gulp.dest('lib/tokenizer'));
 });
 
 gulp.task('install-upstream-parse5', function () {

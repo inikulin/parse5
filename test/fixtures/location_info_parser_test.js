@@ -11,7 +11,7 @@ function getFullLocationTestName(test) {
 }
 
 function walkTree(document, treeAdapter, handler) {
-    for (var stack = treeAdapter.getChildNodes(document).slice(); stack.length;) {
+    for (var stack = treeAdapter.getChildNodes(document).slice(); stack.length; ) {
         var node = stack.shift(),
             children = treeAdapter.getChildNodes(node);
 
