@@ -79,7 +79,7 @@ function tokenize(chunks, initialState, lastStartTag) {
         }
     } while (nextToken.type !== Tokenizer.EOF_TOKEN);
 
-    return concatCharacterTokens(out)
+    return concatCharacterTokens(out);
 }
 
 function unicodeUnescape(str) {

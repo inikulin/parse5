@@ -1,11 +1,11 @@
 'use strict';
 
 var path = require('path'),
-    fs = require('fs'),
     upstreamParse5 = require('parse5'),
     testUtils = require('../test_utils');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
+/* global upstreamParser, workingCopy, pages, runPages */
 global.upstreamParser = new upstreamParse5.Parser();
 global.workingCopy = require('../../lib');
 global.pages = testUtils

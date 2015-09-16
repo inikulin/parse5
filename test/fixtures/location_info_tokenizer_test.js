@@ -69,7 +69,7 @@ exports['Location info (Tokenizer)'] = function () {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (var token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN;) {
+        for (var token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
             if(token.type === Tokenizer.HIBERNATION_TOKEN)
                 continue;
 

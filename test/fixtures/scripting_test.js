@@ -37,7 +37,9 @@ function parse(html, treeAdapter) {
             //NOTE: emulate postponed script execution
             pause()
                 .then(function () {
+                    /* eslint-disable no-eval */
                     eval(script);
+                    /* eslint-enable no-eval */
                     resume();
                 })
                 .catch(reject);

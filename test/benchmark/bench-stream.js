@@ -4,6 +4,7 @@ var path = require('path'),
     upstreamParse5 = require('parse5');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
+/* global fs, Promise, upstreamParser, workingCopy, files, deferred */
 global.fs = require('fs');
 global.Promise = require('promise');
 global.upstreamParser = new upstreamParse5.Parser();

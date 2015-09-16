@@ -277,7 +277,7 @@ exports.prettyPrintParserAssertionArgs = function (actual, expected, chunks) {
     msg += actual + '\n';
 
     if (chunks) {
-        msg += 'Chunks:\n'
+        msg += 'Chunks:\n';
         msg += JSON.stringify(chunks);
     }
 
