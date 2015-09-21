@@ -22,38 +22,42 @@ function walkTree(document, treeAdapter, handler) {
     }
 }
 
+function assertLocation(loc, expected, html, lines) {
+    //Offsets
+    var actual = html.substring(loc.startOffset, loc.endOffset);
+
+    expected = testUtils.removeNewLines(expected);
+    actual = testUtils.removeNewLines(actual);
+
+    assert.strictEqual(expected, actual, testUtils.getStringDiffMsg(actual, expected));
+
+    //Line/col
+    actual = testUtils.getSubstringByLineCol(lines, loc.line, loc.col);
+    actual = testUtils.removeNewLines(actual);
+
+    assert.strictEqual(actual.indexOf(expected), 0, testUtils.getStringDiffMsg(actual, expected));
+}
+
 //NOTE: Based on the idea that the serialized fragment starts with the startTag
-function assertStartTagLocation(node, serializedNode, html) {
-    var length = node.__location.startTag.end - node.__location.startTag.start,
-        expectedStartTag = serializedNode.substring(0, length),
-        actualStartTag = html.substring(node.__location.startTag.start, node.__location.startTag.end);
+function assertStartTagLocation(node, serializedNode, html, lines) {
+    var length = node.__location.startTag.endOffset - node.__location.startTag.startOffset,
+        expected = serializedNode.substring(0, length);
 
-    expectedStartTag = testUtils.removeNewLines(expectedStartTag);
-    actualStartTag = testUtils.removeNewLines(actualStartTag);
-
-    assert.ok(expectedStartTag === actualStartTag, testUtils.getStringDiffMsg(actualStartTag, expectedStartTag));
+    assertLocation(node.__location.startTag, expected, html, lines);
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
-function assertEndTagLocation(node, serializedNode, html) {
-    var length = node.__location.endTag.end - node.__location.endTag.start,
-        expectedEndTag = serializedNode.slice(-length),
-        actualEndTag = html.substring(node.__location.endTag.start, node.__location.endTag.end);
+function assertEndTagLocation(node, serializedNode, html, lines) {
+    var length = node.__location.endTag.endOffset - node.__location.endTag.startOffset,
+        expected = serializedNode.slice(-length);
 
-    expectedEndTag = testUtils.removeNewLines(expectedEndTag);
-    actualEndTag = testUtils.removeNewLines(actualEndTag);
-
-    assert.ok(expectedEndTag === actualEndTag, testUtils.getStringDiffMsg(actualEndTag, expectedEndTag));
+    assertLocation(node.__location.endTag, expected, html, lines);
 }
 
-function assertNodeLocation(node, serializedNode, html) {
-    var actual = html.substring(node.__location.start, node.__location.end),
-        expected = testUtils.removeNewLines(serializedNode);
+function assertNodeLocation(node, serializedNode, html, lines) {
+    var expected = testUtils.removeNewLines(serializedNode);
 
-    actual = testUtils.removeNewLines(actual);
-
-    //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-    assert.ok(actual === expected, testUtils.getStringDiffMsg(actual, expected));
+    assertLocation(node.__location, expected, html, lines);
 }
 
 testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
@@ -69,6 +73,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                         encodeHtmlEntities: false
                     },
                     html = test.expected,
+                    lines = html.split(/\r?\n/g),
                     parserOpts = {
                         treeAdapter: treeAdapter,
                         locationInfo: true,
@@ -87,13 +92,13 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
                         var serializedNode = parse5.serialize(fragment, serializerOpts);
 
-                        assertNodeLocation(node, serializedNode, html);
+                        assertNodeLocation(node, serializedNode, html, lines);
 
                         if (node.__location.startTag)
-                            assertStartTagLocation(node, serializedNode, html);
+                            assertStartTagLocation(node, serializedNode, html, lines);
 
                         if (node.__location.endTag)
-                            assertEndTagLocation(node, serializedNode, html);
+                            assertEndTagLocation(node, serializedNode, html, lines);
                     }
                 });
             };

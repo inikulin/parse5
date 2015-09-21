@@ -33,9 +33,9 @@ function getRandomChunkSize(min, max) {
 }
 
 
-function normalizeNewLine(str) {
+var normalizeNewLine = exports.normalizeNewLine = function (str) {
     return str.replace(/\r\n/g, '\n');
-}
+};
 
 function createFragmentContext(tagName, treeAdapter) {
     if (!tagName)
@@ -316,4 +316,11 @@ exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
         document: parser.document,
         chunks: chunks
     };
+};
+
+exports.getSubstringByLineCol = function (lines, line, col) {
+    return lines
+        .slice(line - 1)
+        .join('\n')
+        .substring(col - 1);
 };

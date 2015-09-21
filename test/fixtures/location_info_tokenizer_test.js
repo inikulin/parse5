@@ -1,7 +1,8 @@
 'use strict';
 
 var assert = require('assert'),
-    Tokenizer = require('../../lib/tokenizer');
+    Tokenizer = require('../../lib/tokenizer'),
+    testUtils = require('../test_utils');
 
 exports['Location info (Tokenizer)'] = function () {
     var testCases = [
@@ -60,6 +61,7 @@ exports['Location info (Tokenizer)'] = function () {
 
     testCases.forEach(function (testCase) {
         var html = testCase.htmlChunks.join(''),
+            lines = html.split(/\r?\n/g),
             tokenizer = new Tokenizer({locationInfo: true}),
             lastChunkIdx = testCase.htmlChunks.length - 1;
 
@@ -70,12 +72,20 @@ exports['Location info (Tokenizer)'] = function () {
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
         for (var token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
-            if(token.type === Tokenizer.HIBERNATION_TOKEN)
+            if (token.type === Tokenizer.HIBERNATION_TOKEN)
                 continue;
 
-            var chunk = html.substring(token.location.start, token.location.end);
+            //Offsets
+            var actual = html.substring(token.location.startOffset, token.location.endOffset);
 
-            assert.strictEqual(chunk, testCase.htmlChunks[j]);
+            assert.strictEqual(actual, testCase.htmlChunks[j]);
+
+            //Line/col
+            actual = testUtils.getSubstringByLineCol(lines, token.location.line, token.location.col);
+
+            var expected = testUtils.normalizeNewLine(testCase.htmlChunks[j]);
+
+            assert.strictEqual(actual.indexOf(expected), 0);
 
             token = tokenizer.getNextToken();
             j++;

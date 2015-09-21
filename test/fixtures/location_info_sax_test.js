@@ -17,9 +17,11 @@ exports['Location info (SAX)'] = function () {
                 handler = function () {
                     var locationInfo = arguments[arguments.length - 1];
 
-                    assert.strictEqual(typeof locationInfo.start, 'number');
-                    assert.strictEqual(typeof locationInfo.end, 'number');
-                    assert.ok(locationInfo.start < locationInfo.end);
+                    assert.strictEqual(typeof locationInfo.line, 'number');
+                    assert.strictEqual(typeof locationInfo.col, 'number');
+                    assert.strictEqual(typeof locationInfo.startOffset, 'number');
+                    assert.strictEqual(typeof locationInfo.endOffset, 'number');
+                    assert.ok(locationInfo.startOffset < locationInfo.endOffset);
                 };
 
             parser.on('startTag', handler);
