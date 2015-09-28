@@ -10,7 +10,7 @@ function getFullTestName(test) {
 }
 
 function assertFragmentParsing(input, fragmentContext, expected, opts) {
-    var fragment = parse5.parseFragment(input, fragmentContext, opts),
+    var fragment = parse5.parseFragment(fragmentContext, input, opts),
         actual = testUtils.serializeToTestDataFormat(fragment, opts.treeAdapter),
         msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
 
