@@ -1,3 +1,4 @@
+# Version history
 ## 1.5.0
  * Add: Location info for the element start and end tags (by @sakagg).
 
