@@ -1,13 +1,15 @@
 'use strict';
 
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var mocha = require('gulp-mocha');
-var install = require('gulp-install');
-var benchmark = require('gulp-benchmark');
-var rename = require('gulp-rename');
-var download = require('gulp-download');
-var through = require('through2');
+var gulp = require('gulp'),
+    eslint = require('gulp-eslint'),
+    mocha = require('gulp-mocha'),
+    install = require('gulp-install'),
+    benchmark = require('gulp-benchmark'),
+    rename = require('gulp-rename'),
+    download = require('gulp-download'),
+    through = require('through2'),
+    concat = require('gulp-concat'),
+    jsdoc = require('gulp-jsdoc-to-markdown');
 
 
 gulp.task('generate-trie', function () {
@@ -61,6 +63,14 @@ gulp.task('generate-trie', function () {
         .pipe(through.obj(trieCodeGen))
         .pipe(rename('named_entity_trie.js'))
         .pipe(gulp.dest('lib/tokenizer'));
+});
+
+gulp.task('docs', function () {
+    return gulp
+        .src('lib/**/*.js')
+        .pipe(concat('API.md'))
+        .pipe(jsdoc())
+        .pipe(gulp.dest('./'));
 });
 
 gulp.task('install-upstream-parse5', function () {
