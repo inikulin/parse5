@@ -11,38 +11,21 @@ I needed fast and ready for production HTML parser, which will parse HTML as a m
 Existing solutions were either too slow or their output was too inaccurate. So, this is how parse5 was born.
 
 
+## Included tools
+#### Utilities
+*   [parse](#class-parse) - parse HTML-document.
+*   [parseFragment](#class-parsefragment) - parse HTML-fragment.
+*   [serialize](#class-serialize) - serialize node to HTML.
+
+#### Streaming (Node.js stream-compatible)
+*   [ParserStream](#class-parserstream) - streaming HTML parser with scripting support.
+*   [SAXParser](#class-saxparser) - [SAX](http://en.wikipedia.org/wiki/Simple_API_for_XML)-style parser for HTML.
+*   [SerializerStream](#class-serializer) - streaimg node serializer.
+
+
 ## Install
 ```
 $ npm install parse5
-```
-
-## Included tools
-*   [Parser](#class-parser) - HTML to DOM-tree parser.
-*   [SimpleApiParser](#class-simpleapiparser) - [SAX](http://en.wikipedia.org/wiki/Simple_API_for_XML)-style parser for HTML.
-*   [Serializer](#class-serializer) - DOM-tree to HTML code serializer.
-
-
-## Example
-```js
-var parse5 = require('parse5');
-
-// Feed it with an HTML document
-var document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>')
-
-/ /Now let's parse HTML-snippet
-var fragment = parse5.parseFragment('<title>Parse5 is &#102;&#117;&#99;&#107;ing awesome!</title><h1>42</h1>');
-
-// Now let's serialize them back into HTML
-var html = parse5.serialize(document);
-var fragmentHtml = parse5.serialize(fragment);
-```
-
-
-## Testing
-Test data is adopted from [html5lib project](https://github.com/html5lib). Parser is covered by more than 10000 test cases.
-To run tests:
-```
-$ gulp test
 ```
 
 
@@ -64,8 +47,17 @@ var parser = new Parser(myTreeAdapter);
 Sample implementation can be found [here](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters/default.js).
 The custom tree adapter should implement all methods exposed via `exports` in the sample implementation.
 
+
+## Testing
+Test data is adopted from [html5lib project](https://github.com/html5lib). Parser is covered by more than 10000 test cases.
+To run tests:
+```
+$ gulp test
+```
+
+
 ## Questions or suggestions?
-If you have any questions, please feel free to create an issue [here on github](https://github.com/inikulin/parse5/issues).
+If you have any questions, please feel free to create an issue [on github](https://github.com/inikulin/parse5/issues).
 
 
 ## Author
