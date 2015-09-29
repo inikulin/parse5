@@ -1,3 +1,4 @@
+# API Reference
 <a name="parse5"></a>
 ## parse5 : <code>object</code>
 **Kind**: global namespace  
@@ -9,7 +10,7 @@
 
 <a name="parse5.parse"></a>
 ### parse5.parse(html, [options]) ⇒ <code>ASTNode.&lt;Document&gt;</code>
-Parses HTML string
+Parses HTML string.
 
 **Kind**: static method of <code>[parse5](#parse5)</code>  
 **Returns**: <code>ASTNode.&lt;Document&gt;</code> - document  
@@ -50,7 +51,7 @@ var trFragment = parser.parseFragment(documentFragment.childNodes[0], '<tr><td>S
 ```
 <a name="parse5.serialize"></a>
 ### parse5.serialize(node, [options]) ⇒ <code>String</code>
-Serializes AST node to HTML string
+Serializes AST node to HTML string.
 
 **Kind**: static method of <code>[parse5](#parse5)</code>  
 **Returns**: <code>String</code> - html  

@@ -9,7 +9,8 @@ var gulp = require('gulp'),
     download = require('gulp-download'),
     through = require('through2'),
     concat = require('gulp-concat'),
-    jsdoc = require('gulp-jsdoc-to-markdown');
+    jsdoc = require('gulp-jsdoc-to-markdown'),
+    insert = require('gulp-insert');
 
 
 gulp.task('generate-trie', function () {
@@ -65,12 +66,20 @@ gulp.task('generate-trie', function () {
         .pipe(gulp.dest('lib/tokenizer'));
 });
 
-gulp.task('docs', function () {
+gulp.task('generate-api-reference', function () {
     return gulp
-        .src('lib/**/*.js')
-        .pipe(concat('API.md'))
+        .src('lib/index.js')
+        .pipe(concat('04_api_reference.md'))
         .pipe(jsdoc())
-        .pipe(gulp.dest('./'));
+        .pipe(insert.prepend('# API Reference\n'))
+        .pipe(gulp.dest('docs'));
+});
+
+gulp.task('generate-gh-pages', ['generate-api-reference'], function () {
+    return gulp
+        .src('docs/*.md')
+        .pipe(concat('index.md'))
+        .pipe(gulp.dest('docs/gh_pages'));
 });
 
 gulp.task('install-upstream-parse5', function () {
@@ -106,6 +115,6 @@ gulp.task('test', ['lint'], function () {
         .pipe(mocha({
             ui: 'exports',
             reporter: 'progress',
-            timeout: typeof v8debug === 'undefined' ? 10000 : Infinity // NOTE: disable timeouts in debug
+            timeout: typeof v8debug === 'undefined' ? 20000 : Infinity // NOTE: disable timeouts in debug
         }));
 });
