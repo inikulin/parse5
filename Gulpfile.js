@@ -75,6 +75,13 @@ gulp.task('generate-api-reference', function () {
         .pipe(gulp.dest('docs'));
 });
 
+gulp.task('generate-gh-pages', ['generate-api-reference'], function () {
+    return gulp
+        .src('docs/*.md')
+        .pipe(concat('index.md'))
+        .pipe(gulp.dest('docs/gh_pages'));
+});
+
 gulp.task('install-upstream-parse5', function () {
     return gulp
         .src('test/benchmark/package.json')

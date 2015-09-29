@@ -1,4 +1,4 @@
-## Install
+# Install
 ```
 $ npm install parse5
 ```

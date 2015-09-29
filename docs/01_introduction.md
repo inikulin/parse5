@@ -2,7 +2,6 @@
   <img src="https://raw.github.com/inikulin/parse5/master/docs/logo.png" alt="parse5" />
 </p>
 
-[![Build Status](https://api.travis-ci.org/inikulin/parse5.svg)](https://travis-ci.org/inikulin/parse5)
 [![npm](https://img.shields.io/npm/v/parse5.svg)](https://www.npmjs.com/package/parse5)
 
 *WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node and io.js.*
