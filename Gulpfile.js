@@ -68,7 +68,7 @@ gulp.task('generate-trie', function () {
 
 gulp.task('generate-api-reference', function () {
     return gulp
-        .src('lib/index.js')
+        .src('lib/**/*.js')
         .pipe(concat('04_api_reference.md'))
         .pipe(jsdoc())
         .pipe(insert.prepend('# API Reference\n'))
