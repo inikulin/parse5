@@ -23,6 +23,7 @@
   * [.ParserStream](#parse5+ParserStream) ⇐ <code>stream.Writable</code>
     * [new ParserStream(options)](#new_parse5+ParserStream_new)
     * [.document](#parse5+ParserStream+document) : <code>ASTNode.&lt;document&gt;</code>
+    * ["script" (scriptElement, documentWrite(html), resume)](#parse5+ParserStream+event_script)
   * [.SerializerStream](#parse5+SerializerStream) ⇐ <code>stream.Readable</code>
     * [new SerializerStream(node, [options])](#new_parse5+SerializerStream_new)
   * [.treeAdapters](#parse5+treeAdapters)
@@ -38,6 +39,7 @@
 * [.ParserStream](#parse5+ParserStream) ⇐ <code>stream.Writable</code>
   * [new ParserStream(options)](#new_parse5+ParserStream_new)
   * [.document](#parse5+ParserStream+document) : <code>ASTNode.&lt;document&gt;</code>
+  * ["script" (scriptElement, documentWrite(html), resume)](#parse5+ParserStream+event_script)
 
 <a name="new_parse5+ParserStream_new"></a>
 #### new ParserStream(options)
@@ -70,6 +72,42 @@ http.get('http://google.com', function(res) {
 Resulting document node.
 
 **Kind**: instance property of <code>[ParserStream](#parse5+ParserStream)</code>  
+<a name="parse5+ParserStream+event_script"></a>
+#### "script" (scriptElement, documentWrite(html), resume)
+Raised then parser encounters `<script>` element.
+If event has listeners then parsing will be suspended on event emission.
+So, if `<script>` has `src` attribute you can fetch it, execute and then
+resume parser like browsers do.
+
+**Kind**: event emitted by <code>[ParserStream](#parse5+ParserStream)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scriptElement | <code>ASTNode</code> | Script element that caused the event. |
+| documentWrite(html) | <code>function</code> | Write additional `html` at the current parsing position. Suitable for the DOM `document.write` and `document.writeln` methods implementation. |
+| resume | <code>function</code> | Resumes the parser. |
+
+**Example**  
+```js
+var parse = require('parse5');
+var http = require('http');
+
+var parser = new parse5.ParserStream();
+
+parser.on('script', function(scriptElement, documentWrite, resume) {
+  var src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;
+
+  http.get(src, function(res) {
+     // Fetch script content, execute it with DOM built around `parser.document` and
+     // `document.write` implemented using `documentWrite`
+     ...
+     // Then resume the parser
+     resume();
+  });
+});
+
+parser.end('<script src="example.com/script.js"></script>');
+```
 <a name="parse5+SerializerStream"></a>
 ### parse5.SerializerStream ⇐ <code>stream.Readable</code>
 **Kind**: instance class of <code>[parse5](#parse5)</code>  
