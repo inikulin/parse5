@@ -85,25 +85,6 @@ function createBasicTest(html, expected, options) {
 //Basic tests
 testUtils
     .loadSerializationTestData(path.join(__dirname, '../data/sax'))
-    .concat([
-        {
-            name: 'Options - decodeHtmlEntities (text)',
-            src: '<div>&amp;&copy;</div>',
-            expected: '<div>&amp;&copy;</div>',
-            options: {
-                decodeHtmlEntities: false
-            }
-        },
-
-        {
-            name: 'Options - decodeHtmlEntities (attributes)',
-            src: '<a href = "&amp;test&lt;" &copy;>Yo</a>',
-            expected: '<a href = "&amp;test&lt;" &copy;="">Yo</a>',
-            options: {
-                decodeHtmlEntities: false
-            }
-        }
-    ])
     .forEach(function (test, idx) {
         var testName = getFullTestName(test, idx);
 

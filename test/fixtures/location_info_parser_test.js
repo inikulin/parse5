@@ -3,6 +3,7 @@
 var assert = require('assert'),
     path = require('path'),
     HTML = require('../../lib/common/html'),
+    escapeString = require('../../lib/serializer').escapeString,
     parse5 = require('../../lib'),
     testUtils = require('../test_utils');
 
@@ -69,15 +70,13 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             //obtained via location info from the expected serialization results.
             _test[getFullLocationTestName(test)] = function () {
                 var serializerOpts = {
-                        treeAdapter: treeAdapter,
-                        encodeHtmlEntities: false
+                        treeAdapter: treeAdapter
                     },
-                    html = test.expected,
+                    html = escapeString(test.expected),
                     lines = html.split(/\r?\n/g),
                     parserOpts = {
                         treeAdapter: treeAdapter,
-                        locationInfo: true,
-                        decodeHtmlEntities: false
+                        locationInfo: true
                     };
 
                 // NOTE: because of performance use bigger chunks here

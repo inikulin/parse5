@@ -40,8 +40,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     testUtils
         .loadTreeConstructionTestData([
             path.join(__dirname, '../data/tree_construction'),
-            path.join(__dirname, '../data/tree_construction_regression'),
-            path.join(__dirname, '../data/tree_construction_options')
+            path.join(__dirname, '../data/tree_construction_regression')
         ], treeAdapter)
         .forEach(function (test) {
             _test[getFullTestName(test)] = function () {

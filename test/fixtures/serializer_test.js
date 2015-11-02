@@ -135,37 +135,3 @@ exports['Regression - new line in <pre> tag'] = function () {
         assert.strictEqual(serializedResult, htmlStr.expected);
     });
 };
-
-exports['Options - encodeHtmlEntities'] = function () {
-    var testHtmlCases = [
-        {
-            options: {encodeHtmlEntities: true},
-            src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
-            expected: '<!DOCTYPE html><html><head></head><body>&amp;</body></html>'
-        },
-
-        {
-            options: {encodeHtmlEntities: false},
-            src: '<!DOCTYPE html><html><head></head><body>&</body></html>',
-            expected: '<!DOCTYPE html><html><head></head><body>&</body></html>'
-        },
-        {
-            options: {encodeHtmlEntities: true},
-            src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
-            expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&amp;world=2"></a></body></html>'
-        },
-
-        {
-            options: {encodeHtmlEntities: false},
-            src: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>',
-            expected: '<!DOCTYPE html><html><head></head><body><a href="http://example.com?hello=1&world=2"></a></body></html>'
-        }
-    ];
-
-    testHtmlCases.forEach(function (testCase) {
-        var document = parse5.parse(testCase.src),
-            serializedResult = parse5.serialize(document, testCase.options);
-
-        assert.strictEqual(serializedResult, testCase.expected);
-    });
-};
