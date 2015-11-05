@@ -1,7 +1,8 @@
 # Table of contents
 
  * [Install](#install)
+ * [Getting started](#getting-started)
  * [API Reference](#api-reference)
- * [Custom tree format](#custom-tree-format)
+ * [FAQ](#faq)
  * [Version history](#version-history)
- * [License and author information](#license-and-author-information)
+ * [License](#license-and-author-information)

@@ -1,4 +1,4 @@
-# License and author information
+# License
 Copyright (c) 2013-2015 Ivan Nikulin (ifaaan@gmail.com, https://github.com/inikulin)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -12,9 +12,11 @@
 <dd></dd>
 <dt><a href="#LocationInfo">LocationInfo</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#SerializerOptions">SerializerOptions</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#SAXParserOptions">SAXParserOptions</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#SerializerOptions">SerializerOptions</a> : <code>Object</code></dt>
+<dt><a href="#TreeAdapter">TreeAdapter</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 <a name="parse5"></a>
@@ -26,6 +28,8 @@
     * [new ParserStream(options)](#new_parse5+ParserStream_new)
     * [.document](#parse5+ParserStream+document) : <code>ASTNode.&lt;document&gt;</code>
     * ["script" (scriptElement, documentWrite(html), resume)](#parse5+ParserStream+event_script)
+  * [.SerializerStream](#parse5+SerializerStream) ⇐ <code>stream.Readable</code>
+    * [new SerializerStream(node, [options])](#new_parse5+SerializerStream_new)
   * [.SAXParser](#parse5+SAXParser) ⇐ <code>stream.Transform</code>
     * [new SAXParser(options)](#new_parse5+SAXParser_new)
     * [.stop()](#parse5+SAXParser+stop)
@@ -34,8 +38,6 @@
     * ["comment" (text, [location])](#parse5+SAXParser+event_comment)
     * ["doctype" (name, publicId, systemId, [location])](#parse5+SAXParser+event_doctype)
     * ["text" (text, [location])](#parse5+SAXParser+event_text)
-  * [.SerializerStream](#parse5+SerializerStream) ⇐ <code>stream.Readable</code>
-    * [new SerializerStream(node, [options])](#new_parse5+SerializerStream_new)
   * [.treeAdapters](#parse5+treeAdapters)
   * [.parse(html, [options])](#parse5+parse) ⇒ <code>ASTNode.&lt;Document&gt;</code>
   * [.parseFragment([fragmentContext], html, [options])](#parse5+parseFragment) ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
@@ -84,6 +86,34 @@ Raised then parser encounters `<script>` element.If event has listeners then pa
 **Example**  
 ```js
 var parse = require('parse5');var http = require('http');var parser = new parse5.ParserStream();parser.on('script', function(scriptElement, documentWrite, resume) {  var src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;  http.get(src, function(res) {     // Fetch script content, execute it with DOM built around `parser.document` and     // `document.write` implemented using `documentWrite`     ...     // Then resume the parser     resume();  });});parser.end('<script src="example.com/script.js"></script>');
+```
+<a name="parse5+SerializerStream"></a>
+### parse5.SerializerStream ⇐ <code>stream.Readable</code>
+**Kind**: instance class of <code>[parse5](#parse5)</code>  
+**Extends:** <code>stream.Readable</code>  
+<a name="new_parse5+SerializerStream_new"></a>
+#### new SerializerStream(node, [options])
+Streaming AST node to HTML serializer.
+[Readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable).
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| node | <code>ASTNode</code> | Node to serialize. |
+| [options] | <code>[SerializerOptions](#SerializerOptions)</code> | Serialization options. |
+
+**Example**  
+```js
+var parse5 = require('parse5');
+var fs = require('fs');
+
+var file = fs.createWriteStream('/home/index.html');
+
+// Serialize parsed document to the HTML and write it to file
+var document = parse5.parse('<body>Who is John Galt?</body>');
+var serializer = new parse5.SerializerStream(document);
+
+serializer.pipe(file);
 ```
 <a name="parse5+SAXParser"></a>
 ### parse5.SAXParser ⇐ <code>stream.Transform</code>
@@ -203,8 +233,8 @@ Raised then parser encounters [document type declaration](https://en.wikipedia.o
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>String</code> | Document type name. |
-| publicId | <code>String</code> | Document type publicId. |
-| systemId | <code>String</code> | Document type systemId. |
+| publicId | <code>String</code> | Document type public identifier. |
+| systemId | <code>String</code> | Document type system identifier. |
 | [location] | <code>[LocationInfo](#LocationInfo)</code> | Document type declaration source code location info. Available if location info is enabled in [SAXParserOptions](#SAXParserOptions). |
 
 <a name="parse5+SAXParser+event_text"></a>
@@ -218,34 +248,6 @@ Raised then parser encounters text content.
 | text | <code>String</code> | Text content. |
 | [location] | <code>[LocationInfo](#LocationInfo)</code> | Text content code location info. Available if location info is enabled in [SAXParserOptions](#SAXParserOptions). |
 
-<a name="parse5+SerializerStream"></a>
-### parse5.SerializerStream ⇐ <code>stream.Readable</code>
-**Kind**: instance class of <code>[parse5](#parse5)</code>  
-**Extends:** <code>stream.Readable</code>  
-<a name="new_parse5+SerializerStream_new"></a>
-#### new SerializerStream(node, [options])
-Streaming AST node to HTML serializer.
-[Readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable).
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| node | <code>ASTNode</code> | Node to serialize. |
-| [options] | <code>[SerializerOptions](#SerializerOptions)</code> | Serialization options. |
-
-**Example**  
-```js
-var parse5 = require('parse5');
-var fs = require('fs');
-
-var file = fs.createWriteStream('/home/index.html');
-
-// Serialize parsed document to the HTML and write it to file
-var document = parse5.parse('<body>Who is John Galt?</body>');
-var serializer = new parse5.SerializerStream(document);
-
-serializer.pipe(file);
-```
 <a name="parse5+treeAdapters"></a>
 ### parse5.treeAdapters
 Provides built-in tree adapters which can be used for parsing and serialization.
@@ -255,8 +257,8 @@ Provides built-in tree adapters which can be used for parsing and serialization.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| default | <code>TreeAdapter</code> | Default tree format for parse5. |
-| htmlparser2 | <code>TreeAdapter</code> | Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.g. used by [cheerio](https://github.com/MatthewMueller/cheerio) and [jsdom](https://github.com/tmpvar/jsdom)). |
+| default | <code>[TreeAdapter](#TreeAdapter)</code> | Default tree format for parse5. |
+| htmlparser2 | <code>[TreeAdapter](#TreeAdapter)</code> | Quite popular [htmlparser2](https://github.com/fb55/htmlparser2) tree format (e.g. used by [cheerio](https://github.com/MatthewMueller/cheerio) and [jsdom](https://github.com/tmpvar/jsdom)). |
 
 **Example**  
 ```js
@@ -340,7 +342,7 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | locationInfo | <code>Boolean</code> | <code>false</code> | Enables source code location information for the nodes. When enabled, each node (except root node) has `__location` property. In case the node is not an empty element, `__location` will be [ElementLocationInfo](#ElementLocationInfo) object, otherwise it's [LocationInfo](#LocationInfo). If element was implicitly created by the parser it's `__location` property will be `null`. |
-| treeAdapter | <code>TreeAdapter</code> | <code>parse5.treeAdapters.default</code> | Specifies resulting tree format. |
+| treeAdapter | <code>[TreeAdapter](#TreeAdapter)</code> | <code>parse5.treeAdapters.default</code> | Specifies resulting tree format. |
 
 <a name="ElementLocationInfo"></a>
 ## ElementLocationInfo : <code>Object</code>
@@ -365,6 +367,15 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 | startOffset | <code>Number</code> | Zero-based first character index |
 | endOffset | <code>Number</code> | Zero-based last character index |
 
+<a name="SerializerOptions"></a>
+## SerializerOptions : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| treeAdapter | <code>[TreeAdapter](#TreeAdapter)</code> | <code>parse5.treeAdapters.default</code> | Specifies input tree format. |
+
 <a name="SAXParserOptions"></a>
 ## SAXParserOptions : <code>Object</code>
 **Kind**: global typedef  
@@ -374,12 +385,108 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 | --- | --- | --- | --- |
 | locationInfo | <code>Boolean</code> | <code>false</code> | Enables source code location information for the tokens. When enabled, each token event handler will receive [LocationInfo](#LocationInfo) object as the last argument. |
 
-<a name="SerializerOptions"></a>
-## SerializerOptions : <code>Object</code>
+<a name="TreeAdapter"></a>
+## TreeAdapter : <code>Object</code>
 **Kind**: global typedef  
-**Properties**
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| treeAdapter | <code>TreeAdapter</code> | <code>parse5.treeAdapters.default</code> | Specifies input tree format. |
+* [TreeAdapter](#TreeAdapter) : <code>Object</code>
+  * [.createDocument()](#TreeAdapter.createDocument) ⇒ <code>ASTNode.&lt;Document&gt;</code>
+  * [.createDocumentFragment()](#TreeAdapter.createDocumentFragment) ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
+  * [.createElement(tagName, namespaceURI, attrs)](#TreeAdapter.createElement) ⇒ <code>ASTNode.&lt;Element&gt;</code>
+  * [.createElement(data)](#TreeAdapter.createElement) ⇒ <code>ASTNode.&lt;CommentNode&gt;</code>
+  * [.setDocumentType(document, name, publicId, systemId)](#TreeAdapter.setDocumentType)
+  * [.setQuirksMode(document)](#TreeAdapter.setQuirksMode)
+  * [.setQuirksMode(document)](#TreeAdapter.setQuirksMode) ⇒ <code>Boolean</code>
+  * [.detachNode(node)](#TreeAdapter.detachNode)
+
+<a name="TreeAdapter.createDocument"></a>
+### TreeAdapter.createDocument() ⇒ <code>ASTNode.&lt;Document&gt;</code>
+Creates document node
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**Returns**: <code>ASTNode.&lt;Document&gt;</code> - document  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+<a name="TreeAdapter.createDocumentFragment"></a>
+### TreeAdapter.createDocumentFragment() ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
+Creates document fragment node
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**Returns**: <code>ASTNode.&lt;DocumentFragment&gt;</code> - fragment  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+<a name="TreeAdapter.createElement"></a>
+### TreeAdapter.createElement(tagName, namespaceURI, attrs) ⇒ <code>ASTNode.&lt;Element&gt;</code>
+Creates element node
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**Returns**: <code>ASTNode.&lt;Element&gt;</code> - element  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tagName | <code>string</code> | Tag name of the element. |
+| namespaceURI | <code>string</code> | Namespace of the element. |
+| attrs | <code>Array</code> | Element attribute-value pair array.                         Foreign attributes may contain `namespace` and `prefix` fields as well. |
+
+<a name="TreeAdapter.createElement"></a>
+### TreeAdapter.createElement(data) ⇒ <code>ASTNode.&lt;CommentNode&gt;</code>
+Creates comment node
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**Returns**: <code>ASTNode.&lt;CommentNode&gt;</code> - comment  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>string</code> | Comment text. |
+
+<a name="TreeAdapter.setDocumentType"></a>
+### TreeAdapter.setDocumentType(document, name, publicId, systemId)
+Sets document type. If `document` already have document type node in it then
+`name`, `publicId` and `systemId` properties of the node should be updated with
+the provided values. Otherwise, create and new document type node with the given
+properties and insert it into `document`.
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| document | <code>ASTNode.&lt;Document&gt;</code> | Document node. |
+| name | <code>string</code> | Document type name. |
+| publicId | <code>string</code> | Document type public identifier. |
+| systemId | <code>string</code> | Document type system identifier. |
+
+<a name="TreeAdapter.setQuirksMode"></a>
+### TreeAdapter.setQuirksMode(document)
+Sets document quirks mode flag.
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| document | <code>ASTNode.&lt;Document&gt;</code> | Document node. |
+
+<a name="TreeAdapter.setQuirksMode"></a>
+### TreeAdapter.setQuirksMode(document) ⇒ <code>Boolean</code>
+Query document quirks mode flag state.
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**Returns**: <code>Boolean</code> - isSet  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| document | <code>ASTNode.&lt;Document&gt;</code> | Document node. |
+
+<a name="TreeAdapter.detachNode"></a>
+### TreeAdapter.detachNode(node)
+Removes node from it's parent.
+
+**Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**See**: [sample implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| node | <code>ASTNode</code> | Node. |
 
