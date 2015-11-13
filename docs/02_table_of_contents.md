@@ -1,7 +1,7 @@
 # Table of contents
 
  * [Install](#install)
- * [Getting started](#getting-started)
+ * [Usage](#usage)
  * [API Reference](#api-reference)
  * [FAQ](#faq)
  * [Version history](#version-history)
