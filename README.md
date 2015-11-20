@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-<i>WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node and io.js.</i>
+<i>WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.</i>
 </p>
 
 <p align="center">
