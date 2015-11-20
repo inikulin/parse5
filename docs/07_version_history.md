@@ -12,6 +12,7 @@
    methods as replacement for the `Parser` class.
  * Add (**breaking**): [parse5.serialize()](http://inikulin.github.io/parse5/#parse5+serialized) method as replacement for the `Serializer` class.
  * Update: parsing algorithm was updated with the latest [HTML spec](https://html.spec.whatwg.org/) changes.
+ * Remove (**breaking**): `decodeHtmlEntities` and `encodeHtmlEntities` options. [Discussion](https://github.com/inikulin/parse5/issues/75).
 
 ## 1.5.0
  * Add: Location info for the element start and end tags (by @sakagg).
