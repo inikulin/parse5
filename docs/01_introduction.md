@@ -9,5 +9,7 @@
 <p align="center">
 <i>WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.</i>
 </p>
-I needed fast and ready for production HTML parser, which will parse HTML as a modern browser's parser.
-Existing solutions were either too slow or their output was too inaccurate. So, this is how parse5 was born.
+parse5 contains nearly everything what you will need to deal with the HTML. It's the fastest spec-compliant HTML parser
+for Node to the date and will parse HTML the way the latest version of your browser does. It's stable and used
+by such projects as [jsdom](https://github.com/tmpvar/jsdom), [Angular2](https://github.com/angular/angular),
+[Polymer](https://www.polymer-project.org/1.0/) and many more.

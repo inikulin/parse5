@@ -6,11 +6,11 @@
 </dl>
 ## Typedefs
 <dl>
-<dt><a href="#ParserOptions">ParserOptions</a> : <code>Object</code></dt>
-<dd></dd>
 <dt><a href="#ElementLocationInfo">ElementLocationInfo</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#LocationInfo">LocationInfo</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#ParserOptions">ParserOptions</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#SAXParserOptions">SAXParserOptions</a> : <code>Object</code></dt>
 <dd></dd>
@@ -334,16 +334,6 @@ var html = parse5.serialize(document);
 //Serialize <body> element content
 var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 ```
-<a name="ParserOptions"></a>
-## ParserOptions : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| locationInfo | <code>Boolean</code> | <code>false</code> | Enables source code location information for the nodes. When enabled, each node (except root node) has `__location` property. In case the node is not an empty element, `__location` will be [ElementLocationInfo](#ElementLocationInfo) object, otherwise it's [LocationInfo](#LocationInfo). If element was implicitly created by the parser it's `__location` property will be `null`. |
-| treeAdapter | <code>[TreeAdapter](#TreeAdapter)</code> | <code>parse5.treeAdapters.default</code> | Specifies resulting tree format. |
-
 <a name="ElementLocationInfo"></a>
 ## ElementLocationInfo : <code>Object</code>
 **Kind**: global typedef  
@@ -366,6 +356,16 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 | col | <code>Number</code> | One-based column index |
 | startOffset | <code>Number</code> | Zero-based first character index |
 | endOffset | <code>Number</code> | Zero-based last character index |
+
+<a name="ParserOptions"></a>
+## ParserOptions : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| locationInfo | <code>Boolean</code> | <code>false</code> | Enables source code location information for the nodes. When enabled, each node (except root node) has `__location` property. In case the node is not an empty element, `__location` will be [ElementLocationInfo](#ElementLocationInfo) object, otherwise it's [LocationInfo](#LocationInfo). If element was implicitly created by the parser it's `__location` property will be `null`. |
+| treeAdapter | <code>[TreeAdapter](#TreeAdapter)</code> | <code>parse5.treeAdapters.default</code> | Specifies resulting tree format. |
 
 <a name="SAXParserOptions"></a>
 ## SAXParserOptions : <code>Object</code>
@@ -423,21 +423,21 @@ Creates document node
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>ASTNode.&lt;Document&gt;</code> - document  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L19)  
 <a name="TreeAdapter.createDocumentFragment"></a>
 ### TreeAdapter.createDocumentFragment() ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
 Creates document fragment node
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>ASTNode.&lt;DocumentFragment&gt;</code> - fragment  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L37)  
 <a name="TreeAdapter.createElement"></a>
 ### TreeAdapter.createElement(tagName, namespaceURI, attrs) ⇒ <code>ASTNode.&lt;Element&gt;</code>
 Creates element node
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>ASTNode.&lt;Element&gt;</code> - element  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L61)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -451,7 +451,7 @@ Creates comment node
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>ASTNode.&lt;CommentNode&gt;</code> - comment  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L85)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -465,7 +465,7 @@ the provided values. Otherwise, creates new document type node with the given
 properties and inserts it into `document`.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L131)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -479,7 +479,7 @@ properties and inserts it into `document`.
 Sets document quirks mode flag.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L167)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -490,7 +490,7 @@ Sets document quirks mode flag.
 Determines if document quirks mode flag is set.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L183)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -501,7 +501,7 @@ Determines if document quirks mode flag is set.
 Removes node from it's parent.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L197)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -514,7 +514,7 @@ provided text will be appended to the text node content. Otherwise, inserts
 new text node with the given text.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L220)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -529,7 +529,7 @@ to the text node content. Otherwise, inserts new text node with the given text
 before the referenced child node.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L249)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -543,7 +543,7 @@ Copies attributes to the given node. Only those nodes
 which are not yet present in the node are copied.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L270)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -556,7 +556,7 @@ Returns first child of the given node.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>ASTNode</code> - firstChild  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L297)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -568,7 +568,7 @@ Returns array of the given node's children.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>Array</code> - children  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L313)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -580,7 +580,7 @@ Returns given node's parent.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>ASTNode</code> - parent  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L329)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -593,7 +593,7 @@ Foreign attributes may contain `namespace` and `prefix` fields as well.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>Array</code> - attributes  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L346)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -605,7 +605,7 @@ Returns given element's tag name.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>String</code> - tagName  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L364)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -617,7 +617,7 @@ Returns given element's namespace.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>String</code> - namespaceURI  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L380)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -629,7 +629,7 @@ Returns given text node's content.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>String</code> - text  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L396)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -641,7 +641,7 @@ Returns given comment node's content.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>String</code> - commentText  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L412)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -653,7 +653,7 @@ Returns given document type node's name.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>String</code> - name  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L428)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -665,7 +665,7 @@ Returns given document type node's public identifier.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>String</code> - publicId  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L444)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -677,7 +677,7 @@ Returns given document type node's system identifier.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **Returns**: <code>String</code> - systemId  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L460)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -688,7 +688,7 @@ Returns given document type node's system identifier.
 Determines if given node is a text node.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L477)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -699,7 +699,7 @@ Determines if given node is a text node.
 Determines if given node is a comment node.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L493)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -710,7 +710,7 @@ Determines if given node is a comment node.
 Determines if given node is a document type node.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L509)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -721,7 +721,7 @@ Determines if given node is a document type node.
 Determines if given node is an element.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**See**: [default implementation.](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters)  
+**See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L525)  
 
 | Param | Type | Description |
 | --- | --- | --- |
