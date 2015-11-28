@@ -1,3 +1,6 @@
+## 1.5.1
+ * Fix: Qualified tag name emission in Serializer (GH [#79](https://github.com/inikulin/parse5/issues/79)).
+
 ## 1.5.0
  * Add: Location info for the element start and end tags (by @sakagg).
 
