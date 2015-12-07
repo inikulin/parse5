@@ -1,18 +1,20 @@
 # Version history
 ## 2.0.0
- * Add: [ParserStream](http://inikulin.github.io/parse5/#parse5+ParserStream) with the scripting support.
- * Add: [SerializerStream](http://inikulin.github.io/parse5/#parse5+SerializerStream)
+ * Add: [ParserStream](https://github.com/inikulin/parse5/wiki/Documentation#parse5+ParserStream) with the scripting support.
+ * Add: [SerializerStream](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SerializerStream)
  * Add: Line/column location info.
- * Update (**breaking**): `SimpleApiParser` was renamed to [SAXParser](http://inikulin.github.io/parse5/#parse5+SAXParser).
- * Update (**breaking**): [SAXParser](http://inikulin.github.io/parse5/#parse5+SAXParser) is the [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)
+ * Update (**breaking**): `SimpleApiParser` was renamed to [SAXParser](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SAXParser).
+ * Update (**breaking**): [SAXParser](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SAXParser) is the [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)
    now.
- * Update (**breaking**): [SAXParser](http://inikulin.github.io/parse5/#parse5+SAXParser) handler subscription is done via events now.
- * Add: [SAXParser.stop()](http://inikulin.github.io/parse5/#parse5+SAXParser+stop)
- * Add (**breaking**): [parse5.parse()](http://inikulin.github.io/parse5/#parse5+parse) and [parse5.parseFragment()](http://inikulin.github.io/parse5/#parse5+parseFragment)
+ * Update (**breaking**): [SAXParser](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SAXParser) handler subscription is done via events now.
+ * Add: [SAXParser.stop()](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SAXParser+stop)
+ * Add (**breaking**): [parse5.parse()](https://github.com/inikulin/parse5/wiki/Documentation#parse5+parse) and [parse5.parseFragment()](https://github.com/inikulin/parse5/wiki/Documentation#parse5+parseFragment)
    methods as replacement for the `Parser` class.
- * Add (**breaking**): [parse5.serialize()](http://inikulin.github.io/parse5/#parse5+serialized) method as replacement for the `Serializer` class.
+ * Add (**breaking**): [parse5.serialize()](https://github.com/inikulin/parse5/wiki/Documentation#parse5+serialized) method as replacement for the `Serializer` class.
  * Update: parsing algorithm was updated with the latest [HTML spec](https://html.spec.whatwg.org/) changes.
  * Remove (**breaking**): `decodeHtmlEntities` and `encodeHtmlEntities` options. [Discussion](https://github.com/inikulin/parse5/issues/75).
+ * Add (**breaking**): [TreeAdapter.setTemplateContent()](https://github.com/inikulin/parse5/wiki/Documentation#TreeAdapter.setTemplateContent) and [TreeAdapter.getTemplateContent()](https://github.com/inikulin/parse5/wiki/Documentation#TreeAdapter.getTemplateContent) methods. (GH [#78](https://github.com/inikulin/parse5/issues/78)).
+
 
 ## 1.5.1
  * Fix: Qualified tag name emission in Serializer (GH [#79](https://github.com/inikulin/parse5/issues/79)).
