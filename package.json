@@ -9,7 +9,7 @@
     "Sebastian Mayr <sebmaster16@gmail.com> (http://blog.smayr.name)",
     "Sean Lang <slang800@gmail.com> (http://slang.cx)"
   ],
-  "homepage": "http://inikulin.github.io/parse5/",
+  "homepage": "https://github.com/inikulin/parse5",
   "devDependencies": {
     "del": "^2.0.2",
     "gulp": "^3.9.0",

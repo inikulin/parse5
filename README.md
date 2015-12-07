@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="http://inikulin.github.io/parse5">
+    <a href="https://github.com/inikulin/parse5">
         <img src="https://raw.github.com/inikulin/parse5/master/docs/logo.png" alt="parse5" />
     </a>
 </p>
@@ -18,7 +18,7 @@
 ----
 
 <p align="center">
-  <a href="http://inikulin.github.io/parse5">Documentation</a>
+  <a href="https://github.com/inikulin/parse5/wiki/Documentation">Documentation</a>
 </p>
 
 <p align="center">
