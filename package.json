@@ -52,7 +52,6 @@
     "test": "gulp test"
   },
   "files": [
-    "lib/",
-    "API.md"
+    "lib"
   ]
 }
