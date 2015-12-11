@@ -107,8 +107,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         var html = '</head><div class="test"></div></body></html>',
             opts = {
                 treeAdapter: treeAdapter,
-                locationInfo: true,
-                decodeHtmlEntities: false
+                locationInfo: true
             };
 
         var document = testUtils.parseChunked(html, opts).document;
@@ -118,5 +117,17 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             if (treeAdapter.getTagName(node) !== HTML.TAG_NAMES.DIV)
                 assert.strictEqual(node.__location, null);
         });
+    };
+
+    exports['Regression - Location info not exposed with parseFragment (GH-82)'] = function () {
+        var html = '<html><head></head><body>foo</body></html>',
+            opts = {
+                treeAdapter: treeAdapter,
+                locationInfo: true
+            };
+
+        var fragment = parse5.parseFragment(html, opts);
+
+        assert.ok(fragment.childNodes[0].__location);
     };
 });

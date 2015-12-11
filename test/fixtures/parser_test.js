@@ -44,10 +44,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         ], treeAdapter)
         .forEach(function (test) {
             _test[getFullTestName(test)] = function () {
-                var opts = {
-                    decodeHtmlEntities: !test.disableEntitiesDecoding,
-                    treeAdapter: treeAdapter
-                };
+                var opts = { treeAdapter: treeAdapter };
 
 
                 if (test.fragmentContext)

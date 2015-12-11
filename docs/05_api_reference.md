@@ -10,9 +10,9 @@
 <dd></dd>
 <dt><a href="#LocationInfo">LocationInfo</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#ParserOptions">ParserOptions</a> : <code>Object</code></dt>
-<dd></dd>
 <dt><a href="#SAXParserOptions">SAXParserOptions</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#ParserOptions">ParserOptions</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#SerializerOptions">SerializerOptions</a> : <code>Object</code></dt>
 <dd></dd>
@@ -24,10 +24,6 @@
 **Kind**: global namespace  
 
 * [parse5](#parse5) : <code>object</code>
-  * [.ParserStream](#parse5+ParserStream) ⇐ <code>stream.Writable</code>
-    * [new ParserStream(options)](#new_parse5+ParserStream_new)
-    * [.document](#parse5+ParserStream+document) : <code>ASTNode.&lt;document&gt;</code>
-    * ["script" (scriptElement, documentWrite(html), resume)](#parse5+ParserStream+event_script)
   * [.SAXParser](#parse5+SAXParser) ⇐ <code>stream.Transform</code>
     * [new SAXParser(options)](#new_parse5+SAXParser_new)
     * [.stop()](#parse5+SAXParser+stop)
@@ -36,6 +32,10 @@
     * ["comment" (text, [location])](#parse5+SAXParser+event_comment)
     * ["doctype" (name, publicId, systemId, [location])](#parse5+SAXParser+event_doctype)
     * ["text" (text, [location])](#parse5+SAXParser+event_text)
+  * [.ParserStream](#parse5+ParserStream) ⇐ <code>stream.Writable</code>
+    * [new ParserStream(options)](#new_parse5+ParserStream_new)
+    * [.document](#parse5+ParserStream+document) : <code>ASTNode.&lt;document&gt;</code>
+    * ["script" (scriptElement, documentWrite(html), resume)](#parse5+ParserStream+event_script)
   * [.SerializerStream](#parse5+SerializerStream) ⇐ <code>stream.Readable</code>
     * [new SerializerStream(node, [options])](#new_parse5+SerializerStream_new)
   * [.treeAdapters](#parse5+treeAdapters)
@@ -43,83 +43,6 @@
   * [.parseFragment([fragmentContext], html, [options])](#parse5+parseFragment) ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
   * [.serialize(node, [options])](#parse5+serialize) ⇒ <code>String</code>
 
-<a name="parse5+ParserStream"></a>
-### parse5.ParserStream ⇐ <code>stream.Writable</code>
-**Kind**: instance class of <code>[parse5](#parse5)</code>  
-**Extends:** <code>stream.Writable</code>  
-
-* [.ParserStream](#parse5+ParserStream) ⇐ <code>stream.Writable</code>
-  * [new ParserStream(options)](#new_parse5+ParserStream_new)
-  * [.document](#parse5+ParserStream+document) : <code>ASTNode.&lt;document&gt;</code>
-  * ["script" (scriptElement, documentWrite(html), resume)](#parse5+ParserStream+event_script)
-
-<a name="new_parse5+ParserStream_new"></a>
-#### new ParserStream(options)
-Streaming HTML parser with scripting support.
-A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| options | <code>[ParserOptions](#ParserOptions)</code> | Parsing options. |
-
-**Example**  
-```js
-var parse5 = require('parse5');
-var http = require('http');
-
-// Fetch the google.com content and obtain it's <body> node
-http.get('http://google.com', function(res) {
- var parser = new parse5.ParserStream();
-
- parser.on('finish', function() {
-     var body = parser.document.childNodes[0].childNodes[1];
- });
-
- res.pipe(parser);
-});
-```
-<a name="parse5+ParserStream+document"></a>
-#### parserStream.document : <code>ASTNode.&lt;document&gt;</code>
-The resulting document node.
-
-**Kind**: instance property of <code>[ParserStream](#parse5+ParserStream)</code>  
-<a name="parse5+ParserStream+event_script"></a>
-#### "script" (scriptElement, documentWrite(html), resume)
-Raised then parser encounters a `<script>` element.
-If this event has listeners, parsing will be suspended once it is emitted.
-So, if `<script>` has the `src` attribute, you can fetch it, execute and then resume parsing just like browsers do.
-resume parser like browsers do.
-
-**Kind**: event emitted by <code>[ParserStream](#parse5+ParserStream)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| scriptElement | <code>ASTNode</code> | The script element that caused the event. |
-| documentWrite(html) | <code>function</code> | Write additional `html` at the current parsing position.  Suitable for implementing the DOM `document.write` and `document.writeln` methods. |
-| resume | <code>function</code> | Resumes parsing. |
-
-**Example**  
-```js
-var parse = require('parse5');
-var http = require('http');
-
-var parser = new parse5.ParserStream();
-
-parser.on('script', function(scriptElement, documentWrite, resume) {
-  var src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;
-
-  http.get(src, function(res) {
-     // Fetch the script content, execute it with DOM built around `parser.document` and
-     // `document.write` implemented using `documentWrite`.
-     ...
-     // Then resume parsing.
-     resume();
-  });
-});
-
-parser.end('<script src="example.com/script.js"></script>');
-```
 <a name="parse5+SAXParser"></a>
 ### parse5.SAXParser ⇐ <code>stream.Transform</code>
 **Kind**: instance class of <code>[parse5](#parse5)</code>  
@@ -136,9 +59,7 @@ parser.end('<script src="example.com/script.js"></script>');
 
 <a name="new_parse5+SAXParser_new"></a>
 #### new SAXParser(options)
-Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parser.
-A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)
-(which means you can pipe *through* it, see example).
+Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parser.A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)(which means you can pipe *through* it, see example).
 
 
 | Param | Type | Description |
@@ -147,51 +68,16 @@ A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_tran
 
 **Example**  
 ```js
-var parse5 = require('parse5');
-var http = require('http');
-var fs = require('fs');
-
-var file = fs.createWriteStream('/home/google.com.html');
-var parser = new SAXParser();
-
-parser.on('text', function(text) {
- // Handle page text content
- ...
-});
-
-http.get('http://google.com', function(res) {
- // SAXParser is the Transform stream, which means you can pipe
- // through it. So, you can analyze page content and, e.g., save it
- // to the file at the same time:
- res.pipe(parser).pipe(file);
-});
+var parse5 = require('parse5');var http = require('http');var fs = require('fs');var file = fs.createWriteStream('/home/google.com.html');var parser = new parse5.SAXParser();parser.on('text', function(text) { // Handle page text content ...});http.get('http://google.com', function(res) { // SAXParser is the Transform stream, which means you can pipe // through it. So, you can analyze page content and, e.g., save it // to the file at the same time: res.pipe(parser).pipe(file);});
 ```
 <a name="parse5+SAXParser+stop"></a>
 #### saxParser.stop()
-Stops parsing. Useful if you want the parser to stop consuming CPU time once you've obtained the desired info
-from the input stream. Doesn't prevent piping, so that data will flow through the parser as usual.
+Stops parsing. Useful if you want the parser to stop consuming CPU time once you've obtained the desired infofrom the input stream. Doesn't prevent piping, so that data will flow through the parser as usual.
 
 **Kind**: instance method of <code>[SAXParser](#parse5+SAXParser)</code>  
 **Example**  
 ```js
-var parse5 = require('parse5');
-var http = require('http');
-var fs = require('fs');
-
-var file = fs.createWriteStream('/home/google.com.html');
-var parser = new parse5.SAXParser();
-
-parser.on('doctype', function(name, publicId, systemId) {
- // Process doctype info ans stop parsing
- ...
- parser.stop();
-});
-
-http.get('http://google.com', function(res) {
- // Despite the fact that parser.stop() was called whole
- // content of the page will be written to the file
- res.pipe(parser).pipe(file);
-});
+var parse5 = require('parse5');var http = require('http');var fs = require('fs');var file = fs.createWriteStream('/home/google.com.html');var parser = new parse5.SAXParser();parser.on('doctype', function(name, publicId, systemId) { // Process doctype info ans stop parsing ... parser.stop();});http.get('http://google.com', function(res) { // Despite the fact that parser.stop() was called whole // content of the page will be written to the file res.pipe(parser).pipe(file);});
 ```
 <a name="parse5+SAXParser+event_startTag"></a>
 #### "startTag" (name, attributes, selfClosing, [location])
@@ -252,6 +138,50 @@ Raised then parser encounters text content.
 | text | <code>String</code> | Text content. |
 | [location] | <code>[LocationInfo](#LocationInfo)</code> | Text content code location info. Available if location info is enabled in [SAXParserOptions](#SAXParserOptions). |
 
+<a name="parse5+ParserStream"></a>
+### parse5.ParserStream ⇐ <code>stream.Writable</code>
+**Kind**: instance class of <code>[parse5](#parse5)</code>  
+**Extends:** <code>stream.Writable</code>  
+
+* [.ParserStream](#parse5+ParserStream) ⇐ <code>stream.Writable</code>
+  * [new ParserStream(options)](#new_parse5+ParserStream_new)
+  * [.document](#parse5+ParserStream+document) : <code>ASTNode.&lt;document&gt;</code>
+  * ["script" (scriptElement, documentWrite(html), resume)](#parse5+ParserStream+event_script)
+
+<a name="new_parse5+ParserStream_new"></a>
+#### new ParserStream(options)
+Streaming HTML parser with scripting support.A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>[ParserOptions](#ParserOptions)</code> | Parsing options. |
+
+**Example**  
+```js
+var parse5 = require('parse5');var http = require('http');// Fetch the google.com content and obtain it's <body> nodehttp.get('http://google.com', function(res) { var parser = new parse5.ParserStream(); parser.on('finish', function() {     var body = parser.document.childNodes[0].childNodes[1]; }); res.pipe(parser);});
+```
+<a name="parse5+ParserStream+document"></a>
+#### parserStream.document : <code>ASTNode.&lt;document&gt;</code>
+The resulting document node.
+
+**Kind**: instance property of <code>[ParserStream](#parse5+ParserStream)</code>  
+<a name="parse5+ParserStream+event_script"></a>
+#### "script" (scriptElement, documentWrite(html), resume)
+Raised then parser encounters a `<script>` element.If this event has listeners, parsing will be suspended once it is emitted.So, if `<script>` has the `src` attribute, you can fetch it, execute and then resume parsing just like browsers do.
+
+**Kind**: event emitted by <code>[ParserStream](#parse5+ParserStream)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scriptElement | <code>ASTNode</code> | The script element that caused the event. |
+| documentWrite(html) | <code>function</code> | Write additional `html` at the current parsing position.  Suitable for implementing the DOM `document.write` and `document.writeln` methods. |
+| resume | <code>function</code> | Resumes parsing. |
+
+**Example**  
+```js
+var parse = require('parse5');var http = require('http');var parser = new parse5.ParserStream();parser.on('script', function(scriptElement, documentWrite, resume) {  var src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;  http.get(src, function(res) {     // Fetch the script content, execute it with DOM built around `parser.document` and     // `document.write` implemented using `documentWrite`.     ...     // Then resume parsing.     resume();  });});parser.end('<script src="example.com/script.js"></script>');
+```
 <a name="parse5+SerializerStream"></a>
 ### parse5.SerializerStream ⇐ <code>stream.Readable</code>
 **Kind**: instance class of <code>[parse5](#parse5)</code>  
@@ -389,6 +319,15 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 | startOffset | <code>Number</code> | Zero-based first character index |
 | endOffset | <code>Number</code> | Zero-based last character index |
 
+<a name="SAXParserOptions"></a>
+## SAXParserOptions : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| locationInfo | <code>Boolean</code> | <code>false</code> | Enables source code location information for the tokens. When enabled, each token event handler will receive [LocationInfo](#LocationInfo) object as its last argument. |
+
 <a name="ParserOptions"></a>
 ## ParserOptions : <code>Object</code>
 **Kind**: global typedef  
@@ -398,15 +337,6 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 | --- | --- | --- | --- |
 | locationInfo | <code>Boolean</code> | <code>false</code> | Enables source code location information for the nodes. When enabled, each node (except root node) has the `__location` property. In case the node is not an empty element, `__location` will be [ElementLocationInfo](#ElementLocationInfo) object, otherwise it's [LocationInfo](#LocationInfo). If the element was implicitly created by the parser it's `__location` property will be `null`. |
 | treeAdapter | <code>[TreeAdapter](#TreeAdapter)</code> | <code>parse5.treeAdapters.default</code> | Specifies the resulting tree format. |
-
-<a name="SAXParserOptions"></a>
-## SAXParserOptions : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| locationInfo | <code>Boolean</code> | <code>false</code> | Enables source code location information for the tokens. When enabled, each token event handler will receive [LocationInfo](#LocationInfo) object as its last argument. |
 
 <a name="SerializerOptions"></a>
 ## SerializerOptions : <code>Object</code>

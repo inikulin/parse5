@@ -10,7 +10,8 @@ var gulp = require('gulp'),
     through = require('through2'),
     concat = require('gulp-concat'),
     jsdoc = require('gulp-jsdoc-to-markdown'),
-    insert = require('gulp-insert');
+    insert = require('gulp-insert'),
+    publish = require('publish-please');
 
 
 gulp.task('generate-trie', function () {
@@ -117,4 +118,8 @@ gulp.task('test', ['lint'], function () {
             reporter: 'progress',
             timeout: typeof v8debug === 'undefined' ? 20000 : Infinity // NOTE: disable timeouts in debug
         }));
+});
+
+gulp.task('publish', ['test'], function () {
+    return publish();
 });
