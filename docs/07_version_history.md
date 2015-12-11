@@ -3,6 +3,7 @@
  * Add: [ParserStream](https://github.com/inikulin/parse5/wiki/Documentation#parse5+ParserStream) with the scripting support. (GH [#26](https://github.com/inikulin/parse5/issues/26)).
  * Add: [SerializerStream](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SerializerStream). (GH [#26](https://github.com/inikulin/parse5/issues/26)).
  * Add: Line/column location info. (GH [#67](https://github.com/inikulin/parse5/issues/67)).
+ * Update (**breaking**): Location info properties `start` and `end` were renamed to `startOffset` and `endOffset` respectively.
  * Update (**breaking**): `SimpleApiParser` was renamed to [SAXParser](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SAXParser).
  * Update (**breaking**): [SAXParser](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SAXParser) is the [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)
    now. (GH [#26](https://github.com/inikulin/parse5/issues/26)).
@@ -14,7 +15,7 @@
  * Update: parsing algorithm was updated with the latest [HTML spec](https://html.spec.whatwg.org/) changes.
  * Remove (**breaking**): `decodeHtmlEntities` and `encodeHtmlEntities` options. (GH [#75](https://github.com/inikulin/parse5/issues/75)).
  * Add (**breaking**): [TreeAdapter.setTemplateContent()](https://github.com/inikulin/parse5/wiki/Documentation#TreeAdapter.setTemplateContent) and [TreeAdapter.getTemplateContent()](https://github.com/inikulin/parse5/wiki/Documentation#TreeAdapter.getTemplateContent) methods. (GH [#78](https://github.com/inikulin/parse5/issues/78)).
-
+ * Update (**breaking**): `default` tree adapter now stores `<template>` content in `template.content` property instead of `template.childNodes[0]`.
 
 ## 1.5.1
  * Fix: Qualified tag name emission in Serializer (GH [#79](https://github.com/inikulin/parse5/issues/79)).
