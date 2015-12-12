@@ -355,14 +355,14 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
   * [.createDocument()](#TreeAdapter.createDocument) ⇒ <code>ASTNode.&lt;Document&gt;</code>
   * [.createDocumentFragment()](#TreeAdapter.createDocumentFragment) ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
   * [.createElement(tagName, namespaceURI, attrs)](#TreeAdapter.createElement) ⇒ <code>ASTNode.&lt;Element&gt;</code>
-  * [.createElement(data)](#TreeAdapter.createElement) ⇒ <code>ASTNode.&lt;CommentNode&gt;</code>
+  * [.createCommentNode(data)](#TreeAdapter.createCommentNode) ⇒ <code>ASTNode.&lt;CommentNode&gt;</code>
   * [.appendChild(parentNode, newNode)](#TreeAdapter.appendChild)
   * [.insertBefore(parentNode, newNode, referenceNode)](#TreeAdapter.insertBefore)
   * [.setTemplateContent(templateElement, contentTemplate)](#TreeAdapter.setTemplateContent)
-  * [.getTemplateContent(templateElement)](#TreeAdapter.getTemplateContent) ⇒ <code>Boolean</code>
+  * [.getTemplateContent(templateElement)](#TreeAdapter.getTemplateContent) ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
   * [.setDocumentType(document, name, publicId, systemId)](#TreeAdapter.setDocumentType)
   * [.setQuirksMode(document)](#TreeAdapter.setQuirksMode)
-  * [.setQuirksMode(document)](#TreeAdapter.setQuirksMode) ⇒ <code>Boolean</code>
+  * [.isQuirksMode(document)](#TreeAdapter.isQuirksMode) ⇒ <code>Boolean</code>
   * [.detachNode(node)](#TreeAdapter.detachNode)
   * [.insertText(parentNode, text)](#TreeAdapter.insertText)
   * [.insertTextBefore(parentNode, text, referenceNode)](#TreeAdapter.insertTextBefore)
@@ -374,7 +374,7 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
   * [.getTagName(element)](#TreeAdapter.getTagName) ⇒ <code>String</code>
   * [.getNamespaceURI(element)](#TreeAdapter.getNamespaceURI) ⇒ <code>String</code>
   * [.getTextNodeContent(textNode)](#TreeAdapter.getTextNodeContent) ⇒ <code>String</code>
-  * [.getTextNodeContent(commentNode)](#TreeAdapter.getTextNodeContent) ⇒ <code>String</code>
+  * [.getCommentNodeContent(commentNode)](#TreeAdapter.getCommentNodeContent) ⇒ <code>String</code>
   * [.getDocumentTypeNodeName(doctypeNode)](#TreeAdapter.getDocumentTypeNodeName) ⇒ <code>String</code>
   * [.getDocumentTypeNodePublicId(doctypeNode)](#TreeAdapter.getDocumentTypeNodePublicId) ⇒ <code>String</code>
   * [.getDocumentTypeNodeSystemId(doctypeNode)](#TreeAdapter.getDocumentTypeNodeSystemId) ⇒ <code>String</code>
@@ -411,8 +411,8 @@ Creates an element node.
 | namespaceURI | <code>String</code> | Namespace of the element. |
 | attrs | <code>Array</code> | Attribute name-value pair array.                         Foreign attributes may contain `namespace` and `prefix` fields as well. |
 
-<a name="TreeAdapter.createElement"></a>
-### TreeAdapter.createElement(data) ⇒ <code>ASTNode.&lt;CommentNode&gt;</code>
+<a name="TreeAdapter.createCommentNode"></a>
+### TreeAdapter.createCommentNode(data) ⇒ <code>ASTNode.&lt;CommentNode&gt;</code>
 Creates a comment node.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
@@ -461,10 +461,11 @@ Sets the <template> element content element.
 | contentTemplate | <code>ASTNode.&lt;DocumentFragment&gt;</code> | Content element. |
 
 <a name="TreeAdapter.getTemplateContent"></a>
-### TreeAdapter.getTemplateContent(templateElement) ⇒ <code>Boolean</code>
+### TreeAdapter.getTemplateContent(templateElement) ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
 Returns the <template> element content element.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
+**Returns**: <code>ASTNode.&lt;DocumentFragment&gt;</code> - contentTemplate
 **See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L166)  
 
 | Param | Type | Description |
@@ -498,8 +499,8 @@ Sets the document's quirks mode flag.
 | --- | --- | --- |
 | document | <code>ASTNode.&lt;Document&gt;</code> | Document node. |
 
-<a name="TreeAdapter.setQuirksMode"></a>
-### TreeAdapter.setQuirksMode(document) ⇒ <code>Boolean</code>
+<a name="TreeAdapter.isQuirksMode"></a>
+### TreeAdapter.isQuirksMode(document) ⇒ <code>Boolean</code>
 Determines if the document's quirks mode flag is set.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
@@ -645,8 +646,8 @@ Returns the given text node's content.
 | --- | --- | --- |
 | textNode | <code>ASTNode.&lt;Text&gt;</code> | Text node. |
 
-<a name="TreeAdapter.getTextNodeContent"></a>
-### TreeAdapter.getTextNodeContent(commentNode) ⇒ <code>String</code>
+<a name="TreeAdapter.getCommentNodeContent"></a>
+### TreeAdapter.getCommentNodeContent(commentNode) ⇒ <code>String</code>
 Returns the given comment node's content.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
