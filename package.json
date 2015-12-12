@@ -1,7 +1,7 @@
 {
   "name": "parse5",
   "description": "WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.js",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
   "contributors": [
     "Alan Clarke (https://github.com/alanclarke)",

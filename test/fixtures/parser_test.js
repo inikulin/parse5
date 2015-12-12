@@ -3,6 +3,7 @@
 var assert = require('assert'),
     path = require('path'),
     parse5 = require('../../lib'),
+    Parser = require('../../lib/parser'),
     testUtils = require('../test_utils');
 
 function getFullTestName(test) {
@@ -44,7 +45,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         ], treeAdapter)
         .forEach(function (test) {
             _test[getFullTestName(test)] = function () {
-                var opts = { treeAdapter: treeAdapter };
+                var opts = {treeAdapter: treeAdapter};
 
 
                 if (test.fragmentContext)
@@ -66,3 +67,44 @@ exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapt
     assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
 };
 
+var origParseFragment = Parser.prototype.parseFragment;
+
+exports['Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)'] = {
+    beforeEach: function () {
+        Parser.prototype.parseFragment = function (html, fragmentContext) {
+            return {
+                html: html,
+                fragmentContext: fragmentContext,
+                options: this.options
+            };
+        };
+    },
+
+    afterEach: function () {
+        Parser.prototype.parseFragment = origParseFragment;
+    },
+
+    test: function () {
+        var fragmentContext = parse5.treeAdapters.default.createElement('div'),
+            html = '<script></script>',
+            opts = {locationInfo: true};
+
+        var args = parse5.parseFragment(fragmentContext, html, opts);
+
+        assert.strictEqual(args.fragmentContext, fragmentContext);
+        assert.strictEqual(args.html, html);
+        assert(args.options.locationInfo);
+
+        args = parse5.parseFragment(html, opts);
+
+        assert(!args.fragmentContext);
+        assert.strictEqual(args.html, html);
+        assert(args.options.locationInfo);
+
+        args = parse5.parseFragment(html);
+
+        assert(!args.fragmentContext);
+        assert.strictEqual(args.html, html);
+        assert(!args.options.locationInfo);
+    }
+};

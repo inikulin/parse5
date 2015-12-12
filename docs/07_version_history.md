@@ -1,4 +1,7 @@
 # Version history
+## 2.0.2
+ * Fixed: yet another case of incorrect `parseFragment` arguments fallback (GH [#84](https://github.com/inikulin/parse5/issues/84)).
+
 ## 2.0.1
  * Fixed: `parseFragment` arguments processing (GH [#82](https://github.com/inikulin/parse5/issues/82)).
 
