@@ -450,27 +450,27 @@ Inserts a child node to the given parent node before the given reference node.
 
 <a name="TreeAdapter.setTemplateContent"></a>
 ### TreeAdapter.setTemplateContent(templateElement, contentTemplate)
-Sets the <template> element content element.
+Sets the &lt;template&gt; element content element.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
 **See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L149)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| templateElement | <code>ASTNode.&lt;TemplateElement&gt;</code> | <template> element. |
+| templateElement | <code>ASTNode.&lt;TemplateElement&gt;</code> | &lt;template&gt; element. |
 | contentTemplate | <code>ASTNode.&lt;DocumentFragment&gt;</code> | Content element. |
 
 <a name="TreeAdapter.getTemplateContent"></a>
 ### TreeAdapter.getTemplateContent(templateElement) ⇒ <code>ASTNode.&lt;DocumentFragment&gt;</code>
-Returns the <template> element content element.
+Returns the &lt;template&gt; element content element.
 
 **Kind**: static method of <code>[TreeAdapter](#TreeAdapter)</code>  
-**Returns**: <code>ASTNode.&lt;DocumentFragment&gt;</code> - contentTemplate
+**Returns**: <code>ASTNode.&lt;DocumentFragment&gt;</code> - contentTemplate  
 **See**: [default implementation.](https://github.com/inikulin/parse5/blob/tree-adapter-docs-rev/lib/tree_adapters/default.js#L166)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| templateElement | <code>ASTNode.&lt;DocumentFragment&gt;</code> | <template> element. |
+| templateElement | <code>ASTNode.&lt;DocumentFragment&gt;</code> | &lt;template&gt; element. |
 
 <a name="TreeAdapter.setDocumentType"></a>
 ### TreeAdapter.setDocumentType(document, name, publicId, systemId)
