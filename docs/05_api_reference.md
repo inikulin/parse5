@@ -8,6 +8,8 @@
 <dl>
 <dt><a href="#ElementLocationInfo">ElementLocationInfo</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#TagLocationInfo">TagLocationInfo</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#LocationInfo">LocationInfo</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#ParserOptions">ParserOptions</a> : <code>Object</code></dt>
@@ -55,7 +57,8 @@
 
 <a name="new_parse5+ParserStream_new"></a>
 #### new ParserStream(options)
-Streaming HTML parser with scripting support.A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
+Streaming HTML parser with scripting support.
+A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
 
 
 | Param | Type | Description |
@@ -64,7 +67,19 @@ Streaming HTML parser with scripting support.A [writable stream](https://nodejs
 
 **Example**  
 ```js
-var parse5 = require('parse5');var http = require('http');// Fetch the google.com content and obtain it's <body> nodehttp.get('http://google.com', function(res) { var parser = new parse5.ParserStream(); parser.on('finish', function() {     var body = parser.document.childNodes[0].childNodes[1]; }); res.pipe(parser);});
+var parse5 = require('parse5');
+var http = require('http');
+
+// Fetch the google.com content and obtain it's <body> node
+http.get('http://google.com', function(res) {
+ var parser = new parse5.ParserStream();
+
+ parser.on('finish', function() {
+     var body = parser.document.childNodes[0].childNodes[1];
+ });
+
+ res.pipe(parser);
+});
 ```
 <a name="parse5+ParserStream+document"></a>
 #### parserStream.document : <code>ASTNode.&lt;document&gt;</code>
@@ -73,7 +88,9 @@ The resulting document node.
 **Kind**: instance property of <code>[ParserStream](#parse5+ParserStream)</code>  
 <a name="parse5+ParserStream+event_script"></a>
 #### "script" (scriptElement, documentWrite(html), resume)
-Raised then parser encounters a `<script>` element.If this event has listeners, parsing will be suspended once it is emitted.So, if `<script>` has the `src` attribute, you can fetch it, execute and then resume parsing just like browsers do.
+Raised then parser encounters a `<script>` element.
+If this event has listeners, parsing will be suspended once it is emitted.
+So, if `<script>` has the `src` attribute, you can fetch it, execute and then resume parsing just like browsers do.
 
 **Kind**: event emitted by <code>[ParserStream](#parse5+ParserStream)</code>  
 
@@ -85,7 +102,24 @@ Raised then parser encounters a `<script>` element.If this event has listeners,
 
 **Example**  
 ```js
-var parse = require('parse5');var http = require('http');var parser = new parse5.ParserStream();parser.on('script', function(scriptElement, documentWrite, resume) {  var src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;  http.get(src, function(res) {     // Fetch the script content, execute it with DOM built around `parser.document` and     // `document.write` implemented using `documentWrite`.     ...     // Then resume parsing.     resume();  });});parser.end('<script src="example.com/script.js"></script>');
+var parse = require('parse5');
+var http = require('http');
+
+var parser = new parse5.ParserStream();
+
+parser.on('script', function(scriptElement, documentWrite, resume) {
+  var src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;
+
+  http.get(src, function(res) {
+     // Fetch the script content, execute it with DOM built around `parser.document` and
+     // `document.write` implemented using `documentWrite`.
+     ...
+     // Then resume parsing.
+     resume();
+  });
+});
+
+parser.end('<script src="example.com/script.js"></script>');
 ```
 <a name="parse5+SAXParser"></a>
 ### parse5.SAXParser ⇐ <code>stream.Transform</code>
@@ -103,7 +137,9 @@ var parse = require('parse5');var http = require('http');var parser = new par
 
 <a name="new_parse5+SAXParser_new"></a>
 #### new SAXParser(options)
-Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parser.A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)(which means you can pipe *through* it, see example).
+Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parser.
+A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)
+(which means you can pipe *through* it, see example).
 
 
 | Param | Type | Description |
@@ -112,16 +148,51 @@ Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML par
 
 **Example**  
 ```js
-var parse5 = require('parse5');var http = require('http');var fs = require('fs');var file = fs.createWriteStream('/home/google.com.html');var parser = new parse5.SAXParser();parser.on('text', function(text) { // Handle page text content ...});http.get('http://google.com', function(res) { // SAXParser is the Transform stream, which means you can pipe // through it. So, you can analyze page content and, e.g., save it // to the file at the same time: res.pipe(parser).pipe(file);});
+var parse5 = require('parse5');
+var http = require('http');
+var fs = require('fs');
+
+var file = fs.createWriteStream('/home/google.com.html');
+var parser = new parse5.SAXParser();
+
+parser.on('text', function(text) {
+ // Handle page text content
+ ...
+});
+
+http.get('http://google.com', function(res) {
+ // SAXParser is the Transform stream, which means you can pipe
+ // through it. So, you can analyze page content and, e.g., save it
+ // to the file at the same time:
+ res.pipe(parser).pipe(file);
+});
 ```
 <a name="parse5+SAXParser+stop"></a>
 #### saxParser.stop()
-Stops parsing. Useful if you want the parser to stop consuming CPU time once you've obtained the desired infofrom the input stream. Doesn't prevent piping, so that data will flow through the parser as usual.
+Stops parsing. Useful if you want the parser to stop consuming CPU time once you've obtained the desired info
+from the input stream. Doesn't prevent piping, so that data will flow through the parser as usual.
 
 **Kind**: instance method of <code>[SAXParser](#parse5+SAXParser)</code>  
 **Example**  
 ```js
-var parse5 = require('parse5');var http = require('http');var fs = require('fs');var file = fs.createWriteStream('/home/google.com.html');var parser = new parse5.SAXParser();parser.on('doctype', function(name, publicId, systemId) { // Process doctype info ans stop parsing ... parser.stop();});http.get('http://google.com', function(res) { // Despite the fact that parser.stop() was called whole // content of the page will be written to the file res.pipe(parser).pipe(file);});
+var parse5 = require('parse5');
+var http = require('http');
+var fs = require('fs');
+
+var file = fs.createWriteStream('/home/google.com.html');
+var parser = new parse5.SAXParser();
+
+parser.on('doctype', function(name, publicId, systemId) {
+ // Process doctype info ans stop parsing
+ ...
+ parser.stop();
+});
+
+http.get('http://google.com', function(res) {
+ // Despite the fact that parser.stop() was called whole
+ // content of the page will be written to the file
+ res.pipe(parser).pipe(file);
+});
 ```
 <a name="parse5+SAXParser+event_startTag"></a>
 #### "startTag" (name, attributes, selfClosing, [location])
@@ -134,7 +205,7 @@ Raised when the parser encounters a start tag.
 | name | <code>String</code> | Tag name. |
 | attributes | <code>String</code> | List of attributes in the `{ key: String, value: String }` form. |
 | selfClosing | <code>Boolean</code> | Indicates if the tag is self-closing. |
-| [location] | <code>[LocationInfo](#LocationInfo)</code> | Start tag source code location info. Available if location info is enabled in [SAXParserOptions](#SAXParserOptions). |
+| [location] | <code>[TagLocationInfo](#TagLocationInfo)</code> | Start tag source code location info. Available if location info is enabled in [SAXParserOptions](#SAXParserOptions). |
 
 <a name="parse5+SAXParser+event_endTag"></a>
 #### "endTag" (name, [location])
@@ -145,7 +216,7 @@ Raised then parser encounters an end tag.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>String</code> | Tag name. |
-| [location] | <code>[LocationInfo](#LocationInfo)</code> | End tag source code location info. Available if location info is enabled in [SAXParserOptions](#SAXParserOptions). |
+| [location] | <code>[TagLocationInfo](#TagLocationInfo)</code> | End tag source code location info. Available if location info is enabled in [SAXParserOptions](#SAXParserOptions). |
 
 <a name="parse5+SAXParser+event_comment"></a>
 #### "comment" (text, [location])
@@ -304,8 +375,20 @@ var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
 
 | Name | Type | Description |
 | --- | --- | --- |
-| startTag | <code>[LocationInfo](#LocationInfo)</code> | Element's start tag [LocationInfo](#LocationInfo). |
-| endTag | <code>[LocationInfo](#LocationInfo)</code> | Element's end tag [LocationInfo](#LocationInfo). |
+| startTag | <code>[TagLocationInfo](#TagLocationInfo)</code> | Element's start tag [TagLocationInfo](#TagLocationInfo). |
+| endTag | <code>[TagLocationInfo](#TagLocationInfo)</code> | Element's end tag [TagLocationInfo](#TagLocationInfo). |
+| [attrs] | <code>Object</code> | Contains the [LocationInfo](#LocationInfo) for all attributes on the element. |
+
+<a name="TagLocationInfo"></a>
+## TagLocationInfo : <code>Object</code>
+
+**Kind**: global typedef  
+**Extends:** <code>[LocationInfo](#LocationInfo)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| [attrs] | <code>Object</code> | Contains the [LocationInfo](#LocationInfo) for all attributes on a startTag. |
 
 <a name="LocationInfo"></a>
 ## LocationInfo : <code>Object</code>
