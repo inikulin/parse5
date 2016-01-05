@@ -1,4 +1,11 @@
 # Version history
+
+## 2.1.0
+ * Add: location info for attributes (GH [#43](https://github.com/inikulin/parse5/issues/43)) (by [@sakagg](https://github.com/sakagg)
+  and [@yyx990803](https://github.com/yyx990803)).
+ * Fixed: `parseFragment` with `locationInfo` regression when parsing `<template>`(GH [#90](https://github.com/inikulin/parse5/issues/90))
+  (by [@yyx990803](https://github.com/yyx990803)).
+
 ## 2.0.2
  * Fixed: yet another case of incorrect `parseFragment` arguments fallback (GH [#84](https://github.com/inikulin/parse5/issues/84)).
 
@@ -27,7 +34,7 @@
  * Fix: Qualified tag name emission in Serializer (GH [#79](https://github.com/inikulin/parse5/issues/79)).
 
 ## 1.5.0
- * Add: Location info for the element start and end tags (by @sakagg).
+ * Add: Location info for the element start and end tags (by [@sakagg](https://github.com/sakagg)).
 
 ## 1.4.2
  * Fix: htmlparser2 tree adapter `DocumentType.data` property rendering (GH [#45](https://github.com/inikulin/parse5/issues/45)).

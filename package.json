@@ -1,10 +1,11 @@
 {
   "name": "parse5",
   "description": "WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.js",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
   "contributors": [
     "Alan Clarke (https://github.com/alanclarke)",
+    "Evan You (http://evanyou.me)",
     "Saksham Aggarwal <s.agg2021@gmail.com>",
     "Sebastian Mayr <sebmaster16@gmail.com> (http://blog.smayr.name)",
     "Sean Lang <slang800@gmail.com> (http://slang.cx)"
@@ -41,7 +42,11 @@
     "html serializer",
     "htmlserializer",
     "sax",
-    "simple api"
+    "simple api",
+    "parse",
+    "tokenize",
+    "serialize",
+    "tokenizer"
   ],
   "license": "MIT",
   "main": "./lib/index.js",
