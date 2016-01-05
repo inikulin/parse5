@@ -130,4 +130,16 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
         assert.ok(fragment.childNodes[0].__location);
     };
+
+    exports['Regression - location info mixin error when parsing <template> elements (GH-90)'] = function () {
+        var html = '<template>hello</template>',
+            opts = {
+                treeAdapter: treeAdapter,
+                locationInfo: true
+            };
+
+        assert.doesNotThrow(function () {
+            parse5.parseFragment(html, opts);
+        });
+    };
 });
