@@ -6,7 +6,7 @@ var path = require('path'),
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global upstreamParser, workingCopy, pages, runPages */
-global.upstreamParser = new upstreamParse5.Parser();
+global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
 global.pages = testUtils
     .loadSerializationTestData(path.join(__dirname, '../data/sax'))

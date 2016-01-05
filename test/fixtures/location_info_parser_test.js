@@ -55,6 +55,14 @@ function assertEndTagLocation(node, serializedNode, html, lines) {
     assertLocation(node.__location.endTag, expected, html, lines);
 }
 
+function assertAttrsLocation(node, serializedNode, html, lines) {
+    node.__location.attrs.forEach(function (attr) {
+        var expected = serializedNode.slice(attr.startOffset, attr.endOffset);
+
+        assertLocation(attr, expected, html, lines);
+    });
+}
+
 function assertNodeLocation(node, serializedNode, html, lines) {
     var expected = testUtils.removeNewLines(serializedNode);
 
@@ -98,6 +106,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
                         if (node.__location.endTag)
                             assertEndTagLocation(node, serializedNode, html, lines);
+
+                        if (node.__location.attrs)
+                            assertAttrsLocation(node, serializedNode, html, lines);
                     }
                 });
             };

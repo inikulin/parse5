@@ -7,7 +7,7 @@ var path = require('path'),
 /* global fs, Promise, upstreamParser, workingCopy, files, deferred */
 global.fs = require('fs');
 global.Promise = require('promise');
-global.upstreamParser = new upstreamParse5.Parser();
+global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
 global.files = fs
     .readdirSync(path.join(__dirname, '../data/sax'))
