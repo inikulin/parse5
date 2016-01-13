@@ -153,4 +153,16 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             parse5.parseFragment(html, opts);
         });
     };
+
+    exports['Regression - location info not attached for empty attributes'] = function () {
+        var html = '<div test-attr></div>',
+            opts = {
+                treeAdapter: treeAdapter,
+                locationInfo: true
+            };
+
+        var fragment = parse5.parseFragment(html, opts);
+
+        assert.ok(fragment.childNodes[0].__location.attrs['test-attr']);
+    };
 });
