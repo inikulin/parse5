@@ -154,7 +154,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         });
     };
 
-    exports['Regression - location info not attached for empty attributes'] = function () {
+    exports['Regression - location info not attached for empty attributes (GH-96)'] = function () {
         var html = '<div test-attr></div>',
             opts = {
                 treeAdapter: treeAdapter,

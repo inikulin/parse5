@@ -1,5 +1,9 @@
 # Version history
 
+## 2.1.1
+ * Fixed: location info not attached for empty attributes (GH [#96](https://github.com/inikulin/parse5/issues/96))
+ (by [@yyx990803](https://github.com/yyx990803)).
+
 ## 2.1.0
  * Add: location info for attributes (GH [#43](https://github.com/inikulin/parse5/issues/43)) (by [@sakagg](https://github.com/sakagg)
   and [@yyx990803](https://github.com/yyx990803)).
