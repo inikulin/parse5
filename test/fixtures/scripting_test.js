@@ -82,3 +82,17 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             };
         });
 });
+
+exports['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function (done) {
+    var parser = new ParserStream({
+        locationInfo: true
+    });
+
+    parser.on('script', function (el, docWrite, resume) {
+        resume();
+    });
+
+    parser.end('<!doctype html><script>abc</script>');
+
+    process.nextTick(done);
+};

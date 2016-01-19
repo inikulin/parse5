@@ -1,7 +1,10 @@
 # Version history
 
+## 2.1.3
+ * Fixed: Synchronously calling resume() leads to crash (GH [#98](https://github.com/inikulin/parse5/issues/98)).
+
 ## 2.1.2
- * Fixed: SAX parser silently exits on big files (GH [#97](https://github.com/inikulin/parse5/issues/97))
+ * Fixed: SAX parser silently exits on big files (GH [#97](https://github.com/inikulin/parse5/issues/97)).
 
 ## 2.1.1
  * Fixed: location info not attached for empty attributes (GH [#96](https://github.com/inikulin/parse5/issues/96))
