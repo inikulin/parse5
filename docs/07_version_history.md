@@ -1,5 +1,8 @@
 # Version history
 
+## 2.1.4
+ * Fixed: Keep ParserStream sync for the inline scripts (GH [#98](https://github.com/inikulin/parse5/issues/98) follow up).
+
 ## 2.1.3
  * Fixed: Synchronously calling resume() leads to crash (GH [#98](https://github.com/inikulin/parse5/issues/98)).
 
