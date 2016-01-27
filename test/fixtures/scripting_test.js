@@ -81,18 +81,36 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     .catch(done);
             };
         });
+
+    _test['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function (done) {
+        var parser = new ParserStream({treeAdapter: treeAdapter});
+
+        parser.on('script', function (el, docWrite, resume) {
+            resume();
+        });
+
+        parser.end('<!doctype html><script>abc</script>');
+
+        process.nextTick(done);
+    };
+
+
+    _test['Regression - Parsing loop lock causes accidental hang ups (GH-101)'] = function (done) {
+        var parser = new ParserStream({treeAdapter: treeAdapter});
+
+        parser.once('finish', function () {
+            done();
+        });
+
+        parser.on('script', function (scriptElement, documentWrite, resume) {
+            process.nextTick(function () {
+                resume();
+            });
+        });
+
+        parser.write('<script>yo</script>');
+        parser.end('dawg');
+    };
 });
 
-exports['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function (done) {
-    var parser = new ParserStream({
-        locationInfo: true
-    });
 
-    parser.on('script', function (el, docWrite, resume) {
-        resume();
-    });
-
-    parser.end('<!doctype html><script>abc</script>');
-
-    process.nextTick(done);
-};

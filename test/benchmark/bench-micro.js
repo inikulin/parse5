@@ -21,15 +21,10 @@ global.micro = testUtils
         };
     });
 
-global.runMicro = function (parser, newAPI) {
+global.runMicro = function (parser) {
     for (var i = 0; i < micro.length; i++) {
-        if (micro[i].fragmentContext) {
-            if (newAPI)
-                parser.parseFragment(micro[i].fragmentContext, micro[i].html);
-            else
-                parser.parseFragment(micro[i].html, micro[i].fragmentContext);
-
-        }
+        if (micro[i].fragmentContext)
+            parser.parseFragment(micro[i].fragmentContext, micro[i].html);
         else
             parser.parse(micro[i].html);
     }
@@ -42,7 +37,7 @@ module.exports = {
             name: 'Working copy',
 
             fn: function () {
-                runMicro(workingCopy, true);
+                runMicro(workingCopy);
             }
         },
         {

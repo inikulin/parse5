@@ -1,5 +1,8 @@
 # Version history
 
+## 2.1.5
+ * Fixed: ParserStream accidentally hangs up on scripts (GH [#101](https://github.com/inikulin/parse5/issues/101)).
+
 ## 2.1.4
  * Fixed: Keep ParserStream sync for the inline scripts (GH [#98](https://github.com/inikulin/parse5/issues/98) follow up).
 
