@@ -28,6 +28,10 @@ as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.
 </p>
 
 <p align="center">
+  <a href="https://github.com/inikulin/parse5/wiki/Documentation#version-history">Version history</a>
+</p>
+
+<p align="center">
   <a href="http://astexplorer.net/#/1CHlCXc4n4">Online playground</a>
 </p>
 
