@@ -5,4 +5,4 @@
  * [API Reference](#api-reference)
  * [FAQ](#faq)
  * [Version history](#version-history)
- * [License](#license-and-author-information)
+ * [License](#license)
