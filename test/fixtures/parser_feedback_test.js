@@ -14,7 +14,7 @@ function getFullTestName(test) {
 function appendToken(dest, token) {
     switch (token.type) {
         case Tokenizer.EOF_TOKEN:
-            break;
+            return false;
         case Tokenizer.NULL_CHARACTER_TOKEN:
         case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
             token.type = Tokenizer.CHARACTER_TOKEN;
@@ -28,21 +28,17 @@ function appendToken(dest, token) {
         default:
             dest.push(token);
     }
+    return true;
 }
 
 function collectSimulatorTokens(html) {
     var tokenizer = new Tokenizer();
     var parserFeedbackSimulator = new ParserFeedbackSimulator(tokenizer);
     var tokens = [];
-    var token;
 
     tokenizer.write(html, true);
 
-    do {
-        token = tokenizer.getNextToken();
-        parserFeedbackSimulator.adjustTokenizer(token);
-        appendToken(tokens, token);
-    } while (token.type !== Tokenizer.EOF_TOKEN);
+    while (appendToken(tokens, parserFeedbackSimulator.getNextToken()));
 
     return tokens;
 }
