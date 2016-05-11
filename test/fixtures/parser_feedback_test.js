@@ -48,14 +48,12 @@ function collectParserTokens(html) {
 
     parse5.parse(html, {
         onToken: function (token) {
+            // Temporary artifact, see https://github.com/inikulin/parse5/pull/127#issuecomment-218480695
+            if (token.type === Tokenizer.END_TAG_TOKEN)
+                token.ignored = false;
+
             appendToken(tokens, token);
         }
-    });
-
-    // Temporary artifact, see https://github.com/inikulin/parse5/pull/127#issuecomment-218480695
-    tokens.forEach(function (token) {
-        if (token.type === Tokenizer.END_TAG_TOKEN)
-            token.ignored = false;
     });
 
     return tokens;
