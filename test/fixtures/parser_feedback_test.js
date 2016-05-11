@@ -5,7 +5,8 @@ var assert = require('assert'),
     parse5 = require('../..'),
     Tokenizer = require('../../lib/tokenizer'),
     ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator'),
-    testUtils = require('../test_utils');
+    testUtils = require('../test_utils'),
+    $ = require('../../lib/common/html').TAG_NAMES;
 
 function getFullTestName(test) {
     return ['Feedback(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
@@ -18,16 +19,40 @@ function appendToken(dest, token) {
         case Tokenizer.NULL_CHARACTER_TOKEN:
         case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
             token.type = Tokenizer.CHARACTER_TOKEN;
-            /* fallthrough */
+            break;
         case Tokenizer.CHARACTER_TOKEN:
             if (dest.length > 0 && dest[dest.length - 1].type === Tokenizer.CHARACTER_TOKEN) {
                 dest[dest.length - 1].chars += token.chars;
-                break;
+                return true;
             }
-            /* fallthrough */
-        default:
-            dest.push(token);
+            break;
+        case Tokenizer.START_TAG_TOKEN:
+            // HTML and BODY are special in that they merge their attributes with
+            // their duplicates and don't appear as separate tags in the document.
+            //
+            // For obvious reasons this requires being able to operate on entire
+            // document, and won't work in the streaming mode (such as SAX)
+            // without infinite buffering.
+            //
+            // So we assume that SAX consumers are aware of this and handle such
+            // duplicates in the way they need (if they care about this edge case
+            // at all, that is), and for tests we'll simply append new attributes
+            // to the buffered first occurence of such start tag.
+            if (token.tagName === $.HTML || token.tagName === $.BODY) {
+                dest.some(function (prevToken) {
+                    if (prevToken.type !== Tokenizer.START_TAG_TOKEN || prevToken.tagName !== token.tagName)
+                        return false;
+
+                    prevToken.attrs = prevToken.attrs.concat(token.attrs.filter(function (attr) {
+                        return Tokenizer.getTokenAttr(prevToken, attr.name) === null;
+                    }));
+
+                    return true;
+                });
+            }
+            break;
     }
+    dest.push(token);
     return true;
 }
 
