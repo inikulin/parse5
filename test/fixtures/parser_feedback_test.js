@@ -1,0 +1,82 @@
+'use strict';
+
+var assert = require('assert'),
+    path = require('path'),
+    parse5 = require('../..'),
+    Tokenizer = require('../../lib/tokenizer'),
+    ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator'),
+    testUtils = require('../test_utils');
+
+function getFullTestName(test) {
+    return ['Feedback(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
+}
+
+function appendToken(dest, token) {
+    switch (token.type) {
+        case Tokenizer.EOF_TOKEN:
+            break;
+        case Tokenizer.NULL_CHARACTER_TOKEN:
+        case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
+            token.type = Tokenizer.CHARACTER_TOKEN;
+            /* fallthrough */
+        case Tokenizer.CHARACTER_TOKEN:
+            if (dest.length > 0 && dest[dest.length - 1].type === Tokenizer.CHARACTER_TOKEN) {
+                dest[dest.length - 1].chars += token.chars;
+                break;
+            }
+            /* fallthrough */
+        default:
+            dest.push(token);
+    }
+}
+
+function collectSimulatorTokens(html) {
+    var tokenizer = new Tokenizer();
+    var parserFeedbackSimulator = new ParserFeedbackSimulator(tokenizer);
+    var tokens = [];
+    var token;
+
+    tokenizer.write(html, true);
+
+    do {
+        token = tokenizer.getNextToken();
+        parserFeedbackSimulator.adjustTokenizer(token);
+        appendToken(tokens, token);
+    } while (token.type !== Tokenizer.EOF_TOKEN);
+
+    return tokens;
+}
+
+function collectParserTokens(html) {
+    var tokens = [];
+
+    parse5.parse(html, {
+        onToken: function (token) {
+            appendToken(tokens, token);
+        }
+    });
+
+    return tokens;
+}
+
+function assertParsing(input) {
+    var parserTokens = collectParserTokens(input);
+    var simulatorTokens = collectSimulatorTokens(input);
+
+    assert.deepEqual(simulatorTokens, parserTokens, 'Collected tokens should be same.');
+}
+
+//Here we go..
+testUtils
+    .loadTreeConstructionTestData([
+        path.join(__dirname, '../data/tree_construction'),
+        path.join(__dirname, '../data/tree_construction_regression')
+    ], parse5.treeAdapters.default)
+    .forEach(function (test) {
+        exports[getFullTestName(test)] = function () {
+            if (test.fragmentContext)
+                return; // TODO
+
+            assertParsing(test.input);
+        };
+    });
