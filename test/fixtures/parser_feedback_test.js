@@ -19,7 +19,7 @@ function appendToken(dest, token) {
         case Tokenizer.NULL_CHARACTER_TOKEN:
         case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
             token.type = Tokenizer.CHARACTER_TOKEN;
-            break;
+            /* falls through */
         case Tokenizer.CHARACTER_TOKEN:
             if (dest.length > 0 && dest[dest.length - 1].type === Tokenizer.CHARACTER_TOKEN) {
                 dest[dest.length - 1].chars += token.chars;
