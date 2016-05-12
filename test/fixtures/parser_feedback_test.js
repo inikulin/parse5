@@ -2,9 +2,10 @@
 
 var assert = require('assert'),
     path = require('path'),
-    parse5 = require('../..'),
+    Parser = require('../../lib/parser'),
     Tokenizer = require('../../lib/tokenizer'),
     ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator'),
+    defaultTreeAdapter = require('../../lib/tree_adapters/default'),
     testUtils = require('../test_utils'),
     $ = require('../../lib/common/html').TAG_NAMES;
 
@@ -70,16 +71,19 @@ function collectSimulatorTokens(html) {
 
 function collectParserTokens(html) {
     var tokens = [];
+    var parser = new Parser();
 
-    parse5.parse(html, {
-        onToken: function (token) {
-            // Temporary artifact, see https://github.com/inikulin/parse5/pull/127#issuecomment-218480695
-            if (token.type === Tokenizer.END_TAG_TOKEN)
-                token.ignored = false;
+    parser._processInputToken = function (token) {
+        Parser.prototype._processInputToken.call(this, token);
 
-            appendToken(tokens, token);
-        }
-    });
+        // Temporary artifact, see https://github.com/inikulin/parse5/pull/127#issuecomment-218480695
+        if (token.type === Tokenizer.END_TAG_TOKEN)
+            token.ignored = false;
+
+        appendToken(tokens, token);
+    };
+
+    parser.parse(html);
 
     return tokens;
 }
@@ -96,7 +100,7 @@ testUtils
     .loadTreeConstructionTestData([
         path.join(__dirname, '../data/tree_construction'),
         path.join(__dirname, '../data/tree_construction_regression')
-    ], parse5.treeAdapters.default)
+    ], defaultTreeAdapter)
     .forEach(function (test) {
         exports[getFullTestName(test)] = function () {
             if (test.fragmentContext)
