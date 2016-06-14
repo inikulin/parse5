@@ -3,7 +3,8 @@
 var fs = require('fs'),
     path = require('path'),
     parse5 = require('../lib/index'),
-    HTML = require('../lib/common/html');
+    HTML = require('../lib/common/html'),
+    Tokenizer = require('../lib/tokenizer');
 
 function addSlashes(str) {
     return str
@@ -12,6 +13,8 @@ function addSlashes(str) {
         .replace(/\f/g, '\\f')
         .replace(/\r/g, '\\r');
 }
+
+exports.addSlashes = addSlashes;
 
 function createDiffMarker(markerPosition) {
     var marker = '';
@@ -120,9 +123,49 @@ exports.loadSerializationTestData = function (dataDirPath) {
     return tests;
 };
 
+function parseTreeConstructionTestData(testSet, treeAdapter) {
+    var testDescrs = [],
+        curDirective = '',
+        curDescr = null;
+
+    testSet.split(/\r?\n/).forEach(function (line) {
+        if (line === '#data') {
+            curDescr = {};
+            testDescrs.push(curDescr);
+        }
+
+        if (line[0] === '#') {
+            curDirective = line;
+            curDescr[curDirective] = [];
+        }
+
+        else
+            curDescr[curDirective].push(line);
+    });
+
+    // NOTE: skip tests with the scripting disabled, since we are always act as the
+    // interactive user agent.
+    testDescrs = testDescrs.filter(function (descr) {
+        return !descr['#script-off'];
+    });
+
+    return testDescrs.map(function (descr) {
+        var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
+
+        return {
+            input: descr['#data'].join('\r\n'),
+            expected: descr['#document'].join('\n'),
+            expectedErrors: descr['#errors'],
+            disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
+            fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter)
+        };
+    });
+}
+
+exports.parseTreeConstructionTestData = parseTreeConstructionTestData;
+
 exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
-    var testIdx = 0,
-        tests = [];
+    var tests = [];
 
     dataDirs.forEach(function (dataDirPath) {
         var testSetFileNames = fs.readdirSync(dataDirPath),
@@ -130,45 +173,15 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
 
         testSetFileNames.forEach(function (fileName) {
             var filePath = path.join(dataDirPath, fileName),
-                testSet = fs.readFileSync(filePath).toString(),
-                setName = fileName.replace('.dat', ''),
-                testDescrs = [],
-                curDirective = '',
-                curDescr = null;
+                testSet = fs.readFileSync(filePath, 'utf-8'),
+                setName = fileName.replace('.dat', '');
 
-            testSet.split(/\r?\n/).forEach(function (line) {
-                if (line === '#data') {
-                    curDescr = {};
-                    testDescrs.push(curDescr);
-                }
-
-                if (line[0] === '#') {
-                    curDirective = line;
-                    curDescr[curDirective] = [];
-                }
-
-                else
-                    curDescr[curDirective].push(line);
-            });
-
-            testDescrs.forEach(function (descr) {
-                var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
-
-                // NOTE: skip tests with the scripting disabled, since we are always act as the
-                // interactive user agent.
-                if (descr['#script-off'])
-                    return;
-
-                tests.push({
-                    idx: ++testIdx,
+            parseTreeConstructionTestData(testSet, treeAdapter).forEach(function (test) {
+                tests.push(Object.assign(test, {
+                    idx: tests.length,
                     setName: setName,
-                    dirName: dirName,
-                    input: descr['#data'].join('\r\n'),
-                    expected: descr['#document'].join('\n'),
-                    expectedErrors: descr['#errors'],
-                    disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
-                    fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter)
-                });
+                    dirName: dirName
+                }));
             });
         });
     });
@@ -323,4 +336,49 @@ exports.getSubstringByLineCol = function (lines, line, col) {
         .slice(line - 1)
         .join('\n')
         .substring(col - 1);
+};
+
+exports.convertTokenToHtml5Lib = function (token) {
+    switch (token.type) {
+        case Tokenizer.CHARACTER_TOKEN:
+        case Tokenizer.NULL_CHARACTER_TOKEN:
+        case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
+            return ['Character', token.chars];
+
+        case Tokenizer.START_TAG_TOKEN:
+            var reformatedAttrs = {};
+
+            token.attrs.forEach(function (attr) {
+                reformatedAttrs[attr.name] = attr.value;
+            });
+
+            var startTagEntry = [
+                'StartTag',
+                token.tagName,
+                reformatedAttrs
+            ];
+
+            if (token.selfClosing)
+                startTagEntry.push(true);
+
+            return startTagEntry;
+
+        case Tokenizer.END_TAG_TOKEN:
+            return ['EndTag', token.tagName];
+
+        case Tokenizer.COMMENT_TOKEN:
+            return ['Comment', token.data];
+
+        case Tokenizer.DOCTYPE_TOKEN:
+            return [
+                'DOCTYPE',
+                token.name,
+                token.publicId,
+                token.systemId,
+                !token.forceQuirks
+            ];
+
+        default:
+            throw new TypeError('Unrecognized token type: ' + token.type);
+    }
 };

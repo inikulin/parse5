@@ -110,6 +110,81 @@ gulp.task('lint', function () {
         .pipe(eslint.failAfterError());
 });
 
+gulp.task('update-feedback-tests', function () {
+    var Parser = require('./lib/Parser');
+    var Tokenizer = require('./lib/tokenizer');
+    var defaultTreeAdapter = require('./lib/tree_adapters/default');
+    var testUtils = require('./test/test_utils');
+
+    function appendToken(dest, token) {
+        switch (token.type) {
+            case Tokenizer.EOF_TOKEN:
+                return false;
+            case Tokenizer.NULL_CHARACTER_TOKEN:
+            case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
+                token.type = Tokenizer.CHARACTER_TOKEN;
+                /* falls through */
+            case Tokenizer.CHARACTER_TOKEN:
+                if (dest.length > 0 && dest[dest.length - 1].type === Tokenizer.CHARACTER_TOKEN) {
+                    dest[dest.length - 1].chars += token.chars;
+                    return true;
+                }
+                break;
+        }
+        dest.push(token);
+        return true;
+    }
+
+    function collectParserTokens(html) {
+        var tokens = [];
+        var parser = new Parser();
+
+        parser._processInputToken = function (token) {
+            Parser.prototype._processInputToken.call(this, token);
+
+            // Needed to split attributes of duplicate <html> and <body>
+            // which are otherwise merged as per tree constructor spec
+            if (token.type === Tokenizer.START_TAG_TOKEN)
+                token.attrs = token.attrs.slice();
+
+            appendToken(tokens, token);
+        };
+
+        parser.parse(html);
+
+        return tokens.map(testUtils.convertTokenToHtml5Lib);
+    }
+
+    return gulp
+        .src(['test/data/tree_construction/*.dat', 'test/data/tree_construction_regression/*.dat'])
+        .pipe(through.obj(function (file, encoding, callback) {
+            var tests = testUtils.parseTreeConstructionTestData(
+                file.contents.toString(),
+                defaultTreeAdapter
+            );
+
+            var out = {
+                tests: tests.filter(function (test) {
+                    return !test.fragmentContext; // TODO
+                }).map(function (test) {
+                    var input = test.input;
+
+                    return {
+                        description: testUtils.addSlashes(input),
+                        input: input,
+                        output: collectParserTokens(input)
+                    };
+                })
+            };
+
+            file.contents = new Buffer(JSON.stringify(out, null, 4));
+
+            callback(null, file);
+        }))
+        .pipe(rename({ extname: '.test' }))
+        .pipe(gulp.dest('test/data/parser_feedback'));
+});
+
 gulp.task('test', ['lint'], function () {
     return gulp
         .src('test/fixtures/*_test.js')
