@@ -1,0 +1,524 @@
+{
+    "tests": [
+        {
+            "description": "<table><th>",
+            "input": "<table><th>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "th",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<table><td>",
+            "input": "<table><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<table><col foo='bar'>",
+            "input": "<table><col foo='bar'>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "col",
+                    {
+                        "foo": "bar"
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<table><colgroup></html>foo",
+            "input": "<table><colgroup></html>foo",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<table></table><p>foo",
+            "input": "<table></table><p>foo",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<table></body></caption></col></colgroup></html></tbody></td></tfoot></th></thead></tr><td>",
+            "input": "<table></body></caption></col></colgroup></html></tbody></td></tfoot></th></thead></tr><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "EndTag",
+                    "caption"
+                ],
+                [
+                    "EndTag",
+                    "col"
+                ],
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "EndTag",
+                    "tbody"
+                ],
+                [
+                    "EndTag",
+                    "td"
+                ],
+                [
+                    "EndTag",
+                    "tfoot"
+                ],
+                [
+                    "EndTag",
+                    "th"
+                ],
+                [
+                    "EndTag",
+                    "thead"
+                ],
+                [
+                    "EndTag",
+                    "tr"
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<table><select><option>3</select></table>",
+            "input": "<table><select><option>3</select></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ],
+                [
+                    "Character",
+                    "3"
+                ],
+                [
+                    "EndTag",
+                    "select"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<table><select><table></table></select></table>",
+            "input": "<table><select><table></table></select></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "EndTag",
+                    "select"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<table><select></table>",
+            "input": "<table><select></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<table><select><option>A<tr><td>B</td></tr></table>",
+            "input": "<table><select><option>A<tr><td>B</td></tr></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ],
+                [
+                    "Character",
+                    "A"
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "Character",
+                    "B"
+                ],
+                [
+                    "EndTag",
+                    "td"
+                ],
+                [
+                    "EndTag",
+                    "tr"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<table><td></body></caption></col></colgroup></html>foo",
+            "input": "<table><td></body></caption></col></colgroup></html>foo",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "EndTag",
+                    "caption"
+                ],
+                [
+                    "EndTag",
+                    "col"
+                ],
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<table><td>A</table>B",
+            "input": "<table><td>A</table>B",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "Character",
+                    "A"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "Character",
+                    "B"
+                ]
+            ]
+        },
+        {
+            "description": "<table><tr><caption>",
+            "input": "<table><tr><caption>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<table><tr></body></caption></col></colgroup></html></td></th><td>foo",
+            "input": "<table><tr></body></caption></col></colgroup></html></td></th><td>foo",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "EndTag",
+                    "caption"
+                ],
+                [
+                    "EndTag",
+                    "col"
+                ],
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "EndTag",
+                    "td"
+                ],
+                [
+                    "EndTag",
+                    "th"
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<table><td><tr>",
+            "input": "<table><td><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<table><td><button><td>",
+            "input": "<table><td><button><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<table><tr><td><svg><desc><td>",
+            "input": "<table><tr><td><svg><desc><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "desc",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        }
+    ]
+}

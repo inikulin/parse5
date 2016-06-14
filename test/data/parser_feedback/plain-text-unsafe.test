@@ -1,0 +1,758 @@
+{
+    "tests": [
+        {
+            "description": "FOO&#x000D;ZOO",
+            "input": "FOO&#x000D;ZOO",
+            "output": [
+                [
+                    "Character",
+                    "FOO\rZOO"
+                ]
+            ]
+        },
+        {
+            "description": "<html>\u0000<frameset></frameset>",
+            "input": "<html>\u0000<frameset></frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ]
+            ]
+        },
+        {
+            "description": "<html> \u0000 <frameset></frameset>",
+            "input": "<html> \u0000 <frameset></frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "Character",
+                    " \u0000 "
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ]
+            ]
+        },
+        {
+            "description": "<html>a\u0000a<frameset></frameset>",
+            "input": "<html>a\u0000a<frameset></frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a\u0000a"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ]
+            ]
+        },
+        {
+            "description": "<html>\u0000\u0000<frameset></frameset>",
+            "input": "<html>\u0000\u0000<frameset></frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000\u0000"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ]
+            ]
+        },
+        {
+            "description": "<html>\u0000\\r\\n <frameset></frameset>",
+            "input": "<html>\u0000\r\n <frameset></frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000\n "
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ]
+            ]
+        },
+        {
+            "description": "<html><select>\u0000",
+            "input": "<html><select>\u0000",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000"
+                ]
+            ]
+        },
+        {
+            "description": "\u0000",
+            "input": "\u0000",
+            "output": [
+                [
+                    "Character",
+                    "\u0000"
+                ]
+            ]
+        },
+        {
+            "description": "<body>\u0000",
+            "input": "<body>\u0000",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000"
+                ]
+            ]
+        },
+        {
+            "description": "<plaintext>\u0000filler\u0000text\u0000",
+            "input": "<plaintext>\u0000filler\u0000text\u0000",
+            "output": [
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "�filler�text�"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[\u0000filler\u0000text\u0000]]>",
+            "input": "<svg><![CDATA[\u0000filler\u0000text\u0000]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "�filler�text�"
+                ]
+            ]
+        },
+        {
+            "description": "<body><!\u0000>",
+            "input": "<body><!\u0000>",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "Comment",
+                    "�"
+                ]
+            ]
+        },
+        {
+            "description": "<body><!\u0000filler\u0000text>",
+            "input": "<body><!\u0000filler\u0000text>",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "Comment",
+                    "�filler�text"
+                ]
+            ]
+        },
+        {
+            "description": "<body><svg><foreignObject>\u0000filler\u0000text",
+            "input": "<body><svg><foreignObject>\u0000filler\u0000text",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foreignObject",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000filler\u0000text"
+                ]
+            ]
+        },
+        {
+            "description": "<svg>\u0000filler\u0000text",
+            "input": "<svg>\u0000filler\u0000text",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "�filler�text"
+                ]
+            ]
+        },
+        {
+            "description": "<svg>\u0000<frameset>",
+            "input": "<svg>\u0000<frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "�"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg>\u0000 <frameset>",
+            "input": "<svg>\u0000 <frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "� "
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg>\u0000a<frameset>",
+            "input": "<svg>\u0000a<frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "�a"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg>\u0000</svg><frameset>",
+            "input": "<svg>\u0000</svg><frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "�"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg>\u0000 </svg><frameset>",
+            "input": "<svg>\u0000 </svg><frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "� "
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg>\u0000a</svg><frameset>",
+            "input": "<svg>\u0000a</svg><frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "�a"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg><path></path></svg><frameset>",
+            "input": "<svg><path></path></svg><frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "path",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "path"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg><p><frameset>",
+            "input": "<svg><p><frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><pre>\\r\\n\\r\\nA</pre>",
+            "input": "<!DOCTYPE html><pre>\r\n\r\nA</pre>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "pre",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\nA"
+                ],
+                [
+                    "EndTag",
+                    "pre"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><pre>\\r\\rA</pre>",
+            "input": "<!DOCTYPE html><pre>\r\rA</pre>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "pre",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\nA"
+                ],
+                [
+                    "EndTag",
+                    "pre"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><pre>\\rA</pre>",
+            "input": "<!DOCTYPE html><pre>\rA</pre>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "pre",
+                    {}
+                ],
+                [
+                    "Character",
+                    "A"
+                ],
+                [
+                    "EndTag",
+                    "pre"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><table><tr><td><math><mtext>\u0000a",
+            "input": "<!DOCTYPE html><table><tr><td><math><mtext>\u0000a",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mtext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000a"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><table><tr><td><svg><foreignObject>\u0000a",
+            "input": "<!DOCTYPE html><table><tr><td><svg><foreignObject>\u0000a",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foreignObject",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\u0000a"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><math><mi>a\u0000b",
+            "input": "<!DOCTYPE html><math><mi>a\u0000b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mi",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a\u0000b"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><math><mo>a\u0000b",
+            "input": "<!DOCTYPE html><math><mo>a\u0000b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a\u0000b"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><math><mn>a\u0000b",
+            "input": "<!DOCTYPE html><math><mn>a\u0000b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mn",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a\u0000b"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><math><ms>a\u0000b",
+            "input": "<!DOCTYPE html><math><ms>a\u0000b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "ms",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a\u0000b"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><math><mtext>a\u0000b",
+            "input": "<!DOCTYPE html><math><mtext>a\u0000b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mtext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a\u0000b"
+                ]
+            ]
+        }
+    ]
+}

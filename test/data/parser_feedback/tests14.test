@@ -1,0 +1,210 @@
+{
+    "tests": [
+        {
+            "description": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc>",
+            "input": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "xyz:abc",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "xyz:abc"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc><span></span>",
+            "input": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc><span></span>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "xyz:abc",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "xyz:abc"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><html><html abc:def=gh><xyz:abc></xyz:abc>",
+            "input": "<!DOCTYPE html><html><html abc:def=gh><xyz:abc></xyz:abc>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {
+                        "abc:def": "gh"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "xyz:abc",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "xyz:abc"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><html xml:lang=bar><html xml:lang=foo>",
+            "input": "<!DOCTYPE html><html xml:lang=bar><html xml:lang=foo>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {
+                        "xml:lang": "bar"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {
+                        "xml:lang": "foo"
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><html 123=456>",
+            "input": "<!DOCTYPE html><html 123=456>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {
+                        "123": "456"
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><html 123=456><html 789=012>",
+            "input": "<!DOCTYPE html><html 123=456><html 789=012>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {
+                        "123": "456"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {
+                        "789": "012"
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><html><body 789=012>",
+            "input": "<!DOCTYPE html><html><body 789=012>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {
+                        "789": "012"
+                    }
+                ]
+            ]
+        }
+    ]
+}

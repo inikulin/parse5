@@ -1,0 +1,294 @@
+{
+    "tests": [
+        {
+            "description": "<div>\\r\\n<div></div>\\r\\n</span>x",
+            "input": "<div>\r\n<div></div>\r\n</span>x",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "\n"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "Character",
+                    "\n"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
+        },
+        {
+            "description": "<div>x<div></div>\\r\\n</span>x",
+            "input": "<div>x<div></div>\r\n</span>x",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "Character",
+                    "\n"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
+        },
+        {
+            "description": "<div>x<div></div>x</span>x",
+            "input": "<div>x<div></div>x</span>x",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
+        },
+        {
+            "description": "<div>x<div></div>y</span>z",
+            "input": "<div>x<div></div>y</span>z",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "Character",
+                    "y"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "Character",
+                    "z"
+                ]
+            ]
+        },
+        {
+            "description": "<table><div>x<div></div>x</span>x",
+            "input": "<table><div>x<div></div>x</span>x",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
+        },
+        {
+            "description": "x<table>x",
+            "input": "x<table>x",
+            "output": [
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
+        },
+        {
+            "description": "x<table><table>x",
+            "input": "x<table><table>x",
+            "output": [
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
+        },
+        {
+            "description": "<b>a<div></div><div></b>y",
+            "input": "<b>a<div></div><div></b>y",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "Character",
+                    "y"
+                ]
+            ]
+        },
+        {
+            "description": "<a><div><p></a>",
+            "input": "<a><div><p></a>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "a"
+                ]
+            ]
+        }
+    ]
+}

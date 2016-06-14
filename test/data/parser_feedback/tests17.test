@@ -1,0 +1,371 @@
+{
+    "tests": [
+        {
+            "description": "<!doctype html><table><tbody><select><tr>",
+            "input": "<!doctype html><table><tbody><select><tr>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><tr><select><td>",
+            "input": "<!doctype html><table><tr><select><td>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><tr><td><select><td>",
+            "input": "<!doctype html><table><tr><td><select><td>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><tr><th><select><td>",
+            "input": "<!doctype html><table><tr><th><select><td>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "th",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><caption><select><tr>",
+            "input": "<!doctype html><table><caption><select><tr>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><select><tr>",
+            "input": "<!doctype html><select><tr>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><select><td>",
+            "input": "<!doctype html><select><td>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><select><th>",
+            "input": "<!doctype html><select><th>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "th",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><select><tbody>",
+            "input": "<!doctype html><select><tbody>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><select><thead>",
+            "input": "<!doctype html><select><thead>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><select><tfoot>",
+            "input": "<!doctype html><select><tfoot>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><select><caption>",
+            "input": "<!doctype html><select><caption>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><tr></table>a",
+            "input": "<!doctype html><table><tr></table>a",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "Character",
+                    "a"
+                ]
+            ]
+        }
+    ]
+}

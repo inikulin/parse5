@@ -1,0 +1,623 @@
+{
+    "tests": [
+        {
+            "description": "<!DOCTYPE html>Hello",
+            "input": "<!DOCTYPE html>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!dOctYpE HtMl>Hello",
+            "input": "<!dOctYpE HtMl>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPEhtml>Hello",
+            "input": "<!DOCTYPEhtml>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE>Hello",
+            "input": "<!DOCTYPE>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    null,
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE >Hello",
+            "input": "<!DOCTYPE >Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    null,
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato>Hello",
+            "input": "<!DOCTYPE potato>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato >Hello",
+            "input": "<!DOCTYPE potato >Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato taco>Hello",
+            "input": "<!DOCTYPE potato taco>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato taco \"ddd>Hello",
+            "input": "<!DOCTYPE potato taco \"ddd>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato sYstEM>Hello",
+            "input": "<!DOCTYPE potato sYstEM>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato sYstEM    >Hello",
+            "input": "<!DOCTYPE potato sYstEM    >Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE   potato       sYstEM  ggg>Hello",
+            "input": "<!DOCTYPE   potato       sYstEM  ggg>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato SYSTEM taco  >Hello",
+            "input": "<!DOCTYPE potato SYSTEM taco  >Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato SYSTEM 'taco\"'>Hello",
+            "input": "<!DOCTYPE potato SYSTEM 'taco\"'>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    "taco\"",
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato SYSTEM \"taco\">Hello",
+            "input": "<!DOCTYPE potato SYSTEM \"taco\">Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    "taco",
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato SYSTEM \"tai'co\">Hello",
+            "input": "<!DOCTYPE potato SYSTEM \"tai'co\">Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    "tai'co",
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato SYSTEMtaco \"ddd\">Hello",
+            "input": "<!DOCTYPE potato SYSTEMtaco \"ddd\">Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato grass SYSTEM taco>Hello",
+            "input": "<!DOCTYPE potato grass SYSTEM taco>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato pUbLIc>Hello",
+            "input": "<!DOCTYPE potato pUbLIc>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato pUbLIc >Hello",
+            "input": "<!DOCTYPE potato pUbLIc >Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato pUbLIcgoof>Hello",
+            "input": "<!DOCTYPE potato pUbLIcgoof>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato PUBLIC goof>Hello",
+            "input": "<!DOCTYPE potato PUBLIC goof>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato PUBLIC \"go'of\">Hello",
+            "input": "<!DOCTYPE potato PUBLIC \"go'of\">Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    "go'of",
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato PUBLIC 'go'of'>Hello",
+            "input": "<!DOCTYPE potato PUBLIC 'go'of'>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    "go",
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato PUBLIC 'go:hh   of' >Hello",
+            "input": "<!DOCTYPE potato PUBLIC 'go:hh   of' >Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    "go:hh   of",
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE potato PUBLIC \"W3C-//dfdf\" SYSTEM ggg>Hello",
+            "input": "<!DOCTYPE potato PUBLIC \"W3C-//dfdf\" SYSTEM ggg>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "potato",
+                    "W3C-//dfdf",
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\\r\\n   \"http://www.w3.org/TR/html4/strict.dtd\">Hello",
+            "input": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\r\n   \"http://www.w3.org/TR/html4/strict.dtd\">Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//W3C//DTD HTML 4.01//EN",
+                    "http://www.w3.org/TR/html4/strict.dtd",
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE ...>Hello",
+            "input": "<!DOCTYPE ...>Hello",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "...",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "Hello"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\\r\\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+            "input": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\r\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//W3C//DTD XHTML 1.0 Transitional//EN",
+                    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd",
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\\r\\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
+            "input": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\r\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//W3C//DTD XHTML 1.0 Frameset//EN",
+                    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd",
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE root-element [SYSTEM OR PUBLIC FPI] \"uri\" [ \\r\\n<!-- internal declarations -->\\r\\n]>",
+            "input": "<!DOCTYPE root-element [SYSTEM OR PUBLIC FPI] \"uri\" [ \r\n<!-- internal declarations -->\r\n]>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "root-element",
+                    null,
+                    null,
+                    false
+                ],
+                [
+                    "Character",
+                    "\n]>"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html PUBLIC\\r\\n  \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\"\\r\\n    \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">",
+            "input": "<!DOCTYPE html PUBLIC\r\n  \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\"\r\n    \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//WAPFORUM//DTD XHTML Mobile 1.0//EN",
+                    "http://www.wapforum.org/DTD/xhtml-mobile10.dtd",
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE HTML SYSTEM \"http://www.w3.org/DTD/HTML4-strict.dtd\"><body><b>Mine!</b></body>",
+            "input": "<!DOCTYPE HTML SYSTEM \"http://www.w3.org/DTD/HTML4-strict.dtd\"><body><b>Mine!</b></body>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    "http://www.w3.org/DTD/HTML4-strict.dtd",
+                    true
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "Character",
+                    "Mine!"
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"http://www.w3.org/TR/html4/strict.dtd\">",
+            "input": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"http://www.w3.org/TR/html4/strict.dtd\">",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//W3C//DTD HTML 4.01//EN",
+                    "http://www.w3.org/TR/html4/strict.dtd",
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
+            "input": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//W3C//DTD HTML 4.01//EN",
+                    "http://www.w3.org/TR/html4/strict.dtd",
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC\"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
+            "input": "<!DOCTYPE HTML PUBLIC\"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//W3C//DTD HTML 4.01//EN",
+                    "http://www.w3.org/TR/html4/strict.dtd",
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC'-//W3C//DTD HTML 4.01//EN''http://www.w3.org/TR/html4/strict.dtd'>",
+            "input": "<!DOCTYPE HTML PUBLIC'-//W3C//DTD HTML 4.01//EN''http://www.w3.org/TR/html4/strict.dtd'>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    "-//W3C//DTD HTML 4.01//EN",
+                    "http://www.w3.org/TR/html4/strict.dtd",
+                    true
+                ]
+            ]
+        }
+    ]
+}

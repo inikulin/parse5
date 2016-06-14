@@ -1,0 +1,210 @@
+{
+    "tests": [
+        {
+            "description": "<foo bar=qux/>",
+            "input": "<foo bar=qux/>",
+            "output": [
+                [
+                    "StartTag",
+                    "foo",
+                    {
+                        "bar": "qux/"
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
+            "input": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
+            "output": [
+                [
+                    "StartTag",
+                    "p",
+                    {
+                        "id": "status"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<strong>A</strong>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "Character",
+                    "B"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ]
+            ]
+        },
+        {
+            "description": "<div><sarcasm><div></div></sarcasm></div>",
+            "input": "<div><sarcasm><div></div></sarcasm></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "sarcasm",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "EndTag",
+                    "sarcasm"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<html><body><img src=\"\" border=\"0\" alt=\"><div>A</div></body></html>",
+            "input": "<html><body><img src=\"\" border=\"0\" alt=\"><div>A</div></body></html>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<table><td></tbody>A",
+            "input": "<table><td></tbody>A",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "tbody"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "description": "<table><td></thead>A",
+            "input": "<table><td></thead>A",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "thead"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "description": "<table><td></tfoot>A",
+            "input": "<table><td></tfoot>A",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "tfoot"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "description": "<table><thead><td></tbody>A",
+            "input": "<table><thead><td></tbody>A",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "tbody"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        }
+    ]
+}

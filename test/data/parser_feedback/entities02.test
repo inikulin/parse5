@@ -1,0 +1,441 @@
+{
+    "tests": [
+        {
+            "description": "<div bar=\"ZZ&gt;YY\"></div>",
+            "input": "<div bar=\"ZZ&gt;YY\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ>YY"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&\"></div>",
+            "input": "<div bar=\"ZZ&\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar='ZZ&'></div>",
+            "input": "<div bar='ZZ&'></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=ZZ&></div>",
+            "input": "<div bar=ZZ&></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&gt=YY\"></div>",
+            "input": "<div bar=\"ZZ&gt=YY\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&gt=YY"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&gt0YY\"></div>",
+            "input": "<div bar=\"ZZ&gt0YY\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&gt0YY"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&gt9YY\"></div>",
+            "input": "<div bar=\"ZZ&gt9YY\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&gt9YY"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&gtaYY\"></div>",
+            "input": "<div bar=\"ZZ&gtaYY\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&gtaYY"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&gtZYY\"></div>",
+            "input": "<div bar=\"ZZ&gtZYY\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&gtZYY"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&gt YY\"></div>",
+            "input": "<div bar=\"ZZ&gt YY\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ> YY"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&gt\"></div>",
+            "input": "<div bar=\"ZZ&gt\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ>"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar='ZZ&gt'></div>",
+            "input": "<div bar='ZZ&gt'></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ>"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=ZZ&gt></div>",
+            "input": "<div bar=ZZ&gt></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ>"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&pound_id=23\"></div>",
+            "input": "<div bar=\"ZZ&pound_id=23\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ£_id=23"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&prod_id=23\"></div>",
+            "input": "<div bar=\"ZZ&prod_id=23\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&prod_id=23"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&pound;_id=23\"></div>",
+            "input": "<div bar=\"ZZ&pound;_id=23\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ£_id=23"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&prod;_id=23\"></div>",
+            "input": "<div bar=\"ZZ&prod;_id=23\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ∏_id=23"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&pound=23\"></div>",
+            "input": "<div bar=\"ZZ&pound=23\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&pound=23"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div bar=\"ZZ&prod=23\"></div>",
+            "input": "<div bar=\"ZZ&prod=23\"></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "bar": "ZZ&prod=23"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div>ZZ&pound_id=23</div>",
+            "input": "<div>ZZ&pound_id=23</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "ZZ£_id=23"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div>ZZ&prod_id=23</div>",
+            "input": "<div>ZZ&prod_id=23</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "ZZ&prod_id=23"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div>ZZ&pound;_id=23</div>",
+            "input": "<div>ZZ&pound;_id=23</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "ZZ£_id=23"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div>ZZ&prod;_id=23</div>",
+            "input": "<div>ZZ&prod;_id=23</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "ZZ∏_id=23"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div>ZZ&pound=23</div>",
+            "input": "<div>ZZ&pound=23</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "ZZ£=23"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<div>ZZ&prod=23</div>",
+            "input": "<div>ZZ&prod=23</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "ZZ&prod=23"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        }
+    ]
+}

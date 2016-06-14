@@ -1,0 +1,444 @@
+{
+    "tests": [
+        {
+            "description": "<div<div>",
+            "input": "<div<div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div<div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<div foo<bar=''>",
+            "input": "<div foo<bar=''>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "foo<bar": ""
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<div foo=`bar`>",
+            "input": "<div foo=`bar`>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "foo": "`bar`"
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<div \\\"foo=''>",
+            "input": "<div \\\"foo=''>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {
+                        "\\\"foo": ""
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<a href='\\nbar'></a>",
+            "input": "<a href='\\nbar'></a>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {
+                        "href": "\\nbar"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "a"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html>",
+            "input": "<!DOCTYPE html>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "&lang;&rang;",
+            "input": "&lang;&rang;",
+            "output": [
+                [
+                    "Character",
+                    "⟨⟩"
+                ]
+            ]
+        },
+        {
+            "description": "&apos;",
+            "input": "&apos;",
+            "output": [
+                [
+                    "Character",
+                    "'"
+                ]
+            ]
+        },
+        {
+            "description": "&ImaginaryI;",
+            "input": "&ImaginaryI;",
+            "output": [
+                [
+                    "Character",
+                    "ⅈ"
+                ]
+            ]
+        },
+        {
+            "description": "&Kopf;",
+            "input": "&Kopf;",
+            "output": [
+                [
+                    "Character",
+                    "𝕂"
+                ]
+            ]
+        },
+        {
+            "description": "&notinva;",
+            "input": "&notinva;",
+            "output": [
+                [
+                    "Character",
+                    "∉"
+                ]
+            ]
+        },
+        {
+            "description": "<?import namespace=\"foo\" implementation=\"#bar\">",
+            "input": "<?import namespace=\"foo\" implementation=\"#bar\">",
+            "output": [
+                [
+                    "Comment",
+                    "?import namespace=\"foo\" implementation=\"#bar\""
+                ]
+            ]
+        },
+        {
+            "description": "<!--foo--bar-->",
+            "input": "<!--foo--bar-->",
+            "output": [
+                [
+                    "Comment",
+                    "foo--bar"
+                ]
+            ]
+        },
+        {
+            "description": "<![CDATA[x]]>",
+            "input": "<![CDATA[x]]>",
+            "output": [
+                [
+                    "Comment",
+                    "[CDATA[x]]"
+                ]
+            ]
+        },
+        {
+            "description": "<textarea><!--</textarea>--></textarea>",
+            "input": "<textarea><!--</textarea>--></textarea>",
+            "output": [
+                [
+                    "StartTag",
+                    "textarea",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "textarea"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "textarea"
+                ]
+            ]
+        },
+        {
+            "description": "<textarea><!--</textarea>-->",
+            "input": "<textarea><!--</textarea>-->",
+            "output": [
+                [
+                    "StartTag",
+                    "textarea",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "textarea"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ]
+            ]
+        },
+        {
+            "description": "<style><!--</style>--></style>",
+            "input": "<style><!--</style>--></style>",
+            "output": [
+                [
+                    "StartTag",
+                    "style",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "style"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "style"
+                ]
+            ]
+        },
+        {
+            "description": "<style><!--</style>-->",
+            "input": "<style><!--</style>-->",
+            "output": [
+                [
+                    "StartTag",
+                    "style",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "style"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ]
+            ]
+        },
+        {
+            "description": "<ul><li>A </li> <li>B</li></ul>",
+            "input": "<ul><li>A </li> <li>B</li></ul>",
+            "output": [
+                [
+                    "StartTag",
+                    "ul",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "li",
+                    {}
+                ],
+                [
+                    "Character",
+                    "A "
+                ],
+                [
+                    "EndTag",
+                    "li"
+                ],
+                [
+                    "Character",
+                    " "
+                ],
+                [
+                    "StartTag",
+                    "li",
+                    {}
+                ],
+                [
+                    "Character",
+                    "B"
+                ],
+                [
+                    "EndTag",
+                    "li"
+                ],
+                [
+                    "EndTag",
+                    "ul"
+                ]
+            ]
+        },
+        {
+            "description": "<table><form><input type=hidden><input></form><div></div></table>",
+            "input": "<table><form><input type=hidden><input></form><div></div></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "input",
+                    {
+                        "type": "hidden"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "input",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "form"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<i>A<b>B<p></i>C</b>D",
+            "input": "<i>A<b>B<p></i>C</b>D",
+            "output": [
+                [
+                    "StartTag",
+                    "i",
+                    {}
+                ],
+                [
+                    "Character",
+                    "A"
+                ],
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "Character",
+                    "B"
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "i"
+                ],
+                [
+                    "Character",
+                    "C"
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "Character",
+                    "D"
+                ]
+            ]
+        },
+        {
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "description": "<svg></svg>",
+            "input": "<svg></svg>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ]
+            ]
+        },
+        {
+            "description": "<math></math>",
+            "input": "<math></math>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "math"
+                ]
+            ]
+        }
+    ]
+}
