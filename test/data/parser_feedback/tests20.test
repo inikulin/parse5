@@ -1,0 +1,1020 @@
+{
+    "tests": [
+        {
+            "description": "<!doctype html><p><button><button>",
+            "input": "<!doctype html><p><button><button>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><address>",
+            "input": "<!doctype html><p><button><address>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "address",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><blockquote>",
+            "input": "<!doctype html><p><button><blockquote>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "blockquote",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><menu>",
+            "input": "<!doctype html><p><button><menu>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "menu",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><p>",
+            "input": "<!doctype html><p><button><p>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><ul>",
+            "input": "<!doctype html><p><button><ul>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "ul",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><h1>",
+            "input": "<!doctype html><p><button><h1>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "h1",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><h6>",
+            "input": "<!doctype html><p><button><h6>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "h6",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><listing>",
+            "input": "<!doctype html><p><button><listing>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "listing",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><pre>",
+            "input": "<!doctype html><p><button><pre>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "pre",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><form>",
+            "input": "<!doctype html><p><button><form>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><li>",
+            "input": "<!doctype html><p><button><li>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "li",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><dd>",
+            "input": "<!doctype html><p><button><dd>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dd",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><dt>",
+            "input": "<!doctype html><p><button><dt>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dt",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><plaintext>",
+            "input": "<!doctype html><p><button><plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><table>",
+            "input": "<!doctype html><p><button><table>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><hr>",
+            "input": "<!doctype html><p><button><hr>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "hr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><xmp>",
+            "input": "<!doctype html><p><button><xmp>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "xmp",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button></p>",
+            "input": "<!doctype html><p><button></p>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><address><button></address>a",
+            "input": "<!doctype html><address><button></address>a",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "address",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "address"
+                ],
+                [
+                    "Character",
+                    "a"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><address><button></address>a",
+            "input": "<!doctype html><address><button></address>a",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "address",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "address"
+                ],
+                [
+                    "Character",
+                    "a"
+                ]
+            ]
+        },
+        {
+            "description": "<p><table></p>",
+            "input": "<p><table></p>",
+            "output": [
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><svg>",
+            "input": "<!doctype html><svg>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><figcaption>",
+            "input": "<!doctype html><p><figcaption>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "figcaption",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><summary>",
+            "input": "<!doctype html><p><summary>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "summary",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><form><table><form>",
+            "input": "<!doctype html><form><table><form>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><form><form>",
+            "input": "<!doctype html><table><form><form>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><form></table><form>",
+            "input": "<!doctype html><table><form></table><form>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><svg><foreignObject><p>",
+            "input": "<!doctype html><svg><foreignObject><p>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foreignObject",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><svg><title>abc",
+            "input": "<!doctype html><svg><title>abc",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "Character",
+                    "abc"
+                ]
+            ]
+        },
+        {
+            "description": "<option><span><option>",
+            "input": "<option><span><option>",
+            "output": [
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<option><option>",
+            "input": "<option><option>",
+            "output": [
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml><div>",
+            "input": "<math><annotation-xml><div>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml encoding=\"application/svg+xml\"><div>",
+            "input": "<math><annotation-xml encoding=\"application/svg+xml\"><div>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {
+                        "encoding": "application/svg+xml"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml encoding=\"application/xhtml+xml\"><div>",
+            "input": "<math><annotation-xml encoding=\"application/xhtml+xml\"><div>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {
+                        "encoding": "application/xhtml+xml"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml encoding=\"aPPlication/xhtmL+xMl\"><div>",
+            "input": "<math><annotation-xml encoding=\"aPPlication/xhtmL+xMl\"><div>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {
+                        "encoding": "aPPlication/xhtmL+xMl"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml encoding=\"text/html\"><div>",
+            "input": "<math><annotation-xml encoding=\"text/html\"><div>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {
+                        "encoding": "text/html"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml encoding=\"Text/htmL\"><div>",
+            "input": "<math><annotation-xml encoding=\"Text/htmL\"><div>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {
+                        "encoding": "Text/htmL"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml encoding=\" text/html \"><div>",
+            "input": "<math><annotation-xml encoding=\" text/html \"><div>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {
+                        "encoding": " text/html "
+                    }
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        }
+    ]
+}

@@ -1,0 +1,669 @@
+{
+    "tests": [
+        {
+            "description": "FOO<script>'Hello'</script>BAR",
+            "input": "FOO<script>'Hello'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'Hello'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script></script>BAR",
+            "input": "FOO<script></script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script></script >BAR",
+            "input": "FOO<script></script >BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script></script/>BAR",
+            "input": "FOO<script></script/>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script></script/ >BAR",
+            "input": "FOO<script></script/ >BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\"></scriptx>BAR",
+            "input": "FOO<script type=\"text/plain\"></scriptx>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "</scriptx>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script></script foo=\">\" dd>BAR",
+            "input": "FOO<script></script foo=\">\" dd>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<'</script>BAR",
+            "input": "FOO<script>'<'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!'</script>BAR",
+            "input": "FOO<script>'<!'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!-'</script>BAR",
+            "input": "FOO<script>'<!-'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!-'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!--'</script>BAR",
+            "input": "FOO<script>'<!--'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!--'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!---'</script>BAR",
+            "input": "FOO<script>'<!---'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!---'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!-->'</script>BAR",
+            "input": "FOO<script>'<!-->'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!-->'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!-->'</script>BAR",
+            "input": "FOO<script>'<!-->'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!-->'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!-- potato'</script>BAR",
+            "input": "FOO<script>'<!-- potato'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!-- potato'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!-- <sCrIpt'</script>BAR",
+            "input": "FOO<script>'<!-- <sCrIpt'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt>'</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt>'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt>'</script>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -'</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt> -'</script>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --'</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt> --'</script>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script>'<!-- <sCrIpt> -->'</script>BAR",
+            "input": "FOO<script>'<!-- <sCrIpt> -->'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt> -->'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --!>'</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --!>'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt> --!>'</script>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -- >'</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -- >'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt> -- >'</script>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt '</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt '</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt '</script>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt/'</script>BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt\\'</script>BAR",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt\\'</script>BAR",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt\\'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "BAR"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR</script>QUX",
+            "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR</script>QUX",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "text/plain"
+                    }
+                ],
+                [
+                    "Character",
+                    "'<!-- <sCrIpt/'</script>BAR"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "QUX"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<script><!--<script>-></script>--></script>QUX",
+            "input": "FOO<script><!--<script>-></script>--></script>QUX",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--<script>-></script>-->"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ],
+                [
+                    "Character",
+                    "QUX"
+                ]
+            ]
+        }
+    ]
+}

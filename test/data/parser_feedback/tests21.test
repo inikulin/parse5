@@ -1,0 +1,415 @@
+{
+    "tests": [
+        {
+            "description": "<svg><![CDATA[foo]]>",
+            "input": "<svg><![CDATA[foo]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<math><![CDATA[foo]]>",
+            "input": "<math><![CDATA[foo]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<div><![CDATA[foo]]>",
+            "input": "<div><![CDATA[foo]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Comment",
+                    "[CDATA[foo]]"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[foo",
+            "input": "<svg><![CDATA[foo",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[foo",
+            "input": "<svg><![CDATA[foo",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[",
+            "input": "<svg><![CDATA[",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[]]>",
+            "input": "<svg><![CDATA[]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[]] >]]>",
+            "input": "<svg><![CDATA[]] >]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "]] >"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[]] >]]>",
+            "input": "<svg><![CDATA[]] >]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "]] >"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[]]",
+            "input": "<svg><![CDATA[]]",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "]]"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[]",
+            "input": "<svg><![CDATA[]",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "]"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[]>a",
+            "input": "<svg><![CDATA[]>a",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "]>a"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><svg><![CDATA[foo]]]>",
+            "input": "<!DOCTYPE html><svg><![CDATA[foo]]]>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo]"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><svg><![CDATA[foo]]]]>",
+            "input": "<!DOCTYPE html><svg><![CDATA[foo]]]]>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo]]"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><svg><![CDATA[foo]]]]]>",
+            "input": "<!DOCTYPE html><svg><![CDATA[foo]]]]]>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo]]]"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><foreignObject><div><![CDATA[foo]]>",
+            "input": "<svg><foreignObject><div><![CDATA[foo]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foreignObject",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Comment",
+                    "[CDATA[foo]]"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[<svg>]]>",
+            "input": "<svg><![CDATA[<svg>]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<svg>"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[</svg>a]]>",
+            "input": "<svg><![CDATA[</svg>a]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</svg>a"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[<svg>a",
+            "input": "<svg><![CDATA[<svg>a",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<svg>a"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[</svg>a",
+            "input": "<svg><![CDATA[</svg>a",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</svg>a"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[<svg>]]><path>",
+            "input": "<svg><![CDATA[<svg>]]><path>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<svg>"
+                ],
+                [
+                    "StartTag",
+                    "path",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[<svg>]]></path>",
+            "input": "<svg><![CDATA[<svg>]]></path>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<svg>"
+                ],
+                [
+                    "EndTag",
+                    "path"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[<svg>]]><!--path-->",
+            "input": "<svg><![CDATA[<svg>]]><!--path-->",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<svg>"
+                ],
+                [
+                    "Comment",
+                    "path"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[<svg>]]>path",
+            "input": "<svg><![CDATA[<svg>]]>path",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<svg>path"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[<!--svg-->]]>",
+            "input": "<svg><![CDATA[<!--svg-->]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--svg-->"
+                ]
+            ]
+        }
+    ]
+}

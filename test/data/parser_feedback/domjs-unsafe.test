@@ -1,0 +1,1078 @@
+{
+    "tests": [
+        {
+            "description": "<svg><![CDATA[foo\\r\\nbar]]>",
+            "input": "<svg><![CDATA[foo\r\nbar]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo\nbar"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[foo\\rbar]]>",
+            "input": "<svg><![CDATA[foo\rbar]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo\nbar"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><![CDATA[foo\\r\\nbar]]>",
+            "input": "<svg><![CDATA[foo\r\nbar]]>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo\nbar"
+                ]
+            ]
+        },
+        {
+            "description": "<script>a='\u0000'</script>",
+            "input": "<script>a='\u0000'</script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a='�'"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--\u0000</script>",
+            "input": "<script type=\"data\"><!--\u0000</script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--�"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--foo\u0000</script>",
+            "input": "<script type=\"data\"><!--foo\u0000</script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--foo�"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!-- foo-\u0000</script>",
+            "input": "<script type=\"data\"><!-- foo-\u0000</script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!-- foo-�"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!-- foo--\u0000</script>",
+            "input": "<script type=\"data\"><!-- foo--\u0000</script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!-- foo--�"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!-- foo-",
+            "input": "<script type=\"data\"><!-- foo-",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!-- foo-"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!-- foo-<</script>",
+            "input": "<script type=\"data\"><!-- foo-<</script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!-- foo-<"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!-- foo-<S",
+            "input": "<script type=\"data\"><!-- foo-<S",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!-- foo-<S"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!-- foo-</SCRIPT>",
+            "input": "<script type=\"data\"><!-- foo-</SCRIPT>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!-- foo-"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<p></script>",
+            "input": "<script type=\"data\"><!--<p></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<p>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script></script></script>",
+            "input": "<script type=\"data\"><!--<script></script></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script></script>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script>\u0000</script></script>",
+            "input": "<script type=\"data\"><!--<script>\u0000</script></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script>�</script>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script>-\u0000</script></script>",
+            "input": "<script type=\"data\"><!--<script>-\u0000</script></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script>-�</script>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script>--\u0000</script></script>",
+            "input": "<script type=\"data\"><!--<script>--\u0000</script></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script>--�</script>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script>---</script></script>",
+            "input": "<script type=\"data\"><!--<script>---</script></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script>---</script>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script></scrip></SCRIPT></script>",
+            "input": "<script type=\"data\"><!--<script></scrip></SCRIPT></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script></scrip></SCRIPT>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script></scrip </SCRIPT></script>",
+            "input": "<script type=\"data\"><!--<script></scrip </SCRIPT></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script></scrip </SCRIPT>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--<script></scrip/</SCRIPT></script>",
+            "input": "<script type=\"data\"><!--<script></scrip/</SCRIPT></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--<script></scrip/</SCRIPT>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"></scrip/></script>",
+            "input": "<script type=\"data\"></scrip/></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "</scrip/>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"></scrip ></script>",
+            "input": "<script type=\"data\"></scrip ></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "</scrip >"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--</scrip></script>",
+            "input": "<script type=\"data\"><!--</scrip></script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--</scrip>"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--</scrip </script>",
+            "input": "<script type=\"data\"><!--</scrip </script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--</scrip "
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<script type=\"data\"><!--</scrip/</script>",
+            "input": "<script type=\"data\"><!--</scrip/</script>",
+            "output": [
+                [
+                    "StartTag",
+                    "script",
+                    {
+                        "type": "data"
+                    }
+                ],
+                [
+                    "Character",
+                    "<!--</scrip/"
+                ],
+                [
+                    "EndTag",
+                    "script"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html><!DOCTYPE html>",
+            "input": "<!DOCTYPE html><!DOCTYPE html>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<html><!DOCTYPE html>",
+            "input": "<html><!DOCTYPE html>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<html><head><!DOCTYPE html></head>",
+            "input": "<html><head><!DOCTYPE html></head>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "EndTag",
+                    "head"
+                ]
+            ]
+        },
+        {
+            "description": "<html><head></head><!DOCTYPE html>",
+            "input": "<html><head></head><!DOCTYPE html>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "head"
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<body></body><!DOCTYPE html>",
+            "input": "<body></body><!DOCTYPE html>",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<table><!DOCTYPE html></table>",
+            "input": "<table><!DOCTYPE html></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<select><!DOCTYPE html></select>",
+            "input": "<select><!DOCTYPE html></select>",
+            "output": [
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "EndTag",
+                    "select"
+                ]
+            ]
+        },
+        {
+            "description": "<table><colgroup><!DOCTYPE html></colgroup></table>",
+            "input": "<table><colgroup><!DOCTYPE html></colgroup></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<table><colgroup><!--test--></colgroup></table>",
+            "input": "<table><colgroup><!--test--></colgroup></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "Comment",
+                    "test"
+                ],
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<table><colgroup><html></colgroup></table>",
+            "input": "<table><colgroup><html></colgroup></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<table><colgroup> foo</colgroup></table>",
+            "input": "<table><colgroup> foo</colgroup></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "Character",
+                    " foo"
+                ],
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "description": "<select><!--test--></select>",
+            "input": "<select><!--test--></select>",
+            "output": [
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "Comment",
+                    "test"
+                ],
+                [
+                    "EndTag",
+                    "select"
+                ]
+            ]
+        },
+        {
+            "description": "<select><html></select>",
+            "input": "<select><html></select>",
+            "output": [
+                [
+                    "StartTag",
+                    "select",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "select"
+                ]
+            ]
+        },
+        {
+            "description": "<frameset><html></frameset>",
+            "input": "<frameset><html></frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ]
+            ]
+        },
+        {
+            "description": "<frameset></frameset><html>",
+            "input": "<frameset></frameset><html>",
+            "output": [
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<frameset></frameset><!DOCTYPE html>",
+            "input": "<frameset></frameset><!DOCTYPE html>",
+            "output": [
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "frameset"
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<html><body></body></html><!DOCTYPE html>",
+            "input": "<html><body></body></html><!DOCTYPE html>",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ]
+            ]
+        },
+        {
+            "description": "<svg><!DOCTYPE html></svg>",
+            "input": "<svg><!DOCTYPE html></svg>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><font></font></svg>",
+            "input": "<svg><font></font></svg>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "font",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "font"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><font id=foo></font></svg>",
+            "input": "<svg><font id=foo></font></svg>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "font",
+                    {
+                        "id": "foo"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "font"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><font size=4></font></svg>",
+            "input": "<svg><font size=4></font></svg>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "font",
+                    {
+                        "size": "4"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "font"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><font color=red></font></svg>",
+            "input": "<svg><font color=red></font></svg>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "font",
+                    {
+                        "color": "red"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "font"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><font font=sans></font></svg>",
+            "input": "<svg><font font=sans></font></svg>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "font",
+                    {
+                        "font": "sans"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "font"
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ]
+            ]
+        }
+    ]
+}

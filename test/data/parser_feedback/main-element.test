@@ -1,0 +1,126 @@
+{
+    "tests": [
+        {
+            "description": "<!doctype html><p>foo<main>bar<p>baz",
+            "input": "<!doctype html><p>foo<main>bar<p>baz",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ],
+                [
+                    "StartTag",
+                    "main",
+                    {}
+                ],
+                [
+                    "Character",
+                    "bar"
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "baz"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><main><p>foo</main>bar",
+            "input": "<!doctype html><main><p>foo</main>bar",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "main",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ],
+                [
+                    "EndTag",
+                    "main"
+                ],
+                [
+                    "Character",
+                    "bar"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html>xxx<svg><x><g><a><main><b>",
+            "input": "<!DOCTYPE html>xxx<svg><x><g><a><main><b>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "xxx"
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "x",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "g",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "main",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ]
+            ]
+        }
+    ]
+}

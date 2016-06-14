@@ -1,0 +1,47 @@
+{
+    "tests": [
+        {
+            "description": "<isindex>",
+            "input": "<isindex>",
+            "output": [
+                [
+                    "StartTag",
+                    "isindex",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<isindex name=\"A\" action=\"B\" prompt=\"C\" foo=\"D\">",
+            "input": "<isindex name=\"A\" action=\"B\" prompt=\"C\" foo=\"D\">",
+            "output": [
+                [
+                    "StartTag",
+                    "isindex",
+                    {
+                        "name": "A",
+                        "action": "B",
+                        "prompt": "C",
+                        "foo": "D"
+                    }
+                ]
+            ]
+        },
+        {
+            "description": "<form><isindex>",
+            "input": "<form><isindex>",
+            "output": [
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "isindex",
+                    {}
+                ]
+            ]
+        }
+    ]
+}
