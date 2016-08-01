@@ -216,6 +216,7 @@
 #data
 <!doctype html><script><!
 #errors
+(1,25): expected-script-data-but-got-eof
 (1,25): expected-named-closing-tag-but-got-eof
 #document
 | <!DOCTYPE html>
@@ -1445,6 +1446,7 @@
 <script><!
 #errors
 (1,8): expected-doctype-but-got-start-tag
+(1,10): expected-script-data-but-got-eof
 (1,10): expected-named-closing-tag-but-got-eof
 #document
 | <html>

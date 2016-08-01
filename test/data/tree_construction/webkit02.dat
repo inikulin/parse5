@@ -132,3 +132,170 @@
 |         <tr>
 |           <td>
 |             "A"
+
+#data
+<legend>test</legend>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <legend>
+|       "test"
+
+#data
+<table><input>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <input>
+|     <table>
+
+#data
+<b><em><foo><foo><aside></b>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <b>
+|       <em>
+|         <foo>
+|           <foo>
+|     <em>
+|       <aside>
+|         <b>
+
+#data
+<b><em><foo><foo><aside></b></em>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <b>
+|       <em>
+|         <foo>
+|           <foo>
+|     <em>
+|     <aside>
+|       <em>
+|         <b>
+
+#data
+<b><em><foo><foo><foo><aside></b>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <b>
+|       <em>
+|         <foo>
+|           <foo>
+|             <foo>
+|     <aside>
+|       <b>
+
+#data
+<b><em><foo><foo><foo><aside></b></em>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <b>
+|       <em>
+|         <foo>
+|           <foo>
+|             <foo>
+|     <aside>
+|       <b>
+
+#data
+<b><em><foo><foo><foo><foo><foo><foo><foo><foo><foo><foo><aside></b></em>
+#errors
+#document-fragment
+div
+#document
+| <b>
+|   <em>
+|     <foo>
+|       <foo>
+|         <foo>
+|           <foo>
+|             <foo>
+|               <foo>
+|                 <foo>
+|                   <foo>
+|                     <foo>
+|                       <foo>
+| <aside>
+|   <b>
+
+#data
+<b><em><foo><foob><foob><foob><foob><fooc><fooc><fooc><fooc><food><aside></b></em>
+#errors
+#document-fragment
+div
+#document
+| <b>
+|   <em>
+|     <foo>
+|       <foob>
+|         <foob>
+|           <foob>
+|             <foob>
+|               <fooc>
+|                 <fooc>
+|                   <fooc>
+|                     <fooc>
+|                       <food>
+| <aside>
+|   <b>
+
+#data
+<option><XH<optgroup></optgroup>
+#errors
+#document-fragment
+select
+#document
+| <option>
+
+#data
+<svg><foreignObject><div>foo</div><plaintext></foreignObject></svg><div>bar</div>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <svg svg>
+|       <svg foreignObject>
+|         <div>
+|           "foo"
+|         <plaintext>
+|           "</foreignObject></svg><div>bar</div>"
+
+#data
+<svg><foreignObject></foreignObject><title></svg>foo
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <svg svg>
+|       <svg foreignObject>
+|       <svg title>
+|     "foo"
+
+#data
+</foreignObject><plaintext><div>foo</div>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <plaintext>
+|       "<div>foo</div>"

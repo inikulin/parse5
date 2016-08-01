@@ -136,6 +136,20 @@ unexpected text in table
 |           "X"
 
 #data
+<!doctype html><p><object type="application/x-non-existant-plugin"><p>X</p></object>
+#errors
+#document
+| <!DOCTYPE html>
+| <html>
+|   <head>
+|   <body>
+|     <p>
+|       <object>
+|         type="application/x-non-existant-plugin"
+|         <p>
+|           "X"
+
+#data
 <!doctype html><listing>
 X</listing>
 #errors
@@ -379,6 +393,7 @@ A<table><tr> B</tr> </em>C</table>
 (1,14): foster-parenting-character
 (1,20): foster-parenting-character
 (1,25): unexpected-end-tag
+(1,25): unexpected-end-tag-in-special-element
 (1,26): foster-parenting-character
 #document
 | <html>

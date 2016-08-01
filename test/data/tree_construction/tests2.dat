@@ -471,7 +471,6 @@
 <!DOCTYPE html><select><optgroup><option></optgroup><option><select><option>
 #errors
 (1,68): unexpected-select-in-select
-(1,76): expected-closing-tag-but-got-eof
 #document
 | <!DOCTYPE html>
 | <html>
@@ -552,24 +551,6 @@
 | <html>
 |   <head>
 |   <body>
-
-#data
-<isindex test=x name=x>
-#errors
-(1,23): expected-doctype-but-got-start-tag
-(1,23): deprecated-tag
-#document
-| <html>
-|   <head>
-|   <body>
-|     <form>
-|       <hr>
-|       <label>
-|         "This is a searchable index. Enter search keywords: "
-|         <input>
-|           name="isindex"
-|           test="x"
-|       <hr>
 
 #data
 test

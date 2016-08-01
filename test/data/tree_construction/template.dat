@@ -1589,3 +1589,16 @@ eof table
 |                 content
 |                   <table>
 |                     <script>
+
+#data
+<template><a><table><a>
+#errors
+#document
+| <html>
+|   <head>
+|     <template>
+|       content
+|         <a>
+|           <a>
+|           <table>
+|   <body>
