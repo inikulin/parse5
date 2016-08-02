@@ -47,7 +47,6 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             _test[getFullTestName(test)] = function () {
                 var opts = {treeAdapter: treeAdapter};
 
-
                 if (test.fragmentContext)
                     assertFragmentParsing(test.input, test.fragmentContext, test.expected, opts);
 
