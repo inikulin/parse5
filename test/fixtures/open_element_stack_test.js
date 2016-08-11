@@ -79,8 +79,8 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     };
 
     _test['Pop elements until popped with given tagName'] = function () {
-        var element1 = treeAdapter.createElement('#element1', '', []),
-            element2 = treeAdapter.createElement('#element2', '', []),
+        var element1 = treeAdapter.createElement('#element1', NS.HTML, []),
+            element2 = treeAdapter.createElement('#element2', NS.HTML, []),
             stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element2);
@@ -154,9 +154,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     };
 
     _test['Clear back to a table context'] = function () {
-        var htmlElement = treeAdapter.createElement($.HTML, '', []),
-            tableElement = treeAdapter.createElement($.TABLE, '', []),
-            divElement = treeAdapter.createElement($.DIV, '', []),
+        var htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []),
+            tableElement = treeAdapter.createElement($.TABLE, NS.HTML, []),
+            divElement = treeAdapter.createElement($.DIV, NS.HTML, []),
             stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(htmlElement);
@@ -177,9 +177,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     };
 
     _test['Clear back to a table body context'] = function () {
-        var htmlElement = treeAdapter.createElement($.HTML, '', []),
-            theadElement = treeAdapter.createElement($.THEAD, '', []),
-            divElement = treeAdapter.createElement($.DIV, '', []),
+        var htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []),
+            theadElement = treeAdapter.createElement($.THEAD, NS.HTML, []),
+            divElement = treeAdapter.createElement($.DIV, NS.HTML, []),
             stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(htmlElement);
@@ -200,9 +200,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     };
 
     _test['Clear back to a table row context'] = function () {
-        var htmlElement = treeAdapter.createElement($.HTML, '', []),
-            trElement = treeAdapter.createElement($.TR, '', []),
-            divElement = treeAdapter.createElement($.DIV, '', []),
+        var htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []),
+            trElement = treeAdapter.createElement($.TR, NS.HTML, []),
+            divElement = treeAdapter.createElement($.DIV, NS.HTML, []),
             stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(htmlElement);

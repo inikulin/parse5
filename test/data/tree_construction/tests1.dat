@@ -357,7 +357,6 @@ Line1<br>Line2<br>Line3<br>Line4
 (1,27): unexpected-select-in-select
 (1,39): unexpected-end-tag
 (1,48): unexpected-end-tag
-(1,49): expected-closing-tag-but-got-eof
 #document
 | <html>
 |   <head>
@@ -1539,7 +1538,6 @@ Line1<br>Line2<br>Line3<br>Line4
 (1,27): unexpected-select-in-select
 (1,39): unexpected-end-tag
 (1,48): unexpected-end-tag
-(1,48): expected-closing-tag-but-got-eof
 #document
 | <html>
 |   <head>

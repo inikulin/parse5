@@ -487,8 +487,7 @@ svg desc
 #data
 <plaintext><foo>
 #errors
-16: End of file seen and there were open elements.
-11: Unclosed element “plaintext”.
+(1,16): expected-closing-tag-but-got-eof
 #document-fragment
 svg desc
 #document

@@ -89,17 +89,6 @@ eof
 |       "A"
 
 #data
-<!DOCTYPE html><body><menuitem>A
-#errors
-#document
-| <!DOCTYPE html>
-| <html>
-|   <head>
-|   <body>
-|     <menuitem>
-|     "A"
-
-#data
 <!DOCTYPE html><body><embed>A
 #errors
 #document
