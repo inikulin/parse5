@@ -42,6 +42,36 @@
                     {}
                 ]
             ]
+        },
+        {
+            "description": "<!doctype html><isindex>x</isindex>x",
+            "input": "<!doctype html><isindex>x</isindex>x",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "isindex",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ],
+                [
+                    "EndTag",
+                    "isindex"
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
         }
     ]
 }

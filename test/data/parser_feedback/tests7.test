@@ -385,6 +385,48 @@
             ]
         },
         {
+            "description": "<!doctype html><p><object type=\"application/x-non-existant-plugin\"><p>X</p></object>",
+            "input": "<!doctype html><p><object type=\"application/x-non-existant-plugin\"><p>X</p></object>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "object",
+                    {
+                        "type": "application/x-non-existant-plugin"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "X"
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ],
+                [
+                    "EndTag",
+                    "object"
+                ]
+            ]
+        },
+        {
             "description": "<!doctype html><listing>\\r\\nX</listing>",
             "input": "<!doctype html><listing>\r\nX</listing>",
             "output": [

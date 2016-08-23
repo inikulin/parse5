@@ -1015,6 +1015,123 @@
                     {}
                 ]
             ]
+        },
+        {
+            "description": "<math><annotation-xml> </annotation-xml>",
+            "input": "<math><annotation-xml> </annotation-xml>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {}
+                ],
+                [
+                    "Character",
+                    " "
+                ],
+                [
+                    "EndTag",
+                    "annotation-xml"
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml>c</annotation-xml>",
+            "input": "<math><annotation-xml>c</annotation-xml>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {}
+                ],
+                [
+                    "Character",
+                    "c"
+                ],
+                [
+                    "EndTag",
+                    "annotation-xml"
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml><!--foo-->",
+            "input": "<math><annotation-xml><!--foo-->",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {}
+                ],
+                [
+                    "Comment",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml></svg>x",
+            "input": "<math><annotation-xml></svg>x",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
+        },
+        {
+            "description": "<math><annotation-xml><svg>x",
+            "input": "<math><annotation-xml><svg>x",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "annotation-xml",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "Character",
+                    "x"
+                ]
+            ]
         }
     ]
 }

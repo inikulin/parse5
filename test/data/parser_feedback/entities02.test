@@ -436,6 +436,25 @@
                     "div"
                 ]
             ]
+        },
+        {
+            "description": "<div>ZZ&AElig=</div>",
+            "input": "<div>ZZ&AElig=</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "ZZÆ="
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
         }
     ]
 }

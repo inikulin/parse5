@@ -184,69 +184,6 @@
             ]
         },
         {
-            "description": "<!doctype html><form><isindex>",
-            "input": "<!doctype html><form><isindex>",
-            "output": [
-                [
-                    "DOCTYPE",
-                    "html",
-                    null,
-                    null,
-                    true
-                ],
-                [
-                    "StartTag",
-                    "form",
-                    {}
-                ],
-                [
-                    "StartTag",
-                    "isindex",
-                    {}
-                ]
-            ]
-        },
-        {
-            "description": "<!doctype html><isindex action=\"POST\">",
-            "input": "<!doctype html><isindex action=\"POST\">",
-            "output": [
-                [
-                    "DOCTYPE",
-                    "html",
-                    null,
-                    null,
-                    true
-                ],
-                [
-                    "StartTag",
-                    "isindex",
-                    {
-                        "action": "POST"
-                    }
-                ]
-            ]
-        },
-        {
-            "description": "<!doctype html><isindex prompt=\"this is isindex\">",
-            "input": "<!doctype html><isindex prompt=\"this is isindex\">",
-            "output": [
-                [
-                    "DOCTYPE",
-                    "html",
-                    null,
-                    null,
-                    true
-                ],
-                [
-                    "StartTag",
-                    "isindex",
-                    {
-                        "prompt": "this is isindex"
-                    }
-                ]
-            ]
-        },
-        {
             "description": "<!doctype html><isindex type=\"hidden\">",
             "input": "<!doctype html><isindex type=\"hidden\">",
             "output": [
@@ -262,26 +199,6 @@
                     "isindex",
                     {
                         "type": "hidden"
-                    }
-                ]
-            ]
-        },
-        {
-            "description": "<!doctype html><isindex name=\"foo\">",
-            "input": "<!doctype html><isindex name=\"foo\">",
-            "output": [
-                [
-                    "DOCTYPE",
-                    "html",
-                    null,
-                    null,
-                    true
-                ],
-                [
-                    "StartTag",
-                    "isindex",
-                    {
-                        "name": "foo"
                     }
                 ]
             ]

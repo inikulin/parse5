@@ -205,6 +205,289 @@
                     "A"
                 ]
             ]
+        },
+        {
+            "description": "<legend>test</legend>",
+            "input": "<legend>test</legend>",
+            "output": [
+                [
+                    "StartTag",
+                    "legend",
+                    {}
+                ],
+                [
+                    "Character",
+                    "test"
+                ],
+                [
+                    "EndTag",
+                    "legend"
+                ]
+            ]
+        },
+        {
+            "description": "<table><input>",
+            "input": "<table><input>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "input",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<b><em><foo><foo><aside></b>",
+            "input": "<b><em><foo><foo><aside></b>",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ]
+            ]
+        },
+        {
+            "description": "<b><em><foo><foo><aside></b></em>",
+            "input": "<b><em><foo><foo><aside></b></em>",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "EndTag",
+                    "em"
+                ]
+            ]
+        },
+        {
+            "description": "<b><em><foo><foo><foo><aside></b>",
+            "input": "<b><em><foo><foo><foo><aside></b>",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ]
+            ]
+        },
+        {
+            "description": "<b><em><foo><foo><foo><aside></b></em>",
+            "input": "<b><em><foo><foo><foo><aside></b></em>",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "EndTag",
+                    "em"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><foreignObject><div>foo</div><plaintext></foreignObject></svg><div>bar</div>",
+            "input": "<svg><foreignObject><div>foo</div><plaintext></foreignObject></svg><div>bar</div>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foreignObject",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</foreignObject></svg><div>bar</div>"
+                ]
+            ]
+        },
+        {
+            "description": "<svg><foreignObject></foreignObject><title></svg>foo",
+            "input": "<svg><foreignObject></foreignObject><title></svg>foo",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foreignObject",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "foreignobject"
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "svg"
+                ],
+                [
+                    "Character",
+                    "foo"
+                ]
+            ]
+        },
+        {
+            "description": "</foreignObject><plaintext><div>foo</div>",
+            "input": "</foreignObject><plaintext><div>foo</div>",
+            "output": [
+                [
+                    "EndTag",
+                    "foreignobject"
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<div>foo</div>"
+                ]
+            ]
         }
     ]
 }

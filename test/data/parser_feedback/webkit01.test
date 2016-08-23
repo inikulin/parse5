@@ -1412,6 +1412,51 @@
             ]
         },
         {
+            "description": "<table><tr><td><svg><desc><td></desc><circle>",
+            "input": "<table><tr><td><svg><desc><td></desc><circle>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "desc",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "desc"
+                ],
+                [
+                    "StartTag",
+                    "circle",
+                    {}
+                ]
+            ]
+        },
+        {
             "description": "<svg><tfoot></mi><td>",
             "input": "<svg><tfoot></mi><td>",
             "output": [

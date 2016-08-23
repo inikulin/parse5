@@ -1,0 +1,58 @@
+{
+    "tests": [
+        {
+            "description": "<body><table><tr><td><svg><td><foreignObject><span></td>Foo",
+            "input": "<body><table><tr><td><svg><td><foreignObject><span></td>Foo",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foreignObject",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "td"
+                ],
+                [
+                    "Character",
+                    "Foo"
+                ]
+            ]
+        }
+    ]
+}

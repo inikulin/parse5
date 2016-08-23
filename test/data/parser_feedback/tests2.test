@@ -956,20 +956,6 @@
             ]
         },
         {
-            "description": "<isindex test=x name=x>",
-            "input": "<isindex test=x name=x>",
-            "output": [
-                [
-                    "StartTag",
-                    "isindex",
-                    {
-                        "test": "x",
-                        "name": "x"
-                    }
-                ]
-            ]
-        },
-        {
             "description": "test\\r\\ntest",
             "input": "test\r\ntest",
             "output": [

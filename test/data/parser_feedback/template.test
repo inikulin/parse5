@@ -3553,6 +3553,32 @@
                     {}
                 ]
             ]
+        },
+        {
+            "description": "<template><a><table><a>",
+            "input": "<template><a><table><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "template",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
         }
     ]
 }
