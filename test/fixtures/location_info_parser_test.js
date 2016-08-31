@@ -165,4 +165,29 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
         assert.ok(fragment.childNodes[0].__location.attrs['test-attr']);
     };
+
+    exports['Regression - location line incorrect when a character is unconsumed (GH-151)'] = function () {
+        var html = ['<html><body>',
+            '<script>',
+            '  var x = window.scrollY <',
+            '      100;',
+            '</script>',
+            '</body></html>'].join('\n'),
+            opts = {
+                treeAdapter: treeAdapter,
+                locationInfo: true
+            };
+
+        var doc = parse5.parse(html, opts),
+            foundScript = false;
+
+        walkTree(doc, treeAdapter, function (node) {
+            if (node.name === 'script') {
+                foundScript = true;
+                assert.equal(node.__location.endTag.line, 5);
+            }
+        });
+
+        assert.ok(foundScript);
+    };
 });
