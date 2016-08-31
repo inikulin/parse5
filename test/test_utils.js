@@ -364,7 +364,9 @@ exports.convertTokenToHtml5Lib = function (token) {
             return startTagEntry;
 
         case Tokenizer.END_TAG_TOKEN:
-            return ['EndTag', token.tagName];
+            // NOTE: parser feedback simulator can produce adjusted SVG
+            // tag names for end tag tokens so we need to lower case it
+            return ['EndTag', token.tagName.toLowerCase()];
 
         case Tokenizer.COMMENT_TOKEN:
             return ['Comment', token.data];
