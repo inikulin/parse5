@@ -1,5 +1,10 @@
 # Version history
 
+## 2.2.1
+ * Fixed: SAXParser HTML integration point handling for adjustable SVG tags.
+ * Fixed: SAXParser now adjust SVG tag names for end tags.
+ * Fixed: Location info line calculation on tokenizer character unconsumption (by [@ChadKillingsworth](https://github.com/ChadKillingsworth)).
+
 ## 2.2.0
 * SAXParser (by [@RReverser](https://github.com/RReverser))
  * Fixed: Handling of `\n` in `<pre>`, `<textarea>` and `<listing>`.
