@@ -23,7 +23,10 @@
     "gulp-jsdoc-to-markdown": "^1.1.1",
     "gulp-mocha": "^2.1.3",
     "gulp-rename": "^1.2.2",
-    "promise": "^7.0.4",
+    "human-format": "^0.7.0",
+    "memwatch-next": "^0.3.0",
+    "pinkie": "^2.0.4",
+    "promisify-event": "^1.0.0",
     "publish-please": "^2.2.0",
     "through2": "^2.0.0"
   },

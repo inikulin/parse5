@@ -14,6 +14,8 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
         chunkIdx = 0,
         tokenSource = null;
 
+    // NOTE: set small waterline for testing purposes
+    tokenizer.preprocessor.bufferWaterline = 8;
     tokenizer.state = initialState;
 
     if (lastStartTag)

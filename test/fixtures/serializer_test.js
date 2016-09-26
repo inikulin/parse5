@@ -3,7 +3,7 @@
 var assert = require('assert'),
     path = require('path'),
     WritableStream = require('stream').Writable,
-    Promise = require('promise'),
+    Promise = require('pinkie'),
     parse5 = require('../../lib'),
     testUtils = require('../test_utils');
 
