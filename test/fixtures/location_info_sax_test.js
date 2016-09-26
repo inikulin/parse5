@@ -38,3 +38,17 @@ exports['Location info (SAX)'] = function () {
             });
         });
 };
+
+exports['Regression - location info for text (GH-153)'] = function () {
+    var html = '<!DOCTYPE html><html><head><title>Here is a title</title></html>',
+        parser = new SAXParser({locationInfo: true}),
+        texts = [];
+
+    parser.on('text', function (text, location) {
+        texts.push(html.substring(location.startOffset, location.endOffset));
+    });
+
+    parser.end(html);
+
+    assert.deepEqual(texts, ['Here is a title']);
+};
