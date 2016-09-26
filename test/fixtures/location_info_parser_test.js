@@ -130,7 +130,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         });
     };
 
-    exports['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
+    exports['Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)'] = function () {
         var html = '<p>1<p class="2">3',
             opts = {
                 treeAdapter: treeAdapter,
@@ -144,7 +144,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
     };
 
 
-    exports['Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)'] = function () {
+    exports['Regression - Location info not exposed with parseFragment (GH-82)'] = function () {
         var html = '<html><head></head><body>foo</body></html>',
             opts = {
                 treeAdapter: treeAdapter,
