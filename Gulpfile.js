@@ -10,8 +10,7 @@ var gulp = require('gulp'),
     through = require('through2'),
     concat = require('gulp-concat'),
     jsdoc = require('gulp-jsdoc-to-markdown'),
-    insert = require('gulp-insert'),
-    memoryBenchmark = require('./test/memory-benchmark');
+    insert = require('gulp-insert');
 
 
 gulp.task('generate-trie', function () {
@@ -98,8 +97,23 @@ gulp.task('benchmark', ['install-upstream-parse5'], function () {
         }));
 });
 
-gulp.task('memory-benchmark', function () {
-    return memoryBenchmark();
+gulp.task('install-memory-benchmark-dependencies', function () {
+    var pathExists = require('path-exists');
+
+    return pathExists('test/memory_benchmark/node_modules').then(function (exists) {
+        if (!exists) {
+            return gulp
+                .src('test/memory_benchmark/package.json')
+                .pipe(install());
+        }
+
+        return null;
+    });
+
+});
+
+gulp.task('memory-benchmark', ['install-memory-benchmark-dependencies'], function () {
+    return require('./test/memory_benchmark')();
 });
 
 gulp.task('lint', function () {

@@ -12,7 +12,7 @@ function parse() {
         parsedDataSize = 0,
         stream = new SAXParser();
 
-    for (var i = 0; i < 200; i++) {
+    for (var i = 0; i < 400; i++) {
         parsedDataSize += data.length;
         stream.write(data);
     }
