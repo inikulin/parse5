@@ -12,7 +12,7 @@ function getFullLocationTestName(test) {
 }
 
 function walkTree(document, treeAdapter, handler) {
-    for (var stack = treeAdapter.getChildNodes(document).slice(); stack.length; ) {
+    for (var stack = treeAdapter.getChildNodes(document).slice(); stack.length;) {
         var node = stack.shift(),
             children = treeAdapter.getChildNodes(node);
 
@@ -130,7 +130,21 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         });
     };
 
-    exports['Regression - Location info not exposed with parseFragment (GH-82)'] = function () {
+    exports['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
+        var html = '<p>1<p class="2">3',
+            opts = {
+                treeAdapter: treeAdapter,
+                locationInfo: true
+            };
+
+        var fragment = parse5.parseFragment(html, opts),
+            firstPLocation = fragment.childNodes[0].__location;
+
+        assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
+    };
+
+
+    exports['Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)'] = function () {
         var html = '<html><head></head><body>foo</body></html>',
             opts = {
                 treeAdapter: treeAdapter,
@@ -168,11 +182,11 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
     exports['Regression - location line incorrect when a character is unconsumed (GH-151)'] = function () {
         var html = ['<html><body>',
-            '<script>',
-            '  var x = window.scrollY <',
-            '      100;',
-            '</script>',
-            '</body></html>'].join('\n'),
+                '<script>',
+                '  var x = window.scrollY <',
+                '      100;',
+                '</script>',
+                '</body></html>'].join('\n'),
             opts = {
                 treeAdapter: treeAdapter,
                 locationInfo: true
