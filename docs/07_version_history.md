@@ -1,5 +1,13 @@
 # Version history
 
+## 2.2.2
+ * Fixed: Incorrect location info for text in SAXParser (GH [#153](https://github.com/inikulin/parse5/issues/153)).
+ * Fixed: Incorrect `LocationInfo.endOffset` for implicitly closed `<p>` element (GH [#109](https://github.com/inikulin/parse5/issues/109)).
+ * Fixed: Infinite input data buffering in streaming parsers. Now parsers try to not buffer more than 64K of input data.
+ However, there are still some edge cases left that will lead to significant memory consumption, but they are quite exotic
+ and extremely rare in the wild (GH [#102](https://github.com/inikulin/parse5/issues/102), GH [#130](https://github.com/inikulin/parse5/issues/130));
+
+
 ## 2.2.1
  * Fixed: SAXParser HTML integration point handling for adjustable SVG tags.
  * Fixed: SAXParser now adjust SVG tag names for end tags.
