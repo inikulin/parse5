@@ -6,7 +6,6 @@ var path = require('path'),
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global fs, Promise, upstreamParser, workingCopy, files, deferred */
 global.fs = require('fs');
-global.Promise = require('pinkie');
 global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
 global.files = fs

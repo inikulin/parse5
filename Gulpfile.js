@@ -98,18 +98,9 @@ gulp.task('benchmark', ['install-upstream-parse5'], function () {
 });
 
 gulp.task('install-memory-benchmark-dependencies', function () {
-    var pathExists = require('path-exists');
-
-    return pathExists('test/memory_benchmark/node_modules').then(function (exists) {
-        if (!exists) {
-            return gulp
-                .src('test/memory_benchmark/package.json')
-                .pipe(install());
-        }
-
-        return null;
-    });
-
+    return gulp
+        .src('test/memory_benchmark/package.json')
+        .pipe(install());
 });
 
 gulp.task('memory-benchmark', ['install-memory-benchmark-dependencies'], function () {

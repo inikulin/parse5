@@ -1,7 +1,6 @@
 'use strict';
 
 var fs = require('fs'),
-    Promise = require('pinkie'),
     format = require('human-format'),
     promisifyEvent = require('promisify-event'),
     memwatch = require('memwatch-next'),
