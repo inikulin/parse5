@@ -2,6 +2,7 @@
 
 var assert = require('assert'),
     path = require('path'),
+    fs = require('fs'),
     HTML = require('../../lib/common/html'),
     escapeString = require('../../lib/serializer').escapeString,
     parse5 = require('../../lib'),
@@ -69,9 +70,26 @@ function assertNodeLocation(node, serializedNode, html, lines) {
     assertLocation(node.__location, expected, html, lines);
 }
 
+function loadTestData() {
+    var dataDirPath = path.join(__dirname, '../data/location_info'),
+        testSetFileDirs = fs.readdirSync(dataDirPath),
+        tests = [];
+
+    testSetFileDirs.forEach(function (dirName) {
+        var dataFilePath = path.join(dataDirPath, dirName, 'data.html'),
+            data = fs.readFileSync(dataFilePath).toString();
+
+        tests.push({
+            name: dirName,
+            data: testUtils.normalizeNewLine(data)
+        });
+    });
+
+    return tests;
+}
+
 testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
-    testUtils
-        .loadSerializationTestData(path.join(__dirname, '../data/serialization'))
+    loadTestData()
         .forEach(function (test) {
             //NOTE: How it works: we parse document with the location info.
             //Then for each node in the tree we run serializer and compare results with the substring
@@ -80,7 +98,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                 var serializerOpts = {
                         treeAdapter: treeAdapter
                     },
-                    html = escapeString(test.expected),
+                    html = escapeString(test.data),
                     lines = html.split(/\r?\n/g),
                     parserOpts = {
                         treeAdapter: treeAdapter,

@@ -2,13 +2,10 @@
 
 var assert = require('assert'),
     path = require('path'),
+    fs = require('fs'),
     WritableStream = require('stream').Writable,
     parse5 = require('../../lib'),
     testUtils = require('../test_utils');
-
-function getFullTestName(test) {
-    return ['Serializer - ', test.idx, '.', test.name].join('');
-}
 
 function serializeStreaming(node, opts) {
     return new Promise(function (resolve) {
@@ -32,9 +29,11 @@ function serializeStreaming(node, opts) {
 }
 
 
-function testStreamingSerialization(document, opts, expected, done) {
+function testStreamingSerialization(document, opts, expected, removeNewLines, done) {
     serializeStreaming(document, opts)
-        .then(testUtils.removeNewLines)
+        .then(function (serializedResult) {
+            return removeNewLines ? testUtils.removeNewLines(serializedResult) : serializedResult;
+        })
         .then(function (serializedResult) {
             var msg = 'STREAMING: ' + testUtils.getStringDiffMsg(serializedResult, expected);
 
@@ -44,24 +43,29 @@ function testStreamingSerialization(document, opts, expected, done) {
         .catch(done);
 }
 
-testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
-    //Here we go..
-    testUtils
-        .loadSerializationTestData(path.join(__dirname, '../data/serialization'))
-        .forEach(function (test) {
-            _test[getFullTestName(test)] = function (done) {
+(function createTests() {
+    function getFullTestName(idx, test) {
+        return ['Serializer - ', idx, '.', test.name].join('');
+    }
+
+    var data = fs.readFileSync(path.join(__dirname, '../data/serialization/tests.json')),
+        tests = JSON.parse(data);
+
+    testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
+        tests.forEach(function (test, idx) {
+            _test[getFullTestName(idx, test)] = function (done) {
                 var opts = {treeAdapter: treeAdapter},
-                    document = parse5.parse(test.src, opts),
-                    serializedResult = testUtils.removeNewLines(parse5.serialize(document, opts)),
-                    expected = testUtils.removeNewLines(test.expected);
+                    document = parse5.parse(test.input, opts),
+                    serializedResult = parse5.serialize(document, opts);
 
                 //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-                assert.ok(serializedResult === expected, testUtils.getStringDiffMsg(serializedResult, expected));
+                assert.ok(serializedResult === test.expected, testUtils.getStringDiffMsg(serializedResult, test.expected));
 
-                testStreamingSerialization(document, opts, expected, done);
+                testStreamingSerialization(document, opts, test.expected, false, done);
             };
         });
-});
+    });
+})();
 
 exports['Regression - Get text node\'s parent tagName only if it\'s an Element node (GH-38)'] = {
     test: function () {
@@ -80,57 +84,4 @@ exports['Regression - Get text node\'s parent tagName only if it\'s an Element n
     after: function () {
         parse5.treeAdapters.default.getTagName = this.originalGetTagName;
     }
-};
-
-exports['Regression - SYSTEM-only doctype serialization'] = function () {
-    var html = '<!DOCTYPE html SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-               '<html><head></head><body></body></html>',
-        document = parse5.parse(html),
-        serializedResult = parse5.serialize(document);
-
-    assert.strictEqual(serializedResult, html);
-};
-
-exports['Regression - Escaping of doctypes with quotes in them'] = function () {
-    var htmlStrs = [
-        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
-        '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-        '<html><head></head><body></body></html>',
-
-        '<!DOCTYPE html PUBLIC \'-//W3C//"DTD" XHTML 1.0 Transitional//EN\' ' +
-        '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
-        '<html><head></head><body></body></html>',
-
-        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' +
-        '\'http://www.w3.org/TR/xhtml1/DTD/"xhtml1-transitional.dtd"\'>' +
-        '<html><head></head><body></body></html>'
-    ];
-
-    htmlStrs.forEach(function (html) {
-        var document = parse5.parse(html),
-            serializedResult = parse5.serialize(document);
-
-        assert.strictEqual(serializedResult, html);
-    });
-};
-
-exports['Regression - new line in <pre> tag'] = function () {
-    var htmlStrs = [
-        {
-            src: '<!DOCTYPE html><html><head></head><body><pre>\ntest</pre></body></html>',
-            expected: '<!DOCTYPE html><html><head></head><body><pre>test</pre></body></html>'
-        },
-
-        {
-            src: '<!DOCTYPE html><html><head></head><body><pre>\n\ntest</pre></body></html>',
-            expected: '<!DOCTYPE html><html><head></head><body><pre>\n\ntest</pre></body></html>'
-        }
-    ];
-
-    htmlStrs.forEach(function (htmlStr) {
-        var document = parse5.parse(htmlStr.src),
-            serializedResult = parse5.serialize(document);
-
-        assert.strictEqual(serializedResult, htmlStr.expected);
-    });
 };

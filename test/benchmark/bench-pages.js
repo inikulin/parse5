@@ -1,7 +1,6 @@
 'use strict';
 
-var path = require('path'),
-    upstreamParse5 = require('parse5'),
+var upstreamParse5 = require('parse5'),
     testUtils = require('../test_utils');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
@@ -9,7 +8,7 @@ var path = require('path'),
 global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
 global.pages = testUtils
-    .loadSerializationTestData(path.join(__dirname, '../data/sax'))
+    .loadSAXParserTestData()
     .map(function (test) {
         return test.src;
     });

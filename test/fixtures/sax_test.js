@@ -84,7 +84,7 @@ function createBasicTest(html, expected, options) {
 
 //Basic tests
 testUtils
-    .loadSerializationTestData(path.join(__dirname, '../data/sax'))
+    .loadSAXParserTestData()
     .forEach(function (test, idx) {
         var testName = getFullTestName(test, idx);
 

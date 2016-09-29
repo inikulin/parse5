@@ -1,13 +1,12 @@
 'use strict';
 
 var assert = require('assert'),
-    path = require('path'),
     SAXParser = require('../../lib').SAXParser,
     testUtils = require('../test_utils');
 
 exports['Location info (SAX)'] = function () {
     testUtils
-        .loadSerializationTestData(path.join(__dirname, '../data/sax'))
+        .loadSAXParserTestData()
         .forEach(function (test) {
             //NOTE: we've already tested the correctness of the location info with the Tokenizer tests.
             //So here we just check that SAXParser provides this info in the handlers.

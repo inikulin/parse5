@@ -103,8 +103,9 @@ exports.removeNewLines = function (str) {
         .replace(/\n/g, '');
 };
 
-exports.loadSerializationTestData = function (dataDirPath) {
-    var testSetFileDirs = fs.readdirSync(dataDirPath),
+exports.loadSAXParserTestData = function () {
+    var dataDirPath = path.join(__dirname, './data/sax'),
+        testSetFileDirs = fs.readdirSync(dataDirPath),
         tests = [];
 
     testSetFileDirs.forEach(function (dirName) {
