@@ -2,7 +2,6 @@
 
 var path = require('path'),
     assert = require('assert'),
-    Promise = require('promise'),
     ParserStream = require('../../lib').ParserStream,
     testUtils = require('../test_utils');
 

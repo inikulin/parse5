@@ -68,6 +68,8 @@ exports['Location info (Tokenizer)'] = function () {
         for (var i = 0; i < testCase.htmlChunks.length; i++)
             tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);
 
+        // NOTE: set small waterline for testing purposes
+        tokenizer.preprocessor.bufferWaterline = 8;
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 

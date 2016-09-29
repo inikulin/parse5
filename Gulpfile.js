@@ -97,6 +97,16 @@ gulp.task('benchmark', ['install-upstream-parse5'], function () {
         }));
 });
 
+gulp.task('install-memory-benchmark-dependencies', function () {
+    return gulp
+        .src('test/memory_benchmark/package.json')
+        .pipe(install());
+});
+
+gulp.task('memory-benchmark', ['install-memory-benchmark-dependencies'], function () {
+    return require('./test/memory_benchmark')();
+});
+
 gulp.task('lint', function () {
     return gulp
         .src([
@@ -122,7 +132,7 @@ gulp.task('update-feedback-tests', function () {
             case Tokenizer.NULL_CHARACTER_TOKEN:
             case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
                 token.type = Tokenizer.CHARACTER_TOKEN;
-                /* falls through */
+            /* falls through */
             case Tokenizer.CHARACTER_TOKEN:
                 if (dest.length > 0 && dest[dest.length - 1].type === Tokenizer.CHARACTER_TOKEN) {
                     dest[dest.length - 1].chars += token.chars;
@@ -180,7 +190,7 @@ gulp.task('update-feedback-tests', function () {
 
             callback(null, file);
         }))
-        .pipe(rename({ extname: '.test' }))
+        .pipe(rename({extname: '.test'}))
         .pipe(gulp.dest('test/data/parser_feedback'));
 });
 

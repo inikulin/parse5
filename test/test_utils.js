@@ -317,16 +317,19 @@ exports.makeChunks = function (str, minSize, maxSize) {
 };
 
 exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
-    var parser = new parse5.ParserStream(opts),
+    var parserStream = new parse5.ParserStream(opts),
         chunks = exports.makeChunks(html, minChunkSize, maxChunkSize);
 
-    for (var i = 0; i < chunks.length - 1; i++)
-        parser.write(chunks[i]);
+    // NOTE: set small waterline for testing purposes
+    parserStream.parser.tokenizer.preprocessor.bufferWaterline = 8;
 
-    parser.end(chunks[chunks.length - 1]);
+    for (var i = 0; i < chunks.length - 1; i++)
+        parserStream.write(chunks[i]);
+
+    parserStream.end(chunks[chunks.length - 1]);
 
     return {
-        document: parser.document,
+        document: parserStream.document,
         chunks: chunks
     };
 };
