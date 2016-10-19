@@ -107,3 +107,22 @@ exports['Regression - Incorrect arguments fallback for the parser.parseFragment 
         assert(!args.options.locationInfo);
     }
 };
+
+exports["Regression - Don't inherit from Object when creating collections (GH-119)"] = {
+    beforeEach: function () {
+        /*eslint-disable no-extend-native*/
+        Object.prototype.heyYo = 123;
+        /*eslint-enable no-extend-native*/
+    },
+
+    afterEach: function () {
+        delete Object.prototype.heyYo;
+    },
+
+    test: function () {
+        var fragment = parse5.parseFragment('<div id="123">', {treeAdapter: parse5.treeAdapters.htmlparser2});
+
+        assert.strictEqual(parse5.treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
+    }
+};
+
