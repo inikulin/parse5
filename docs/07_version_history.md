@@ -1,5 +1,8 @@
 # Version history
 
+# 2.2.3
+ * Fixed: Fixed incorrect LocationInfo.endOffset for non-implicitly closed elements (refix for GH [#109](https://github.com/inikulin/parse5/issues/109)) (by [@wooorm](https://github.com/wooorm)).
+
 ## 2.2.2
  * Fixed: Incorrect location info for text in SAXParser (GH [#153](https://github.com/inikulin/parse5/issues/153)).
  * Fixed: Incorrect `LocationInfo.endOffset` for implicitly closed `<p>` element (GH [#109](https://github.com/inikulin/parse5/issues/109)).
