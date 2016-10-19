@@ -143,6 +143,18 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     };
 
+    exports['Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)'] = function () {
+        var html = '<i>1</i>2',
+            opts = {
+                treeAdapter: treeAdapter,
+                locationInfo: true
+            };
+
+        var fragment = parse5.parseFragment(html, opts),
+            location = fragment.childNodes[0].__location;
+
+        assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<i>1</i>');
+    };
 
     exports['Regression - Location info not exposed with parseFragment (GH-82)'] = function () {
         var html = '<html><head></head><body>foo</body></html>',
