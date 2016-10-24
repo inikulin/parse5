@@ -41,7 +41,7 @@ function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage)
     console.log('Memory max: ', format(maxMemUsage, {unit: 'B'}));
 }
 
-module.exports = function () {
+(function () {
     var parsedDataSize = 0,
         maxMemUsage = 0,
         startDate = null,
@@ -61,7 +61,7 @@ module.exports = function () {
         heapDiff = heapDiffMeasurement.end();
     });
 
-    return Promise
+    Promise
         .all([
             parserPromise,
             promisifyEvent(memwatch, 'stats') // NOTE: we need at least one `stats` result
@@ -69,4 +69,4 @@ module.exports = function () {
         .then(function () {
             return printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
         });
-};
+})();

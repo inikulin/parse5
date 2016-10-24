@@ -1,6 +1,7 @@
 'use strict';
 
-var gulp = require('gulp'),
+var fork = require('child_process').fork,
+    gulp = require('gulp'),
     eslint = require('gulp-eslint'),
     mocha = require('gulp-mocha'),
     install = require('gulp-install'),
@@ -103,8 +104,12 @@ gulp.task('install-memory-benchmark-dependencies', function () {
         .pipe(install());
 });
 
-gulp.task('memory-benchmark', ['install-memory-benchmark-dependencies'], function () {
-    return require('./test/memory_benchmark')();
+gulp.task('sax-parser-memory-benchmark', ['install-memory-benchmark-dependencies'], function (done) {
+    fork('./test/memory_benchmark/sax_parser').once('close', done);
+});
+
+gulp.task('named-entity-data-memory-benchmark', ['install-memory-benchmark-dependencies'], function (done) {
+    fork('./test/memory_benchmark/named_entity_data').once('close', done);
 });
 
 gulp.task('lint', function () {
