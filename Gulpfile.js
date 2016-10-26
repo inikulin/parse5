@@ -108,7 +108,7 @@ gulp.task('sax-parser-memory-benchmark', ['install-memory-benchmark-dependencies
     fork('./test/memory_benchmark/sax_parser').once('close', done);
 });
 
-gulp.task('named-entity-data-memory-benchmark', ['install-memory-benchmark-dependencies'], function (done) {
+gulp.task('named-entity-data-memory-benchmark', function (done) {
     fork('./test/memory_benchmark/named_entity_data').once('close', done);
 });
 
