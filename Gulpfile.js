@@ -9,6 +9,7 @@ var fork = require('child_process').fork,
     rename = require('gulp-rename'),
     download = require('gulp-download'),
     typedoc = require('gulp-typedoc'),
+    typescript = require('gulp-typescript'),
     through = require('through2'),
     generateNamedEntityData = require('./scripts/generate_named_entity_data'),
     generateParserFeedbackTest = require('./scripts/generate_parser_feedback_test');
@@ -74,7 +75,20 @@ gulp.task('lint', function () {
         .pipe(eslint.failAfterError());
 });
 
-gulp.task('test', ['lint'], function () {
+gulp.task('test-type-definitions', function () {
+    var project = typescript.createProject('test/type_definitions/tsconfig.json', { typescript: require('typescript') });
+
+    return project
+        .src()
+        .pipe(project())
+        .on('error', function () {
+            /* eslint-disable no-process-exit */
+            process.exit(1);
+            /* eslint-enable no-process-exit */
+        });
+});
+
+gulp.task('test', ['lint', 'test-type-definitions'], function () {
     return gulp
         .src('test/fixtures/*_test.js')
         .pipe(mocha({

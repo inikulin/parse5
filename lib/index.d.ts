@@ -92,48 +92,172 @@ declare namespace Options {
 // AST
 //-----------------------------------------------------------------------------------
 declare namespace AST {
+    /**
+     * [Document mode](https://dom.spec.whatwg.org/#concept-document-limited-quirks).
+     */
     type DocumentMode = 'no-quirks' | 'quirks' | 'limited-quirks';
 
     // Default tree adapter
     namespace Default {
+        /**
+         * Element attribute.
+         */
         interface Attribute {
+            /**
+             * The name of the attribute.
+             */
             name: string;
+            /**
+             * The value of the attribute.
+             */
             value: string;
+            /**
+             * The namespace of the attribute.
+             */
             namespace?: string;
+            /**
+             * The namespace-related prefix of the attribute.
+             */
             prefix?: string;
         }
 
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} Node interface.
+         */
         interface Node {
+            /**
+             * The name of the node. E.g. {@link Document} will have `nodeName` equal to '#document'`.
+             */
             nodeName: string;
         }
 
-        export interface Document extends Node {
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} ParentNode interface.
+         */
+        interface ParentNode {
+            /**
+             * Child nodes.
+             */
+            childNodes: Node[];
+        }
+
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} DocumentType interface.
+         */
+        export interface DocumentType extends Node {
+            /**
+             * The name of the node.
+             */
+            nodeName: '#documentType';
+            /**
+             * Document type name.
+             */
+            name: string;
+            /**
+             * Document type public identifier.
+             */
+            publicId: string;
+            /**
+             * Document type system identifier.
+             */
+            systemId: string;
+        }
+
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} Document interface.
+         */
+        export interface Document extends ParentNode {
+            /**
+             * The name of the node.
+             */
+            nodeName: '#document';
+            /**
+             * [Document mode](https://dom.spec.whatwg.org/#concept-document-limited-quirks).
+             */
             mode: DocumentMode;
-            childNodes: Node[];
         }
 
-        export interface DocumentFragment extends Node {
-            childNodes: Node[];
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} DocumentFragment interface.
+         */
+        export interface DocumentFragment extends ParentNode {
+            /**
+             * The name of the node.
+             */
+            nodeName: '#document-fragment';
         }
 
-        export interface Element extends Node {
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} Element interface.
+         */
+        export interface Element extends ParentNode {
+            /**
+             * The name of the node. Equals to element {@link tagName}.
+             */
+            nodeName: string;
+            /**
+             * Element tag name.
+             */
             tagName: string;
+            /**
+             * Element namespace.
+             */
             namespaceURI: string;
+            /**
+             * List of element attributes.
+             */
             attrs: Attribute[];
-            childNodes: Node[];
-            parentNode: Node;
+            /**
+             * Parent node.
+             */
+            parentNode: ParentNode;
+            /**
+             * Element source code location info. Available if location info is enabled via {@link Options.ParserOptions}.
+             */
             __location?: MarkupData.ElementLocation;
         }
 
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} CommentNode interface.
+         */
         export interface CommentNode extends Node {
+            /**
+             * The name of the node.
+             */
+            nodeName: '#comment';
+            /**
+             * Comment text.
+             */
             data: string;
-            parentNode: Node;
+            /**
+             * Parent node.
+             */
+            parentNode: ParentNode;
+            /**
+             * Comment source code location info. Available if location info is enabled via {@link Options.ParserOptions}.
+             */
             __location?: MarkupData.Location;
         }
 
+        /**
+         * [Default tree adapter]{@link parse5.treeAdapters} TextNode interface.
+         */
         export interface TextNode extends Node {
+            /**
+             * The name of the node.
+             */
+            nodeName: '#text';
+            /**
+             * Text content.
+             */
             value: string;
-            parentNode: Node;
+            /**
+             * Parent node.
+             */
+            parentNode: ParentNode;
+            /**
+             * Text node source code location info. Available if location info is enabled via {@link Options.ParserOptions}.
+             */
             __location?: MarkupData.Location;
         }
     }
@@ -141,54 +265,252 @@ declare namespace AST {
 
     // htmlparser2 tree adapter
     namespace HtmlParser2 {
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} Node interface.
+         */
         interface Node {
+            /**
+             * The type of the node. E.g. {@link Document} will have `type` equal to 'root'`.
+             */
             type: string;
-            parent: Node;
+            /**
+             * [DOM spec](https://dom.spec.whatwg.org/#dom-node-nodetype)-compatible node {@link type}.
+             */
+            nodeType: number;
+            /**
+             * Parent node.
+             */
+            parent: ParentNode;
+            /**
+             * Same as {@link parent}. [DOM spec](https://dom.spec.whatwg.org)-compatible alias.
+             */
+            parentNode: ParentNode;
+            /**
+             * Previous sibling.
+             */
             prev: Node;
+            /**
+             * Same as {@link prev}. [DOM spec](https://dom.spec.whatwg.org)-compatible alias.
+             */
+            previousSibling: Node;
+            /**
+             * Next sibling.
+             */
             next: Node;
+            /**
+             * Same as {@link next}. [DOM spec](https://dom.spec.whatwg.org)-compatible alias.
+             */
+            nextSibling: Node;
         }
 
-        export interface Document extends Node {
-            name: string;
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} ParentNode interface.
+         */
+        interface ParentNode extends Node {
+            /**
+             * Child nodes.
+             */
             children: Node[];
+            /**
+             * Same as {@link children}. [DOM spec](https://dom.spec.whatwg.org)-compatible alias.
+             */
+            childNodes: Node[];
+            /**
+             * First child of the node.
+             */
+            firstChild: Node;
+            /**
+             * Last child of the node.
+             */
+            lastChild: Node;
+        }
+
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} DocumentType interface.
+         */
+        export interface DocumentType extends Node {
+            /**
+             * The type of the node.
+             */
+            type: 'directive';
+            /**
+             * Node name.
+             */
+            name: '!doctype';
+            /**
+             * Serialized doctype {@link name}, {@link publicId} and {@link systemId}.
+             */
+            data: string;
+            /**
+             * Document type name.
+             */
+            'x-name':string;
+            /**
+             * Document type public identifier.
+             */
+            'x-publicId': string;
+            /**
+             * Document type system identifier.
+             */
+            'x-systemId': string;
+        }
+
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} Document interface.
+         */
+        export interface Document extends ParentNode {
+            /**
+             * The type of the node.
+             */
+            type: 'root';
+            /**
+             * The name of the node.
+             */
+            name: 'root';
+            /**
+             * [Document mode](https://dom.spec.whatwg.org/#concept-document-limited-quirks).
+             */
             'x-mode': DocumentMode;
         }
 
-        export interface DocumentFragment extends Node {
-            name: string;
-            children: Node[];
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} DocumentFragment interface.
+         */
+        export interface DocumentFragment extends ParentNode {
+            /**
+             * The type of the node.
+             */
+            type: 'root';
+            /**
+             * The name of the node.
+             */
+            name: 'root';
         }
 
-        export interface Element extends Node {
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} Element interface.
+         */
+        export interface Element extends ParentNode {
+            /**
+             * The name of the node. Equals to element {@link tagName}.
+             */
             name: string;
+            /**
+             * Element tag name.
+             */
+            tagName: string;
+            /**
+             * Element namespace.
+             */
             namespace: string;
+            /**
+             * Element attributes.
+             */
             attribs: { [name: string]: string };
+            /**
+             * Element attribute namespaces.
+             */
             'x-attribsNamespace': { [name: string]: string };
+            /**
+             * Element attribute namespace-related prefixes.
+             */
             'x-attribsPrefix': { [name: string]: string };
-            children: Node[];
+            /**
+             * Element source code location info. Available if location info is enabled via {@link Options.ParserOptions}.
+             */
             __location?: MarkupData.ElementLocation;
         }
 
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} CommentNode interface.
+         */
         export interface CommentNode extends Node {
+            /**
+             * The name of the node.
+             */
+            name: 'comment';
+            /**
+             * Comment text.
+             */
             data: string;
+            /**
+             * Same as {@link data}. [DOM spec](https://dom.spec.whatwg.org)-compatible alias.
+             */
+            nodeValue: string;
+            /**
+             * Comment source code location info. Available if location info is enabled via {@link Options.ParserOptions}.
+             */
             __location?: MarkupData.Location;
         }
 
+        /**
+         * [htmlparser2 tree adapter]{@link parse5.treeAdapters} TextNode interface.
+         */
         export interface TextNode extends Node {
+            /**
+             * The name of the node.
+             */
+            name: 'text';
+            /**
+             * Text content.
+             */
             data: string;
+            /**
+             * Same as {@link data}. [DOM spec](https://dom.spec.whatwg.org)-compatible alias.
+             */
+            nodeValue: string;
+            /**
+             * Comment source code location info. Available if location info is enabled via {@link Options.ParserOptions}.
+             */
             __location?: MarkupData.Location;
         }
     }
 
 
     // Unions
-    type Node = Default.Node | HtmlParser2.Node;
-    type Document = Default.Document | HtmlParser2.Document;
-    type DocumentFragment = Default.DocumentFragment | HtmlParser2.DocumentFragment;
-    type Element = Default.Element | HtmlParser2.Element;
-    type TextNode = Default.TextNode | HtmlParser2.TextNode;
-    type CommentNode = Default.CommentNode | HtmlParser2.CommentNode;
-    type ParentNode = Document | DocumentFragment | Element;
+    // NOTE: we use `Object` in unions to support custom tree adapter implementations.
+    // TypeScript Handbook suggests to always use `any` instead of `Object`, but in that
+    // case language service hints `any` as type, instead of actual union name.
+    /**
+     * Generic Node interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.Node}) to get access to the properties.
+     */
+    type Node = Default.Node | HtmlParser2.Node | Object;
+    /**
+     * Generic ParentNode interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.ParentNode}) to get access to the properties.
+     */
+    type ParentNode = Default.ParentNode | HtmlParser2.ParentNode | Object;
+    /**
+     * Generic DocumentType interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.DocumentType}) to get access to the properties.
+     */
+    type DocumentType = Default.DocumentType | HtmlParser2.DocumentType | Object;
+    /**
+     * Generic Document interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.Document}) to get access to the properties.
+     */
+    type Document = Default.Document | HtmlParser2.Document | Object;
+    /**
+     * Generic DocumentFragment interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.DocumentFragment}) to get access to the properties.
+     */
+    type DocumentFragment = Default.DocumentFragment | HtmlParser2.DocumentFragment | Object;
+    /**
+     * Generic Element interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.Element}) to get access to the properties.
+     */
+    type Element = Default.Element | HtmlParser2.Element | Object;
+    /**
+     * Generic TextNode interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.TextNode}) to get access to the properties.
+     */
+    type TextNode = Default.TextNode | HtmlParser2.TextNode | Object;
+    /**
+     * Generic CommentNode interface.
+     * Cast to the actual AST interface (e.g. {@link parse5.AST.Default.CommentNode}) to get access to the properties.
+     */
+    type CommentNode = Default.CommentNode | HtmlParser2.CommentNode | Object;
 
 
     // Tree adapter interface
@@ -230,7 +552,7 @@ declare namespace AST {
          * @param parentNode - Parent node.
          * @param newNode -  Child node.
          */
-        appendChild(parentNode: AST.Node, newNode: AST.Node): void;
+        appendChild(parentNode: AST.ParentNode, newNode: AST.Node): void;
         /**
          * Inserts a child node to the given parent node before the given reference node.
          *
@@ -238,7 +560,7 @@ declare namespace AST {
          * @param newNode -  Child node.
          * @param referenceNode -  Reference node.
          */
-        insertBefore(parentNode: AST.Node, newNode: AST.Node, referenceNode: AST.Node): void;
+        insertBefore(parentNode: AST.ParentNode, newNode: AST.Node, referenceNode: AST.Node): void;
         /**
          * Sets the `<template>` element content element.
          *
@@ -361,19 +683,19 @@ declare namespace AST {
          *
          * @param doctypeNode - Document type node.
          */
-        getDocumentTypeNodeName(doctypeNode: AST.Document): string;
+        getDocumentTypeNodeName(doctypeNode: AST.DocumentType): string;
         /**
          * Returns the given document type node's public identifier.
          *
          * @param doctypeNode - Document type node.
          */
-        getDocumentTypeNodePublicId(doctypeNode: AST.Document): string;
+        getDocumentTypeNodePublicId(doctypeNode: AST.DocumentType): string;
         /**
          * Returns the given document type node's system identifier.
          *
          * @param doctypeNode - Document type node.
          */
-        getDocumentTypeNodeSystemId(doctypeNode: AST.Document): string;
+        getDocumentTypeNodeSystemId(doctypeNode: AST.DocumentType): string;
         /**
          * Determines if the given node is a text node.
          *
@@ -530,10 +852,12 @@ export class ParserStream extends stream.Writable {
      * @param options - Parsing options.
      */
     constructor(options?: Options.ParserOptions);
+
     /**
      * The resulting document node.
      */
     document: AST.Document;
+
     /**
      * Raised then parser encounters a `<script>` element.
      * If this event has listeners, parsing will be suspended once it is emitted.
@@ -636,6 +960,7 @@ export class SAXParser extends stream.Transform {
      * @param options - Parsing options.
      */
     constructor(options?: Options.SAXParserOptions);
+
     /**
      * Raised when the parser encounters a start tag.
      *
@@ -679,6 +1004,7 @@ export class SAXParser extends stream.Transform {
      * TransformStream events
      */
     on(event: string, listener: Function): this;
+
     /**
      * Stops parsing. Useful if you want the parser to stop consuming CPU time once you've obtained the desired info
      * from the input stream. Doesn't prevent piping, so that data will flow through the parser as usual.

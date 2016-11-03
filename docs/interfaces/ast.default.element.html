@@ -71,11 +71,18 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p><a href="../globals.html#treeadapters">Default tree adapter</a> Element interface.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="ast.default.node.html" class="tsd-signature-type">Node</a>
+						<a href="ast.default.parentnode.html" class="tsd-signature-type">ParentNode</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">Element</span>
@@ -93,9 +100,9 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.element.html#___location" class="tsd-kind-icon">___location</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.element.html#attrs" class="tsd-kind-icon">attrs</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.element.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="ast.default.element.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.element.html#namespaceuri" class="tsd-kind-icon">namespaceURI</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="ast.default.element.html#nodename" class="tsd-kind-icon">node<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.element.html#nodename" class="tsd-kind-icon">node<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.element.html#parentnode" class="tsd-kind-icon">parent<wbr>Node</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.element.html#tagname" class="tsd-kind-icon">tag<wbr>Name</a></li>
 							</ul>
@@ -111,9 +118,14 @@
 					<div class="tsd-signature tsd-kind-icon">___location<span class="tsd-signature-symbol">:</span> <a href="markupdata.elementlocation.html" class="tsd-signature-type">ElementLocation</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:125</li>
+							<li>Defined in index.d.ts:195</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Element source code location info. Available if location info is enabled via <a href="options.parseroptions.html">Options.ParserOptions</a>.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="attrs" class="tsd-anchor"></a>
@@ -121,19 +133,30 @@
 					<div class="tsd-signature tsd-kind-icon">attrs<span class="tsd-signature-symbol">:</span> <a href="ast.default.attribute.html" class="tsd-signature-type">Attribute</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:122</li>
+							<li>Defined in index.d.ts:187</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>List of element attributes.</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="childnodes" class="tsd-anchor"></a>
 					<h3>child<wbr>Nodes</h3>
 					<div class="tsd-signature tsd-kind-icon">child<wbr>Nodes<span class="tsd-signature-symbol">:</span> <a href="ast.default.node.html" class="tsd-signature-type">Node</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.default.parentnode.html">ParentNode</a>.<a href="ast.default.parentnode.html#childnodes">childNodes</a></p>
 						<ul>
-							<li>Defined in index.d.ts:123</li>
+							<li>Defined in index.d.ts:141</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Child nodes.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="namespaceuri" class="tsd-anchor"></a>
@@ -141,20 +164,29 @@
 					<div class="tsd-signature tsd-kind-icon">namespaceURI<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:121</li>
+							<li>Defined in index.d.ts:183</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Element namespace.</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="nodename" class="tsd-anchor"></a>
 					<h3>node<wbr>Name</h3>
 					<div class="tsd-signature tsd-kind-icon">node<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="ast.default.node.html">Node</a>.<a href="ast.default.node.html#nodename">nodeName</a></p>
 						<ul>
-							<li>Defined in index.d.ts:107</li>
+							<li>Defined in index.d.ts:175</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the node. Equals to element <a href="ast.default.element.html#tagname">tagName</a>.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="parentnode" class="tsd-anchor"></a>
@@ -162,9 +194,14 @@
 					<div class="tsd-signature tsd-kind-icon">parent<wbr>Node<span class="tsd-signature-symbol">:</span> <a href="ast.default.node.html" class="tsd-signature-type">Node</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:124</li>
+							<li>Defined in index.d.ts:191</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Parent node.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="tagname" class="tsd-anchor"></a>
@@ -172,9 +209,14 @@
 					<div class="tsd-signature tsd-kind-icon">tag<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:120</li>
+							<li>Defined in index.d.ts:179</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Element tag name.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -226,13 +268,13 @@
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="ast.default.element.html#attrs" class="tsd-kind-icon">attrs</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="ast.default.element.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="ast.default.element.html#namespaceuri" class="tsd-kind-icon">namespaceURI</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="ast.default.element.html#nodename" class="tsd-kind-icon">node<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
@@ -247,6 +289,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
 						<a href="ast.default.node.html" class="tsd-kind-icon">Node</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="ast.default.parentnode.html" class="tsd-kind-icon">Parent<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="ast.default.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a>

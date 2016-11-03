@@ -71,11 +71,18 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p><a href="../globals.html#treeadapters">Default tree adapter</a> DocumentFragment interface.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="ast.default.node.html" class="tsd-signature-type">Node</a>
+						<a href="ast.default.parentnode.html" class="tsd-signature-type">ParentNode</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">DocumentFragment</span>
@@ -91,8 +98,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.documentfragment.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="ast.default.documentfragment.html#nodename" class="tsd-kind-icon">node<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="ast.default.documentfragment.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.documentfragment.html#nodename" class="tsd-kind-icon">node<wbr>Name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -100,26 +107,36 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="childnodes" class="tsd-anchor"></a>
 					<h3>child<wbr>Nodes</h3>
 					<div class="tsd-signature tsd-kind-icon">child<wbr>Nodes<span class="tsd-signature-symbol">:</span> <a href="ast.default.node.html" class="tsd-signature-type">Node</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.default.parentnode.html">ParentNode</a>.<a href="ast.default.parentnode.html#childnodes">childNodes</a></p>
 						<ul>
-							<li>Defined in index.d.ts:116</li>
+							<li>Defined in index.d.ts:141</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Child nodes.</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="nodename" class="tsd-anchor"></a>
 					<h3>node<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">node<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">node<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"#document-fragment"</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="ast.default.node.html">Node</a>.<a href="ast.default.node.html#nodename">nodeName</a></p>
 						<ul>
-							<li>Defined in index.d.ts:107</li>
+							<li>Defined in index.d.ts:165</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the node.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -162,10 +179,10 @@
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="ast.default.documentfragment.html" class="tsd-kind-icon">Document<wbr>Fragment</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="ast.default.documentfragment.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="ast.default.documentfragment.html#nodename" class="tsd-kind-icon">node<wbr>Name</a>
 							</li>
 						</ul>
@@ -177,6 +194,9 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
 						<a href="ast.default.node.html" class="tsd-kind-icon">Node</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="ast.default.parentnode.html" class="tsd-kind-icon">Parent<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="ast.default.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a>

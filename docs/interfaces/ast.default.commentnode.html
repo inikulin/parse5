@@ -71,6 +71,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p><a href="../globals.html#treeadapters">Default tree adapter</a> CommentNode interface.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -93,7 +100,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.commentnode.html#___location" class="tsd-kind-icon">___location</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.commentnode.html#data" class="tsd-kind-icon">data</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="ast.default.commentnode.html#nodename" class="tsd-kind-icon">node<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="ast.default.commentnode.html#nodename" class="tsd-kind-icon">node<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.commentnode.html#parentnode" class="tsd-kind-icon">parent<wbr>Node</a></li>
 							</ul>
 						</section>
@@ -108,9 +115,14 @@
 					<div class="tsd-signature tsd-kind-icon">___location<span class="tsd-signature-symbol">:</span> <a href="markupdata.location.html" class="tsd-signature-type">Location</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:131</li>
+							<li>Defined in index.d.ts:217</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Comment source code location info. Available if location info is enabled via <a href="options.parseroptions.html">Options.ParserOptions</a>.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="data" class="tsd-anchor"></a>
@@ -118,20 +130,30 @@
 					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:129</li>
+							<li>Defined in index.d.ts:209</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Comment text.</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
 					<a name="nodename" class="tsd-anchor"></a>
 					<h3>node<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">node<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">node<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"#comment"</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="ast.default.node.html">Node</a>.<a href="ast.default.node.html#nodename">nodeName</a></p>
+						<p>Overwrites <a href="ast.default.node.html">Node</a>.<a href="ast.default.node.html#nodename">nodeName</a></p>
 						<ul>
-							<li>Defined in index.d.ts:107</li>
+							<li>Defined in index.d.ts:205</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the node.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="parentnode" class="tsd-anchor"></a>
@@ -139,9 +161,14 @@
 					<div class="tsd-signature tsd-kind-icon">parent<wbr>Node<span class="tsd-signature-symbol">:</span> <a href="ast.default.node.html" class="tsd-signature-type">Node</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:130</li>
+							<li>Defined in index.d.ts:213</li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Parent node.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -184,7 +211,7 @@
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="ast.default.commentnode.html#data" class="tsd-kind-icon">data</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
 								<a href="ast.default.commentnode.html#nodename" class="tsd-kind-icon">node<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
@@ -205,6 +232,9 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
 						<a href="ast.default.node.html" class="tsd-kind-icon">Node</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="ast.default.parentnode.html" class="tsd-kind-icon">Parent<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="ast.default.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a>
