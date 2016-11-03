@@ -8,9 +8,25 @@ var fork = require('child_process').fork,
     benchmark = require('gulp-benchmark'),
     rename = require('gulp-rename'),
     download = require('gulp-download'),
+    typedoc = require('gulp-typedoc'),
     through = require('through2'),
     generateNamedEntityData = require('./scripts/generate_named_entity_data'),
     generateParserFeedbackTest = require('./scripts/generate_parser_feedback_test');
+
+
+// Docs
+gulp.task('docs', function () {
+    return gulp
+        .src('lib/index.d.ts')
+        .pipe(typedoc({
+            includeDeclarations: true,
+            excludeExternals: true,
+            ignoreCompilerErrors: false,
+            mode: 'file',
+            readme: './DOC_INDEX.md',
+            out: './docs'
+        }));
+});
 
 
 // Benchmarks
