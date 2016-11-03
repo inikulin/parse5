@@ -9,29 +9,8 @@ var fork = require('child_process').fork,
     rename = require('gulp-rename'),
     download = require('gulp-download'),
     through = require('through2'),
-    concat = require('gulp-concat'),
-    jsdoc = require('gulp-jsdoc-to-markdown'),
-    insert = require('gulp-insert'),
     generateNamedEntityData = require('./scripts/generate_named_entity_data'),
     generateParserFeedbackTest = require('./scripts/generate_parser_feedback_test');
-
-
-// Docs
-gulp.task('update-api-reference', function () {
-    return gulp
-        .src('lib/**/*.js')
-        .pipe(concat('05_api_reference.md'))
-        .pipe(jsdoc())
-        .pipe(insert.prepend('# API Reference\n'))
-        .pipe(gulp.dest('docs'));
-});
-
-gulp.task('docs', ['update-api-reference'], function () {
-    return gulp
-        .src('docs/*.md')
-        .pipe(concat('index.md'))
-        .pipe(gulp.dest('docs/build'));
-});
 
 
 // Benchmarks
