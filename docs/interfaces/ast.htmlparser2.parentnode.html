@@ -71,20 +71,32 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p><a href="../globals.html#treeadapters">htmlparser2 tree adapter</a> ParentNode interface.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ParentNode</span>
+						<a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<a href="ast.htmlparser2.document.html" class="tsd-signature-type">Document</a>
-							</li>
-							<li>
-								<a href="ast.htmlparser2.documentfragment.html" class="tsd-signature-type">DocumentFragment</a>
-							</li>
-							<li>
-								<a href="ast.htmlparser2.element.html" class="tsd-signature-type">Element</a>
+								<span class="target">ParentNode</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="ast.htmlparser2.document.html" class="tsd-signature-type">Document</a>
+									</li>
+									<li>
+										<a href="ast.htmlparser2.documentfragment.html" class="tsd-signature-type">DocumentFragment</a>
+									</li>
+									<li>
+										<a href="ast.htmlparser2.element.html" class="tsd-signature-type">Element</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -101,6 +113,14 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#children" class="tsd-kind-icon">children</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#firstchild" class="tsd-kind-icon">first<wbr>Child</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#lastchild" class="tsd-kind-icon">last<wbr>Child</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#next" class="tsd-kind-icon">next</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#nextsibling" class="tsd-kind-icon">next<wbr>Sibling</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#nodetype" class="tsd-kind-icon">node<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#parent" class="tsd-kind-icon">parent</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#parentnode" class="tsd-kind-icon">parent<wbr>Node</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#prev" class="tsd-kind-icon">prev</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#previoussibling" class="tsd-kind-icon">previous<wbr>Sibling</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported"><a href="ast.htmlparser2.parentnode.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -114,9 +134,14 @@
 					<div class="tsd-signature tsd-kind-icon">child<wbr>Nodes<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:259</li>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L317">index.d.ts:317</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Same as <a href="ast.htmlparser2.parentnode.html#children">children</a>. <a href="https://dom.spec.whatwg.org">DOM spec</a>-compatible alias.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 					<a name="children" class="tsd-anchor"></a>
@@ -124,9 +149,14 @@
 					<div class="tsd-signature tsd-kind-icon">children<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:258</li>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L313">index.d.ts:313</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Child nodes.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 					<a name="firstchild" class="tsd-anchor"></a>
@@ -134,9 +164,14 @@
 					<div class="tsd-signature tsd-kind-icon">first<wbr>Child<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:260</li>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L321">index.d.ts:321</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>First child of the node.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 					<a name="lastchild" class="tsd-anchor"></a>
@@ -144,9 +179,142 @@
 					<div class="tsd-signature tsd-kind-icon">last<wbr>Child<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in index.d.ts:261</li>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L325">index.d.ts:325</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Last child of the node.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="next" class="tsd-anchor"></a>
+					<h3>next</h3>
+					<div class="tsd-signature tsd-kind-icon">next<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#next">next</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L299">index.d.ts:299</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Next sibling.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="nextsibling" class="tsd-anchor"></a>
+					<h3>next<wbr>Sibling</h3>
+					<div class="tsd-signature tsd-kind-icon">next<wbr>Sibling<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#nextsibling">nextSibling</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L303">index.d.ts:303</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Same as <a href="ast.htmlparser2.parentnode.html#next">next</a>. <a href="https://dom.spec.whatwg.org">DOM spec</a>-compatible alias.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="nodetype" class="tsd-anchor"></a>
+					<h3>node<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">node<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#nodetype">nodeType</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L279">index.d.ts:279</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p><a href="https://dom.spec.whatwg.org/#dom-node-nodetype">DOM spec</a>-compatible node <a href="ast.htmlparser2.parentnode.html#type">type</a>.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="parent" class="tsd-anchor"></a>
+					<h3>parent</h3>
+					<div class="tsd-signature tsd-kind-icon">parent<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.parentnode.html" class="tsd-signature-type">ParentNode</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#parent">parent</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L283">index.d.ts:283</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Parent node.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="parentnode" class="tsd-anchor"></a>
+					<h3>parent<wbr>Node</h3>
+					<div class="tsd-signature tsd-kind-icon">parent<wbr>Node<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.parentnode.html" class="tsd-signature-type">ParentNode</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#parentnode">parentNode</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L287">index.d.ts:287</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Same as <a href="ast.htmlparser2.parentnode.html#parent">parent</a>. <a href="https://dom.spec.whatwg.org">DOM spec</a>-compatible alias.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="prev" class="tsd-anchor"></a>
+					<h3>prev</h3>
+					<div class="tsd-signature tsd-kind-icon">prev<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#prev">prev</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L291">index.d.ts:291</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Previous sibling.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="previoussibling" class="tsd-anchor"></a>
+					<h3>previous<wbr>Sibling</h3>
+					<div class="tsd-signature tsd-kind-icon">previous<wbr>Sibling<span class="tsd-signature-symbol">:</span> <a href="ast.htmlparser2.node.html" class="tsd-signature-type">Node</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#previoussibling">previousSibling</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L295">index.d.ts:295</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Same as <a href="ast.htmlparser2.parentnode.html#prev">prev</a>. <a href="https://dom.spec.whatwg.org">DOM spec</a>-compatible alias.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="ast.htmlparser2.node.html">Node</a>.<a href="ast.htmlparser2.node.html#type">type</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/b549c57/lib/index.d.ts#L275">index.d.ts:275</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The type of the node. E.g. <a href="ast.htmlparser2.document.html">Document</a> will have <code>type</code> equal to &#39;root&#39;`.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -185,6 +353,9 @@
 						<a href="ast.htmlparser2.documentfragment.html" class="tsd-kind-icon">Document<wbr>Fragment</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="ast.htmlparser2.documenttype.html" class="tsd-kind-icon">Document<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="ast.htmlparser2.element.html" class="tsd-kind-icon">Element</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
@@ -206,6 +377,30 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 								<a href="ast.htmlparser2.parentnode.html#lastchild" class="tsd-kind-icon">last<wbr>Child</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#next" class="tsd-kind-icon">next</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#nextsibling" class="tsd-kind-icon">next<wbr>Sibling</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#nodetype" class="tsd-kind-icon">node<wbr>Type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#parent" class="tsd-kind-icon">parent</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#parentnode" class="tsd-kind-icon">parent<wbr>Node</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#prev" class="tsd-kind-icon">prev</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#previoussibling" class="tsd-kind-icon">previous<wbr>Sibling</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-not-exported">
+								<a href="ast.htmlparser2.parentnode.html#type" class="tsd-kind-icon">type</a>
 							</li>
 						</ul>
 					</li>

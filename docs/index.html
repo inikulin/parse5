@@ -76,6 +76,7 @@
 				<ul>
 					<li><a href="#install">Install</a></li>
 					<li><a href="#usage">Usage</a></li>
+					<li><a href="#typescript-definitions">TypeScript definitions</a></li>
 					<li><a href="http://inikulin.github.io/parse5/globals.html">API Reference</a></li>
 					<li><a href="#faq">FAQ</a></li>
 					<li><a href="#version-history">Version history</a></li>
@@ -93,6 +94,21 @@
 <span class="hljs-keyword">var</span> fragmentHtml = parse5.serialize(fragment);
 </code></pre>
 				<p>For more advanced examples, see <a href="http://inikulin.github.io/parse5/globals.html">API reference</a> and <a href="#faq">FAQ</a>.</p>
+				<h2 id="typescript-definitions">TypeScript definitions</h2>
+				<p>parse5 package includes a TypeScript definition file. Therefore you don&#39;t need to install any typings to use parse5
+					in TypeScript files. Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
+				appropriate tree format to get access to the properties:</p>
+				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> * as parse5 from <span class="hljs-string">'parse5'</span>;
+
+<span class="hljs-comment">// Using default tree adapter.</span>
+<span class="hljs-keyword">var</span> document1 = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>) as parse5.AST.Default.Document;
+
+<span class="hljs-comment">// Using htmlparser2 tree adapter.</span>
+<span class="hljs-keyword">var</span> document2 = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>, {
+    treeAdapter: parse5.TreeAdapters.htmlparser2
+}) as parse5.AST.HtmlParser2.Document;
+</code></pre>
+				<p>You can find documentation for interfaces in <a href="http://inikulin.github.io/parse5/globals.html">API reference</a>.</p>
 				<h2 id="faq">FAQ</h2>
 				<h3 id="q-i-want-to-work-with-my-own-document-tree-format-how-can-i-do-this-">Q: I want to work with my own document tree format. How can I do this?</h3>
 				<p>You can create a custom tree adapter, so that parse5 can work with your own DOM-tree implementation.
