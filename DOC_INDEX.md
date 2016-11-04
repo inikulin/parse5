@@ -14,6 +14,7 @@
 
  * [Install](#install)
  * [Usage](#usage)
+ * [TypeScript definitions](#typescript-definitions)
  * [API Reference](http://inikulin.github.io/parse5/globals.html)
  * [FAQ](#faq)
  * [Version history](#version-history)
@@ -36,6 +37,27 @@ var fragment     = parse5.parseFragment('<td>Yo!</td>');
 var fragmentHtml = parse5.serialize(fragment);
 ```
 For more advanced examples, see [API reference](http://inikulin.github.io/parse5/globals.html) and [FAQ](#faq).
+
+
+## TypeScript definitions
+parse5 package includes a TypeScript definition file. Therefore you don't need to install any typings to use parse5
+in TypeScript files. Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
+appropriate tree format to get access to the properties:
+
+```typescript
+import * as parse5 from 'parse5';
+
+// Using default tree adapter.
+var document1 = parse5.parse('<div></div>') as parse5.AST.Default.Document;
+
+// Using htmlparser2 tree adapter.
+var document2 = parse5.parse('<div></div>', {
+    treeAdapter: parse5.TreeAdapters.htmlparser2
+}) as parse5.AST.HtmlParser2.Document;
+
+```
+
+You can find documentation for interfaces in [API reference](http://inikulin.github.io/parse5/globals.html).
 
 
 ## FAQ
