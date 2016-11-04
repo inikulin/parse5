@@ -15,7 +15,7 @@
  * [Install](#install)
  * [Usage](#usage)
  * [TypeScript definitions](#typescript-definitions)
- * [API Reference](http://inikulin.github.io/parse5/globals.html)
+ * [API Reference](globals.html)
  * [FAQ](#faq)
  * [Version history](#version-history)
 
@@ -36,7 +36,7 @@ var documentHtml = parse5.serialize(document);
 var fragment     = parse5.parseFragment('<td>Yo!</td>');
 var fragmentHtml = parse5.serialize(fragment);
 ```
-For more advanced examples, see [API reference](http://inikulin.github.io/parse5/globals.html) and [FAQ](#faq).
+For more advanced examples, see [API reference](globals.html) and [FAQ](#faq).
 
 
 ## TypeScript definitions
@@ -57,7 +57,7 @@ var document2 = parse5.parse('<div></div>', {
 
 ```
 
-You can find documentation for interfaces in [API reference](http://inikulin.github.io/parse5/globals.html).
+You can find documentation for interfaces in [API reference](globals.html).
 
 
 ## FAQ
