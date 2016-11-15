@@ -24,11 +24,11 @@ as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.
 ----
 
 <p align="center">
-  <a href="https://github.com/inikulin/parse5/wiki/Documentation">Documentation</a>
+  <a href="http://inikulin.github.io/parse5">Documentation</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/inikulin/parse5/wiki/Documentation#version-history">Version history</a>
+  <a href="http://inikulin.github.io/parse5#version-history">Version history</a>
 </p>
 
 <p align="center">

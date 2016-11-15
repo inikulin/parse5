@@ -1,9 +1,123 @@
-# Version history
+<p align="center">
+  <img src="https://raw.github.com/inikulin/parse5/master/docs/logo.png" alt="parse5" />
+</p>
 
-# 2.2.3
+<p align="center">
+  <a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
+</p>
+
+<p align="center">
+<i>WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.js</i>
+</p>
+
+## Table of contents
+
+ * [Install](#install)
+ * [Usage](#usage)
+ * [TypeScript definitions](#typescript-definitions)
+ * [API Reference](globals.html)
+ * [FAQ](#faq)
+ * [Version history](#version-history)
+
+
+## Install
+```
+$ npm install parse5
+```
+
+## Usage
+```js
+var parse5 = require('parse5');
+
+var document     = parse5.parse('<!DOCTYPE html><html><body>Hi there!</body></html>');
+var documentHtml = parse5.serialize(document);
+
+
+var fragment     = parse5.parseFragment('<td>Yo!</td>');
+var fragmentHtml = parse5.serialize(fragment);
+```
+For more advanced examples, see [API reference](globals.html) and [FAQ](#faq).
+
+
+## TypeScript definitions
+parse5 package includes a TypeScript definition file. Therefore you don't need to install any typings to use parse5
+in TypeScript files. Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
+appropriate tree format to get access to the properties:
+
+```typescript
+import * as parse5 from 'parse5';
+
+// Using default tree adapter.
+var document1 = parse5.parse('<div></div>') as parse5.AST.Default.Document;
+
+// Using htmlparser2 tree adapter.
+var document2 = parse5.parse('<div></div>', {
+    treeAdapter: parse5.TreeAdapters.htmlparser2
+}) as parse5.AST.HtmlParser2.Document;
+
+```
+
+You can find documentation for interfaces in [API reference](globals.html).
+
+
+## FAQ
+
+### Q: I want to work with my own document tree format. How can I do this?
+
+You can create a custom tree adapter, so that parse5 can work with your own DOM-tree implementation.
+Then pass it to the parser or serializer via the `treeAdapter` option:
+
+```js
+var parse5 = require('parse5');
+
+var myTreeAdapter = {
+   //Adapter methods...
+};
+
+var document = parse5.parse('<div></div>', { treeAdapter: myTreeAdapter });
+
+var html = parse5.serialize(document, { treeAdapter: myTreeAdapter });
+```
+Refer to the [API reference](#TreeAdapter) for the description of methods that should be exposed by the tree adapter, as well as links to their
+default implementation.
+
+### Q: How can I use parse5 in the browser?
+
+Compile it with [browserify](http://browserify.org/) and you're set.
+
+### Q: I'm parsing `<img src="foo">` with the `SAXParser` and I expect the `selfClosing` flag to be `true` for the `<img>` tag. But it's not. Is there something wrong with the parser?
+
+No. A self-closing tag is a tag that has a `/` before the closing bracket. E.g: `<br/>`, `<meta/>`.
+In the provided example, the tag simply doesn't have an end tag. Self-closing tags and tags without end tags are treated differently by the
+parser: in case of a self-closing tag, the parser does not look up for the corresponding closing tag and expects the element not to have any content.
+But if a start tag is not self-closing, the parser treats everything that follows it (with a few exceptions) as the element content.
+However, if the start tag is in the list of [void elements](https://html.spec.whatwg.org/multipage/syntax.html#void-elements), the parser expects the corresponding
+element not to have content and behaves in the same way as if the element was self-closing. So, semantically, if an element is
+void, self-closing tags and tags without closing tags are equivalent, but it's not true for other tags.
+
+**TL;DR**: `selfClosing` is a part of lexical information and is set only if the tag has `/` before the closing bracket in the source code.
+
+### Q: I have some weird output from the parser, seems like a bug.
+
+Most likely, it's not. There are a lot of weird edge cases in HTML5 parsing algorithm, e.g.:
+```html
+<b>1<p>2</b>3</p>
+```
+
+will be parsed as
+
+```html
+<b>1</b><p><b>2</b>3</p>
+```
+
+Just try it in the latest version of your browser before submitting an issue.
+
+## Version history
+
+### 2.2.3
  * Fixed: Fixed incorrect LocationInfo.endOffset for non-implicitly closed elements (refix for GH [#109](https://github.com/inikulin/parse5/issues/109)) (by [@wooorm](https://github.com/wooorm)).
 
-## 2.2.2
+### 2.2.2
  * Fixed: Incorrect location info for text in SAXParser (GH [#153](https://github.com/inikulin/parse5/issues/153)).
  * Fixed: Incorrect `LocationInfo.endOffset` for implicitly closed `<p>` element (GH [#109](https://github.com/inikulin/parse5/issues/109)).
  * Fixed: Infinite input data buffering in streaming parsers. Now parsers try to not buffer more than 64K of input data.
@@ -11,12 +125,12 @@
  and extremely rare in the wild (GH [#102](https://github.com/inikulin/parse5/issues/102), GH [#130](https://github.com/inikulin/parse5/issues/130));
 
 
-## 2.2.1
+### 2.2.1
  * Fixed: SAXParser HTML integration point handling for adjustable SVG tags.
  * Fixed: SAXParser now adjust SVG tag names for end tags.
  * Fixed: Location info line calculation on tokenizer character unconsumption (by [@ChadKillingsworth](https://github.com/ChadKillingsworth)).
 
-## 2.2.0
+### 2.2.0
 * SAXParser (by [@RReverser](https://github.com/RReverser))
  * Fixed: Handling of `\n` in `<pre>`, `<textarea>` and `<listing>`.
  * Fixed: Tag names and attribute names adjustment in foreign content (GH [#99](https://github.com/inikulin/parse5/issues/99)).
@@ -29,35 +143,35 @@
 
 * Fixed: Element nesting corrections now take namespaces into consideration.
 
-## 2.1.5
+### 2.1.5
  * Fixed: ParserStream accidentally hangs up on scripts (GH [#101](https://github.com/inikulin/parse5/issues/101)).
 
-## 2.1.4
+### 2.1.4
  * Fixed: Keep ParserStream sync for the inline scripts (GH [#98](https://github.com/inikulin/parse5/issues/98) follow up).
 
-## 2.1.3
+### 2.1.3
  * Fixed: Synchronously calling resume() leads to crash (GH [#98](https://github.com/inikulin/parse5/issues/98)).
 
-## 2.1.2
+### 2.1.2
  * Fixed: SAX parser silently exits on big files (GH [#97](https://github.com/inikulin/parse5/issues/97)).
 
-## 2.1.1
+### 2.1.1
  * Fixed: location info not attached for empty attributes (GH [#96](https://github.com/inikulin/parse5/issues/96))
  (by [@yyx990803](https://github.com/yyx990803)).
 
-## 2.1.0
+### 2.1.0
  * Added: location info for attributes (GH [#43](https://github.com/inikulin/parse5/issues/43)) (by [@sakagg](https://github.com/sakagg)
   and [@yyx990803](https://github.com/yyx990803)).
  * Fixed: `parseFragment` with `locationInfo` regression when parsing `<template>`(GH [#90](https://github.com/inikulin/parse5/issues/90))
   (by [@yyx990803](https://github.com/yyx990803)).
 
-## 2.0.2
+### 2.0.2
  * Fixed: yet another case of incorrect `parseFragment` arguments fallback (GH [#84](https://github.com/inikulin/parse5/issues/84)).
 
-## 2.0.1
+### 2.0.1
  * Fixed: `parseFragment` arguments processing (GH [#82](https://github.com/inikulin/parse5/issues/82)).
 
-## 2.0.0
+### 2.0.0
  * Added: [ParserStream](https://github.com/inikulin/parse5/wiki/Documentation#parse5+ParserStream) with the scripting support. (GH [#26](https://github.com/inikulin/parse5/issues/26)).
  * Added: [SerializerStream](https://github.com/inikulin/parse5/wiki/Documentation#parse5+SerializerStream). (GH [#26](https://github.com/inikulin/parse5/issues/26)).
  * Added: Line/column location info. (GH [#67](https://github.com/inikulin/parse5/issues/67)).
@@ -75,72 +189,72 @@
  * Add (**breaking**): [TreeAdapter.setTemplateContent()](https://github.com/inikulin/parse5/wiki/Documentation#TreeAdapter.setTemplateContent) and [TreeAdapter.getTemplateContent()](https://github.com/inikulin/parse5/wiki/Documentation#TreeAdapter.getTemplateContent) methods. (GH [#78](https://github.com/inikulin/parse5/issues/78)).
  * Update (**breaking**): `default` tree adapter now stores `<template>` content in `template.content` property instead of `template.childNodes[0]`.
 
-## 1.5.1
+### 1.5.1
  * Fixed: Qualified tag name emission in Serializer (GH [#79](https://github.com/inikulin/parse5/issues/79)).
 
-## 1.5.0
+### 1.5.0
  * Added: Location info for the element start and end tags (by [@sakagg](https://github.com/sakagg)).
 
-## 1.4.2
+### 1.4.2
  * Fixed: htmlparser2 tree adapter `DocumentType.data` property rendering (GH [#45](https://github.com/inikulin/parse5/issues/45)).
 
-## 1.4.1
+### 1.4.1
  * Fixed: Location info handling for the implicitly generated `<html>` and `<body>` elements (GH [#44](https://github.com/inikulin/parse5/issues/44)).
 
-## 1.4.0
+### 1.4.0
  * Added: Parser [decodeHtmlEntities](https://github.com/inikulin/parse5#optionsdecodehtmlentities) option.
  * Added: SimpleApiParser [decodeHtmlEntities](https://github.com/inikulin/parse5#optionsdecodehtmlentities-1) option.
  * Added: Parser [locationInfo](https://github.com/inikulin/parse5#optionslocationinfo) option.
  * Added: SimpleApiParser [locationInfo](https://github.com/inikulin/parse5#optionslocationinfo-1) option.
 
-## 1.3.2
+### 1.3.2
  * Fixed: `<form>` processing in `<template>` (GH [#40](https://github.com/inikulin/parse5/issues/40)).
 
-## 1.3.1
+### 1.3.1
  * Fixed: text node in `<template>` serialization problem with custom tree adapter (GH [#38](https://github.com/inikulin/parse5/issues/38)).
 
-## 1.3.0
+### 1.3.0
  * Added: Serializer `encodeHtmlEntities` option.
 
-## 1.2.0
+### 1.2.0
  * Added: `<template>` support
  * `parseFragment` now uses `<template>` as default `contextElement`. This leads to the more "forgiving" parsing manner.
  * `TreeSerializer` was renamed to `Serializer`. However, serializer is accessible as `parse5.TreeSerializer` for backward compatibility .
 
-## 1.1.6
+### 1.1.6
  * Fixed: apply latest changes to the `htmlparser2` tree format (DOM Level1 node emulation).
 
-## 1.1.5
+### 1.1.5
  * Added: [jsdom](https://github.com/tmpvar/jsdom)-specific parser with scripting support. Undocumented for `jsdom` internal use only.
 
-## 1.1.4
+### 1.1.4
  * Added: logo
  * Fixed: use fake `document` element for fragment parsing (required by [jsdom](https://github.com/tmpvar/jsdom)).
 
-## 1.1.3
+### 1.1.3
  * Development files (e.g. `.travis.yml`, `.editorconfig`) are removed from NPM package.
 
-## 1.1.2
+### 1.1.2
  * Fixed: crash on Linux due to upper-case leading character in module name used in `require()`.
 
-## 1.1.1
+### 1.1.1
  * Added: [SimpleApiParser](https://github.com/inikulin/parse5/#class-simpleapiparser).
  * Fixed: new line serialization in `<pre>`.
  * Fixed: `SYSTEM`-only `DOCTYPE` serialization.
  * Fixed: quotes serialization in `DOCTYPE` IDs.
 
-## 1.0.0
+### 1.0.0
  * First stable release, switch to semantic versioning.
 
-## 0.8.3
+### 0.8.3
  * Fixed: siblings calculation bug in `appendChild` in `htmlparser2` tree adapter.
 
-## 0.8.1
+### 0.8.1
  * Added: [TreeSerializer](https://github.com/inikulin/parse5/#class-serializer).
  * Added: [htmlparser2 tree adapter](https://github.com/inikulin/parse5/#-treeadaptershtmlparser2).
 
-## 0.6.1
+### 0.6.1
  * Fixed: incorrect `<menuitem>` handling in `<body>`.
 
-## 0.6.0
+### 0.6.0
  * Initial release.
