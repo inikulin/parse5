@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>HtmlParser2 | parse5</title>
+	<title>DocumentType | parse5</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,36 +55,119 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="ast.html">AST</a>
+					<a href="../modules/ast.html">AST</a>
 				</li>
 				<li>
-					<a href="ast.htmlparser2.html">HtmlParser2</a>
+					<a href="../modules/ast.default.html">Default</a>
+				</li>
+				<li>
+					<a href="ast.default.documenttype.html">DocumentType</a>
 				</li>
 			</ul>
-			<h1>Module HtmlParser2</h1>
+			<h1>Interface DocumentType</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p><a href="../globals.html#treeadapters">Default tree adapter</a> DocumentType interface.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<a href="ast.default.node.html" class="tsd-signature-type">Node</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">DocumentType</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/ast.htmlparser2.commentnode.html" class="tsd-kind-icon">Comment<wbr>Node</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/ast.htmlparser2.document.html" class="tsd-kind-icon">Document</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/ast.htmlparser2.documentfragment.html" class="tsd-kind-icon">Document<wbr>Fragment</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/ast.htmlparser2.documenttype.html" class="tsd-kind-icon">Document<wbr>Type</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/ast.htmlparser2.element.html" class="tsd-kind-icon">Element</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported"><a href="../interfaces/ast.htmlparser2.node.html" class="tsd-kind-icon">Node</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported"><a href="../interfaces/ast.htmlparser2.parentnode.html" class="tsd-kind-icon">Parent<wbr>Node</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/ast.htmlparser2.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.documenttype.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="ast.default.documenttype.html#nodename" class="tsd-kind-icon">node<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.documenttype.html#publicid" class="tsd-kind-icon">public<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ast.default.documenttype.html#systemid" class="tsd-kind-icon">system<wbr>Id</a></li>
 							</ul>
 						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L155">index.d.ts:155</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Document type name.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+					<a name="nodename" class="tsd-anchor"></a>
+					<h3>node<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">node<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"#documentType"</span></div>
+					<aside class="tsd-sources">
+						<p>Overwrites <a href="ast.default.node.html">Node</a>.<a href="ast.default.node.html#nodename">nodeName</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L151">index.d.ts:151</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the node.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="publicid" class="tsd-anchor"></a>
+					<h3>public<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">public<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L159">index.d.ts:159</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Document type public identifier.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="systemid" class="tsd-anchor"></a>
+					<h3>system<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">system<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L163">index.d.ts:163</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Document type system identifier.</p>
+						</div>
 					</div>
 				</section>
 			</section>
@@ -96,47 +179,68 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-not-exported">
-						<a href="ast.html">AST</a>
-					</li>
-					<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
-						<a href="ast.default.html">AST.<wbr>Default</a>
+						<a href="../modules/ast.html">AST</a>
 					</li>
 					<li class="current tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
-						<a href="ast.htmlparser2.html">AST.<wbr>Html<wbr>Parser2</a>
+						<a href="../modules/ast.default.html">AST.<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/ast.htmlparser2.html">AST.<wbr>Html<wbr>Parser2</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-not-exported">
-						<a href="markupdata.html">Markup<wbr>Data</a>
+						<a href="../modules/markupdata.html">Markup<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-not-exported">
-						<a href="options.html">Options</a>
+						<a href="../modules/options.html">Options</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/ast.htmlparser2.commentnode.html" class="tsd-kind-icon">Comment<wbr>Node</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="ast.default.attribute.html" class="tsd-kind-icon">Attribute</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/ast.htmlparser2.document.html" class="tsd-kind-icon">Document</a>
+						<a href="ast.default.commentnode.html" class="tsd-kind-icon">Comment<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/ast.htmlparser2.documentfragment.html" class="tsd-kind-icon">Document<wbr>Fragment</a>
+						<a href="ast.default.document.html" class="tsd-kind-icon">Document</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/ast.htmlparser2.documenttype.html" class="tsd-kind-icon">Document<wbr>Type</a>
+						<a href="ast.default.documentfragment.html" class="tsd-kind-icon">Document<wbr>Fragment</a>
 					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="ast.default.documenttype.html" class="tsd-kind-icon">Document<wbr>Type</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="ast.default.documenttype.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
+								<a href="ast.default.documenttype.html#nodename" class="tsd-kind-icon">node<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="ast.default.documenttype.html#publicid" class="tsd-kind-icon">public<wbr>Id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="ast.default.documenttype.html#systemid" class="tsd-kind-icon">system<wbr>Id</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/ast.htmlparser2.element.html" class="tsd-kind-icon">Element</a>
+						<a href="ast.default.element.html" class="tsd-kind-icon">Element</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../interfaces/ast.htmlparser2.node.html" class="tsd-kind-icon">Node</a>
+						<a href="ast.default.node.html" class="tsd-kind-icon">Node</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../interfaces/ast.htmlparser2.parentnode.html" class="tsd-kind-icon">Parent<wbr>Node</a>
+						<a href="ast.default.parentnode.html" class="tsd-kind-icon">Parent<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/ast.htmlparser2.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a>
+						<a href="ast.default.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a>
 					</li>
 				</ul>
 			</nav>
