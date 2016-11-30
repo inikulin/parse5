@@ -24,7 +24,7 @@ exports['Location info (Tokenizer)'] = function () {
                 '\n       ', 'Chrome\'s', ' ', 'JavaScript', ' ', 'runtime',
                 '\n       ', '</a>', '\n',
                 '</div>',
-                '<body>'
+                '</body>'
             ]
         },
         {
