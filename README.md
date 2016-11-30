@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-<i>WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.js</i>
+<i>HTML parsing/serialization toolset for Node.js. <a href="https://html.spec.whatwg.org/multipage/">WHATWG HTML Living Standard (aka HTML5)</a>-compliant.</i>
 </p>
 
 <p align="center">
