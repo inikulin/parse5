@@ -13,31 +13,50 @@
 ## Table of contents
 
  * [Install](#install)
- * [Usage](#usage)
+ * [Which API should I use?](#which-api-should-i-use-)
  * [TypeScript definitions](#typescript-definitions)
  * [API Reference](globals.html)
  * [FAQ](#faq)
  * [Version history](#version-history)
-
+ * [GitHub repository](https://github.com/inikulin/parse5)
 
 ## Install
 ```
 $ npm install parse5
 ```
 
-## Usage
-```js
-var parse5 = require('parse5');
+## Which API should I use?
 
-var document     = parse5.parse('<!DOCTYPE html><html><body>Hi there!</body></html>');
-var documentHtml = parse5.serialize(document);
+### *"I need to parse a HTML string"*
+Use [parse5.parse](globals.html#parse) method.
 
+### *"I need to parse a HTML fragment string"* or *"I need to implement an `innerHTML` setter."*
+Use [parse5.parseFragment](globals.html#parsefragment) method.
 
-var fragment     = parse5.parseFragment('<td>Yo!</td>');
-var fragmentHtml = parse5.serialize(fragment);
-```
-For more advanced examples, see [API reference](globals.html) and [FAQ](#faq).
+### *"I need to serialize a node to HTML string"*
+Use [parse5.serialize](globals.html#serialize) method.
 
+### *"I need to parse HTML streamed from network or from file."* or *"I need to implement `<script>` execution and `document.write`"*
+Use [parse5.ParserStream](classes/parserstream.html) class.
+
+### *"I don't need a document tree, but I need a basic information about tags or attributes"* or *"I need to extract a text content from huge amount of documents"* or *"I need to analyze content that going through my proxy server"*.
+Use [parse5.SAXParser](classes/saxparser.html) class.
+
+### *"I need to parse plain text file as HTML document like browsers do"*
+Use [parse5.PlainTextConversionStream](classes/plaintextconversionstream.html) class.
+
+### *"I need to serialize a node and stream result to file or network"*
+Use [parse5.SerializerStream](classes/serializerstream.html) class.
+
+### *"I need a source file location information for the parsed document"*
+Use `locationInfo` options: [ParserOptions.locationInfo](interfaces/options.parseroptions.html#locationinfo), [SAXParserOptions.locationInfo](interfaces/options.saxparseroptions.html#locationinfo).
+
+### *"I need to switch output tree format"*
+Use `treeAdapter` options: [ParserOptions.treeAdapter](interfaces/options.parseroptions.html#treeadapter) and [SerializerOptions.treeAdapter](interfaces/options.serializeroptions.html#treeadapter)
+with one of two [built-in tree formats](globals.html#treeadapters).
+
+### *"I need to implement my own tree format"*
+Implement [TreeAdapter](interfaces/ast.treeadapter.html) interface and then use [treeAdapter](#-i-need-to-switch-output-tree-format-) option to pass it to parser or serializer.
 
 ## TypeScript definitions
 parse5 package includes a TypeScript definition file. Therefore you don't need to install any typings to use parse5
@@ -68,15 +87,15 @@ You can create a custom tree adapter, so that parse5 can work with your own DOM-
 Then pass it to the parser or serializer via the `treeAdapter` option:
 
 ```js
-var parse5 = require('parse5');
+const parse5 = require('parse5');
 
-var myTreeAdapter = {
+const myTreeAdapter = {
    //Adapter methods...
 };
 
-var document = parse5.parse('<div></div>', { treeAdapter: myTreeAdapter });
+const document = parse5.parse('<div></div>', { treeAdapter: myTreeAdapter });
 
-var html = parse5.serialize(document, { treeAdapter: myTreeAdapter });
+const html = parse5.serialize(document, { treeAdapter: myTreeAdapter });
 ```
 Refer to the [API reference](#TreeAdapter) for the description of methods that should be exposed by the tree adapter, as well as links to their
 default implementation.

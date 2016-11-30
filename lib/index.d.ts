@@ -733,15 +733,15 @@ declare namespace AST {
  * @example
  *```js
  *
- * var parse5 = require('parse5');
+ * const parse5 = require('parse5');
  *
  * // Uses the default tree adapter for parsing.
- * var document = parse5.parse('<div></div>', {
+ * const document = parse5.parse('<div></div>', {
  *     treeAdapter: parse5.treeAdapters.default
  * });
  *
  * // Uses the htmlparser2 tree adapter with the SerializerStream.
- * var serializer = new parse5.SerializerStream(node, {
+ * const serializer = new parse5.SerializerStream(node, {
  *     treeAdapter: parse5.treeAdapters.htmlparser2
  * });
  * ```
@@ -771,9 +771,11 @@ export var treeAdapters: {
  * @example
  * ```js
  *
- * var parse5 = require('parse5');
+ * const parse5 = require('parse5');
  *
- * var document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
+ * const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
+ *
+ * console.log(document.childNodes[1].tagName); //> 'html'
  * ```
  */
 export function parse(html: string, options?: Options.ParserOptions): AST.Document;
@@ -788,12 +790,16 @@ export function parse(html: string, options?: Options.ParserOptions): AST.Docume
  * @example
  * ```js
  *
- * var parse5 = require('parse5');
+ * const parse5 = require('parse5');
  *
- * var documentFragment = parse5.parseFragment('<table></table>');
+ * const documentFragment = parse5.parseFragment('<table></table>');
+ *
+ * console.log(documentFragment.childNodes[0].tagName); //> 'table'
  *
  * // Parses the html fragment in the context of the parsed <table> element.
- * var trFragment = parser.parseFragment(documentFragment.childNodes[0], '<tr><td>Shake it, baby</td></tr>');
+ * const trFragment = parser.parseFragment(documentFragment.childNodes[0], '<tr><td>Shake it, baby</td></tr>');
+ *
+ * console.log(trFragment.childNodes[0].childNodes[0].tagName); //> 'td'
  * ```
  */
 export function parseFragment(fragmentContext: AST.Element, html: string, options?: Options.ParserOptions): AST.DocumentFragment;
@@ -808,15 +814,17 @@ export function parseFragment(html: string, options?: Options.ParserOptions): AS
  * @example
  * ```js
  *
- * var parse5 = require('parse5');
+ * const parse5 = require('parse5');
  *
- * var document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
+ * const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
  *
  * // Serializes a document.
- * var html = parse5.serialize(document);
+ * const html = parse5.serialize(document);
  *
  * // Serializes the <body> element content.
- * var bodyInnerHtml = parse5.serialize(document.childNodes[0].childNodes[1]);
+ * const str = parse5.serialize(document.childNodes[1]);
+ *
+ * console.log(str); //> '<head></head><body>Hi there!</body>'
  * ```
  */
 export function serialize(node: AST.Node, options?: Options.SerializerOptions): string;
@@ -832,15 +840,15 @@ export function serialize(node: AST.Node, options?: Options.SerializerOptions): 
  * @example
  * ```js
  *
- * var parse5 = require('parse5');
- * var http = require('http');
+ * const parse5 = require('parse5');
+ * const http = require('http');
  *
  * // Fetch the google.com content and obtain it's <body> node
- * http.get('http://google.com', function(res) {
- *    var parser = new parse5.ParserStream();
+ * http.get('http://google.com', res => {
+ *    const parser = new parse5.ParserStream();
  *
- *    parser.on('finish', function() {
- *        var body = parser.document.childNodes[0].childNodes[1];
+ *    parser.once('finish', () => {
+ *        console.log(parser.document.childNodes[1].childNodes[1].tagName); //> 'body'
  *    });
  *
  *    res.pipe(parser);
@@ -871,15 +879,15 @@ export class ParserStream extends stream.Writable {
      * @example
      * ```js
      *
-     * var parse = require('parse5');
-     * var http = require('http');
+     * const parse = require('parse5');
+     * const http = require('http');
      *
-     * var parser = new parse5.ParserStream();
+     * const parser = new parse5.ParserStream();
      *
-     * parser.on('script', function(scriptElement, documentWrite, resume) {
-     *     var src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;
+     * parser.on('script', (scriptElement, documentWrite, resume) => {
+     *     const src = parse5.treeAdapters.default.getAttrList(scriptElement)[0].value;
      *
-     *     http.get(src, function(res) {
+     *     http.get(src, res => {
      *        // Fetch the script content, execute it with DOM built around `parser.document` and
      *        // `document.write` implemented using `documentWrite`.
      *        ...
@@ -909,14 +917,14 @@ export class ParserStream extends stream.Writable {
  * @example
  * ```js
  *
- * var parse5 = require('parse5');
- * var fs = require('fs');
+ * const parse5 = require('parse5');
+ * const fs = require('fs');
  *
- * var file = fs.createReadStream('war_and_peace.txt');
- * var converter = new parse5.PlainTextConversionStream();
+ * const file = fs.createReadStream('war_and_peace.txt');
+ * const converter = new parse5.PlainTextConversionStream();
  *
- * converter.on('finish', function() {
- *     var body = converter.document.childNodes[0].childNodes[1];
+ * converter.once('finish', () => {
+ *     console.log(converter.document.childNodes[1].childNodes[1].tagName); //> 'body'
  * });
  *
  * file.pipe(converter);
@@ -935,19 +943,19 @@ export class PlainTextConversionStream extends ParserStream { }
  * @example
  * ```js
  *
- * var parse5 = require('parse5');
- * var http = require('http');
- * var fs = require('fs');
+ * const parse5 = require('parse5');
+ * const http = require('http');
+ * const fs = require('fs');
  *
- * var file = fs.createWriteStream('/home/google.com.html');
- * var parser = new parse5.SAXParser();
+ * const file = fs.createWriteStream('/home/google.com.html');
+ * const parser = new parse5.SAXParser();
  *
- * parser.on('text', function(text) {
+ * parser.on('text', text => {
  *    // Handle page text content
  *    ...
  * });
  *
- * http.get('http://google.com', function(res) {
+ * http.get('http://google.com', res => {
  *    // SAXParser is the Transform stream, which means you can pipe
  *    // through it. So, you can analyze page content and, e.g., save it
  *    // to the file at the same time:
@@ -1012,20 +1020,20 @@ export class SAXParser extends stream.Transform {
      * @example
      * ```js
      *
-     * var parse5 = require('parse5');
-     * var http = require('http');
-     * var fs = require('fs');
+     * const parse5 = require('parse5');
+     * const http = require('http');
+     * const fs = require('fs');
      *
-     * var file = fs.createWriteStream('google.com.html');
-     * var parser = new parse5.SAXParser();
+     * const file = fs.createWriteStream('google.com.html');
+     * const parser = new parse5.SAXParser();
      *
-     * parser.on('doctype', function(name, publicId, systemId) {
+     * parser.on('doctype', (name, publicId, systemId) => {
      *    // Process doctype info ans stop parsing
      *    ...
      *    parser.stop();
      * });
      *
-     * http.get('http://google.com', function(res) {
+     * http.get('http://google.com', res => {
      *    // Despite the fact that parser.stop() was called whole
      *    // content of the page will be written to the file
      *    res.pipe(parser).pipe(file);
@@ -1046,14 +1054,14 @@ export class SAXParser extends stream.Transform {
  * @example
  * ```js
  *
- * var parse5 = require('parse5');
- * var fs = require('fs');
+ * const parse5 = require('parse5');
+ * const fs = require('fs');
  *
- * var file = fs.createWriteStream('/home/index.html');
+ * const file = fs.createWriteStream('/home/index.html');
  *
  * // Serializes the parsed document to HTML and writes it to the file.
- * var document = parse5.parse('<body>Who is John Galt?</body>');
- * var serializer = new parse5.SerializerStream(document);
+ * const document = parse5.parse('<body>Who is John Galt?</body>');
+ * const serializer = new parse5.SerializerStream(document);
  *
  * serializer.pipe(file);
  * ```

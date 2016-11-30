@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
-	<script src="assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -70,30 +69,42 @@
 					<a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
 				</p>
 				<p align="center">
-					<i>WHATWG HTML5 specification-compliant, fast and ready for production HTML parsing/serialization toolset for Node.js</i>
+					<i>HTML parsing/serialization toolset for Node.js. <a href="https://html.spec.whatwg.org/multipage/">WHATWG HTML Living Standard (aka HTML5)</a>-compliant.</i>
 				</p>
 				<h2 id="table-of-contents">Table of contents</h2>
 				<ul>
 					<li><a href="#install">Install</a></li>
-					<li><a href="#usage">Usage</a></li>
+					<li><a href="#which-api-should-i-use-">Which API should I use?</a></li>
 					<li><a href="#typescript-definitions">TypeScript definitions</a></li>
 					<li><a href="globals.html">API Reference</a></li>
 					<li><a href="#faq">FAQ</a></li>
 					<li><a href="#version-history">Version history</a></li>
+					<li><a href="https://github.com/inikulin/parse5">GitHub repository</a></li>
 				</ul>
 				<h2 id="install">Install</h2>
 				<pre><code>$ npm <span class="hljs-keyword">install</span> parse5
-</code></pre><h2 id="usage">Usage</h2>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
-
-<span class="hljs-keyword">var</span> <span class="hljs-built_in">document</span>     = parse5.parse(<span class="hljs-string">'&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;Hi there!&lt;/body&gt;&lt;/html&gt;'</span>);
-<span class="hljs-keyword">var</span> documentHtml = parse5.serialize(<span class="hljs-built_in">document</span>);
-
-
-<span class="hljs-keyword">var</span> fragment     = parse5.parseFragment(<span class="hljs-string">'&lt;td&gt;Yo!&lt;/td&gt;'</span>);
-<span class="hljs-keyword">var</span> fragmentHtml = parse5.serialize(fragment);
-</code></pre>
-				<p>For more advanced examples, see <a href="globals.html">API reference</a> and <a href="#faq">FAQ</a>.</p>
+</code></pre><h2 id="which-api-should-i-use-">Which API should I use?</h2>
+				<h3 id="-i-need-to-parse-a-html-string-"><em>&quot;I need to parse a HTML string&quot;</em></h3>
+				<p>Use <a href="globals.html#parse">parse5.parse</a> method.</p>
+				<h3 id="-i-need-to-parse-a-html-fragment-string-or-i-need-to-implement-an-innerhtml-setter-"><em>&quot;I need to parse a HTML fragment string&quot;</em> or <em>&quot;I need to implement an <code>innerHTML</code> setter.&quot;</em></h3>
+				<p>Use <a href="globals.html#parsefragment">parse5.parseFragment</a> method.</p>
+				<h3 id="-i-need-to-serialize-a-node-to-html-string-"><em>&quot;I need to serialize a node to HTML string&quot;</em></h3>
+				<p>Use <a href="globals.html#serialize">parse5.serialize</a> method.</p>
+				<h3 id="-i-need-to-parse-html-streamed-from-network-or-from-file-or-i-need-to-implement-script-execution-and-document-write-"><em>&quot;I need to parse HTML streamed from network or from file.&quot;</em> or <em>&quot;I need to implement <code>&lt;script&gt;</code> execution and <code>document.write</code>&quot;</em></h3>
+				<p>Use <a href="classes/parserstream.html">parse5.ParserStream</a> class.</p>
+				<h3 id="-i-don-t-need-a-document-tree-but-i-need-a-basic-information-about-tags-or-attributes-or-i-need-to-extract-a-text-content-from-huge-amount-of-documents-or-i-need-to-analyze-content-that-going-through-my-proxy-server-"><em>&quot;I don&#39;t need a document tree, but I need a basic information about tags or attributes&quot;</em> or <em>&quot;I need to extract a text content from huge amount of documents&quot;</em> or <em>&quot;I need to analyze content that going through my proxy server&quot;</em>.</h3>
+				<p>Use <a href="classes/saxparser.html">parse5.SAXParser</a> class.</p>
+				<h3 id="-i-need-to-parse-plain-text-file-as-html-document-like-browsers-do-"><em>&quot;I need to parse plain text file as HTML document like browsers do&quot;</em></h3>
+				<p>Use <a href="classes/plaintextconversionstream.html">parse5.PlainTextConversionStream</a> class.</p>
+				<h3 id="-i-need-to-serialize-a-node-and-stream-result-to-file-or-network-"><em>&quot;I need to serialize a node and stream result to file or network&quot;</em></h3>
+				<p>Use <a href="classes/serializerstream.html">parse5.SerializerStream</a> class.</p>
+				<h3 id="-i-need-a-source-file-location-information-for-the-parsed-document-"><em>&quot;I need a source file location information for the parsed document&quot;</em></h3>
+				<p>Use <code>locationInfo</code> options: <a href="interfaces/options.parseroptions.html#locationinfo">ParserOptions.locationInfo</a>, <a href="interfaces/options.saxparseroptions.html#locationinfo">SAXParserOptions.locationInfo</a>.</p>
+				<h3 id="-i-need-to-switch-output-tree-format-"><em>&quot;I need to switch output tree format&quot;</em></h3>
+				<p>Use <code>treeAdapter</code> options: <a href="interfaces/options.parseroptions.html#treeadapter">ParserOptions.treeAdapter</a> and <a href="interfaces/options.serializeroptions.html#treeadapter">SerializerOptions.treeAdapter</a>
+				with one of two <a href="globals.html#treeadapters">built-in tree formats</a>.</p>
+				<h3 id="-i-need-to-implement-my-own-tree-format-"><em>&quot;I need to implement my own tree format&quot;</em></h3>
+				<p>Implement <a href="interfaces/ast.treeadapter.html">TreeAdapter</a> interface and then use <a href="#-i-need-to-switch-output-tree-format-">treeAdapter</a> option to pass it to parser or serializer.</p>
 				<h2 id="typescript-definitions">TypeScript definitions</h2>
 				<p>parse5 package includes a TypeScript definition file. Therefore you don&#39;t need to install any typings to use parse5
 					in TypeScript files. Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
@@ -113,15 +124,15 @@
 				<h3 id="q-i-want-to-work-with-my-own-document-tree-format-how-can-i-do-this-">Q: I want to work with my own document tree format. How can I do this?</h3>
 				<p>You can create a custom tree adapter, so that parse5 can work with your own DOM-tree implementation.
 				Then pass it to the parser or serializer via the <code>treeAdapter</code> option:</p>
-				<pre><code class="lang-js"><span class="hljs-keyword">var</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
+				<pre><code class="lang-js"><span class="hljs-keyword">const</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
 
-<span class="hljs-keyword">var</span> myTreeAdapter = {
+<span class="hljs-keyword">const</span> myTreeAdapter = {
    <span class="hljs-comment">//Adapter methods...</span>
 };
 
-<span class="hljs-keyword">var</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>, { <span class="hljs-attr">treeAdapter</span>: myTreeAdapter });
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>, { <span class="hljs-attr">treeAdapter</span>: myTreeAdapter });
 
-<span class="hljs-keyword">var</span> html = parse5.serialize(<span class="hljs-built_in">document</span>, { <span class="hljs-attr">treeAdapter</span>: myTreeAdapter });
+<span class="hljs-keyword">const</span> html = parse5.serialize(<span class="hljs-built_in">document</span>, { <span class="hljs-attr">treeAdapter</span>: myTreeAdapter });
 </code></pre>
 				<p>Refer to the <a href="#TreeAdapter">API reference</a> for the description of methods that should be exposed by the tree adapter, as well as links to their
 				default implementation.</p>
@@ -443,7 +454,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>

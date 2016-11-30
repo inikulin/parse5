@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
-	<script src="assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -108,7 +107,7 @@
 					<div class="tsd-signature tsd-kind-icon">tree<wbr>Adapters<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L749">index.d.ts:749</a></li>
+							<li>Defined in index.d.ts:749</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -118,15 +117,15 @@
 						<dl class="tsd-comment-tags">
 							<dt>example</dt>
 							<dd><pre><code class="lang-js">
-<span class="hljs-keyword">var</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
+<span class="hljs-keyword">const</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
 
 <span class="hljs-comment">// Uses the default tree adapter for parsing.</span>
-<span class="hljs-keyword">var</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>, {
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>, {
     <span class="hljs-attr">treeAdapter</span>: parse5.treeAdapters.default
 });
 
 <span class="hljs-comment">// Uses the htmlparser2 tree adapter with the SerializerStream.</span>
-<span class="hljs-keyword">var</span> serializer = <span class="hljs-keyword">new</span> parse5.SerializerStream(node, {
+<span class="hljs-keyword">const</span> serializer = <span class="hljs-keyword">new</span> parse5.SerializerStream(node, {
     <span class="hljs-attr">treeAdapter</span>: parse5.treeAdapters.htmlparser2
 });
 </code></pre>
@@ -169,7 +168,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L779">index.d.ts:779</a></li>
+									<li>Defined in index.d.ts:781</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -179,9 +178,11 @@
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre><code class="lang-js">
-<span class="hljs-keyword">var</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
+<span class="hljs-keyword">const</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
 
-<span class="hljs-keyword">var</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;Hi there!&lt;/body&gt;&lt;/html&gt;'</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;Hi there!&lt;/body&gt;&lt;/html&gt;'</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">document</span>.childNodes[<span class="hljs-number">1</span>].tagName); <span class="hljs-comment">//&gt; 'html'</span>
 </code></pre>
 									</dd>
 								</dl>
@@ -216,7 +217,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L799">index.d.ts:799</a></li>
+									<li>Defined in index.d.ts:805</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -226,12 +227,16 @@
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre><code class="lang-js">
-<span class="hljs-keyword">var</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
+<span class="hljs-keyword">const</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
 
-<span class="hljs-keyword">var</span> documentFragment = parse5.parseFragment(<span class="hljs-string">'&lt;table&gt;&lt;/table&gt;'</span>);
+<span class="hljs-keyword">const</span> documentFragment = parse5.parseFragment(<span class="hljs-string">'&lt;table&gt;&lt;/table&gt;'</span>);
+
+<span class="hljs-built_in">console</span>.log(documentFragment.childNodes[<span class="hljs-number">0</span>].tagName); <span class="hljs-comment">//&gt; 'table'</span>
 
 <span class="hljs-comment">// Parses the html fragment in the context of the parsed &lt;table&gt; element.</span>
-<span class="hljs-keyword">var</span> trFragment = parser.parseFragment(documentFragment.childNodes[<span class="hljs-number">0</span>], <span class="hljs-string">'&lt;tr&gt;&lt;td&gt;Shake it, baby&lt;/td&gt;&lt;/tr&gt;'</span>);
+<span class="hljs-keyword">const</span> trFragment = parser.parseFragment(documentFragment.childNodes[<span class="hljs-number">0</span>], <span class="hljs-string">'&lt;tr&gt;&lt;td&gt;Shake it, baby&lt;/td&gt;&lt;/tr&gt;'</span>);
+
+<span class="hljs-built_in">console</span>.log(trFragment.childNodes[<span class="hljs-number">0</span>].childNodes[<span class="hljs-number">0</span>].tagName); <span class="hljs-comment">//&gt; 'td'</span>
 </code></pre>
 									</dd>
 								</dl>
@@ -262,7 +267,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L800">index.d.ts:800</a></li>
+									<li>Defined in index.d.ts:806</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -288,7 +293,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f655e6d/lib/index.d.ts#L822">index.d.ts:822</a></li>
+									<li>Defined in index.d.ts:830</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -298,15 +303,17 @@
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre><code class="lang-js">
-<span class="hljs-keyword">var</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
+<span class="hljs-keyword">const</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
 
-<span class="hljs-keyword">var</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;Hi there!&lt;/body&gt;&lt;/html&gt;'</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">document</span> = parse5.parse(<span class="hljs-string">'&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;Hi there!&lt;/body&gt;&lt;/html&gt;'</span>);
 
 <span class="hljs-comment">// Serializes a document.</span>
-<span class="hljs-keyword">var</span> html = parse5.serialize(<span class="hljs-built_in">document</span>);
+<span class="hljs-keyword">const</span> html = parse5.serialize(<span class="hljs-built_in">document</span>);
 
 <span class="hljs-comment">// Serializes the &lt;body&gt; element content.</span>
-<span class="hljs-keyword">var</span> bodyInnerHtml = parse5.serialize(<span class="hljs-built_in">document</span>.childNodes[<span class="hljs-number">0</span>].childNodes[<span class="hljs-number">1</span>]);
+<span class="hljs-keyword">const</span> str = parse5.serialize(<span class="hljs-built_in">document</span>.childNodes[<span class="hljs-number">1</span>]);
+
+<span class="hljs-built_in">console</span>.log(str); <span class="hljs-comment">//&gt; '&lt;head&gt;&lt;/head&gt;&lt;body&gt;Hi there!&lt;/body&gt;'</span>
 </code></pre>
 									</dd>
 								</dl>
@@ -446,7 +453,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>

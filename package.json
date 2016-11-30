@@ -3,13 +3,7 @@
   "description": "HTML parsing/serialization toolset for Node.js. WHATWG HTML Living Standard (aka HTML5)-compliant.",
   "version": "2.2.3",
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
-  "contributors": [
-    "Alan Clarke (https://github.com/alanclarke)",
-    "Evan You (http://evanyou.me)",
-    "Saksham Aggarwal <s.agg2021@gmail.com>",
-    "Sebastian Mayr <sebmaster16@gmail.com> (http://blog.smayr.name)",
-    "Sean Lang <slang800@gmail.com> (http://slang.cx)"
-  ],
+  "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
   "homepage": "https://github.com/inikulin/parse5",
   "devDependencies": {
     "del": "^2.0.2",
