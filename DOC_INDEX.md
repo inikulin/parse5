@@ -141,10 +141,10 @@ Just try it in the latest version of your browser before submitting an issue.
  `'no-quirks'`, `'quirks'` and `'limited-quirks'` values. Tree adapter `setQuirksMode ` and `isQuirksMode` methods were replaced with `setDocumentMode` and `getDocumentMode` methods (GH [#83](https://github.com/inikulin/parse5/issues/83)).
 * Updated (**breaking**): AST collections (e.g. attributes dictionary) don't have prototype anymore (GH [#119](https://github.com/inikulin/parse5/issues/119)).
 * Updated (**breaking**): Doctype now always serialized as `<!DOCTYPE html>` as per spec (GH [#137](https://github.com/inikulin/parse5/issues/137)).
-* Fixed: Incorrect line for `__location.endTag` when the start tag contains newlines (GH [#166](https://github.com/inikulin/parse5/issues/166)) (by [@wooorm](https://github.com/wooorm)).
+* Fixed: Incorrect line for `__location.endTag` when the start tag contains newlines (GH [#166](https://github.com/inikulin/parse5/issues/166)) (by [@webdesus](https://github.com/webdesus)).
 
 ### 2.2.3
- * Fixed: Fixed incorrect LocationInfo.endOffset for non-implicitly closed elements (refix for GH [#109](https://github.com/inikulin/parse5/issues/109)) (by [@webdesus](https://github.com/webdesus)).
+ * Fixed: Fixed incorrect LocationInfo.endOffset for non-implicitly closed elements (refix for GH [#109](https://github.com/inikulin/parse5/issues/109)) (by [@wooorm](https://github.com/wooorm)).
 
 ### 2.2.2
  * Fixed: Incorrect location info for text in SAXParser (GH [#153](https://github.com/inikulin/parse5/issues/153)).
