@@ -156,9 +156,20 @@
 </code></pre>
 				<p>Just try it in the latest version of your browser before submitting an issue.</p>
 				<h2 id="version-history">Version history</h2>
+				<h3 id="3-0-0">3.0.0</h3>
+				<ul>
+					<li>Added: parse5 now ships with TypeScript definitions from which <a href="http://inikulin.github.io/parse5/">new documentation website</a> is generated (GH <a href="https://github.com/inikulin/parse5/issues/125">#125</a>).</li>
+					<li>Added: <a href="http://inikulin.github.io/parse5/classes/plaintextconversionstream.html">PlainTextConversionStream</a> (GH <a href="https://github.com/inikulin/parse5/issues/135">#135</a>).</li>
+					<li>Updated: <a href="https://github.com/inikulin/parse5/tree/master/scripts/generate_named_entity_data#named-entity-array-mapped-radix-tree-generator">Significantly reduced initial memory consumption</a> (GH <a href="https://github.com/inikulin/parse5/issues/52">#52</a>).</li>
+					<li>Updated (<strong>breaking</strong>): Added support for limited quirks mode. <code>document.quirksMode</code> property was replaced with <code>document.mode</code> property which can have
+					<code>&#39;no-quirks&#39;</code>, <code>&#39;quirks&#39;</code> and <code>&#39;limited-quirks&#39;</code> values. Tree adapter <code>setQuirksMode</code> and <code>isQuirksMode</code> methods were replaced with <code>setDocumentMode</code> and <code>getDocumentMode</code> methods (GH <a href="https://github.com/inikulin/parse5/issues/83">#83</a>).</li>
+					<li>Updated (<strong>breaking</strong>): AST collections (e.g. attributes dictionary) don&#39;t have prototype anymore (GH <a href="https://github.com/inikulin/parse5/issues/119">#119</a>).</li>
+					<li>Updated (<strong>breaking</strong>): Doctype now always serialized as <code>&lt;!DOCTYPE html&gt;</code> as per spec (GH <a href="https://github.com/inikulin/parse5/issues/137">#137</a>).</li>
+					<li>Fixed: Incorrect line for <code>__location.endTag</code> when the start tag contains newlines (GH <a href="https://github.com/inikulin/parse5/issues/166">#166</a>) (by <a href="https://github.com/wooorm">@wooorm</a>).</li>
+				</ul>
 				<h3 id="2-2-3">2.2.3</h3>
 				<ul>
-					<li>Fixed: Fixed incorrect LocationInfo.endOffset for non-implicitly closed elements (refix for GH <a href="https://github.com/inikulin/parse5/issues/109">#109</a>) (by <a href="https://github.com/wooorm">@wooorm</a>).</li>
+					<li>Fixed: Fixed incorrect LocationInfo.endOffset for non-implicitly closed elements (refix for GH <a href="https://github.com/inikulin/parse5/issues/109">#109</a>) (by <a href="https://github.com/webdesus">@webdesus</a>).</li>
 				</ul>
 				<h3 id="2-2-2">2.2.2</h3>
 				<ul>
