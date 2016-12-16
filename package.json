@@ -1,7 +1,7 @@
 {
   "name": "parse5",
   "description": "HTML parsing/serialization toolset for Node.js. WHATWG HTML Living Standard (aka HTML5)-compliant.",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
   "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
   "homepage": "https://github.com/inikulin/parse5",

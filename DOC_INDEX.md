@@ -133,6 +133,9 @@ Just try it in the latest version of your browser before submitting an issue.
 
 ## Version history
 
+### 3.0.1
+* Fixed: `MarkupData.Location.col` description in TypeScript definition file (GH [#170](https://github.com/inikulin/parse5/issues/170));
+
 ### 3.0.0
 * Added: parse5 now ships with TypeScript definitions from which [new documentation website](http://inikulin.github.io/parse5/) is generated (GH [#125](https://github.com/inikulin/parse5/issues/125)).
 * Added: [PlainTextConversionStream](http://inikulin.github.io/parse5/classes/plaintextconversionstream.html) (GH [#135](https://github.com/inikulin/parse5/issues/135)).
