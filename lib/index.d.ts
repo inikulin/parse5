@@ -13,7 +13,7 @@ declare namespace MarkupData {
          */
         line: number;
         /**
-         * Zero-based first character index
+         * One-based column index
          */
         col: number;
         /**
