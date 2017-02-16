@@ -821,7 +821,7 @@ export function parseFragment(html: string, options?: Options.ParserOptions): AS
  * // Serializes a document.
  * const html = parse5.serialize(document);
  *
- * // Serializes the <body> element content.
+ * // Serializes the <html> element content.
  * const str = parse5.serialize(document.childNodes[1]);
  *
  * console.log(str); //> '<head></head><body>Hi there!</body>'
@@ -843,12 +843,12 @@ export function serialize(node: AST.Node, options?: Options.SerializerOptions): 
  * const parse5 = require('parse5');
  * const http = require('http');
  *
- * // Fetch the google.com content and obtain it's <body> node
- * http.get('http://google.com', res => {
+ * // Fetch the page content and obtain it's <head> node
+ * http.get('http://inikulin.github.io/parse5/', res => {
  *    const parser = new parse5.ParserStream();
  *
  *    parser.once('finish', () => {
- *        console.log(parser.document.childNodes[1].childNodes[1].tagName); //> 'body'
+ *        console.log(parser.document.childNodes[1].childNodes[0].tagName); //> 'head'
  *    });
  *
  *    res.pipe(parser);
@@ -924,7 +924,7 @@ export class ParserStream extends stream.Writable {
  * const converter = new parse5.PlainTextConversionStream();
  *
  * converter.once('finish', () => {
- *     console.log(converter.document.childNodes[1].childNodes[1].tagName); //> 'body'
+ *     console.log(converter.document.childNodes[1].childNodes[0].tagName); //> 'head'
  * });
  *
  * file.pipe(converter);

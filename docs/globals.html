@@ -310,7 +310,7 @@
 <span class="hljs-comment">// Serializes a document.</span>
 <span class="hljs-keyword">const</span> html = parse5.serialize(<span class="hljs-built_in">document</span>);
 
-<span class="hljs-comment">// Serializes the &lt;body&gt; element content.</span>
+<span class="hljs-comment">// Serializes the &lt;html&gt; element content.</span>
 <span class="hljs-keyword">const</span> str = parse5.serialize(<span class="hljs-built_in">document</span>.childNodes[<span class="hljs-number">1</span>]);
 
 <span class="hljs-built_in">console</span>.log(str); <span class="hljs-comment">//&gt; '&lt;head&gt;&lt;/head&gt;&lt;body&gt;Hi there!&lt;/body&gt;'</span>

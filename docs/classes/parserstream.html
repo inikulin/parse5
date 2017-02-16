@@ -76,12 +76,12 @@
 <span class="hljs-keyword">const</span> parse5 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'parse5'</span>);
 <span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
 
-<span class="hljs-comment">// Fetch the google.com content and obtain it's &lt;body&gt; node</span>
-http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
+<span class="hljs-comment">// Fetch the page content and obtain it's &lt;head&gt; node</span>
+http.get(<span class="hljs-string">'http://inikulin.github.io/parse5/'</span>, res =&gt; {
    <span class="hljs-keyword">const</span> parser = <span class="hljs-keyword">new</span> parse5.ParserStream();
 
    parser.once(<span class="hljs-string">'finish'</span>, () =&gt; {
-       <span class="hljs-built_in">console</span>.log(parser.document.childNodes[<span class="hljs-number">1</span>].childNodes[<span class="hljs-number">1</span>].tagName); <span class="hljs-comment">//&gt; 'body'</span>
+       <span class="hljs-built_in">console</span>.log(parser.document.childNodes[<span class="hljs-number">1</span>].childNodes[<span class="hljs-number">0</span>].tagName); <span class="hljs-comment">//&gt; 'head'</span>
    });
 
    res.pipe(parser);

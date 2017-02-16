@@ -80,7 +80,7 @@
 <span class="hljs-keyword">const</span> converter = <span class="hljs-keyword">new</span> parse5.PlainTextConversionStream();
 
 converter.once(<span class="hljs-string">'finish'</span>, () =&gt; {
-    <span class="hljs-built_in">console</span>.log(converter.document.childNodes[<span class="hljs-number">1</span>].childNodes[<span class="hljs-number">1</span>].tagName); <span class="hljs-comment">//&gt; 'body'</span>
+    <span class="hljs-built_in">console</span>.log(converter.document.childNodes[<span class="hljs-number">1</span>].childNodes[<span class="hljs-number">0</span>].tagName); <span class="hljs-comment">//&gt; 'head'</span>
 });
 
 file.pipe(converter);
