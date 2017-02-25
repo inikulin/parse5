@@ -133,6 +133,9 @@ Just try it in the latest version of your browser before submitting an issue.
 
 ## Version history
 
+### 3.0.2
+* Fixed: `location.startTag` is not available if end tag is missing (GH [#181](https://github.com/inikulin/parse5/issues/181));
+
 ### 3.0.1
 * Fixed: `MarkupData.Location.col` description in TypeScript definition file (GH [#170](https://github.com/inikulin/parse5/issues/170));
 

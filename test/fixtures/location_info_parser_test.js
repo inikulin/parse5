@@ -234,4 +234,20 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
         assert.ok(foundScript);
     };
+
+    exports['Regression - location.startTag should be available if end tag is missing (GH-181)'] = function () {
+        var html = '<p>test',
+            opts = {
+                treeAdapter: treeAdapter,
+                locationInfo: true
+            };
+
+        var fragment = parse5.parseFragment(html, opts),
+            p = fragment.childNodes[0];
+
+        assertNodeLocation(p, html, html, [html]);
+        assertStartTagLocation(p, html, html, [html]);
+
+        assert.ok(!p.__location.endTag);
+    };
 });
