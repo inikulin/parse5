@@ -2,6 +2,7 @@
 
 var assert = require('assert'),
     Tokenizer = require('../../lib/tokenizer'),
+    LocationInfoTokenizerMixin = require('../../lib/extensions/location_info/tokenizer_mixin'),
     testUtils = require('../test_utils');
 
 exports['Location info (Tokenizer)'] = function () {
@@ -62,8 +63,10 @@ exports['Location info (Tokenizer)'] = function () {
     testCases.forEach(function (testCase) {
         var html = testCase.htmlChunks.join(''),
             lines = html.split(/\r?\n/g),
-            tokenizer = new Tokenizer({locationInfo: true}),
+            tokenizer = new Tokenizer(),
             lastChunkIdx = testCase.htmlChunks.length - 1;
+
+        new LocationInfoTokenizerMixin(tokenizer);
 
         for (var i = 0; i < testCase.htmlChunks.length; i++)
             tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);
@@ -73,7 +76,7 @@ exports['Location info (Tokenizer)'] = function () {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (var token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
+        for (var token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN;) {
             if (token.type === Tokenizer.HIBERNATION_TOKEN)
                 continue;
 
