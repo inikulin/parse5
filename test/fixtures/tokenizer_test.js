@@ -5,12 +5,13 @@ var assert = require('assert'),
     path = require('path'),
     Tokenizer = require('../../lib/tokenizer'),
     testUtils = require('../test_utils'),
-    ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator');
+    ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator'),
+    ErrorReportingTokenizerMixin = require('../../lib/extensions/error_reporting/tokenizer_mixin');
 
 function tokenize(chunks, initialState, lastStartTag, withFeedback) {
     var tokenizer = new Tokenizer(),
         token = {type: Tokenizer.HIBERNATION_TOKEN},
-        out = [],
+        result = {tokens: [], errors: []},
         chunkIdx = 0,
         tokenSource = null;
 
@@ -29,19 +30,28 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
 
     if (withFeedback)
         tokenSource = new ParserFeedbackSimulator(tokenizer);
-    else
+    else {
         tokenSource = tokenizer;
+
+        new ErrorReportingTokenizerMixin(tokenizer, function (err) {
+            result.errors.push({
+                code: err.code,
+                line: err.line,
+                col: err.col
+            });
+        });
+    }
 
     do {
         if (token.type === Tokenizer.HIBERNATION_TOKEN)
             writeChunk();
         else
-            appendTokenEntry(out, testUtils.convertTokenToHtml5Lib(token));
+            appendTokenEntry(result.tokens, testUtils.convertTokenToHtml5Lib(token));
 
         token = tokenSource.getNextToken();
     } while (token.type !== Tokenizer.EOF_TOKEN);
 
-    return out;
+    return result;
 }
 
 function unicodeUnescape(str) {
@@ -135,7 +145,8 @@ function loadTests(kindDir) {
                     input: descr.input,
                     expected: concatCharacterTokens(expected),
                     initialState: getTokenizerSuitableStateName(initialState),
-                    lastStartTag: descr.lastStartTag
+                    lastStartTag: descr.lastStartTag,
+                    expectedErrors: descr.errors || []
                 });
             });
         });
@@ -146,22 +157,25 @@ function loadTests(kindDir) {
 
 function getFullTestName(kind, test) {
     return [kind + ' - ' +
-            test.idx, '.', test.setName, ' - ', test.name, ' - Initial state: ', test.initialState].join('');
+    test.idx, '.', test.setName, ' - ', test.name, ' - Initial state: ', test.initialState].join('');
 }
 
 var suites = [
-    { name: 'Tokenizer', dir: 'tokenization', withFeedback: false },
-    { name: 'Parser feedback', dir: 'parser_feedback', withFeedback: true }
+    {name: 'Tokenizer', dir: 'tokenization', withFeedback: false},
+    {name: 'Parser feedback', dir: 'parser_feedback', withFeedback: true}
 ];
 
 //Here we go..
 suites.forEach(function (suite) {
     loadTests(suite.dir).forEach(function (test) {
         exports[getFullTestName(suite.name, test)] = function () {
-            var chunks = testUtils.makeChunks(test.input);
-            var out = tokenize(chunks, test.initialState, test.lastStartTag, suite.withFeedback);
+            var chunks = testUtils.makeChunks(test.input),
+                result = tokenize(chunks, test.initialState, test.lastStartTag, suite.withFeedback);
 
-            assert.deepEqual(out, test.expected, 'Chunks: ' + JSON.stringify(chunks));
+            assert.deepEqual(result.tokens, test.expected, 'Chunks: ' + JSON.stringify(chunks));
+
+            if (!suite.withFeedback)
+                assert.deepEqual(result.errors, test.expectedErrors);
         };
     });
 });
