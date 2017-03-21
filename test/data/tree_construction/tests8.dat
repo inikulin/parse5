@@ -88,6 +88,17 @@ x"
 |     <table>
 
 #data
+<table><li><li></table>
+#errors
+#document
+| <html>
+|   <head>
+|   <body>
+|     <li>
+|     <li>
+|     <table>
+
+#data
 x<table>x
 #errors
 (1,1): expected-doctype-but-got-chars
