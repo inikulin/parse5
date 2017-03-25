@@ -45,14 +45,25 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         ], treeAdapter)
         .forEach(function (test) {
             _test[getFullTestName(test)] = function () {
-                var opts = {treeAdapter: treeAdapter};
+                var errs = [],
+                    opts = {
+                        treeAdapter: treeAdapter,
+                        onParseError: function (err) {
+                            errs.push('(' + err.line + ',' + err.col + '): ' + err.code);
+                        }
+                    };
 
-                if (test.fragmentContext)
+                if (test.fragmentContext) {
                     assertFragmentParsing(test.input, test.fragmentContext, test.expected, opts);
-
+                    assert.deepEqual(errs, test.expectedErrors);
+                }
                 else {
                     assertStreamingParsing(test.input, test.expected, opts);
+                    assert.deepEqual(errs, test.expectedErrors);
+
+                    errs = [];
                     assertParsing(test.input, test.expected, opts);
+                    assert.deepEqual(errs, test.expectedErrors);
                 }
             };
         });
