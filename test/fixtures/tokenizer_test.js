@@ -110,18 +110,24 @@ function getTokenizerSuitableStateName(testDataStateName) {
     return testDataStateName.toUpperCase().replace(/\s/g, '_');
 }
 
-function loadTests(kindDir) {
-    var dataDirPath = path.join(__dirname, '../data', kindDir),
-        testSetFileNames = fs.readdirSync(dataDirPath),
+function loadTests(dataDirPath) {
+    var testSetFileNames = fs.readdirSync(dataDirPath),
         testIdx = 0,
         tests = [];
 
     testSetFileNames.forEach(function (fileName) {
+        if (path.extname(fileName) !== '.test')
+            return;
+
         var filePath = path.join(dataDirPath, fileName),
             testSetJson = fs.readFileSync(filePath).toString(),
             testSet = JSON.parse(testSetJson),
-            testDescrs = testSet.tests,
-            setName = fileName.replace('.test', '');
+            testDescrs = testSet.tests;
+
+        if (!testDescrs)
+            return;
+
+        var setName = fileName.replace('.test', '');
 
         testDescrs.forEach(function (descr) {
             if (!descr.initialStates)
@@ -161,8 +167,8 @@ function getFullTestName(kind, test) {
 }
 
 var suites = [
-    {name: 'Tokenizer', dir: 'tokenization', withFeedback: false},
-    {name: 'Parser feedback', dir: 'parser_feedback', withFeedback: true}
+    {name: 'Tokenizer', dir: path.join(__dirname, '../../../html5lib-tests/tokenizer'), withFeedback: false},
+    {name: 'Parser feedback', dir: path.join(__dirname, '../data/parser_feedback'), withFeedback: true}
 ];
 
 //Here we go..
