@@ -5,6 +5,7 @@ var assert = require('assert'),
     path = require('path'),
     Tokenizer = require('../../lib/tokenizer'),
     testUtils = require('../test_utils'),
+    Mixin = require('../../lib/utils/mixin'),
     ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator'),
     ErrorReportingTokenizerMixin = require('../../lib/extensions/error_reporting/tokenizer_mixin');
 
@@ -33,12 +34,14 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
     else {
         tokenSource = tokenizer;
 
-        new ErrorReportingTokenizerMixin(tokenizer, function (err) {
-            result.errors.push({
-                code: err.code,
-                line: err.line,
-                col: err.col
-            });
+        Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
+            onParseError: function (err) {
+                result.errors.push({
+                    code: err.code,
+                    line: err.line,
+                    col: err.col
+                });
+            }
         });
     }
 
