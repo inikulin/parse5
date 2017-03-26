@@ -34,7 +34,7 @@ function assertLocation(loc, expected, html, lines) {
     assert.strictEqual(expected, actual, testUtils.getStringDiffMsg(actual, expected));
 
     //Line/col
-    actual = testUtils.getSubstringByLineCol(lines, loc.line, loc.col);
+    actual = testUtils.getSubstringByLineCol(lines, loc.startLine, loc.startCol);
     actual = testUtils.removeNewLines(actual);
 
     assert.strictEqual(actual.indexOf(expected), 0, testUtils.getStringDiffMsg(actual, expected));
@@ -228,7 +228,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         walkTree(doc, treeAdapter, function (node) {
             if (node.name === 'script') {
                 foundScript = true;
-                assert.equal(node.__location.endTag.line, 5);
+                assert.equal(node.__location.endTag.startLine, 5);
             }
         });
 
