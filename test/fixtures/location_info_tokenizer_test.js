@@ -86,11 +86,11 @@ exports['Location info (Tokenizer)'] = function () {
             assert.strictEqual(actual, testCase.htmlChunks[j]);
 
             //Line/col
-            actual = testUtils.getSubstringByLineCol(lines, token.location.startLine, token.location.startCol);
+            actual = testUtils.getSubstringByLineCol(lines, token.location);
 
             var expected = testUtils.normalizeNewLine(testCase.htmlChunks[j]);
 
-            assert.strictEqual(actual.indexOf(expected), 0);
+            assert.strictEqual(actual, expected);
 
             token = tokenizer.getNextToken();
             j++;

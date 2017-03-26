@@ -34,10 +34,10 @@ function assertLocation(loc, expected, html, lines) {
     assert.strictEqual(expected, actual, testUtils.getStringDiffMsg(actual, expected));
 
     //Line/col
-    actual = testUtils.getSubstringByLineCol(lines, loc.startLine, loc.startCol);
+    actual = testUtils.getSubstringByLineCol(lines, loc);
     actual = testUtils.removeNewLines(actual);
 
-    assert.strictEqual(actual.indexOf(expected), 0, testUtils.getStringDiffMsg(actual, expected));
+    assert.strictEqual(actual, expected, testUtils.getStringDiffMsg(actual, expected));
 }
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag

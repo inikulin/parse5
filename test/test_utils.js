@@ -336,11 +336,15 @@ exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
     };
 };
 
-exports.getSubstringByLineCol = function (lines, line, col) {
-    return lines
-        .slice(line - 1)
-        .join('\n')
-        .substring(col - 1);
+exports.getSubstringByLineCol = function (lines, loc) {
+    lines = lines.slice(loc.startLine - 1, loc.endLine);
+
+    var last = lines.length - 1;
+
+    lines[last] = lines[last].substring(0, loc.endCol - 1);
+    lines[0] = lines[0].substring(loc.startCol - 1);
+
+    return lines.join('\n');
 };
 
 exports.convertTokenToHtml5Lib = function (token) {
