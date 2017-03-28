@@ -38,8 +38,8 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
             onParseError: function (err) {
                 result.errors.push({
                     code: err.code,
-                    line: err.line,
-                    col: err.col
+                    line: err.startLine,
+                    col: err.startCol
                 });
             }
         });

@@ -49,7 +49,11 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     opts = {
                         treeAdapter: treeAdapter,
                         onParseError: function (err) {
-                            errs.push('(' + err.line + ',' + err.col + '): ' + err.code);
+                            var errStr = '(' + err.startLine + ':' + err.startCol +
+                                         '-' + err.endLine + ':' + err.encCol + ') ' +
+                                         err.code;
+
+                            errs.push(errStr);
                         }
                     };
 
