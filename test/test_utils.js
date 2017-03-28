@@ -155,7 +155,7 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
         var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
         return {
-            input: descr['#data'].join('\r\n'),
+            input: descr['#data'].join('\n'),
             expected: descr['#document'].join('\n'),
             expectedErrors: descr['#new-errors'] || [],
             disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
@@ -174,6 +174,9 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
             dirName = path.basename(dataDirPath);
 
         testSetFileNames.forEach(function (fileName) {
+            if (path.extname(fileName) !== '.dat')
+                return;
+
             var filePath = path.join(dataDirPath, fileName),
                 testSet = fs.readFileSync(filePath, 'utf-8'),
                 setName = fileName.replace('.dat', '');
