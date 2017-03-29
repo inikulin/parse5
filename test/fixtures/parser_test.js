@@ -49,9 +49,13 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     opts = {
                         treeAdapter: treeAdapter,
                         onParseError: function (err) {
-                            var errStr = '(' + err.startLine + ':' + err.startCol +
-                                         '-' + err.endLine + ':' + err.encCol + ') ' +
-                                         err.code;
+                            var errStr = '(' + err.startLine + ':' + err.startCol;
+
+                            // NOTE: use ranges for token errors
+                            if (err.startLine !== err.endLine || err.startCol !== err.endCol)
+                                errStr += '-' + err.endLine + ':' + err.endCol;
+
+                            errStr += ') ' + err.code;
 
                             errs.push(errStr);
                         }
