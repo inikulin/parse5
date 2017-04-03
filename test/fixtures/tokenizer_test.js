@@ -9,12 +9,41 @@ var assert = require('assert'),
     ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator'),
     ErrorReportingTokenizerMixin = require('../../lib/extensions/error_reporting/tokenizer_mixin');
 
+
+function createTokenSource(withFeedback, tokenizer, result) {
+    if (withFeedback)
+        return new ParserFeedbackSimulator(tokenizer);
+
+    Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
+        onParseError: function (err) {
+            result.errors.push({
+                code: err.code,
+                line: err.startLine,
+                col: err.startCol
+            });
+        }
+    });
+
+    return tokenizer;
+}
+
+function sortErrors(result) {
+    result.errors = result.errors
+        .sort(function (err1, err2) {
+            var lineDiff = err1.line - err2.line;
+
+            if (lineDiff !== 0)
+                return lineDiff;
+
+            return err1.col - err2.col;
+        });
+}
+
 function tokenize(chunks, initialState, lastStartTag, withFeedback) {
     var tokenizer = new Tokenizer(),
         token = {type: Tokenizer.HIBERNATION_TOKEN},
         result = {tokens: [], errors: []},
-        chunkIdx = 0,
-        tokenSource = null;
+        chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes
     tokenizer.preprocessor.bufferWaterline = 8;
@@ -29,21 +58,7 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
         tokenizer.write(chunk, ++chunkIdx === chunks.length);
     }
 
-    if (withFeedback)
-        tokenSource = new ParserFeedbackSimulator(tokenizer);
-    else {
-        tokenSource = tokenizer;
-
-        Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
-            onParseError: function (err) {
-                result.errors.push({
-                    code: err.code,
-                    line: err.startLine,
-                    col: err.startCol
-                });
-            }
-        });
-    }
+    var tokenSource = createTokenSource(withFeedback, tokenizer, result);
 
     do {
         if (token.type === Tokenizer.HIBERNATION_TOKEN)
@@ -53,6 +68,8 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
 
         token = tokenSource.getNextToken();
     } while (token.type !== Tokenizer.EOF_TOKEN);
+
+    sortErrors(result);
 
     return result;
 }
