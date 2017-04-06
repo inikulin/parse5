@@ -183,7 +183,7 @@ function loadTests(dataDirPath) {
 
 function getFullTestName(kind, test) {
     return [kind + ' - ' +
-    test.idx, '.', test.setName, ' - ', test.name, ' - Initial state: ', test.initialState].join('');
+    test.idx, '.', test.setName, ' - `', test.name, '` - Initial state: ', test.initialState].join('');
 }
 
 var suites = [

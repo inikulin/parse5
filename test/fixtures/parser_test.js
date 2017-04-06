@@ -7,7 +7,7 @@ var assert = require('assert'),
     testUtils = require('../test_utils');
 
 function getFullTestName(test) {
-    return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
+    return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - `', test.input, '` (line ', test.lineNum, ')'].join('');
 }
 
 function assertFragmentParsing(input, fragmentContext, expected, opts) {

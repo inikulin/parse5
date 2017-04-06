@@ -130,9 +130,9 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
         curDirective = '',
         curDescr = null;
 
-    testSet.split(/\r?\n/).forEach(function (line) {
+    testSet.split(/\r?\n/).forEach(function (line, idx) {
         if (line === '#data') {
-            curDescr = {};
+            curDescr = {'#line': idx + 1};
             testDescrs.push(curDescr);
         }
 
@@ -159,6 +159,7 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
             expected: descr['#document'].join('\n'),
             expectedErrors: descr['#new-errors'] || [],
             disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
+            lineNum: descr['#line'],
             fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter)
         };
     });
