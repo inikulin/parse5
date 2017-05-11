@@ -84,9 +84,6 @@ function unescapeDescrIO(testDescr) {
     testDescr.input = unicodeUnescape(testDescr.input);
 
     testDescr.output.forEach(function (tokenEntry) {
-        if (tokenEntry === 'ParseError')
-            return;
-
         //NOTE: unescape token tagName (for StartTag and EndTag tokens), comment data (for Comment token),
         //character token data (for Character token).
         tokenEntry[1] = unicodeUnescape(tokenEntry[1]);
