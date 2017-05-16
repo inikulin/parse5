@@ -126,3 +126,12 @@ exports["Regression - Don't inherit from Object when creating collections (GH-11
     }
 };
 
+exports['Regression - Fix empty stream parsing with ParserStream (GH-196)'] = function (done) {
+    var parser = new parse5.ParserStream()
+        .once('finish', function () {
+            assert(parser.document.childNodes.length > 0);
+            done();
+        });
+
+    parser.end();
+};
