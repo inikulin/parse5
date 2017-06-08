@@ -54,9 +54,9 @@ declare namespace MarkupData {
 declare namespace Options {
     export interface ParserOptions {
         /**
-         * Enables source code location information for the nodes. When enabled, each node (except root node) has the `__location` property.
-         * In case the node is not an empty element, `__location` will be {@link MarkupData.ElementLocation} object, otherwise it's {@link MarkupData.Location}.
-         * If the element was implicitly created by the parser it's `__location` property will be null.
+         * Enables source code location information. When enabled, each node (except the root node) will have a `__location` property.
+         * If the node is not an empty element, `__location` will be a {@link MarkupData.ElementLocation} object, otherwise it will be {@link MarkupData.Location}.
+         * If the element was implicitly created by the parser (as part of [tree correction](https://html.spec.whatwg.org/multipage/syntax.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser)), its `__location` property will be `undefined`.
          *
          * **Default:** `false`
          */
