@@ -54,6 +54,13 @@ declare namespace MarkupData {
 declare namespace Options {
     export interface ParserOptions {
         /**
+         * [Scripting flag](https://html.spec.whatwg.org/multipage/parsing.html#scripting-flag).
+         * When enabled the parser treats `<noscript>` elements content as text.
+         *
+         * **Default:** `true`
+         */
+        scriptingEnabled?: boolean;
+        /**
          * Enables source code location information. When enabled, each node (except the root node) will have a `__location` property.
          * If the node is not an empty element, `__location` will be a {@link MarkupData.ElementLocation} object, otherwise it will be {@link MarkupData.Location}.
          * If the element was implicitly created by the parser (as part of [tree correction](https://html.spec.whatwg.org/multipage/syntax.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser)), its `__location` property will be `undefined`.

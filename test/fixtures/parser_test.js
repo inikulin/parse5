@@ -47,7 +47,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             _test[getFullTestName(test)] = function () {
                 var errs = [],
                     opts = {
+                        scriptingEnabled: test.scriptingEnabled,
                         treeAdapter: treeAdapter,
+
                         onParseError: function (err) {
                             var errStr = '(' + err.startLine + ':' + err.startCol;
 
@@ -65,6 +67,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
                     assertFragmentParsing(test.input, test.fragmentContext, test.expected, opts);
                     assert.deepEqual(errs, test.expectedErrors);
                 }
+
                 else {
                     assertStreamingParsing(test.input, test.expected, opts);
                     assert.deepEqual(errs, test.expectedErrors);
