@@ -11,7 +11,7 @@
             ]
         },
         {
-            "description": "<html>\u0000<frameset></frameset>",
+            "description": "<html>\\u0000<frameset></frameset>",
             "input": "<html>\u0000<frameset></frameset>",
             "output": [
                 [
@@ -35,7 +35,7 @@
             ]
         },
         {
-            "description": "<html> \u0000 <frameset></frameset>",
+            "description": "<html> \\u0000 <frameset></frameset>",
             "input": "<html> \u0000 <frameset></frameset>",
             "output": [
                 [
@@ -59,7 +59,7 @@
             ]
         },
         {
-            "description": "<html>a\u0000a<frameset></frameset>",
+            "description": "<html>a\\u0000a<frameset></frameset>",
             "input": "<html>a\u0000a<frameset></frameset>",
             "output": [
                 [
@@ -83,7 +83,7 @@
             ]
         },
         {
-            "description": "<html>\u0000\u0000<frameset></frameset>",
+            "description": "<html>\\u0000\\u0000<frameset></frameset>",
             "input": "<html>\u0000\u0000<frameset></frameset>",
             "output": [
                 [
@@ -107,7 +107,7 @@
             ]
         },
         {
-            "description": "<html>\u0000\\r\\n <frameset></frameset>",
+            "description": "<html>\\u0000\\r\\n <frameset></frameset>",
             "input": "<html>\u0000\r\n <frameset></frameset>",
             "output": [
                 [
@@ -131,7 +131,7 @@
             ]
         },
         {
-            "description": "<html><select>\u0000",
+            "description": "<html><select>\\u0000",
             "input": "<html><select>\u0000",
             "output": [
                 [
@@ -151,7 +151,7 @@
             ]
         },
         {
-            "description": "\u0000",
+            "description": "\\u0000",
             "input": "\u0000",
             "output": [
                 [
@@ -161,7 +161,7 @@
             ]
         },
         {
-            "description": "<body>\u0000",
+            "description": "<body>\\u0000",
             "input": "<body>\u0000",
             "output": [
                 [
@@ -176,7 +176,7 @@
             ]
         },
         {
-            "description": "<plaintext>\u0000filler\u0000text\u0000",
+            "description": "<plaintext>\\u0000filler\\u0000text\\u0000",
             "input": "<plaintext>\u0000filler\u0000text\u0000",
             "output": [
                 [
@@ -191,7 +191,7 @@
             ]
         },
         {
-            "description": "<svg><![CDATA[\u0000filler\u0000text\u0000]]>",
+            "description": "<svg><![CDATA[\\u0000filler\\u0000text\\u0000]]>",
             "input": "<svg><![CDATA[\u0000filler\u0000text\u0000]]>",
             "output": [
                 [
@@ -206,7 +206,7 @@
             ]
         },
         {
-            "description": "<body><!\u0000>",
+            "description": "<body><!\\u0000>",
             "input": "<body><!\u0000>",
             "output": [
                 [
@@ -221,7 +221,7 @@
             ]
         },
         {
-            "description": "<body><!\u0000filler\u0000text>",
+            "description": "<body><!\\u0000filler\\u0000text>",
             "input": "<body><!\u0000filler\u0000text>",
             "output": [
                 [
@@ -236,7 +236,7 @@
             ]
         },
         {
-            "description": "<body><svg><foreignObject>\u0000filler\u0000text",
+            "description": "<body><svg><foreignObject>\\u0000filler\\u0000text",
             "input": "<body><svg><foreignObject>\u0000filler\u0000text",
             "output": [
                 [
@@ -261,7 +261,7 @@
             ]
         },
         {
-            "description": "<svg>\u0000filler\u0000text",
+            "description": "<svg>\\u0000filler\\u0000text",
             "input": "<svg>\u0000filler\u0000text",
             "output": [
                 [
@@ -276,7 +276,7 @@
             ]
         },
         {
-            "description": "<svg>\u0000<frameset>",
+            "description": "<svg>\\u0000<frameset>",
             "input": "<svg>\u0000<frameset>",
             "output": [
                 [
@@ -296,7 +296,7 @@
             ]
         },
         {
-            "description": "<svg>\u0000 <frameset>",
+            "description": "<svg>\\u0000 <frameset>",
             "input": "<svg>\u0000 <frameset>",
             "output": [
                 [
@@ -316,7 +316,7 @@
             ]
         },
         {
-            "description": "<svg>\u0000a<frameset>",
+            "description": "<svg>\\u0000a<frameset>",
             "input": "<svg>\u0000a<frameset>",
             "output": [
                 [
@@ -336,7 +336,7 @@
             ]
         },
         {
-            "description": "<svg>\u0000</svg><frameset>",
+            "description": "<svg>\\u0000</svg><frameset>",
             "input": "<svg>\u0000</svg><frameset>",
             "output": [
                 [
@@ -360,7 +360,7 @@
             ]
         },
         {
-            "description": "<svg>\u0000 </svg><frameset>",
+            "description": "<svg>\\u0000 </svg><frameset>",
             "input": "<svg>\u0000 </svg><frameset>",
             "output": [
                 [
@@ -384,7 +384,7 @@
             ]
         },
         {
-            "description": "<svg>\u0000a</svg><frameset>",
+            "description": "<svg>\\u0000a</svg><frameset>",
             "input": "<svg>\u0000a</svg><frameset>",
             "output": [
                 [
@@ -536,7 +536,7 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><table><tr><td><math><mtext>\u0000a",
+            "description": "<!DOCTYPE html><table><tr><td><math><mtext>\\u0000a",
             "input": "<!DOCTYPE html><table><tr><td><math><mtext>\u0000a",
             "output": [
                 [
@@ -578,7 +578,7 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><table><tr><td><svg><foreignObject>\u0000a",
+            "description": "<!DOCTYPE html><table><tr><td><svg><foreignObject>\\u0000a",
             "input": "<!DOCTYPE html><table><tr><td><svg><foreignObject>\u0000a",
             "output": [
                 [
@@ -620,7 +620,7 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><math><mi>a\u0000b",
+            "description": "<!DOCTYPE html><math><mi>a\\u0000b",
             "input": "<!DOCTYPE html><math><mi>a\u0000b",
             "output": [
                 [
@@ -647,7 +647,7 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><math><mo>a\u0000b",
+            "description": "<!DOCTYPE html><math><mo>a\\u0000b",
             "input": "<!DOCTYPE html><math><mo>a\u0000b",
             "output": [
                 [
@@ -674,7 +674,7 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><math><mn>a\u0000b",
+            "description": "<!DOCTYPE html><math><mn>a\\u0000b",
             "input": "<!DOCTYPE html><math><mn>a\u0000b",
             "output": [
                 [
@@ -701,7 +701,7 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><math><ms>a\u0000b",
+            "description": "<!DOCTYPE html><math><ms>a\\u0000b",
             "input": "<!DOCTYPE html><math><ms>a\u0000b",
             "output": [
                 [
@@ -728,7 +728,7 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><math><mtext>a\u0000b",
+            "description": "<!DOCTYPE html><math><mtext>a\\u0000b",
             "input": "<!DOCTYPE html><math><mtext>a\u0000b",
             "output": [
                 [
