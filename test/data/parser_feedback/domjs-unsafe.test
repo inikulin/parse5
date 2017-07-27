@@ -46,7 +46,7 @@
             ]
         },
         {
-            "description": "<script>a='\u0000'</script>",
+            "description": "<script>a='\\u0000'</script>",
             "input": "<script>a='\u0000'</script>",
             "output": [
                 [
@@ -65,7 +65,7 @@
             ]
         },
         {
-            "description": "<script type=\"data\"><!--\u0000</script>",
+            "description": "<script type=\"data\"><!--\\u0000</script>",
             "input": "<script type=\"data\"><!--\u0000</script>",
             "output": [
                 [
@@ -86,7 +86,7 @@
             ]
         },
         {
-            "description": "<script type=\"data\"><!--foo\u0000</script>",
+            "description": "<script type=\"data\"><!--foo\\u0000</script>",
             "input": "<script type=\"data\"><!--foo\u0000</script>",
             "output": [
                 [
@@ -107,7 +107,7 @@
             ]
         },
         {
-            "description": "<script type=\"data\"><!-- foo-\u0000</script>",
+            "description": "<script type=\"data\"><!-- foo-\\u0000</script>",
             "input": "<script type=\"data\"><!-- foo-\u0000</script>",
             "output": [
                 [
@@ -128,7 +128,7 @@
             ]
         },
         {
-            "description": "<script type=\"data\"><!-- foo--\u0000</script>",
+            "description": "<script type=\"data\"><!-- foo--\\u0000</script>",
             "input": "<script type=\"data\"><!-- foo--\u0000</script>",
             "output": [
                 [
@@ -267,7 +267,7 @@
             ]
         },
         {
-            "description": "<script type=\"data\"><!--<script>\u0000</script></script>",
+            "description": "<script type=\"data\"><!--<script>\\u0000</script></script>",
             "input": "<script type=\"data\"><!--<script>\u0000</script></script>",
             "output": [
                 [
@@ -288,7 +288,7 @@
             ]
         },
         {
-            "description": "<script type=\"data\"><!--<script>-\u0000</script></script>",
+            "description": "<script type=\"data\"><!--<script>-\\u0000</script></script>",
             "input": "<script type=\"data\"><!--<script>-\u0000</script></script>",
             "output": [
                 [
@@ -309,7 +309,7 @@
             ]
         },
         {
-            "description": "<script type=\"data\"><!--<script>--\u0000</script></script>",
+            "description": "<script type=\"data\"><!--<script>--\\u0000</script></script>",
             "input": "<script type=\"data\"><!--<script>--\u0000</script></script>",
             "output": [
                 [

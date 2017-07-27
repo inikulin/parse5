@@ -11,7 +11,8 @@ function addSlashes(str) {
         .replace(/\t/g, '\\t')
         .replace(/\n/g, '\\n')
         .replace(/\f/g, '\\f')
-        .replace(/\r/g, '\\r');
+        .replace(/\r/g, '\\r')
+        .replace(/\0/g, '\\u0000');
 }
 
 exports.addSlashes = addSlashes;

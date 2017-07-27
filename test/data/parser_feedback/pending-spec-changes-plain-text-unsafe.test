@@ -1,7 +1,7 @@
 {
     "tests": [
         {
-            "description": "<body><table>\u0000filler\u0000text\u0000",
+            "description": "<body><table>\\u0000filler\\u0000text\\u0000",
             "input": "<body><table>\u0000filler\u0000text\u0000",
             "output": [
                 [
