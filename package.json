@@ -58,6 +58,6 @@
     "lib"
   ],
   "dependencies": {
-    "@types/node": "^6.0.46"
+    "@types/node": "*"
   }
 }
