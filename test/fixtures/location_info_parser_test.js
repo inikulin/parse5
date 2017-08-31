@@ -95,9 +95,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             //Then for each node in the tree we run serializer and compare results with the substring
             //obtained via location info from the expected serialization results.
             _test[getFullLocationTestName(test)] = function () {
-                var serializerOpts = {
-                        treeAdapter: treeAdapter
-                    },
+                var serializerOpts = { treeAdapter: treeAdapter },
                     html = escapeString(test.data),
                     lines = html.split(/\r?\n/g),
                     parserOpts = {
@@ -132,7 +130,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             };
         });
 
-    exports['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
+    _test['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
         var html = '</head><div class="test"></div></body></html>',
             opts = {
                 treeAdapter: treeAdapter,
@@ -148,7 +146,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         });
     };
 
-    exports['Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)'] = function () {
+    _test['Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)'] = function () {
         var html = '<p>1<p class="2">3',
             opts = {
                 treeAdapter: treeAdapter,
@@ -156,12 +154,12 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             };
 
         var fragment = parse5.parseFragment(html, opts),
-            firstPLocation = fragment.childNodes[0].__location;
+            firstPLocation = treeAdapter.getChildNodes(fragment)[0].__location;
 
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     };
 
-    exports['Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)'] = function () {
+    _test['Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)'] = function () {
         var html = '<i>1</i>2',
             opts = {
                 treeAdapter: treeAdapter,
@@ -169,12 +167,12 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             };
 
         var fragment = parse5.parseFragment(html, opts),
-            location = fragment.childNodes[0].__location;
+            location = treeAdapter.getChildNodes(fragment)[0].__location;
 
         assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<i>1</i>');
     };
 
-    exports['Regression - Location info not exposed with parseFragment (GH-82)'] = function () {
+    _test['Regression - Location info not exposed with parseFragment (GH-82)'] = function () {
         var html = '<html><head></head><body>foo</body></html>',
             opts = {
                 treeAdapter: treeAdapter,
@@ -183,10 +181,10 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
         var fragment = parse5.parseFragment(html, opts);
 
-        assert.ok(fragment.childNodes[0].__location);
+        assert.ok(treeAdapter.getChildNodes(fragment)[0].__location);
     };
 
-    exports['Regression - location info mixin error when parsing <template> elements (GH-90)'] = function () {
+    _test['Regression - location info mixin error when parsing <template> elements (GH-90)'] = function () {
         var html = '<template>hello</template>',
             opts = {
                 treeAdapter: treeAdapter,
@@ -198,7 +196,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         });
     };
 
-    exports['Regression - location info not attached for empty attributes (GH-96)'] = function () {
+    _test['Regression - location info not attached for empty attributes (GH-96)'] = function () {
         var html = '<div test-attr></div>',
             opts = {
                 treeAdapter: treeAdapter,
@@ -207,16 +205,18 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
         var fragment = parse5.parseFragment(html, opts);
 
-        assert.ok(fragment.childNodes[0].__location.attrs['test-attr']);
+        assert.ok(treeAdapter.getChildNodes(fragment)[0].__location.attrs['test-attr']);
     };
 
-    exports['Regression - location line incorrect when a character is unconsumed (GH-151)'] = function () {
-        var html = ['<html><body>',
+    _test['Regression - location line incorrect when a character is unconsumed (GH-151)'] = function () {
+        var html = [
+                '<html><body>',
                 '<script>',
                 '  var x = window.scrollY <',
                 '      100;',
                 '</script>',
-                '</body></html>'].join('\n'),
+                '</body></html>'
+            ].join('\n'),
             opts = {
                 treeAdapter: treeAdapter,
                 locationInfo: true
@@ -226,7 +226,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             foundScript = false;
 
         walkTree(doc, treeAdapter, function (node) {
-            if (node.name === 'script') {
+            if (treeAdapter.getTagName(node) === HTML.TAG_NAMES.SCRIPT) {
                 foundScript = true;
                 assert.equal(node.__location.endTag.startLine, 5);
             }
@@ -235,7 +235,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
         assert.ok(foundScript);
     };
 
-    exports['Regression - location.startTag should be available if end tag is missing (GH-181)'] = function () {
+    _test['Regression - location.startTag should be available if end tag is missing (GH-181)'] = function () {
         var html = '<p>test',
             opts = {
                 treeAdapter: treeAdapter,
@@ -243,7 +243,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
             };
 
         var fragment = parse5.parseFragment(html, opts),
-            p = fragment.childNodes[0];
+            p = treeAdapter.getChildNodes(fragment)[0];
 
         assertNodeLocation(p, html, html, [html]);
         assertStartTagLocation(p, html, html, [html]);
