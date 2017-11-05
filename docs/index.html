@@ -82,7 +82,7 @@
 					<li><a href="https://github.com/inikulin/parse5">GitHub repository</a></li>
 				</ul>
 				<h2 id="install">Install</h2>
-				<pre><code>$ npm <span class="hljs-keyword">install</span> parse5
+				<pre><code><span class="hljs-meta">$</span><span class="bash"> npm install parse5</span>
 </code></pre><h2 id="which-api-should-i-use-">Which API should I use?</h2>
 				<h3 id="-i-need-to-parse-a-html-string-"><em>&quot;I need to parse a HTML string&quot;</em></h3>
 				<p>Use <a href="globals.html#parse">parse5.parse</a> method.</p>
@@ -109,15 +109,15 @@
 				<p>parse5 package includes a TypeScript definition file. Therefore you don&#39;t need to install any typings to use parse5
 					in TypeScript files. Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
 				appropriate tree format to get access to the properties:</p>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> * as parse5 from <span class="hljs-string">'parse5'</span>;
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> parse5 <span class="hljs-keyword">from</span> <span class="hljs-string">'parse5'</span>;
 
 <span class="hljs-comment">// Using default tree adapter.</span>
-<span class="hljs-keyword">var</span> document1 = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>) as parse5.AST.Default.Document;
+<span class="hljs-keyword">var</span> document1 = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>) <span class="hljs-keyword">as</span> parse5.AST.Default.Document;
 
 <span class="hljs-comment">// Using htmlparser2 tree adapter.</span>
 <span class="hljs-keyword">var</span> document2 = parse5.parse(<span class="hljs-string">'&lt;div&gt;&lt;/div&gt;'</span>, {
     treeAdapter: parse5.TreeAdapters.htmlparser2
-}) as parse5.AST.HtmlParser2.Document;
+}) <span class="hljs-keyword">as</span> parse5.AST.HtmlParser2.Document;
 </code></pre>
 				<p>You can find documentation for interfaces in <a href="globals.html">API reference</a>.</p>
 				<h2 id="faq">FAQ</h2>
@@ -156,13 +156,18 @@
 </code></pre>
 				<p>Just try it in the latest version of your browser before submitting an issue.</p>
 				<h2 id="version-history">Version history</h2>
+				<h3 id="3-0-3">3.0.3</h3>
+				<ul>
+					<li>Fixed: Loosen the dependency version of <code>@types/node</code> (by <a href="https://github.com/gfx">@gfx</a>).</li>
+					<li>Fixed: Incorrect AST generated if empty string fed to <code>ParserStream</code> (GH <a href="https://github.com/inikulin/parse5/issues/195">#195</a>) (by <a href="https://github.com/stevenvachon">@stevenvachon</a>).</li>
+				</ul>
 				<h3 id="3-0-2">3.0.2</h3>
 				<ul>
-					<li>Fixed: <code>location.startTag</code> is not available if end tag is missing (GH <a href="https://github.com/inikulin/parse5/issues/181">#181</a>);</li>
+					<li>Fixed: <code>location.startTag</code> is not available if end tag is missing (GH <a href="https://github.com/inikulin/parse5/issues/181">#181</a>).</li>
 				</ul>
 				<h3 id="3-0-1">3.0.1</h3>
 				<ul>
-					<li>Fixed: <code>MarkupData.Location.col</code> description in TypeScript definition file (GH <a href="https://github.com/inikulin/parse5/issues/170">#170</a>);</li>
+					<li>Fixed: <code>MarkupData.Location.col</code> description in TypeScript definition file (GH <a href="https://github.com/inikulin/parse5/issues/170">#170</a>).</li>
 				</ul>
 				<h3 id="3-0-0">3.0.0</h3>
 				<ul>

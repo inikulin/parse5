@@ -22,7 +22,8 @@ gulp.task('docs', function () {
         .pipe(typedoc({
             includeDeclarations: true,
             excludeExternals: true,
-            ignoreCompilerErrors: false,
+            ignoreCompilerErrors: true,
+            excludePrivate: true,
             mode: 'file',
             readme: './DOC_INDEX.md',
             out: './docs'

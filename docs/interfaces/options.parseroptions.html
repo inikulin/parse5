@@ -97,14 +97,14 @@
 					<div class="tsd-signature tsd-kind-icon">location<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f605e9b/lib/index.d.ts#L63">index.d.ts:63</a></li>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L63">index.d.ts:63</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Enables source code location information for the nodes. When enabled, each node (except root node) has the <code>__location</code> property.
-								In case the node is not an empty element, <code>__location</code> will be <a href="markupdata.elementlocation.html">MarkupData.ElementLocation</a> object, otherwise it&#39;s <a href="markupdata.location.html">MarkupData.Location</a>.
-							If the element was implicitly created by the parser it&#39;s <code>__location</code> property will be null.</p>
+							<p>Enables source code location information. When enabled, each node (except the root node) will have a <code>__location</code> property.
+								If the node is not an empty element, <code>__location</code> will be a <a href="markupdata.elementlocation.html">MarkupData.ElementLocation</a> object, otherwise it will be <a href="markupdata.location.html">MarkupData.Location</a>.
+							If the element was implicitly created by the parser (as part of <a href="https://html.spec.whatwg.org/multipage/syntax.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser">tree correction</a>), its <code>__location</code> property will be <code>undefined</code>.</p>
 						</div>
 						<p><strong>Default:</strong> <code>false</code></p>
 					</div>
@@ -115,7 +115,7 @@
 					<div class="tsd-signature tsd-kind-icon">tree<wbr>Adapter<span class="tsd-signature-symbol">:</span> <a href="ast.treeadapter.html" class="tsd-signature-type">TreeAdapter</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/f605e9b/lib/index.d.ts#L69">index.d.ts:69</a></li>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L69">index.d.ts:69</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">

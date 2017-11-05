@@ -132,12 +132,15 @@ will be parsed as
 Just try it in the latest version of your browser before submitting an issue.
 
 ## Version history
+### 3.0.3
+* Fixed: Loosen the dependency version of `@types/node` (by [@gfx](https://github.com/gfx)).
+* Fixed: Incorrect AST generated if empty string fed to `ParserStream` (GH [#195](https://github.com/inikulin/parse5/issues/195)) (by [@stevenvachon](https://github.com/stevenvachon)).
 
 ### 3.0.2
-* Fixed: `location.startTag` is not available if end tag is missing (GH [#181](https://github.com/inikulin/parse5/issues/181));
+* Fixed: `location.startTag` is not available if end tag is missing (GH [#181](https://github.com/inikulin/parse5/issues/181)).
 
 ### 3.0.1
-* Fixed: `MarkupData.Location.col` description in TypeScript definition file (GH [#170](https://github.com/inikulin/parse5/issues/170));
+* Fixed: `MarkupData.Location.col` description in TypeScript definition file (GH [#170](https://github.com/inikulin/parse5/issues/170)).
 
 ### 3.0.0
 * Added: parse5 now ships with TypeScript definitions from which [new documentation website](http://inikulin.github.io/parse5/) is generated (GH [#125](https://github.com/inikulin/parse5/issues/125)).
