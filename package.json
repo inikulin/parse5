@@ -6,6 +6,7 @@
   "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
   "homepage": "https://github.com/inikulin/parse5",
   "devDependencies": {
+    "@types/node": "*",    
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-benchmark": "^1.1.1",
@@ -58,6 +59,5 @@
     "lib"
   ],
   "dependencies": {
-    "@types/node": "*"
   }
 }
