@@ -71,6 +71,7 @@
 							A <a href="https://nodejs.org/api/stream.html#stream_class_stream_transform">transform stream</a>
 						(which means you can pipe <em>through</em> it, see example).</p>
 					</div>
+					<p><strong> NOTE:</strong> This API is available only for Node.js.</p>
 					<dl class="tsd-comment-tags">
 						<dt>example</dt>
 						<dd><pre><code class="lang-js">
@@ -131,7 +132,9 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="saxparser.html#readable" class="tsd-kind-icon">readable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="saxparser.html#readablehighwatermark" class="tsd-kind-icon">readable<wbr>High<wbr>Water<wbr>Mark</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="saxparser.html#writable" class="tsd-kind-icon">writable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="saxparser.html#writablehighwatermark" class="tsd-kind-icon">writable<wbr>High<wbr>Water<wbr>Mark</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="saxparser.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
 							</ul>
 						</section>
@@ -193,7 +196,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Overrides Transform.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L966">index.d.ts:966</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L972">index.d.ts:972</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -223,7 +226,18 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 					<aside class="tsd-sources">
 						<p>Inherited from Readable.readable</p>
 						<ul>
-							<li>Defined in @types/node/index.d.ts:5109</li>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5306</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="readablehighwatermark" class="tsd-anchor"></a>
+					<h3>readable<wbr>High<wbr>Water<wbr>Mark</h3>
+					<div class="tsd-signature tsd-kind-icon">readable<wbr>High<wbr>Water<wbr>Mark<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Readable.readableHighWaterMark</p>
+						<ul>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5307</li>
 						</ul>
 					</aside>
 				</section>
@@ -234,7 +248,18 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 					<aside class="tsd-sources">
 						<p>Inherited from Duplex.writable</p>
 						<ul>
-							<li>Defined in @types/node/index.d.ts:5286</li>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5485</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="writablehighwatermark" class="tsd-anchor"></a>
+					<h3>writable<wbr>High<wbr>Water<wbr>Mark</h3>
+					<div class="tsd-signature tsd-kind-icon">writable<wbr>High<wbr>Water<wbr>Mark<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Duplex.writableHighWaterMark</p>
+						<ul>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5486</li>
 						</ul>
 					</aside>
 				</section>
@@ -245,7 +270,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 					<aside class="tsd-sources">
 						<p>Inherited from EventEmitter.defaultMaxListeners</p>
 						<ul>
-							<li>Defined in @types/node/index.d.ts:812</li>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:907</li>
 						</ul>
 					</aside>
 				</section>
@@ -264,7 +289,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Duplex._destroy</p>
 								<p>Overrides Readable._destroy</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5290</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5490</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -291,7 +316,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex._final</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5291</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5491</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -315,7 +340,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable._read</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5111</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5309</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -339,7 +364,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Transform._transform</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5309</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5509</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -369,7 +394,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex._write</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5288</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5488</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -417,7 +442,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex._writev</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5289</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5489</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -469,7 +494,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5133</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5331</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -519,7 +544,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5134</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5332</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -556,7 +581,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5135</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5333</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -587,7 +612,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5136</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5334</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -624,7 +649,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5137</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5335</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -655,7 +680,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5138</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5336</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -686,7 +711,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5139</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5337</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -731,7 +756,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.cork</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5298</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5498</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -750,7 +775,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Transform.destroy</p>
 								<p>Overrides Readable.destroy</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5310</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5510</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -780,7 +805,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5141</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5339</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -799,7 +824,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5142</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5340</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -815,7 +840,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5143</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5341</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -834,7 +859,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5144</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5342</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -850,7 +875,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5145</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5343</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -866,7 +891,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5146</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5344</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -886,7 +911,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 					<a name="end" class="tsd-anchor"></a>
 					<h3>end</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span>cb<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span>chunk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, cb<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span>chunk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, cb<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
@@ -895,16 +920,22 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.end</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5295</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5495</li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> cb: <span class="tsd-signature-type">Function</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.end</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5296</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5496</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -922,7 +953,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.end</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5297</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5497</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -953,7 +984,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from EventEmitter.eventNames</p>
 								<p>Overrides EventEmitter.eventNames</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:825</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:920</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -972,7 +1003,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from EventEmitter.getMaxListeners</p>
 								<p>Overrides EventEmitter.getMaxListeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:822</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:917</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -990,7 +1021,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.isPaused</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5116</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5314</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -1009,7 +1040,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<p>Overrides EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:826</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:921</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1034,7 +1065,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from EventEmitter.listeners</p>
 								<p>Overrides EventEmitter.listeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:823</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:918</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1063,7 +1094,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Overrides Readable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L980">index.d.ts:980</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L986">index.d.ts:986</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1125,7 +1156,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Overrides Readable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L987">index.d.ts:987</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L993">index.d.ts:993</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1175,7 +1206,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Overrides Readable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L994">index.d.ts:994</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L1000">index.d.ts:1000</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1225,7 +1256,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Overrides Readable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L1001">index.d.ts:1001</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L1007">index.d.ts:1007</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1275,7 +1306,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Overrides Readable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L1010">index.d.ts:1010</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L1016">index.d.ts:1016</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1337,7 +1368,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Overrides Readable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L1014">index.d.ts:1014</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L1020">index.d.ts:1020</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1375,7 +1406,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5155</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5353</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1412,7 +1443,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5156</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5354</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1443,7 +1474,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5157</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5355</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1480,7 +1511,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5158</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5356</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1511,7 +1542,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5159</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5357</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1542,7 +1573,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5160</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5358</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1587,7 +1618,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.pause</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5114</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5312</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -1605,7 +1636,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from internal.pipe</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5094</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5291</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1649,7 +1680,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5162</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5360</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1686,7 +1717,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5163</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5361</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1717,7 +1748,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5164</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5362</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1754,7 +1785,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5165</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5363</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1785,7 +1816,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5166</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5364</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1816,7 +1847,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5167</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5365</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1867,7 +1898,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5169</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5367</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1904,7 +1935,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5170</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5368</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1935,7 +1966,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5171</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5369</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1972,7 +2003,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5172</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5370</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2003,7 +2034,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5173</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5371</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2034,7 +2065,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5174</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5372</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2079,7 +2110,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.push</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5120</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5318</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2106,7 +2137,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.read</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5112</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5310</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2131,7 +2162,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from EventEmitter.removeAllListeners</p>
 								<p>Overrides EventEmitter.removeAllListeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:820</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:915</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2161,7 +2192,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5176</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5374</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2198,7 +2229,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5177</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5375</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2229,7 +2260,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5178</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5376</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2266,7 +2297,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5179</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5377</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2297,7 +2328,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5180</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5378</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2328,7 +2359,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from Readable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5181</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5379</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2373,7 +2404,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.resume</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5115</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5313</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -2391,7 +2422,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.setDefaultEncoding</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5294</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5494</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2415,7 +2446,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.setEncoding</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5113</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5311</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2440,7 +2471,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<p>Inherited from EventEmitter.setMaxListeners</p>
 								<p>Overrides EventEmitter.setMaxListeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:821</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:916</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2463,7 +2494,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L1043">index.d.ts:1043</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L1049">index.d.ts:1049</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2511,7 +2542,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.uncork</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5299</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5499</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -2529,7 +2560,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.unpipe</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5117</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5315</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -2559,7 +2590,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.unshift</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5118</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5316</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2583,7 +2614,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Readable.wrap</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5119</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5317</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2608,7 +2639,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.write</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5292</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5492</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2626,7 +2657,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from Duplex.write</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5293</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5493</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2656,7 +2687,7 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 							<aside class="tsd-sources">
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:811</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:906</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2702,7 +2733,13 @@ http.get(<span class="hljs-string">'http://google.com'</span>, res =&gt; {
 								<a href="saxparser.html#readable" class="tsd-kind-icon">readable</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="saxparser.html#readablehighwatermark" class="tsd-kind-icon">readable<wbr>High<wbr>Water<wbr>Mark</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="saxparser.html#writable" class="tsd-kind-icon">writable</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="saxparser.html#writablehighwatermark" class="tsd-kind-icon">writable<wbr>High<wbr>Water<wbr>Mark</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="saxparser.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>

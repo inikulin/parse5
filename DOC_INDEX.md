@@ -59,8 +59,22 @@ with one of two [built-in tree formats](globals.html#treeadapters).
 Implement [TreeAdapter](interfaces/ast.treeadapter.html) interface and then use [treeAdapter](#-i-need-to-switch-output-tree-format-) option to pass it to parser or serializer.
 
 ## TypeScript definitions
-parse5 package includes a TypeScript definition file. Therefore you don't need to install any typings to use parse5
-in TypeScript files. Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
+parse5 package includes a TypeScript definition file.
+Due to [multiple issues](https://github.com/inikulin/parse5/issues/235) typings are not enabled
+by default. To use built-in parse5 typings you need first install [@types/node](https://www.npmjs.com/package/@types/node)
+if you don't have it installed yet and add following lines to your `tsconfig.json` file:
+
+```json
+// snip...
+"compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "parse5": ["./node_modules/parse5/lib/index.d.ts"]
+    },
+    // snip...
+```
+
+Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
 appropriate tree format to get access to the properties:
 
 ```typescript
@@ -132,6 +146,17 @@ will be parsed as
 Just try it in the latest version of your browser before submitting an issue.
 
 ## Version history
+### 4.0.0
+This is a major release that delivers few minor (but breaking) changes to workaround recently appeared
+issues with TypeScript Node.js typings versioning and usage of parse5 in environments that are
+distinct from Node.js (see https://github.com/inikulin/parse5/issues/235 for the details).
+
+* Updated (**breaking**): TypeScript were disabled by default. See [TypeScript definitions](#typescript-definitions) section
+for the details on how to enable them.
+* Updated: API that depends on Node.js specific (namely `ParserStream`, `PlainTextConversionStream`,
+`SerializerStream`, `SAXParser`) is now lazily loaded. That enables bundling of the basic functionality
+for other platforms (e.g. for browsers via webpack).
+
 ### 3.0.3
 * Fixed: Loosen the dependency version of `@types/node` (by [@gfx](https://github.com/gfx)).
 * Fixed: Incorrect AST generated if empty string fed to `ParserStream` (GH [#195](https://github.com/inikulin/parse5/issues/195)) (by [@stevenvachon](https://github.com/stevenvachon)).

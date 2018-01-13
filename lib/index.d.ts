@@ -837,6 +837,8 @@ export function serialize(node: AST.Node, options?: Options.SerializerOptions): 
  * Streaming HTML parser with scripting support.
  * A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
  *
+ * ** NOTE:** This API is available only for Node.js.
+ *
  * @example
  * ```js
  *
@@ -914,6 +916,8 @@ export class ParserStream extends stream.Writable {
  * Converts plain text files into HTML document as required by [HTML specification](https://html.spec.whatwg.org/#read-text).
  * A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
  *
+ * ** NOTE:** This API is available only for Node.js.
+ *
  * @example
  * ```js
  *
@@ -939,6 +943,8 @@ export class PlainTextConversionStream extends ParserStream { }
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parser.
  * A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform)
  * (which means you can pipe *through* it, see example).
+ *
+ * ** NOTE:** This API is available only for Node.js.
  *
  * @example
  * ```js
@@ -1050,6 +1056,8 @@ export class SAXParser extends stream.Transform {
 /**
  * Streaming AST node to an HTML serializer.
  * A [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable).
+ *
+ * ** NOTE:** This API is available only for Node.js.
  *
  * @example
  * ```js

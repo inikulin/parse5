@@ -106,8 +106,19 @@
 				<h3 id="-i-need-to-implement-my-own-tree-format-"><em>&quot;I need to implement my own tree format&quot;</em></h3>
 				<p>Implement <a href="interfaces/ast.treeadapter.html">TreeAdapter</a> interface and then use <a href="#-i-need-to-switch-output-tree-format-">treeAdapter</a> option to pass it to parser or serializer.</p>
 				<h2 id="typescript-definitions">TypeScript definitions</h2>
-				<p>parse5 package includes a TypeScript definition file. Therefore you don&#39;t need to install any typings to use parse5
-					in TypeScript files. Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
+				<p>parse5 package includes a TypeScript definition file.
+					Due to <a href="https://github.com/inikulin/parse5/issues/235">multiple issues</a> typings are not enabled
+					by default. To use built-in parse5 typings you need first install <a href="https://www.npmjs.com/package/@types/node">@types/node</a>
+				if you don&#39;t have it installed yet and add following lines to your <code>tsconfig.json</code> file:</p>
+				<pre><code class="lang-json">// snip...
+&quot;compilerOptions&quot;: {
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;paths&quot;: {
+      &quot;parse5&quot;: [&quot;./node_modules/parse5/lib/index.d.ts&quot;]
+    },
+    // snip...
+</code></pre>
+				<p>Note that since parse5 supports multiple output tree formats you need to manually cast generic node interfaces to the
 				appropriate tree format to get access to the properties:</p>
 				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> parse5 <span class="hljs-keyword">from</span> <span class="hljs-string">'parse5'</span>;
 
@@ -156,6 +167,17 @@
 </code></pre>
 				<p>Just try it in the latest version of your browser before submitting an issue.</p>
 				<h2 id="version-history">Version history</h2>
+				<h3 id="4-0-0">4.0.0</h3>
+				<p>This is a major release that delivers few minor (but breaking) changes to workaround recently appeared
+					issues with TypeScript Node.js typings versioning and usage of parse5 in environments that are
+				distinct from Node.js (see <a href="https://github.com/inikulin/parse5/issues/235">https://github.com/inikulin/parse5/issues/235</a> for the details).</p>
+				<ul>
+					<li>Updated (<strong>breaking</strong>): TypeScript were disabled by default. See <a href="#typescript-definitions">TypeScript definitions</a> section
+					for the details on how to enable them.</li>
+					<li>Updated: API that depends on Node.js specific (namely <code>ParserStream</code>, <code>PlainTextConversionStream</code>,
+						<code>SerializerStream</code>, <code>SAXParser</code>) is now lazily loaded. That enables bundling of the basic functionality
+					for other platforms (e.g. for browsers via webpack).</li>
+				</ul>
 				<h3 id="3-0-3">3.0.3</h3>
 				<ul>
 					<li>Fixed: Loosen the dependency version of <code>@types/node</code> (by <a href="https://github.com/gfx">@gfx</a>).</li>

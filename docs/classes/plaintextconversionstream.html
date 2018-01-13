@@ -70,6 +70,7 @@
 						<p>Converts plain text files into HTML document as required by <a href="https://html.spec.whatwg.org/#read-text">HTML specification</a>.
 						A <a href="https://nodejs.org/api/stream.html#stream_class_stream_writable">writable stream</a>.</p>
 					</div>
+					<p><strong> NOTE:</strong> This API is available only for Node.js.</p>
 					<dl class="tsd-comment-tags">
 						<dt>example</dt>
 						<dd><pre><code class="lang-js">
@@ -123,6 +124,7 @@ file.pipe(converter);
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="plaintextconversionstream.html#document" class="tsd-kind-icon">document</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="plaintextconversionstream.html#writable" class="tsd-kind-icon">writable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="plaintextconversionstream.html#writablehighwatermark" class="tsd-kind-icon">writable<wbr>High<wbr>Water<wbr>Mark</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="plaintextconversionstream.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
 							</ul>
 						</section>
@@ -173,7 +175,7 @@ file.pipe(converter);
 								<p>Inherited from <a href="parserstream.html">ParserStream</a>.<a href="parserstream.html#constructor">constructor</a></p>
 								<p>Overrides Writable.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L858">index.d.ts:858</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L860">index.d.ts:860</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -203,7 +205,7 @@ file.pipe(converter);
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="parserstream.html">ParserStream</a>.<a href="parserstream.html#document">document</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L867">index.d.ts:867</a></li>
+							<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L869">index.d.ts:869</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -219,7 +221,18 @@ file.pipe(converter);
 					<aside class="tsd-sources">
 						<p>Inherited from Writable.writable</p>
 						<ul>
-							<li>Defined in @types/node/index.d.ts:5195</li>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5393</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="writablehighwatermark" class="tsd-anchor"></a>
+					<h3>writable<wbr>High<wbr>Water<wbr>Mark</h3>
+					<div class="tsd-signature tsd-kind-icon">writable<wbr>High<wbr>Water<wbr>Mark<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Writable.writableHighWaterMark</p>
+						<ul>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5394</li>
 						</ul>
 					</aside>
 				</section>
@@ -230,7 +243,7 @@ file.pipe(converter);
 					<aside class="tsd-sources">
 						<p>Inherited from EventEmitter.defaultMaxListeners</p>
 						<ul>
-							<li>Defined in @types/node/index.d.ts:812</li>
+							<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:907</li>
 						</ul>
 					</aside>
 				</section>
@@ -248,7 +261,7 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable._destroy</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5199</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5398</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -275,7 +288,7 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable._final</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5200</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5399</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -299,7 +312,7 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable._write</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5197</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5396</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -347,7 +360,7 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable._writev</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5198</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5397</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -399,7 +412,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5221</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5420</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -450,7 +463,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5222</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5421</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -481,7 +494,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5223</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5422</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -512,7 +525,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5224</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5423</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -549,7 +562,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5225</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5424</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -580,7 +593,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5226</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5425</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -617,7 +630,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5227</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5426</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -662,7 +675,7 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.cork</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5207</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5406</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -680,7 +693,7 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.destroy</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5209</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5408</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -711,7 +724,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5229</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5428</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -730,7 +743,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5230</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5429</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -746,7 +759,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5231</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5430</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -765,7 +778,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5232</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5431</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -784,7 +797,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5233</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5432</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -800,7 +813,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5234</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5433</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -819,7 +832,7 @@ file.pipe(converter);
 								<p>Inherited from Writable.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5235</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5434</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -839,7 +852,7 @@ file.pipe(converter);
 					<a name="end" class="tsd-anchor"></a>
 					<h3>end</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span>cb<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span>chunk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, cb<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span>chunk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, encoding<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, cb<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
@@ -848,16 +861,22 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.end</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5204</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5403</li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> cb: <span class="tsd-signature-type">Function</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.end</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5205</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5404</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -875,7 +894,7 @@ file.pipe(converter);
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.end</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5206</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5405</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -906,7 +925,7 @@ file.pipe(converter);
 								<p>Inherited from EventEmitter.eventNames</p>
 								<p>Overrides EventEmitter.eventNames</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:825</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:920</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -925,7 +944,7 @@ file.pipe(converter);
 								<p>Inherited from EventEmitter.getMaxListeners</p>
 								<p>Overrides EventEmitter.getMaxListeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:822</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:917</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -944,7 +963,7 @@ file.pipe(converter);
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<p>Overrides EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:826</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:921</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -969,7 +988,7 @@ file.pipe(converter);
 								<p>Inherited from EventEmitter.listeners</p>
 								<p>Overrides EventEmitter.listeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:823</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:918</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -995,7 +1014,7 @@ file.pipe(converter);
 								<p>Inherited from <a href="parserstream.html">ParserStream</a>.<a href="parserstream.html#on">on</a></p>
 								<p>Overrides Writable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L902">index.d.ts:902</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L904">index.d.ts:904</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1111,7 +1130,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from <a href="parserstream.html">ParserStream</a>.<a href="parserstream.html#on">on</a></p>
 								<p>Overrides Writable.on</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/8d38fda/lib/index.d.ts#L906">index.d.ts:906</a></li>
+									<li>Defined in <a href="https://github.com/inikulin/parse5/blob/7ff6384/lib/index.d.ts#L908">index.d.ts:908</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1150,7 +1169,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5245</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5444</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1187,7 +1206,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5246</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5445</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1218,7 +1237,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5247</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5446</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1249,7 +1268,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5248</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5447</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1286,7 +1305,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5249</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5448</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1317,7 +1336,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5250</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5449</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1354,7 +1373,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5251</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5450</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1399,7 +1418,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 							<aside class="tsd-sources">
 								<p>Inherited from internal.pipe</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5094</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5291</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1444,7 +1463,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5253</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5452</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1481,7 +1500,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5254</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5453</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1512,7 +1531,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5255</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5454</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1543,7 +1562,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5256</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5455</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1580,7 +1599,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5257</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5456</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1611,7 +1630,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5258</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5457</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1648,7 +1667,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5259</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5458</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1700,7 +1719,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5261</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5460</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1737,7 +1756,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5262</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5461</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1768,7 +1787,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5263</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5462</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1799,7 +1818,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5264</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5463</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1836,7 +1855,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5265</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5464</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1867,7 +1886,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5266</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5465</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1904,7 +1923,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5267</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5466</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1950,7 +1969,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from EventEmitter.removeAllListeners</p>
 								<p>Overrides EventEmitter.removeAllListeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:820</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:915</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1981,7 +2000,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5269</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5468</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2018,7 +2037,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5270</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5469</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2049,7 +2068,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5271</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5470</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2080,7 +2099,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5272</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5471</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2117,7 +2136,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5273</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5472</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2148,7 +2167,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5274</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5473</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2185,7 +2204,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from Writable.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5275</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5474</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2230,7 +2249,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.setDefaultEncoding</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5203</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5402</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2255,7 +2274,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 								<p>Inherited from EventEmitter.setMaxListeners</p>
 								<p>Overrides EventEmitter.setMaxListeners</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:821</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:916</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2279,7 +2298,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.uncork</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5208</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5407</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -2298,7 +2317,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.write</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5201</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5400</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2316,7 +2335,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 							<aside class="tsd-sources">
 								<p>Inherited from Writable.write</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:5202</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:5401</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2346,7 +2365,7 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 							<aside class="tsd-sources">
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in @types/node/index.d.ts:811</li>
+									<li>Defined in @types/node/index.d.ts:@types/node/index.d.ts:906</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2390,6 +2409,9 @@ parser.end(<span class="hljs-string">'&lt;script src="example.com/script.js"&gt;
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="plaintextconversionstream.html#writable" class="tsd-kind-icon">writable</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="plaintextconversionstream.html#writablehighwatermark" class="tsd-kind-icon">writable<wbr>High<wbr>Water<wbr>Mark</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="plaintextconversionstream.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>
