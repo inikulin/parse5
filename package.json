@@ -45,6 +45,7 @@
   ],
   "license": "MIT",
   "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git://github.com/inikulin/parse5.git"
