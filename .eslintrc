@@ -17,7 +17,7 @@
     "no-loop-func": 0,
     "no-multi-str": 2,
     "no-native-reassign": 2,
-    "no-new": 0,
+    "no-new": 2,
     "no-new-func": 2,
     "no-new-object": 2,
     "no-new-wrappers": 2,
@@ -67,6 +67,7 @@
     "curly": [2, "multi-or-nest"],
     "dot-notation": 0,
     "no-else-return": 2,
+    "linebreak-style": [2, "unix"],
     "no-multi-spaces": [2, {
       "exceptions": {
         "VariableDeclarator": true,

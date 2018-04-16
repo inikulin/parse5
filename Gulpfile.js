@@ -103,7 +103,7 @@ gulp.task('test', ['lint', 'test-type-definitions'], function () {
 // Scripts
 gulp.task('update-feedback-tests', function () {
     return gulp
-        .src(['test/data/tree_construction/*.dat', 'test/data/tree_construction_regression/*.dat'])
+        .src(['test/data/html5lib-tests/tree-construction/*.dat', 'test/data/tree_construction_regression/*.dat'])
         .pipe(through.obj(function (file, encoding, callback) {
             var test = generateParserFeedbackTest(file.contents.toString());
 

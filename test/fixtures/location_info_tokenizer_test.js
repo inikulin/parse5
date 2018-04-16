@@ -3,6 +3,7 @@
 var assert = require('assert'),
     Tokenizer = require('../../lib/tokenizer'),
     LocationInfoTokenizerMixin = require('../../lib/extensions/location_info/tokenizer_mixin'),
+    Mixin = require('../../lib/utils/mixin'),
     testUtils = require('../test_utils');
 
 exports['Location info (Tokenizer)'] = function () {
@@ -66,7 +67,7 @@ exports['Location info (Tokenizer)'] = function () {
             tokenizer = new Tokenizer(),
             lastChunkIdx = testCase.htmlChunks.length - 1;
 
-        new LocationInfoTokenizerMixin(tokenizer);
+        Mixin.install(tokenizer, LocationInfoTokenizerMixin);
 
         for (var i = 0; i < testCase.htmlChunks.length; i++)
             tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);
@@ -86,11 +87,11 @@ exports['Location info (Tokenizer)'] = function () {
             assert.strictEqual(actual, testCase.htmlChunks[j]);
 
             //Line/col
-            actual = testUtils.getSubstringByLineCol(lines, token.location.line, token.location.col);
+            actual = testUtils.getSubstringByLineCol(lines, token.location);
 
             var expected = testUtils.normalizeNewLine(testCase.htmlChunks[j]);
 
-            assert.strictEqual(actual.indexOf(expected), 0);
+            assert.strictEqual(actual, expected);
 
             token = tokenizer.getNextToken();
             j++;

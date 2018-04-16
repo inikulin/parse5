@@ -77,6 +77,7 @@ var parser = new parse5.ParserStream();
 
 parser = new parse5.ParserStream({ locationInfo: true });
 parser = new parse5.ParserStream({ treeAdapter: parse5.treeAdapters.default });
+parser = new parse5.ParserStream({ scriptingEnabled: false });
 parser = new parse5.ParserStream({ locationInfo: true, treeAdapter: parse5.treeAdapters.default });
 parser = new parse5.ParserStream({ locationInfo: true, treeAdapter: parse5.treeAdapters.htmlparser2 });
 

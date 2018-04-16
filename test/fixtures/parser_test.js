@@ -7,7 +7,7 @@ var assert = require('assert'),
     testUtils = require('../test_utils');
 
 function getFullTestName(test) {
-    return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - ', test.input].join('');
+    return ['Parser(', test.dirName, ') - ', test.idx, '.', test.setName, ' - `', test.input, '` (line ', test.lineNum, ')'].join('');
 }
 
 function assertFragmentParsing(input, fragmentContext, expected, opts) {
@@ -36,23 +36,49 @@ function assertParsing(input, expected, opts) {
     assert.strictEqual(actual, expected, msg);
 }
 
+function assertErrors(actual, expected) {
+    assert.deepEqual(actual.sort(), expected.sort());
+}
+
 testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeAdapter) {
     //Here we go..
     testUtils
         .loadTreeConstructionTestData([
-            path.join(__dirname, '../data/tree_construction'),
+            path.join(__dirname, '../data/html5lib-tests/tree-construction'),
             path.join(__dirname, '../data/tree_construction_regression')
         ], treeAdapter)
         .forEach(function (test) {
             _test[getFullTestName(test)] = function () {
-                var opts = {treeAdapter: treeAdapter};
+                var errs = [],
+                    opts = {
+                        scriptingEnabled: test.scriptingEnabled,
+                        treeAdapter: treeAdapter,
 
-                if (test.fragmentContext)
+                        onParseError: function (err) {
+                            var errStr = '(' + err.startLine + ':' + err.startCol;
+
+                            // NOTE: use ranges for token errors
+                            if (err.startLine !== err.endLine || err.startCol !== err.endCol)
+                                errStr += '-' + err.endLine + ':' + err.endCol;
+
+                            errStr += ') ' + err.code;
+
+                            errs.push(errStr);
+                        }
+                    };
+
+                if (test.fragmentContext) {
                     assertFragmentParsing(test.input, test.fragmentContext, test.expected, opts);
+                    assertErrors(errs, test.expectedErrors);
+                }
 
                 else {
                     assertStreamingParsing(test.input, test.expected, opts);
+                    assertErrors(errs, test.expectedErrors);
+
+                    errs = [];
                     assertParsing(test.input, test.expected, opts);
+                    assertErrors(errs, test.expectedErrors);
                 }
             };
         });
@@ -61,7 +87,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function (_test, treeA
 
 exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function () {
     var html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>',
-        document = parse5.parse(html, {treeAdapter: parse5.treeAdapters.htmlparser2});
+        document = parse5.parse(html, { treeAdapter: parse5.treeAdapters.htmlparser2 });
 
     assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
 };
@@ -86,7 +112,7 @@ exports['Regression - Incorrect arguments fallback for the parser.parseFragment 
     test: function () {
         var fragmentContext = parse5.treeAdapters.default.createElement('div'),
             html = '<script></script>',
-            opts = {locationInfo: true};
+            opts = { locationInfo: true };
 
         var args = parse5.parseFragment(fragmentContext, html, opts);
 
@@ -120,7 +146,7 @@ exports["Regression - Don't inherit from Object when creating collections (GH-11
     },
 
     test: function () {
-        var fragment = parse5.parseFragment('<div id="123">', {treeAdapter: parse5.treeAdapters.htmlparser2});
+        var fragment = parse5.parseFragment('<div id="123">', { treeAdapter: parse5.treeAdapters.htmlparser2 });
 
         assert.strictEqual(parse5.treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
     }

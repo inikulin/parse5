@@ -1,4 +1,9 @@
 language: node_js
 sudo: false
+before_install:
+  - cd ../
+  - git clone https://github.com/HTMLParseErrorWG/html5lib-tests
+  - cd -
+
 node_js:
   - stable

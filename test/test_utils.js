@@ -130,9 +130,9 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
         curDirective = '',
         curDescr = null;
 
-    testSet.split(/\r?\n/).forEach(function (line) {
+    testSet.split(/\r?\n/).forEach(function (line, idx) {
         if (line === '#data') {
-            curDescr = {};
+            curDescr = {'#line': idx + 1};
             testDescrs.push(curDescr);
         }
 
@@ -145,20 +145,16 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
             curDescr[curDirective].push(line);
     });
 
-    // NOTE: skip tests with the scripting disabled, since we are always act as the
-    // interactive user agent.
-    testDescrs = testDescrs.filter(function (descr) {
-        return !descr['#script-off'];
-    });
-
     return testDescrs.map(function (descr) {
         var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
         return {
-            input: descr['#data'].join('\r\n'),
+            input: descr['#data'].join('\n'),
             expected: descr['#document'].join('\n'),
-            expectedErrors: descr['#errors'],
+            expectedErrors: descr['#new-errors'] || [],
             disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
+            lineNum: descr['#line'],
+            scriptingEnabled: !descr['#script-off'],
             fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter)
         };
     });
@@ -174,6 +170,9 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
             dirName = path.basename(dataDirPath);
 
         testSetFileNames.forEach(function (fileName) {
+            if (path.extname(fileName) !== '.dat')
+                return;
+
             var filePath = path.join(dataDirPath, fileName),
                 testSet = fs.readFileSync(filePath, 'utf-8'),
                 setName = fileName.replace('.dat', '');
@@ -336,11 +335,15 @@ exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
     };
 };
 
-exports.getSubstringByLineCol = function (lines, line, col) {
-    return lines
-        .slice(line - 1)
-        .join('\n')
-        .substring(col - 1);
+exports.getSubstringByLineCol = function (lines, loc) {
+    lines = lines.slice(loc.startLine - 1, loc.endLine);
+
+    var last = lines.length - 1;
+
+    lines[last] = lines[last].substring(0, loc.endCol - 1);
+    lines[0] = lines[0].substring(loc.startCol - 1);
+
+    return lines.join('\n');
 };
 
 exports.convertTokenToHtml5Lib = function (token) {
