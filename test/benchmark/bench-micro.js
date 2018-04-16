@@ -9,7 +9,7 @@ var path = require('path'),
 global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
 global.micro = testUtils
-    .loadTreeConstructionTestData([path.join(__dirname, '../data/tree_construction')], workingCopy.treeAdapters.default)
+    .loadTreeConstructionTestData([path.join(__dirname, '../data/html5lib-tests/tree-construction')], workingCopy.treeAdapters.default)
     .filter(function (test) {
         //NOTE: this test caused stack overflow in parse5 v1.x
         return test.input !== '<button><p><button>';

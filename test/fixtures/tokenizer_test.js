@@ -184,7 +184,7 @@ function getFullTestName(kind, test) {
 }
 
 var suites = [
-    {name: 'Tokenizer', dir: path.join(__dirname, '../../../html5lib-tests/tokenizer'), withFeedback: false},
+    {name: 'Tokenizer', dir: path.join(__dirname, '../data/html5lib-tests/tokenizer'), withFeedback: false},
     {name: 'Parser feedback', dir: path.join(__dirname, '../data/parser_feedback'), withFeedback: true}
 ];
 
