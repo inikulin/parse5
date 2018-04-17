@@ -6,8 +6,9 @@ class RadixTree {
     constructor(src) {
         this.root = new Node(null);
 
-        for (const entity of Object.keys(src))
+        for (const entity of Object.keys(src)) {
             this._addEntity(entity, src[entity].codepoints);
+        }
 
         return this.root;
     }
@@ -22,10 +23,7 @@ class RadixTree {
     static _decoupleSurrogatePair(cp) {
         cp -= 0x10000;
 
-        return [
-            cp >>> 10 & 0x3FF | 0xD800,
-            0xDC00 | cp & 0x3FF
-        ];
+        return [((cp >>> 10) & 0x3ff) | 0xd800, 0xdc00 | (cp & 0x3ff)];
     }
 
     // Before:
@@ -44,11 +42,11 @@ class RadixTree {
     static _appendNewDataBranch(node, key, filter, data) {
         const newNode = new Node(data);
 
-        if (filter.length)
+        if (filter.length) {
             node.addEdge(key, filter, newNode);
-
-        else
+        } else {
             node.addNode(key, newNode);
+        }
     }
 
     // Before:
@@ -70,10 +68,9 @@ class RadixTree {
         if (newFilter.length) {
             edge.filter = newFilter;
             edge.node = newNode;
-        }
-
-        else
+        } else {
             edge.parent.addNode(edge.parentKey, newNode);
+        }
 
         return newNode;
     }
@@ -139,12 +136,18 @@ class RadixTree {
 
             const cp = cps[i];
 
-            if (cp === filterCp)
+            if (cp === filterCp) {
                 commonPrefix.push(cp);
-
-            else {
-                RadixTree._branchEdgeWithNewData(edge, commonPrefix, cp, filterCp, cps.slice(i + 1), filter.slice(j +
-                                                                                                                  1), data);
+            } else {
+                RadixTree._branchEdgeWithNewData(
+                    edge,
+                    commonPrefix,
+                    cp,
+                    filterCp,
+                    cps.slice(i + 1),
+                    filter.slice(j + 1),
+                    data
+                );
                 return null;
             }
         }
@@ -155,8 +158,9 @@ class RadixTree {
     _addEntity(entity, data) {
         const cps = RadixTree._entityToCodePointsArray(entity);
 
-        if (data.length === 1 && data[0] > 0xFFFF)
+        if (data.length === 1 && data[0] > 0xffff) {
             data = RadixTree._decoupleSurrogatePair(data[0]);
+        }
 
         for (let i = 0, current = this.root; i < cps.length; i++) {
             const cp = cps[i];
@@ -165,26 +169,24 @@ class RadixTree {
                 const next = current.branches && current.branches[cp];
 
                 // NOTE: Iterate to next node/edge
-                if (next)
+                if (next) {
                     current = next;
-
+                }
                 // NOTE: We can't iterate to next node, so we just create a new branch.
                 else {
                     RadixTree._appendNewDataBranch(current, cp, cps.slice(i + 1), data);
                     break;
                 }
-            }
-
-            else {
+            } else {
                 const nextIdx = RadixTree._tryAddDataIntoEdge(current, cps, i, data);
 
                 if (nextIdx !== null) {
                     // NOTE: We've passed through, nothing was added. Continue with next node.
                     i = nextIdx;
                     current = current.node;
-                }
-                else
+                } else {
                     break;
+                }
             }
         }
     }

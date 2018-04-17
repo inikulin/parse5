@@ -16,16 +16,15 @@ module.exports = {
         {
             name: 'Working copy',
 
-            fn: function () {
+            fn: function() {
                 workingCopy.parse(hugePage);
             }
         },
         {
             name: 'Upstream',
-            fn: function () {
+            fn: function() {
                 upstreamParser.parse(hugePage);
             }
         }
     ]
 };
-

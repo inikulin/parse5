@@ -16,8 +16,9 @@ class ArrayMappedRadixTree {
 
         this._convertNode(radixTree);
 
-        for (const n of this.arr)
+        for (const n of this.arr) {
             assert(n <= MAX_UINT16, `${n} overflows uint16`);
+        }
 
         return this.arr;
     }
@@ -37,19 +38,20 @@ class ArrayMappedRadixTree {
         if (data) {
             marker |= HAS_DATA_FLAG;
 
-            if (data.length === 2)
+            if (data.length === 2) {
                 marker |= DATA_DUPLET_FLAG;
+            }
         }
 
-        if (branches)
+        if (branches) {
             marker |= HAS_BRANCHES_FLAG;
+        }
 
         this.arr.push(marker);
     }
 
     _writeBranches(branches) {
-        const kvPairs = Object
-            .keys(branches)
+        const kvPairs = Object.keys(branches)
             .map(Number)
             .map(key => ({ key, branch: branches[key] }));
 
@@ -62,20 +64,19 @@ class ArrayMappedRadixTree {
         // NOTE: allocate space for transition table
         this.arr.length += count * 2;
 
-        kvPairs
-            .sort((pair1, pair2) => pair1.key - pair2.key)
-            .forEach((pair, idx) => {
-                const keyIdx = transitionTableIdx + idx;
-                const branchIdx = keyIdx + count;
+        kvPairs.sort((pair1, pair2) => pair1.key - pair2.key).forEach((pair, idx) => {
+            const keyIdx = transitionTableIdx + idx;
+            const branchIdx = keyIdx + count;
 
-                this.arr[keyIdx] = pair.key;
-                this.arr[branchIdx] = this.arr.length;
+            this.arr[keyIdx] = pair.key;
+            this.arr[branchIdx] = this.arr.length;
 
-                if (pair.branch instanceof Node)
-                    this._convertNode(pair.branch);
-                else
-                    this._convertEdge(pair.branch);
-            });
+            if (pair.branch instanceof Node) {
+                this._convertNode(pair.branch);
+            } else {
+                this._convertEdge(pair.branch);
+            }
+        });
     }
 
     _convertNode(node) {
@@ -84,11 +85,13 @@ class ArrayMappedRadixTree {
 
         this._writeNodeMarker(data, branches);
 
-        if (data)
+        if (data) {
             data.forEach(cp => this.arr.push(cp));
+        }
 
-        if (branches)
+        if (branches) {
             this._writeBranches(branches);
+        }
     }
 }
 

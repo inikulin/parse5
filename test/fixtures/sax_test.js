@@ -12,60 +12,62 @@ function getFullTestName(test, idx) {
 }
 
 function sanitizeForComparison(str) {
-    return testUtils.removeNewLines(str)
+    return testUtils
+        .removeNewLines(str)
         .replace(/\s/g, '')
         .replace(/'/g, '"')
         .toLowerCase();
 }
 
 function createBasicTest(html, expected, options) {
-    return function () {
+    return function() {
         //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         var actual = '',
             parser = new SAXParser(options),
             chunks = testUtils.makeChunks(html),
             lastChunkIdx = chunks.length - 1;
 
-        parser.on('doctype', function (name, publicId, systemId) {
+        parser.on('doctype', function(name, publicId, systemId) {
             actual += '<!DOCTYPE ' + name;
 
-            if (publicId !== null)
+            if (publicId !== null) {
                 actual += ' PUBLIC "' + publicId + '"';
-
-            else if (systemId !== null)
+            } else if (systemId !== null) {
                 actual += ' SYSTEM';
+            }
 
-            if (systemId !== null)
+            if (systemId !== null) {
                 actual += ' "' + systemId + '"';
-
+            }
 
             actual += '>';
         });
 
-        parser.on('startTag', function (tagName, attrs, selfClosing) {
+        parser.on('startTag', function(tagName, attrs, selfClosing) {
             actual += '<' + tagName;
 
             if (attrs.length) {
-                for (var i = 0; i < attrs.length; i++)
+                for (var i = 0; i < attrs.length; i++) {
                     actual += ' ' + attrs[i].name + '="' + attrs[i].value + '"';
+                }
             }
 
             actual += selfClosing ? '/>' : '>';
         });
 
-        parser.on('endTag', function (tagName) {
+        parser.on('endTag', function(tagName) {
             actual += '</' + tagName + '>';
         });
 
-        parser.on('text', function (text) {
+        parser.on('text', function(text) {
             actual += text;
         });
 
-        parser.on('comment', function (text) {
+        parser.on('comment', function(text) {
             actual += '<!--' + text + '-->';
         });
 
-        parser.once('finish', function () {
+        parser.once('finish', function() {
             expected = sanitizeForComparison(expected);
             actual = sanitizeForComparison(actual);
 
@@ -73,38 +75,37 @@ function createBasicTest(html, expected, options) {
             assert.ok(actual === expected, testUtils.getStringDiffMsg(actual, expected));
         });
 
-        chunks.forEach(function (chunk, idx) {
-            if (idx === lastChunkIdx)
+        chunks.forEach(function(chunk, idx) {
+            if (idx === lastChunkIdx) {
                 parser.end(chunk);
-            else
+            } else {
                 parser.write(chunk);
+            }
         });
     };
 }
 
 //Basic tests
-testUtils
-    .loadSAXParserTestData()
-    .forEach(function (test, idx) {
-        var testName = getFullTestName(test, idx);
+testUtils.loadSAXParserTestData().forEach(function(test, idx) {
+    var testName = getFullTestName(test, idx);
 
-        exports[testName] = createBasicTest(test.src, test.expected, test.options);
-    });
+    exports[testName] = createBasicTest(test.src, test.expected, test.options);
+});
 
-
-exports['SAX - Piping and .stop()'] = function (done) {
+exports['SAX - Piping and .stop()'] = function(done) {
     var parser = new SAXParser(),
         writable = new WritableStream(),
         handlerCallCount = 0,
         data = '',
-        handler = function () {
+        handler = function() {
             handlerCallCount++;
 
-            if (handlerCallCount === 10)
+            if (handlerCallCount === 10) {
                 parser.stop();
+            }
         };
 
-    writable._write = function (chunk, encoding, callback) {
+    writable._write = function(chunk, encoding, callback) {
         data += chunk;
         callback();
     };
@@ -120,7 +121,7 @@ exports['SAX - Piping and .stop()'] = function (done) {
     parser.on('comment', handler);
     parser.on('text', handler);
 
-    writable.once('finish', function () {
+    writable.once('finish', function() {
         var expected = fs.readFileSync(path.join(__dirname, '../data/huge-page/huge-page.html')).toString();
 
         assert.strictEqual(handlerCallCount, 10);
@@ -129,12 +130,10 @@ exports['SAX - Piping and .stop()'] = function (done) {
     });
 };
 
-exports['Regression-SAX-SAX parser silently exits on big files (GH-97)'] = function (done) {
+exports['Regression-SAX-SAX parser silently exits on big files (GH-97)'] = function(done) {
     var parser = new SAXParser();
 
-    fs
-        .createReadStream(path.join(__dirname, '../data/huge-page/huge-page.html'))
-        .pipe(parser);
+    fs.createReadStream(path.join(__dirname, '../data/huge-page/huge-page.html')).pipe(parser);
 
     //NOTE: This is a smoke test - in case of regression it will fail with timeout.
     parser.once('finish', done);

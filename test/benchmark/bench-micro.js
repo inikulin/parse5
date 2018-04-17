@@ -9,24 +9,28 @@ var path = require('path'),
 global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
 global.micro = testUtils
-    .loadTreeConstructionTestData([path.join(__dirname, '../data/html5lib-tests/tree-construction')], workingCopy.treeAdapters.default)
-    .filter(function (test) {
+    .loadTreeConstructionTestData(
+        [path.join(__dirname, '../data/html5lib-tests/tree-construction')],
+        workingCopy.treeAdapters.default
+    )
+    .filter(function(test) {
         //NOTE: this test caused stack overflow in parse5 v1.x
         return test.input !== '<button><p><button>';
     })
-    .map(function (test) {
+    .map(function(test) {
         return {
             html: test.input,
             fragmentContext: test.fragmentContext
         };
     });
 
-global.runMicro = function (parser) {
+global.runMicro = function(parser) {
     for (var i = 0; i < micro.length; i++) {
-        if (micro[i].fragmentContext)
+        if (micro[i].fragmentContext) {
             parser.parseFragment(micro[i].fragmentContext, micro[i].html);
-        else
+        } else {
             parser.parse(micro[i].html);
+        }
     }
 };
 
@@ -36,17 +40,16 @@ module.exports = {
         {
             name: 'Working copy',
 
-            fn: function () {
+            fn: function() {
                 runMicro(workingCopy);
             }
         },
         {
             name: 'Upstream',
 
-            fn: function () {
+            fn: function() {
                 runMicro(upstreamParser);
             }
         }
     ]
 };
-

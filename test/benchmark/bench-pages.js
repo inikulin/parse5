@@ -7,15 +7,14 @@ var upstreamParse5 = require('parse5'),
 /* global upstreamParser, workingCopy, pages, runPages */
 global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
-global.pages = testUtils
-    .loadSAXParserTestData()
-    .map(function (test) {
-        return test.src;
-    });
+global.pages = testUtils.loadSAXParserTestData().map(function(test) {
+    return test.src;
+});
 
-global.runPages = function (parser) {
-    for (var j = 0; j < pages.length; j++)
+global.runPages = function(parser) {
+    for (var j = 0; j < pages.length; j++) {
         parser.parse(pages[j]);
+    }
 };
 
 module.exports = {
@@ -24,17 +23,16 @@ module.exports = {
         {
             name: 'Working copy',
 
-            fn: function () {
+            fn: function() {
                 runPages(workingCopy);
             }
         },
         {
             name: 'Upstream',
 
-            fn: function () {
+            fn: function() {
                 runPages(upstreamParser);
             }
         }
     ]
 };
-

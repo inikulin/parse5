@@ -31,13 +31,14 @@ function collectParserTokens(html) {
     const tokens = [];
     const parser = new Parser();
 
-    parser._processInputToken = function (token) {
+    parser._processInputToken = function(token) {
         Parser.prototype._processInputToken.call(this, token);
 
         // NOTE: Needed to split attributes of duplicate <html> and <body>
         // which are otherwise merged as per tree constructor spec
-        if (token.type === Tokenizer.START_TAG_TOKEN)
+        if (token.type === Tokenizer.START_TAG_TOKEN) {
             token.attrs = token.attrs.slice();
+        }
 
         appendToken(tokens, token);
     };
@@ -52,7 +53,7 @@ module.exports = function generateParserFeedbackTest(parserTestFile) {
 
     const feedbackTest = {
         tests: tests
-            .filter(test =>!test.fragmentContext) // TODO
+            .filter(test => !test.fragmentContext) // TODO
             .map(test => {
                 const input = test.input;
 

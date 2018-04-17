@@ -16,8 +16,9 @@ class Node {
     }
 
     _ensureBranches() {
-        if (!this.branches)
+        if (!this.branches) {
             this.branches = Object.create(null);
+        }
     }
 
     addEdge(key, filter, node) {
@@ -32,6 +33,5 @@ class Node {
         this.branches[key] = node;
     }
 }
-
 
 module.exports = Node;

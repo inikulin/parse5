@@ -18,7 +18,7 @@ function parse() {
 
     stream.end();
 
-    return promisifyEvent(stream, 'finish').then(function () {
+    return promisifyEvent(stream, 'finish').then(function() {
         return parsedDataSize;
     });
 }
@@ -30,18 +30,18 @@ function getDuration(startDate, endDate) {
         hours: 3600
     });
 
-    return format((endDate - startDate) / 1000, {scale: scale});
+    return format((endDate - startDate) / 1000, { scale: scale });
 }
 
 function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage) {
-    console.log('Input data size:', format(parsedDataSize, {unit: 'B'}));
+    console.log('Input data size:', format(parsedDataSize, { unit: 'B' }));
     console.log('Duration: ', getDuration(startDate, endDate));
     console.log('Memory before: ', heapDiff.before.size);
     console.log('Memory after: ', heapDiff.after.size);
-    console.log('Memory max: ', format(maxMemUsage, {unit: 'B'}));
+    console.log('Memory max: ', format(maxMemUsage, { unit: 'B' }));
 }
 
-(function () {
+(function() {
     var parsedDataSize = 0,
         maxMemUsage = 0,
         startDate = null,
@@ -49,24 +49,22 @@ function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage)
         heapDiffMeasurement = new memwatch.HeapDiff(),
         heapDiff = null;
 
-    memwatch.on('stats', function (stats) {
+    memwatch.on('stats', function(stats) {
         maxMemUsage = Math.max(maxMemUsage, stats['current_base']);
     });
 
     startDate = new Date();
 
-    var parserPromise = parse().then(function (dataSize) {
+    var parserPromise = parse().then(function(dataSize) {
         parsedDataSize = dataSize;
         endDate = new Date();
         heapDiff = heapDiffMeasurement.end();
     });
 
-    Promise
-        .all([
-            parserPromise,
-            promisifyEvent(memwatch, 'stats') // NOTE: we need at least one `stats` result
-        ])
-        .then(function () {
-            return printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
-        });
+    Promise.all([
+        parserPromise,
+        promisifyEvent(memwatch, 'stats') // NOTE: we need at least one `stats` result
+    ]).then(function() {
+        return printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
+    });
 })();

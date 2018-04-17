@@ -20,8 +20,9 @@ exports.addSlashes = addSlashes;
 function createDiffMarker(markerPosition) {
     var marker = '';
 
-    for (var i = 0; i < markerPosition - 1; i++)
+    for (var i = 0; i < markerPosition - 1; i++) {
         marker += ' ';
+    }
 
     return marker + '^\n';
 }
@@ -36,14 +37,14 @@ function getRandomChunkSize(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-
-var normalizeNewLine = exports.normalizeNewLine = function (str) {
+var normalizeNewLine = (exports.normalizeNewLine = function(str) {
     return str.replace(/\r\n/g, '\n');
-};
+});
 
 function createFragmentContext(tagName, treeAdapter) {
-    if (!tagName)
+    if (!tagName) {
         return null;
+    }
 
     var namespace = HTML.NAMESPACES.HTML,
         parts = tagName.split(' ');
@@ -51,32 +52,31 @@ function createFragmentContext(tagName, treeAdapter) {
     if (parts.length > 1) {
         tagName = parts[1];
 
-        if (parts[0] === 'svg')
+        if (parts[0] === 'svg') {
             namespace = HTML.NAMESPACES.SVG;
-
-        else if (parts[0] === 'math')
+        } else if (parts[0] === 'math') {
             namespace = HTML.NAMESPACES.MATHML;
+        }
     }
 
     return treeAdapter.createElement(tagName, namespace, []);
 }
 
-
 //NOTE: creates test suites for each available tree adapter.
-exports.generateTestsForEachTreeAdapter = function (moduleExports, ctor) {
-    Object.keys(parse5.treeAdapters).forEach(function (adapterName) {
+exports.generateTestsForEachTreeAdapter = function(moduleExports, ctor) {
+    Object.keys(parse5.treeAdapters).forEach(function(adapterName) {
         var tests = {},
             adapter = parse5.treeAdapters[adapterName];
 
         ctor(tests, adapter);
 
-        Object.keys(tests).forEach(function (testName) {
+        Object.keys(tests).forEach(function(testName) {
             moduleExports['Tree adapter: ' + adapterName + ' - ' + testName] = tests[testName];
         });
     });
 };
 
-exports.getStringDiffMsg = function (actual, expected) {
+exports.getStringDiffMsg = function(actual, expected) {
     for (var i = 0; i < expected.length; i++) {
         if (actual[i] !== expected[i]) {
             var diffMsg = '\nString differ at index ' + i + '\n';
@@ -98,18 +98,16 @@ exports.getStringDiffMsg = function (actual, expected) {
     return '';
 };
 
-exports.removeNewLines = function (str) {
-    return str
-        .replace(/\r/g, '')
-        .replace(/\n/g, '');
+exports.removeNewLines = function(str) {
+    return str.replace(/\r/g, '').replace(/\n/g, '');
 };
 
-exports.loadSAXParserTestData = function () {
+exports.loadSAXParserTestData = function() {
     var dataDirPath = path.join(__dirname, './data/sax'),
         testSetFileDirs = fs.readdirSync(dataDirPath),
         tests = [];
 
-    testSetFileDirs.forEach(function (dirName) {
+    testSetFileDirs.forEach(function(dirName) {
         var srcFilePath = path.join(dataDirPath, dirName, 'src.html'),
             expectedFilePath = path.join(dataDirPath, dirName, 'expected.html'),
             src = fs.readFileSync(srcFilePath).toString(),
@@ -130,22 +128,21 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
         curDirective = '',
         curDescr = null;
 
-    testSet.split(/\r?\n/).forEach(function (line, idx) {
+    testSet.split(/\r?\n/).forEach(function(line, idx) {
         if (line === '#data') {
-            curDescr = {'#line': idx + 1};
+            curDescr = { '#line': idx + 1 };
             testDescrs.push(curDescr);
         }
 
         if (line[0] === '#') {
             curDirective = line;
             curDescr[curDirective] = [];
-        }
-
-        else
+        } else {
             curDescr[curDirective].push(line);
+        }
     });
 
-    return testDescrs.map(function (descr) {
+    return testDescrs.map(function(descr) {
         var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
         return {
@@ -162,27 +159,30 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
 
 exports.parseTreeConstructionTestData = parseTreeConstructionTestData;
 
-exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
+exports.loadTreeConstructionTestData = function(dataDirs, treeAdapter) {
     var tests = [];
 
-    dataDirs.forEach(function (dataDirPath) {
+    dataDirs.forEach(function(dataDirPath) {
         var testSetFileNames = fs.readdirSync(dataDirPath),
             dirName = path.basename(dataDirPath);
 
-        testSetFileNames.forEach(function (fileName) {
-            if (path.extname(fileName) !== '.dat')
+        testSetFileNames.forEach(function(fileName) {
+            if (path.extname(fileName) !== '.dat') {
                 return;
+            }
 
             var filePath = path.join(dataDirPath, fileName),
                 testSet = fs.readFileSync(filePath, 'utf-8'),
                 setName = fileName.replace('.dat', '');
 
-            parseTreeConstructionTestData(testSet, treeAdapter).forEach(function (test) {
-                tests.push(Object.assign(test, {
-                    idx: tests.length,
-                    setName: setName,
-                    dirName: dirName
-                }));
+            parseTreeConstructionTestData(testSet, treeAdapter).forEach(function(test) {
+                tests.push(
+                    Object.assign(test, {
+                        idx: tests.length,
+                        setName: setName,
+                        dirName: dirName
+                    })
+                );
             });
         });
     });
@@ -190,12 +190,13 @@ exports.loadTreeConstructionTestData = function (dataDirs, treeAdapter) {
     return tests;
 };
 
-exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
+exports.serializeToTestDataFormat = function(rootNode, treeAdapter) {
     function getSerializedTreeIndent(indent) {
         var str = '|';
 
-        for (var i = 0; i < indent + 1; i++)
+        for (var i = 0; i < indent + 1; i++) {
             str += ' ';
+        }
 
         return str;
     }
@@ -206,7 +207,7 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
                 return 'svg ';
             case HTML.NAMESPACES.MATHML:
                 return 'math ';
-            default :
+            default:
                 return '';
         }
     }
@@ -214,16 +215,14 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
     function serializeNodeList(nodes, indent) {
         var str = '';
 
-        nodes.forEach(function (node) {
+        nodes.forEach(function(node) {
             str += getSerializedTreeIndent(indent);
 
-            if (treeAdapter.isCommentNode(node))
+            if (treeAdapter.isCommentNode(node)) {
                 str += '<!-- ' + treeAdapter.getCommentNodeContent(node) + ' -->\n';
-
-            else if (treeAdapter.isTextNode(node))
+            } else if (treeAdapter.isTextNode(node)) {
                 str += '"' + treeAdapter.getTextNodeContent(node) + '"\n';
-
-            else if (treeAdapter.isDocumentTypeNode(node)) {
+            } else if (treeAdapter.isDocumentTypeNode(node)) {
                 var parts = [],
                     publicId = treeAdapter.getDocumentTypeNodePublicId(node),
                     systemId = treeAdapter.getDocumentTypeNodeSystemId(node);
@@ -237,14 +236,12 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
                     parts.push('"' + (systemId || '') + '"');
                 }
 
-                parts.forEach(function (part) {
+                parts.forEach(function(part) {
                     str += ' ' + part;
                 });
 
                 str += '>\n';
-            }
-
-            else {
+            } else {
                 var tn = treeAdapter.getTagName(node);
 
                 str += '<' + getElementSerializedNamespaceURI(node) + tn + '>\n';
@@ -252,11 +249,12 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
                 var childrenIndent = indent + 2,
                     serializedAttrs = [];
 
-                treeAdapter.getAttrList(node).forEach(function (attr) {
+                treeAdapter.getAttrList(node).forEach(function(attr) {
                     var attrStr = getSerializedTreeIndent(childrenIndent);
 
-                    if (attr.prefix)
+                    if (attr.prefix) {
                         attrStr += attr.prefix + ' ';
+                    }
 
                     attrStr += attr.name + '="' + attr.value + '"\n';
 
@@ -281,7 +279,7 @@ exports.serializeToTestDataFormat = function (rootNode, treeAdapter) {
     return serializeNodeList(treeAdapter.getChildNodes(rootNode), 0);
 };
 
-exports.prettyPrintParserAssertionArgs = function (actual, expected, chunks) {
+exports.prettyPrintParserAssertionArgs = function(actual, expected, chunks) {
     var msg = '\nExpected:\n';
 
     msg += '-----------------\n';
@@ -298,9 +296,10 @@ exports.prettyPrintParserAssertionArgs = function (actual, expected, chunks) {
     return msg;
 };
 
-exports.makeChunks = function (str, minSize, maxSize) {
-    if (!str.length)
+exports.makeChunks = function(str, minSize, maxSize) {
+    if (!str.length) {
         return [''];
+    }
 
     var chunks = [],
         start = 0;
@@ -317,15 +316,16 @@ exports.makeChunks = function (str, minSize, maxSize) {
     return chunks;
 };
 
-exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
+exports.parseChunked = function(html, opts, minChunkSize, maxChunkSize) {
     var parserStream = new parse5.ParserStream(opts),
         chunks = exports.makeChunks(html, minChunkSize, maxChunkSize);
 
     // NOTE: set small waterline for testing purposes
     parserStream.parser.tokenizer.preprocessor.bufferWaterline = 8;
 
-    for (var i = 0; i < chunks.length - 1; i++)
+    for (var i = 0; i < chunks.length - 1; i++) {
         parserStream.write(chunks[i]);
+    }
 
     parserStream.end(chunks[chunks.length - 1]);
 
@@ -335,7 +335,7 @@ exports.parseChunked = function (html, opts, minChunkSize, maxChunkSize) {
     };
 };
 
-exports.getSubstringByLineCol = function (lines, loc) {
+exports.getSubstringByLineCol = function(lines, loc) {
     lines = lines.slice(loc.startLine - 1, loc.endLine);
 
     var last = lines.length - 1;
@@ -346,7 +346,7 @@ exports.getSubstringByLineCol = function (lines, loc) {
     return lines.join('\n');
 };
 
-exports.convertTokenToHtml5Lib = function (token) {
+exports.convertTokenToHtml5Lib = function(token) {
     switch (token.type) {
         case Tokenizer.CHARACTER_TOKEN:
         case Tokenizer.NULL_CHARACTER_TOKEN:
@@ -356,18 +356,15 @@ exports.convertTokenToHtml5Lib = function (token) {
         case Tokenizer.START_TAG_TOKEN:
             var reformatedAttrs = {};
 
-            token.attrs.forEach(function (attr) {
+            token.attrs.forEach(function(attr) {
                 reformatedAttrs[attr.name] = attr.value;
             });
 
-            var startTagEntry = [
-                'StartTag',
-                token.tagName,
-                reformatedAttrs
-            ];
+            var startTagEntry = ['StartTag', token.tagName, reformatedAttrs];
 
-            if (token.selfClosing)
+            if (token.selfClosing) {
                 startTagEntry.push(true);
+            }
 
             return startTagEntry;
 
@@ -380,13 +377,7 @@ exports.convertTokenToHtml5Lib = function (token) {
             return ['Comment', token.data];
 
         case Tokenizer.DOCTYPE_TOKEN:
-            return [
-                'DOCTYPE',
-                token.name,
-                token.publicId,
-                token.systemId,
-                !token.forceQuirks
-            ];
+            return ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks];
 
         default:
             throw new TypeError('Unrecognized token type: ' + token.type);
