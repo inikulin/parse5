@@ -1,8 +1,8 @@
 'use strict';
 
-var path = require('path'),
-    fs = require('fs'),
-    upstreamParse5 = require('parse5');
+const path = require('path');
+const fs = require('fs');
+const upstreamParse5 = require('parse5');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, upstreamParser, hugePage */

@@ -1,18 +1,18 @@
 'use strict';
 
-var upstreamParse5 = require('parse5'),
-    testUtils = require('../test_utils');
+const upstreamParse5 = require('parse5');
+const testUtils = require('../test_utils');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global upstreamParser, workingCopy, pages, runPages */
 global.upstreamParser = upstreamParse5;
 global.workingCopy = require('../../lib');
-global.pages = testUtils.loadSAXParserTestData().map(function(test) {
+global.pages = testUtils.loadSAXParserTestData().map(test => {
     return test.src;
 });
 
 global.runPages = function(parser) {
-    for (var j = 0; j < pages.length; j++) {
+    for (let j = 0; j < pages.length; j++) {
         parser.parse(pages[j]);
     }
 };

@@ -1,20 +1,20 @@
 'use strict';
 
-var assert = require('assert'),
-    HTML = require('../../lib/common/html'),
-    OpenElementStack = require('../../lib/parser/open_element_stack'),
-    testUtils = require('../test_utils');
+const assert = require('assert');
+const HTML = require('../../lib/common/html');
+const OpenElementStack = require('../../lib/parser/open_element_stack');
+const testUtils = require('../test_utils');
 
 //Aliases
-var $ = HTML.TAG_NAMES,
-    NS = HTML.NAMESPACES;
+const $ = HTML.TAG_NAMES;
+const NS = HTML.NAMESPACES;
 
-testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     _test['Push element'] = function() {
-        var document = treeAdapter.createDocument(),
-            element1 = treeAdapter.createElement('#element1', 'namespace1', []),
-            element2 = treeAdapter.createElement('#element2', 'namespace2', []),
-            stack = new OpenElementStack(document, treeAdapter);
+        const document = treeAdapter.createDocument();
+        const element1 = treeAdapter.createElement('#element1', 'namespace1', []);
+        const element2 = treeAdapter.createElement('#element2', 'namespace2', []);
+        const stack = new OpenElementStack(document, treeAdapter);
 
         assert.strictEqual(stack.current, document);
         assert.strictEqual(stack.stackTop, -1);
@@ -31,8 +31,8 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Pop element'] = function() {
-        var element = treeAdapter.createElement('#element', 'namespace1', []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element = treeAdapter.createElement('#element', 'namespace1', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element);
         stack.push('#element2');
@@ -48,9 +48,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Replace element'] = function() {
-        var element = treeAdapter.createElement('#element', 'namespace', []),
-            newElement = treeAdapter.createElement('#newElement', 'newElementNamespace', []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element = treeAdapter.createElement('#element', 'namespace', []);
+        const newElement = treeAdapter.createElement('#newElement', 'newElementNamespace', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push('#element2');
         stack.push(element);
@@ -61,10 +61,10 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Insert element after element'] = function() {
-        var element1 = treeAdapter.createElement('#element1', 'namespace1', []),
-            element2 = treeAdapter.createElement('#element2', 'namespace2', []),
-            element3 = treeAdapter.createElement('#element3', 'namespace3', []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element1 = treeAdapter.createElement('#element1', 'namespace1', []);
+        const element2 = treeAdapter.createElement('#element2', 'namespace2', []);
+        const element3 = treeAdapter.createElement('#element3', 'namespace3', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element1);
         stack.push(element2);
@@ -79,9 +79,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Pop elements until popped with given tagName'] = function() {
-        var element1 = treeAdapter.createElement('#element1', NS.HTML, []),
-            element2 = treeAdapter.createElement('#element2', NS.HTML, []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element1 = treeAdapter.createElement('#element1', NS.HTML, []);
+        const element2 = treeAdapter.createElement('#element2', NS.HTML, []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element2);
         stack.push(element2);
@@ -100,9 +100,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Pop elements until given element popped'] = function() {
-        var element1 = treeAdapter.createElement('#element1', '', []),
-            element2 = treeAdapter.createElement('#element2', '', []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element1 = treeAdapter.createElement('#element1', '', []);
+        const element2 = treeAdapter.createElement('#element2', '', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element2);
         stack.push(element2);
@@ -121,9 +121,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Pop elements until numbered header popped'] = function() {
-        var element1 = treeAdapter.createElement($.H3, '', []),
-            element2 = treeAdapter.createElement('#element2', '', []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element1 = treeAdapter.createElement($.H3, '', []);
+        const element2 = treeAdapter.createElement('#element2', '', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element2);
         stack.push(element2);
@@ -142,8 +142,8 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Pop all up to <html> element'] = function() {
-        var htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(htmlElement);
         stack.push('#element1');
@@ -154,10 +154,10 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Clear back to a table context'] = function() {
-        var htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []),
-            tableElement = treeAdapter.createElement($.TABLE, NS.HTML, []),
-            divElement = treeAdapter.createElement($.DIV, NS.HTML, []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []);
+        const tableElement = treeAdapter.createElement($.TABLE, NS.HTML, []);
+        const divElement = treeAdapter.createElement($.DIV, NS.HTML, []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(htmlElement);
         stack.push(divElement);
@@ -177,10 +177,10 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Clear back to a table body context'] = function() {
-        var htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []),
-            theadElement = treeAdapter.createElement($.THEAD, NS.HTML, []),
-            divElement = treeAdapter.createElement($.DIV, NS.HTML, []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []);
+        const theadElement = treeAdapter.createElement($.THEAD, NS.HTML, []);
+        const divElement = treeAdapter.createElement($.DIV, NS.HTML, []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(htmlElement);
         stack.push(divElement);
@@ -200,10 +200,10 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Clear back to a table row context'] = function() {
-        var htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []),
-            trElement = treeAdapter.createElement($.TR, NS.HTML, []),
-            divElement = treeAdapter.createElement($.DIV, NS.HTML, []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const htmlElement = treeAdapter.createElement($.HTML, NS.HTML, []);
+        const trElement = treeAdapter.createElement($.TR, NS.HTML, []);
+        const divElement = treeAdapter.createElement($.DIV, NS.HTML, []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(htmlElement);
         stack.push(divElement);
@@ -223,8 +223,8 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Remove element'] = function() {
-        var element = treeAdapter.createElement('#element', '', []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element = treeAdapter.createElement('#element', '', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element);
         stack.push(treeAdapter.createElement('element1', '', []));
@@ -234,14 +234,14 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
 
         assert.strictEqual(stack.stackTop, 1);
 
-        for (var i = stack.stackTop; i >= 0; i--) {
+        for (let i = stack.stackTop; i >= 0; i--) {
             assert.notStrictEqual(stack.items[i], element);
         }
     };
 
     _test['Try peek properly nested <body> element'] = function() {
-        var bodyElement = treeAdapter.createElement($.BODY, '', []),
-            stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const bodyElement = treeAdapter.createElement($.BODY, '', []);
+        let stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, '', []));
         stack.push(bodyElement);
@@ -254,7 +254,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Is root <html> element current'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, '', []));
         assert.ok(stack.isRootHtmlElementCurrent());
@@ -264,9 +264,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Get common ancestor'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter),
-            element = treeAdapter.createElement('#element', '', []),
-            ancestor = treeAdapter.createElement('#ancestor', '', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element = treeAdapter.createElement('#element', '', []);
+        const ancestor = treeAdapter.createElement('#ancestor', '', []);
 
         stack.push(treeAdapter.createElement('#someElement', '', []));
         assert.ok(!stack.getCommonAncestor(element));
@@ -284,8 +284,8 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Contains element'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter),
-            element = treeAdapter.createElement('#element', '', []);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const element = treeAdapter.createElement('#element', '', []);
 
         stack.push(treeAdapter.createElement('#someElement', '', []));
         assert.ok(!stack.contains(element));
@@ -295,7 +295,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Has element in scope'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.DIV, NS.HTML, []));
@@ -312,7 +312,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Has numbered header in scope'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.DIV, NS.HTML, []));
@@ -332,7 +332,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Has element in list item scope'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.DIV, NS.HTML, []));
@@ -348,7 +348,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Has element in button scope'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.DIV, NS.HTML, []));
@@ -364,7 +364,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Has element in table scope'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.DIV, NS.HTML, []));
@@ -381,7 +381,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Has table body context in table scope'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.DIV, NS.HTML, []));
@@ -401,7 +401,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Has element in select scope'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.DIV, NS.HTML, []));
@@ -416,7 +416,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Generate implied end tags'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.LI, NS.HTML, []));
@@ -432,7 +432,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Generate implied end tags with exclusion'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.LI, NS.HTML, []));
@@ -448,7 +448,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Template count'] = function() {
-        var stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(treeAdapter.createElement($.HTML, NS.HTML, []));
         stack.push(treeAdapter.createElement($.TEMPLATE, NS.MATHML, []));

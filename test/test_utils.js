@@ -1,10 +1,10 @@
 'use strict';
 
-var fs = require('fs'),
-    path = require('path'),
-    parse5 = require('../lib/index'),
-    HTML = require('../lib/common/html'),
-    Tokenizer = require('../lib/tokenizer');
+const fs = require('fs');
+const path = require('path');
+const parse5 = require('../lib/index');
+const HTML = require('../lib/common/html');
+const Tokenizer = require('../lib/tokenizer');
 
 function addSlashes(str) {
     return str
@@ -18,9 +18,9 @@ function addSlashes(str) {
 exports.addSlashes = addSlashes;
 
 function createDiffMarker(markerPosition) {
-    var marker = '';
+    let marker = '';
 
-    for (var i = 0; i < markerPosition - 1; i++) {
+    for (let i = 0; i < markerPosition - 1; i++) {
         marker += ' ';
     }
 
@@ -28,8 +28,8 @@ function createDiffMarker(markerPosition) {
 }
 
 function getRandomChunkSize(min, max) {
-    var MIN = 1,
-        MAX = 10;
+    const MIN = 1;
+    const MAX = 10;
 
     min = min || MIN;
     max = max || MAX;
@@ -37,7 +37,7 @@ function getRandomChunkSize(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-var normalizeNewLine = (exports.normalizeNewLine = function(str) {
+const normalizeNewLine = (exports.normalizeNewLine = function(str) {
     return str.replace(/\r\n/g, '\n');
 });
 
@@ -46,8 +46,8 @@ function createFragmentContext(tagName, treeAdapter) {
         return null;
     }
 
-    var namespace = HTML.NAMESPACES.HTML,
-        parts = tagName.split(' ');
+    let namespace = HTML.NAMESPACES.HTML;
+    const parts = tagName.split(' ');
 
     if (parts.length > 1) {
         tagName = parts[1];
@@ -64,30 +64,30 @@ function createFragmentContext(tagName, treeAdapter) {
 
 //NOTE: creates test suites for each available tree adapter.
 exports.generateTestsForEachTreeAdapter = function(moduleExports, ctor) {
-    Object.keys(parse5.treeAdapters).forEach(function(adapterName) {
-        var tests = {},
-            adapter = parse5.treeAdapters[adapterName];
+    Object.keys(parse5.treeAdapters).forEach(adapterName => {
+        const tests = {};
+        const adapter = parse5.treeAdapters[adapterName];
 
         ctor(tests, adapter);
 
-        Object.keys(tests).forEach(function(testName) {
+        Object.keys(tests).forEach(testName => {
             moduleExports['Tree adapter: ' + adapterName + ' - ' + testName] = tests[testName];
         });
     });
 };
 
 exports.getStringDiffMsg = function(actual, expected) {
-    for (var i = 0; i < expected.length; i++) {
+    for (let i = 0; i < expected.length; i++) {
         if (actual[i] !== expected[i]) {
-            var diffMsg = '\nString differ at index ' + i + '\n';
+            let diffMsg = '\nString differ at index ' + i + '\n';
 
-            var expectedStr = 'Expected: ' + addSlashes(expected.substring(i - 100, i + 1)),
-                expectedDiffMarker = createDiffMarker(expectedStr.length);
+            const expectedStr = 'Expected: ' + addSlashes(expected.substring(i - 100, i + 1));
+            const expectedDiffMarker = createDiffMarker(expectedStr.length);
 
             diffMsg += expectedStr + addSlashes(expected.substring(i + 1, i + 20)) + '\n' + expectedDiffMarker;
 
-            var actualStr = 'Actual:   ' + addSlashes(actual.substring(i - 100, i + 1)),
-                actualDiffMarker = createDiffMarker(actualStr.length);
+            const actualStr = 'Actual:   ' + addSlashes(actual.substring(i - 100, i + 1));
+            const actualDiffMarker = createDiffMarker(actualStr.length);
 
             diffMsg += actualStr + addSlashes(actual.substring(i + 1, i + 20)) + '\n' + actualDiffMarker;
 
@@ -103,15 +103,15 @@ exports.removeNewLines = function(str) {
 };
 
 exports.loadSAXParserTestData = function() {
-    var dataDirPath = path.join(__dirname, './data/sax'),
-        testSetFileDirs = fs.readdirSync(dataDirPath),
-        tests = [];
+    const dataDirPath = path.join(__dirname, './data/sax');
+    const testSetFileDirs = fs.readdirSync(dataDirPath);
+    const tests = [];
 
-    testSetFileDirs.forEach(function(dirName) {
-        var srcFilePath = path.join(dataDirPath, dirName, 'src.html'),
-            expectedFilePath = path.join(dataDirPath, dirName, 'expected.html'),
-            src = fs.readFileSync(srcFilePath).toString(),
-            expected = fs.readFileSync(expectedFilePath).toString();
+    testSetFileDirs.forEach(dirName => {
+        const srcFilePath = path.join(dataDirPath, dirName, 'src.html');
+        const expectedFilePath = path.join(dataDirPath, dirName, 'expected.html');
+        const src = fs.readFileSync(srcFilePath).toString();
+        const expected = fs.readFileSync(expectedFilePath).toString();
 
         tests.push({
             name: dirName,
@@ -124,11 +124,11 @@ exports.loadSAXParserTestData = function() {
 };
 
 function parseTreeConstructionTestData(testSet, treeAdapter) {
-    var testDescrs = [],
-        curDirective = '',
-        curDescr = null;
+    const testDescrs = [];
+    let curDirective = '';
+    let curDescr = null;
 
-    testSet.split(/\r?\n/).forEach(function(line, idx) {
+    testSet.split(/\r?\n/).forEach((line, idx) => {
         if (line === '#data') {
             curDescr = { '#line': idx + 1 };
             testDescrs.push(curDescr);
@@ -142,8 +142,8 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
         }
     });
 
-    return testDescrs.map(function(descr) {
-        var fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
+    return testDescrs.map(descr => {
+        const fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
         return {
             input: descr['#data'].join('\n'),
@@ -160,22 +160,22 @@ function parseTreeConstructionTestData(testSet, treeAdapter) {
 exports.parseTreeConstructionTestData = parseTreeConstructionTestData;
 
 exports.loadTreeConstructionTestData = function(dataDirs, treeAdapter) {
-    var tests = [];
+    const tests = [];
 
-    dataDirs.forEach(function(dataDirPath) {
-        var testSetFileNames = fs.readdirSync(dataDirPath),
-            dirName = path.basename(dataDirPath);
+    dataDirs.forEach(dataDirPath => {
+        const testSetFileNames = fs.readdirSync(dataDirPath);
+        const dirName = path.basename(dataDirPath);
 
-        testSetFileNames.forEach(function(fileName) {
+        testSetFileNames.forEach(fileName => {
             if (path.extname(fileName) !== '.dat') {
                 return;
             }
 
-            var filePath = path.join(dataDirPath, fileName),
-                testSet = fs.readFileSync(filePath, 'utf-8'),
-                setName = fileName.replace('.dat', '');
+            const filePath = path.join(dataDirPath, fileName);
+            const testSet = fs.readFileSync(filePath, 'utf-8');
+            const setName = fileName.replace('.dat', '');
 
-            parseTreeConstructionTestData(testSet, treeAdapter).forEach(function(test) {
+            parseTreeConstructionTestData(testSet, treeAdapter).forEach(test => {
                 tests.push(
                     Object.assign(test, {
                         idx: tests.length,
@@ -192,9 +192,9 @@ exports.loadTreeConstructionTestData = function(dataDirs, treeAdapter) {
 
 exports.serializeToTestDataFormat = function(rootNode, treeAdapter) {
     function getSerializedTreeIndent(indent) {
-        var str = '|';
+        let str = '|';
 
-        for (var i = 0; i < indent + 1; i++) {
+        for (let i = 0; i < indent + 1; i++) {
             str += ' ';
         }
 
@@ -213,9 +213,9 @@ exports.serializeToTestDataFormat = function(rootNode, treeAdapter) {
     }
 
     function serializeNodeList(nodes, indent) {
-        var str = '';
+        let str = '';
 
-        nodes.forEach(function(node) {
+        nodes.forEach(node => {
             str += getSerializedTreeIndent(indent);
 
             if (treeAdapter.isCommentNode(node)) {
@@ -223,9 +223,9 @@ exports.serializeToTestDataFormat = function(rootNode, treeAdapter) {
             } else if (treeAdapter.isTextNode(node)) {
                 str += '"' + treeAdapter.getTextNodeContent(node) + '"\n';
             } else if (treeAdapter.isDocumentTypeNode(node)) {
-                var parts = [],
-                    publicId = treeAdapter.getDocumentTypeNodePublicId(node),
-                    systemId = treeAdapter.getDocumentTypeNodeSystemId(node);
+                const parts = [];
+                const publicId = treeAdapter.getDocumentTypeNodePublicId(node);
+                const systemId = treeAdapter.getDocumentTypeNodeSystemId(node);
 
                 str += '<!DOCTYPE';
 
@@ -236,21 +236,21 @@ exports.serializeToTestDataFormat = function(rootNode, treeAdapter) {
                     parts.push('"' + (systemId || '') + '"');
                 }
 
-                parts.forEach(function(part) {
+                parts.forEach(part => {
                     str += ' ' + part;
                 });
 
                 str += '>\n';
             } else {
-                var tn = treeAdapter.getTagName(node);
+                const tn = treeAdapter.getTagName(node);
 
                 str += '<' + getElementSerializedNamespaceURI(node) + tn + '>\n';
 
-                var childrenIndent = indent + 2,
-                    serializedAttrs = [];
+                let childrenIndent = indent + 2;
+                const serializedAttrs = [];
 
-                treeAdapter.getAttrList(node).forEach(function(attr) {
-                    var attrStr = getSerializedTreeIndent(childrenIndent);
+                treeAdapter.getAttrList(node).forEach(attr => {
+                    let attrStr = getSerializedTreeIndent(childrenIndent);
 
                     if (attr.prefix) {
                         attrStr += attr.prefix + ' ';
@@ -280,7 +280,7 @@ exports.serializeToTestDataFormat = function(rootNode, treeAdapter) {
 };
 
 exports.prettyPrintParserAssertionArgs = function(actual, expected, chunks) {
-    var msg = '\nExpected:\n';
+    let msg = '\nExpected:\n';
 
     msg += '-----------------\n';
     msg += expected + '\n';
@@ -301,11 +301,11 @@ exports.makeChunks = function(str, minSize, maxSize) {
         return [''];
     }
 
-    var chunks = [],
-        start = 0;
+    const chunks = [];
+    let start = 0;
 
     // NOTE: add 1 as well, so we avoid situation when we have just one huge chunk
-    var end = Math.min(getRandomChunkSize(minSize, maxSize), str.length, 1);
+    let end = Math.min(getRandomChunkSize(minSize, maxSize), str.length, 1);
 
     while (start < str.length) {
         chunks.push(str.substring(start, end));
@@ -317,13 +317,13 @@ exports.makeChunks = function(str, minSize, maxSize) {
 };
 
 exports.parseChunked = function(html, opts, minChunkSize, maxChunkSize) {
-    var parserStream = new parse5.ParserStream(opts),
-        chunks = exports.makeChunks(html, minChunkSize, maxChunkSize);
+    const parserStream = new parse5.ParserStream(opts);
+    const chunks = exports.makeChunks(html, minChunkSize, maxChunkSize);
 
     // NOTE: set small waterline for testing purposes
     parserStream.parser.tokenizer.preprocessor.bufferWaterline = 8;
 
-    for (var i = 0; i < chunks.length - 1; i++) {
+    for (let i = 0; i < chunks.length - 1; i++) {
         parserStream.write(chunks[i]);
     }
 
@@ -338,7 +338,7 @@ exports.parseChunked = function(html, opts, minChunkSize, maxChunkSize) {
 exports.getSubstringByLineCol = function(lines, loc) {
     lines = lines.slice(loc.startLine - 1, loc.endLine);
 
-    var last = lines.length - 1;
+    const last = lines.length - 1;
 
     lines[last] = lines[last].substring(0, loc.endCol - 1);
     lines[0] = lines[0].substring(loc.startCol - 1);
@@ -353,20 +353,21 @@ exports.convertTokenToHtml5Lib = function(token) {
         case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
             return ['Character', token.chars];
 
-        case Tokenizer.START_TAG_TOKEN:
-            var reformatedAttrs = {};
+        case Tokenizer.START_TAG_TOKEN: {
+            const reformatedAttrs = {};
 
-            token.attrs.forEach(function(attr) {
+            token.attrs.forEach(attr => {
                 reformatedAttrs[attr.name] = attr.value;
             });
 
-            var startTagEntry = ['StartTag', token.tagName, reformatedAttrs];
+            const startTagEntry = ['StartTag', token.tagName, reformatedAttrs];
 
             if (token.selfClosing) {
                 startTagEntry.push(true);
             }
 
             return startTagEntry;
+        }
 
         case Tokenizer.END_TAG_TOKEN:
             // NOTE: parser feedback simulator can produce adjusted SVG

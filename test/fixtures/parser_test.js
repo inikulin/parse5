@@ -1,10 +1,10 @@
 'use strict';
 
-var assert = require('assert'),
-    path = require('path'),
-    parse5 = require('../../lib'),
-    Parser = require('../../lib/parser'),
-    testUtils = require('../test_utils');
+const assert = require('assert');
+const path = require('path');
+const parse5 = require('../../lib');
+const Parser = require('../../lib/parser');
+const testUtils = require('../test_utils');
 
 function getFullTestName(test) {
     return [
@@ -23,17 +23,17 @@ function getFullTestName(test) {
 }
 
 function assertFragmentParsing(input, fragmentContext, expected, opts) {
-    var fragment = parse5.parseFragment(fragmentContext, input, opts),
-        actual = testUtils.serializeToTestDataFormat(fragment, opts.treeAdapter),
-        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
+    const fragment = parse5.parseFragment(fragmentContext, input, opts);
+    const actual = testUtils.serializeToTestDataFormat(fragment, opts.treeAdapter);
+    const msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
 
     assert.strictEqual(actual, expected, msg);
 }
 
 function assertStreamingParsing(input, expected, opts) {
-    var result = testUtils.parseChunked(input, opts),
-        actual = testUtils.serializeToTestDataFormat(result.document, opts.treeAdapter),
-        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected, result.chunks);
+    const result = testUtils.parseChunked(input, opts);
+    const actual = testUtils.serializeToTestDataFormat(result.document, opts.treeAdapter);
+    let msg = testUtils.prettyPrintParserAssertionArgs(actual, expected, result.chunks);
 
     msg = 'STREAMING: ' + msg;
 
@@ -41,9 +41,9 @@ function assertStreamingParsing(input, expected, opts) {
 }
 
 function assertParsing(input, expected, opts) {
-    var document = parse5.parse(input, opts),
-        actual = testUtils.serializeToTestDataFormat(document, opts.treeAdapter),
-        msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
+    const document = parse5.parse(input, opts);
+    const actual = testUtils.serializeToTestDataFormat(document, opts.treeAdapter);
+    const msg = testUtils.prettyPrintParserAssertionArgs(actual, expected);
 
     assert.strictEqual(actual, expected, msg);
 }
@@ -52,7 +52,7 @@ function assertErrors(actual, expected) {
     assert.deepEqual(actual.sort(), expected.sort());
 }
 
-testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     //Here we go..
     testUtils
         .loadTreeConstructionTestData(
@@ -62,26 +62,27 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
             ],
             treeAdapter
         )
-        .forEach(function(test) {
+        .forEach(test => {
             _test[getFullTestName(test)] = function() {
-                var errs = [],
-                    opts = {
-                        scriptingEnabled: test.scriptingEnabled,
-                        treeAdapter: treeAdapter,
+                let errs = [];
 
-                        onParseError: function(err) {
-                            var errStr = '(' + err.startLine + ':' + err.startCol;
+                const opts = {
+                    scriptingEnabled: test.scriptingEnabled,
+                    treeAdapter: treeAdapter,
 
-                            // NOTE: use ranges for token errors
-                            if (err.startLine !== err.endLine || err.startCol !== err.endCol) {
-                                errStr += '-' + err.endLine + ':' + err.endCol;
-                            }
+                    onParseError: function(err) {
+                        let errStr = '(' + err.startLine + ':' + err.startCol;
 
-                            errStr += ') ' + err.code;
-
-                            errs.push(errStr);
+                        // NOTE: use ranges for token errors
+                        if (err.startLine !== err.endLine || err.startCol !== err.endCol) {
+                            errStr += '-' + err.endLine + ':' + err.endCol;
                         }
-                    };
+
+                        errStr += ') ' + err.code;
+
+                        errs.push(errStr);
+                    }
+                };
 
                 if (test.fragmentContext) {
                     assertFragmentParsing(test.input, test.fragmentContext, test.expected, opts);
@@ -99,13 +100,13 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
 });
 
 exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function() {
-    var html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>',
-        document = parse5.parse(html, { treeAdapter: parse5.treeAdapters.htmlparser2 });
+    const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
+    const document = parse5.parse(html, { treeAdapter: parse5.treeAdapters.htmlparser2 });
 
     assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
 };
 
-var origParseFragment = Parser.prototype.parseFragment;
+const origParseFragment = Parser.prototype.parseFragment;
 
 exports['Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)'] = {
     beforeEach: function() {
@@ -123,11 +124,11 @@ exports['Regression - Incorrect arguments fallback for the parser.parseFragment 
     },
 
     test: function() {
-        var fragmentContext = parse5.treeAdapters.default.createElement('div'),
-            html = '<script></script>',
-            opts = { locationInfo: true };
+        const fragmentContext = parse5.treeAdapters.default.createElement('div');
+        const html = '<script></script>';
+        const opts = { locationInfo: true };
 
-        var args = parse5.parseFragment(fragmentContext, html, opts);
+        let args = parse5.parseFragment(fragmentContext, html, opts);
 
         assert.strictEqual(args.fragmentContext, fragmentContext);
         assert.strictEqual(args.html, html);
@@ -159,7 +160,7 @@ exports["Regression - Don't inherit from Object when creating collections (GH-11
     },
 
     test: function() {
-        var fragment = parse5.parseFragment('<div id="123">', {
+        const fragment = parse5.parseFragment('<div id="123">', {
             treeAdapter: parse5.treeAdapters.htmlparser2
         });
 
@@ -168,7 +169,7 @@ exports["Regression - Don't inherit from Object when creating collections (GH-11
 };
 
 exports['Regression - Fix empty stream parsing with ParserStream (GH-196)'] = function(done) {
-    var parser = new parse5.ParserStream().once('finish', function() {
+    const parser = new parse5.ParserStream().once('finish', () => {
         assert(parser.document.childNodes.length > 0);
         done();
     });

@@ -1,17 +1,17 @@
 'use strict';
 
-var assert = require('assert'),
-    path = require('path'),
-    fs = require('fs'),
-    WritableStream = require('stream').Writable,
-    parse5 = require('../../lib'),
-    testUtils = require('../test_utils');
+const assert = require('assert');
+const path = require('path');
+const fs = require('fs');
+const WritableStream = require('stream').Writable;
+const parse5 = require('../../lib');
+const testUtils = require('../test_utils');
 
 function serializeStreaming(node, opts) {
-    return new Promise(function(resolve) {
-        var stream = new parse5.SerializerStream(node, opts),
-            result = '',
-            writable = new WritableStream();
+    return new Promise(resolve => {
+        const stream = new parse5.SerializerStream(node, opts);
+        let result = '';
+        const writable = new WritableStream();
 
         //NOTE: use pipe to the WritableStream to test stream
         //in the `flowing` mode.
@@ -22,7 +22,7 @@ function serializeStreaming(node, opts) {
 
         stream.pipe(writable);
 
-        writable.once('finish', function() {
+        writable.once('finish', () => {
             resolve(result);
         });
     });
@@ -30,11 +30,11 @@ function serializeStreaming(node, opts) {
 
 function testStreamingSerialization(document, opts, expected, removeNewLines, done) {
     serializeStreaming(document, opts)
-        .then(function(serializedResult) {
+        .then(serializedResult => {
             return removeNewLines ? testUtils.removeNewLines(serializedResult) : serializedResult;
         })
-        .then(function(serializedResult) {
-            var msg = 'STREAMING: ' + testUtils.getStringDiffMsg(serializedResult, expected);
+        .then(serializedResult => {
+            const msg = 'STREAMING: ' + testUtils.getStringDiffMsg(serializedResult, expected);
 
             assert.ok(serializedResult === expected, msg);
             done();
@@ -47,15 +47,15 @@ function testStreamingSerialization(document, opts, expected, removeNewLines, do
         return ['Serializer - ', idx, '.', test.name].join('');
     }
 
-    var data = fs.readFileSync(path.join(__dirname, '../data/serialization/tests.json')),
-        tests = JSON.parse(data);
+    const data = fs.readFileSync(path.join(__dirname, '../data/serialization/tests.json'));
+    const tests = JSON.parse(data);
 
-    testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAdapter) {
-        tests.forEach(function(test, idx) {
+    testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
+        tests.forEach((test, idx) => {
             _test[getFullTestName(idx, test)] = function(done) {
-                var opts = { treeAdapter: treeAdapter },
-                    document = parse5.parse(test.input, opts),
-                    serializedResult = parse5.serialize(document, opts);
+                const opts = { treeAdapter: treeAdapter };
+                const document = parse5.parse(test.input, opts);
+                const serializedResult = parse5.serialize(document, opts);
 
                 //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
                 assert.ok(
@@ -71,8 +71,8 @@ function testStreamingSerialization(document, opts, expected, removeNewLines, do
 
 exports["Regression - Get text node's parent tagName only if it's an Element node (GH-38)"] = {
     test: function() {
-        var document = parse5.parse('<template>yo<div></div>42</template>'),
-            originalGetTagName = (this.originalGetTagName = parse5.treeAdapters.default.getTagName);
+        const document = parse5.parse('<template>yo<div></div>42</template>');
+        const originalGetTagName = (this.originalGetTagName = parse5.treeAdapters.default.getTagName);
 
         parse5.treeAdapters.default.getTagName = function(element) {
             assert.ok(element.tagName);

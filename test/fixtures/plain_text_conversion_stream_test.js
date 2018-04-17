@@ -1,19 +1,19 @@
 'use strict';
 
-var assert = require('assert'),
-    parse5 = require('../../lib'),
-    testUtils = require('../test_utils');
+const assert = require('assert');
+const parse5 = require('../../lib');
+const testUtils = require('../test_utils');
 
-testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     _test['Plain text conversion stream'] = function() {
-        var converter = new parse5.PlainTextConversionStream({ treeAdapter: treeAdapter });
+        const converter = new parse5.PlainTextConversionStream({ treeAdapter: treeAdapter });
 
         converter.write('Hey');
         converter.write('\r\nyo');
         converter.write('\u0000');
         converter.end('<html><head><body>');
 
-        var result = parse5.serialize(converter.document, { treeAdapter: treeAdapter });
+        const result = parse5.serialize(converter.document, { treeAdapter: treeAdapter });
 
         assert.strictEqual(
             result,

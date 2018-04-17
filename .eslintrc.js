@@ -8,7 +8,11 @@ module.exports = {
     rules: {
         'prettier/prettier': 'error',
         'no-console': 'error',
-        curly: ['error', 'all']
+        curly: ['error', 'all'],
+        'prefer-arrow-callback': 'error',
+        'one-var': ['error', 'never'],
+        'no-var': 'error',
+        'prefer-const': 'error'
     },
     parserOptions: {
         ecmaVersion: 6

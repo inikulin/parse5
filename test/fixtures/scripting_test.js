@@ -1,39 +1,39 @@
 'use strict';
 
-var path = require('path'),
-    assert = require('assert'),
-    ParserStream = require('../../lib').ParserStream,
-    testUtils = require('../test_utils');
+const path = require('path');
+const assert = require('assert');
+const ParserStream = require('../../lib').ParserStream;
+const testUtils = require('../test_utils');
 
 function getFullTestName(test) {
     return ['Scripting - ', test.idx, '.', test.setName, ' - ', test.input].join('');
 }
 
 function pause() {
-    return new Promise(function(resolve) {
+    return new Promise(resolve => {
         setTimeout(resolve, 5);
     });
 }
 
 function parse(html, treeAdapter) {
-    return new Promise(function(resolve, reject) {
-        var chunks = testUtils.makeChunks(html),
-            parser = new ParserStream({ treeAdapter: treeAdapter }),
-            document = parser.document;
+    return new Promise((resolve, reject) => {
+        const chunks = testUtils.makeChunks(html);
+        const parser = new ParserStream({ treeAdapter: treeAdapter });
+        const document = parser.document;
 
-        parser.once('finish', function() {
+        parser.once('finish', () => {
             resolve(document);
         });
 
-        parser.on('script', function(scriptElement, documentWrite, resume) {
-            var scriptTextNode = treeAdapter.getChildNodes(scriptElement)[0],
-                script = scriptTextNode && treeAdapter.getTextNodeContent(scriptTextNode);
+        parser.on('script', (scriptElement, documentWrite, resume) => {
+            const scriptTextNode = treeAdapter.getChildNodes(scriptElement)[0];
+            const script = scriptTextNode && treeAdapter.getTextNodeContent(scriptTextNode);
 
             document.write = documentWrite;
 
             //NOTE: emulate postponed script execution
             pause()
-                .then(function() {
+                .then(() => {
                     /* eslint-disable no-eval */
                     eval(script);
                     /* eslint-enable no-eval */
@@ -42,13 +42,13 @@ function parse(html, treeAdapter) {
                 .catch(reject);
         });
 
-        var lastChunkIdx = chunks.length - 1;
+        const lastChunkIdx = chunks.length - 1;
 
         //NOTE: emulate async input stream behavior
         chunks
-            .reduce(function(promiseChain, chunk, idx) {
+            .reduce((promiseChain, chunk, idx) => {
                 return promiseChain
-                    .then(function() {
+                    .then(() => {
                         if (idx === lastChunkIdx) {
                             parser.end(chunk);
                         } else {
@@ -62,15 +62,15 @@ function parse(html, treeAdapter) {
 }
 
 //Here we go..
-testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAdapter) {
+testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     testUtils
         .loadTreeConstructionTestData([path.join(__dirname, '../data/tree_construction_scripting')], treeAdapter)
-        .forEach(function(test) {
+        .forEach(test => {
             _test[getFullTestName(test)] = function(done) {
                 parse(test.input, treeAdapter)
-                    .then(function(document) {
-                        var actual = testUtils.serializeToTestDataFormat(document, treeAdapter),
-                            msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected);
+                    .then(document => {
+                        const actual = testUtils.serializeToTestDataFormat(document, treeAdapter);
+                        const msg = testUtils.prettyPrintParserAssertionArgs(actual, test.expected);
 
                         assert.strictEqual(actual, test.expected, msg);
 
@@ -81,9 +81,9 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
         });
 
     _test['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function(done) {
-        var parser = new ParserStream({ treeAdapter: treeAdapter });
+        const parser = new ParserStream({ treeAdapter: treeAdapter });
 
-        parser.on('script', function(el, docWrite, resume) {
+        parser.on('script', (el, docWrite, resume) => {
             resume();
         });
 
@@ -93,14 +93,14 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, function(_test, treeAd
     };
 
     _test['Regression - Parsing loop lock causes accidental hang ups (GH-101)'] = function(done) {
-        var parser = new ParserStream({ treeAdapter: treeAdapter });
+        const parser = new ParserStream({ treeAdapter: treeAdapter });
 
-        parser.once('finish', function() {
+        parser.once('finish', () => {
             done();
         });
 
-        parser.on('script', function(scriptElement, documentWrite, resume) {
-            process.nextTick(function() {
+        parser.on('script', (scriptElement, documentWrite, resume) => {
+            process.nextTick(() => {
                 resume();
             });
         });

@@ -1,13 +1,13 @@
 'use strict';
 
-var assert = require('assert'),
-    Tokenizer = require('../../lib/tokenizer'),
-    LocationInfoTokenizerMixin = require('../../lib/extensions/location_info/tokenizer_mixin'),
-    Mixin = require('../../lib/utils/mixin'),
-    testUtils = require('../test_utils');
+const assert = require('assert');
+const Tokenizer = require('../../lib/tokenizer');
+const LocationInfoTokenizerMixin = require('../../lib/extensions/location_info/tokenizer_mixin');
+const Mixin = require('../../lib/utils/mixin');
+const testUtils = require('../test_utils');
 
 exports['Location info (Tokenizer)'] = function() {
-    var testCases = [
+    const testCases = [
         {
             initialMode: Tokenizer.MODE.DATA,
             lastStartTagName: '',
@@ -82,15 +82,15 @@ exports['Location info (Tokenizer)'] = function() {
         }
     ];
 
-    testCases.forEach(function(testCase) {
-        var html = testCase.htmlChunks.join(''),
-            lines = html.split(/\r?\n/g),
-            tokenizer = new Tokenizer(),
-            lastChunkIdx = testCase.htmlChunks.length - 1;
+    testCases.forEach(testCase => {
+        const html = testCase.htmlChunks.join('');
+        const lines = html.split(/\r?\n/g);
+        const tokenizer = new Tokenizer();
+        const lastChunkIdx = testCase.htmlChunks.length - 1;
 
         Mixin.install(tokenizer, LocationInfoTokenizerMixin);
 
-        for (var i = 0; i < testCase.htmlChunks.length; i++) {
+        for (let i = 0; i < testCase.htmlChunks.length; i++) {
             tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);
         }
 
@@ -99,20 +99,20 @@ exports['Location info (Tokenizer)'] = function() {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (var token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
+        for (let token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
             if (token.type === Tokenizer.HIBERNATION_TOKEN) {
                 continue;
             }
 
             //Offsets
-            var actual = html.substring(token.location.startOffset, token.location.endOffset);
+            let actual = html.substring(token.location.startOffset, token.location.endOffset);
 
             assert.strictEqual(actual, testCase.htmlChunks[j]);
 
             //Line/col
             actual = testUtils.getSubstringByLineCol(lines, token.location);
 
-            var expected = testUtils.normalizeNewLine(testCase.htmlChunks[j]);
+            const expected = testUtils.normalizeNewLine(testCase.htmlChunks[j]);
 
             assert.strictEqual(actual, expected);
 

@@ -1,13 +1,13 @@
 'use strict';
 
-var assert = require('assert'),
-    fs = require('fs'),
-    path = require('path'),
-    Tokenizer = require('../../lib/tokenizer'),
-    testUtils = require('../test_utils'),
-    Mixin = require('../../lib/utils/mixin'),
-    ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator'),
-    ErrorReportingTokenizerMixin = require('../../lib/extensions/error_reporting/tokenizer_mixin');
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const Tokenizer = require('../../lib/tokenizer');
+const testUtils = require('../test_utils');
+const Mixin = require('../../lib/utils/mixin');
+const ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator');
+const ErrorReportingTokenizerMixin = require('../../lib/extensions/error_reporting/tokenizer_mixin');
 
 function createTokenSource(withFeedback, tokenizer, result) {
     if (withFeedback) {
@@ -28,8 +28,8 @@ function createTokenSource(withFeedback, tokenizer, result) {
 }
 
 function sortErrors(result) {
-    result.errors = result.errors.sort(function(err1, err2) {
-        var lineDiff = err1.line - err2.line;
+    result.errors = result.errors.sort((err1, err2) => {
+        const lineDiff = err1.line - err2.line;
 
         if (lineDiff !== 0) {
             return lineDiff;
@@ -40,10 +40,10 @@ function sortErrors(result) {
 }
 
 function tokenize(chunks, initialState, lastStartTag, withFeedback) {
-    var tokenizer = new Tokenizer(),
-        token = { type: Tokenizer.HIBERNATION_TOKEN },
-        result = { tokens: [], errors: [] },
-        chunkIdx = 0;
+    const tokenizer = new Tokenizer();
+    let token = { type: Tokenizer.HIBERNATION_TOKEN };
+    const result = { tokens: [], errors: [] };
+    let chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes
     tokenizer.preprocessor.bufferWaterline = 8;
@@ -54,12 +54,12 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
     }
 
     function writeChunk() {
-        var chunk = chunks[chunkIdx];
+        const chunk = chunks[chunkIdx];
 
         tokenizer.write(chunk, ++chunkIdx === chunks.length);
     }
 
-    var tokenSource = createTokenSource(withFeedback, tokenizer, result);
+    const tokenSource = createTokenSource(withFeedback, tokenizer, result);
 
     do {
         if (token.type === Tokenizer.HIBERNATION_TOKEN) {
@@ -77,7 +77,7 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
 }
 
 function unicodeUnescape(str) {
-    return str.replace(/\\u([\d\w]{4})/gi, function(match, chCodeStr) {
+    return str.replace(/\\u([\d\w]{4})/gi, (match, chCodeStr) => {
         return String.fromCharCode(parseInt(chCodeStr, 16));
     });
 }
@@ -85,15 +85,15 @@ function unicodeUnescape(str) {
 function unescapeDescrIO(testDescr) {
     testDescr.input = unicodeUnescape(testDescr.input);
 
-    testDescr.output.forEach(function(tokenEntry) {
+    testDescr.output.forEach(tokenEntry => {
         //NOTE: unescape token tagName (for StartTag and EndTag tokens), comment data (for Comment token),
         //character token data (for Character token).
         tokenEntry[1] = unicodeUnescape(tokenEntry[1]);
 
         //NOTE: unescape token attributes(if we have them).
         if (tokenEntry.length > 2) {
-            Object.keys(tokenEntry).forEach(function(attrName) {
-                var attrVal = tokenEntry[attrName];
+            Object.keys(tokenEntry).forEach(attrName => {
+                const attrVal = tokenEntry[attrName];
 
                 delete tokenEntry[attrName];
                 tokenEntry[unicodeUnescape(attrName)] = unicodeUnescape(attrVal);
@@ -104,7 +104,7 @@ function unescapeDescrIO(testDescr) {
 
 function appendTokenEntry(result, tokenEntry) {
     if (tokenEntry[0] === 'Character') {
-        var lastEntry = result[result.length - 1];
+        const lastEntry = result[result.length - 1];
 
         if (lastEntry && lastEntry[0] === 'Character') {
             lastEntry[1] += tokenEntry[1];
@@ -116,9 +116,9 @@ function appendTokenEntry(result, tokenEntry) {
 }
 
 function concatCharacterTokens(tokenEntries) {
-    var result = [];
+    const result = [];
 
-    tokenEntries.forEach(function(tokenEntry) {
+    tokenEntries.forEach(tokenEntry => {
         appendTokenEntry(result, tokenEntry);
     });
 
@@ -130,27 +130,27 @@ function getTokenizerSuitableStateName(testDataStateName) {
 }
 
 function loadTests(dataDirPath) {
-    var testSetFileNames = fs.readdirSync(dataDirPath),
-        testIdx = 0,
-        tests = [];
+    const testSetFileNames = fs.readdirSync(dataDirPath);
+    let testIdx = 0;
+    const tests = [];
 
-    testSetFileNames.forEach(function(fileName) {
+    testSetFileNames.forEach(fileName => {
         if (path.extname(fileName) !== '.test') {
             return;
         }
 
-        var filePath = path.join(dataDirPath, fileName),
-            testSetJson = fs.readFileSync(filePath).toString(),
-            testSet = JSON.parse(testSetJson),
-            testDescrs = testSet.tests;
+        const filePath = path.join(dataDirPath, fileName);
+        const testSetJson = fs.readFileSync(filePath).toString();
+        const testSet = JSON.parse(testSetJson);
+        const testDescrs = testSet.tests;
 
         if (!testDescrs) {
             return;
         }
 
-        var setName = fileName.replace('.test', '');
+        const setName = fileName.replace('.test', '');
 
-        testDescrs.forEach(function(descr) {
+        testDescrs.forEach(descr => {
             if (!descr.initialStates) {
                 descr.initialStates = ['Data state'];
             }
@@ -159,15 +159,15 @@ function loadTests(dataDirPath) {
                 unescapeDescrIO(descr);
             }
 
-            var expected = [];
+            const expected = [];
 
-            descr.output.forEach(function(tokenEntry) {
+            descr.output.forEach(tokenEntry => {
                 if (tokenEntry !== 'ParseError') {
                     expected.push(tokenEntry);
                 }
             });
 
-            descr.initialStates.forEach(function(initialState) {
+            descr.initialStates.forEach(initialState => {
                 tests.push({
                     idx: ++testIdx,
                     setName: setName,
@@ -197,7 +197,7 @@ function getFullTestName(kind, test) {
     ].join('');
 }
 
-var suites = [
+const suites = [
     {
         name: 'Tokenizer',
         dir: path.join(__dirname, '../data/html5lib-tests/tokenizer'),
@@ -211,11 +211,11 @@ var suites = [
 ];
 
 //Here we go..
-suites.forEach(function(suite) {
-    loadTests(suite.dir).forEach(function(test) {
+suites.forEach(suite => {
+    loadTests(suite.dir).forEach(test => {
         exports[getFullTestName(suite.name, test)] = function() {
-            var chunks = testUtils.makeChunks(test.input),
-                result = tokenize(chunks, test.initialState, test.lastStartTag, suite.withFeedback);
+            const chunks = testUtils.makeChunks(test.input);
+            const result = tokenize(chunks, test.initialState, test.lastStartTag, suite.withFeedback);
 
             assert.deepEqual(result.tokens, test.expected, 'Chunks: ' + JSON.stringify(chunks));
 

@@ -58,7 +58,7 @@ gulp.task('named-entity-data-memory-benchmark', function(done) {
 // Test
 gulp.task('lint', function() {
     return gulp
-        .src(['lib/**/*.js', 'test/**/*.js', 'scripts/**/*.js', 'Gulpfile.js'])
+        .src(['lib/**/*.js', 'test/**/*.js', 'scripts/**/*.js'])
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());

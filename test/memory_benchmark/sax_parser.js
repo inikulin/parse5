@@ -1,30 +1,30 @@
 'use strict';
 
-var fs = require('fs'),
-    format = require('human-format'),
-    promisifyEvent = require('promisify-event'),
-    memwatch = require('memwatch-next'),
-    SAXParser = require('../../lib').SAXParser;
+const fs = require('fs');
+const format = require('human-format');
+const promisifyEvent = require('promisify-event');
+const memwatch = require('memwatch-next');
+const SAXParser = require('../../lib').SAXParser;
 
 function parse() {
-    var data = fs.readFileSync('test/data/huge-page/huge-page.html'),
-        parsedDataSize = 0,
-        stream = new SAXParser();
+    const data = fs.readFileSync('test/data/huge-page/huge-page.html');
+    let parsedDataSize = 0;
+    const stream = new SAXParser();
 
-    for (var i = 0; i < 400; i++) {
+    for (let i = 0; i < 400; i++) {
         parsedDataSize += data.length;
         stream.write(data);
     }
 
     stream.end();
 
-    return promisifyEvent(stream, 'finish').then(function() {
+    return promisifyEvent(stream, 'finish').then(() => {
         return parsedDataSize;
     });
 }
 
 function getDuration(startDate, endDate) {
-    var scale = new format.Scale({
+    const scale = new format.Scale({
         seconds: 1,
         minutes: 60,
         hours: 3600
@@ -42,20 +42,20 @@ function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage)
 }
 
 (function() {
-    var parsedDataSize = 0,
-        maxMemUsage = 0,
-        startDate = null,
-        endDate = null,
-        heapDiffMeasurement = new memwatch.HeapDiff(),
-        heapDiff = null;
+    let parsedDataSize = 0;
+    let maxMemUsage = 0;
+    let startDate = null;
+    let endDate = null;
+    const heapDiffMeasurement = new memwatch.HeapDiff();
+    let heapDiff = null;
 
-    memwatch.on('stats', function(stats) {
+    memwatch.on('stats', stats => {
         maxMemUsage = Math.max(maxMemUsage, stats['current_base']);
     });
 
     startDate = new Date();
 
-    var parserPromise = parse().then(function(dataSize) {
+    const parserPromise = parse().then(dataSize => {
         parsedDataSize = dataSize;
         endDate = new Date();
         heapDiff = heapDiffMeasurement.end();
@@ -64,7 +64,7 @@ function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage)
     Promise.all([
         parserPromise,
         promisifyEvent(memwatch, 'stats') // NOTE: we need at least one `stats` result
-    ]).then(function() {
+    ]).then(() => {
         return printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
     });
 })();
