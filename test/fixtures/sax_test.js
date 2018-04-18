@@ -3,8 +3,8 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const WritableStream = require('stream').Writable;
-const SAXParser = require('../../lib').SAXParser;
+const { Writable } = require('stream');
+const { SAXParser } = require('../../lib');
 const testUtils = require('../test_utils');
 
 function getFullTestName(test, idx) {
@@ -94,7 +94,7 @@ testUtils.loadSAXParserTestData().forEach((test, idx) => {
 
 exports['SAX - Piping and .stop()'] = function(done) {
     const parser = new SAXParser();
-    const writable = new WritableStream();
+    const writable = new Writable();
     let handlerCallCount = 0;
     let data = '';
 

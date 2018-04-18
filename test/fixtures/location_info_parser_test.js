@@ -4,7 +4,7 @@ const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 const HTML = require('../../lib/common/html');
-const escapeString = require('../../lib/serializer').escapeString;
+const { escapeString } = require('../../lib/serializer');
 const parse5 = require('../../lib');
 const testUtils = require('../test_utils');
 

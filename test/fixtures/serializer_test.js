@@ -3,7 +3,7 @@
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
-const WritableStream = require('stream').Writable;
+const { Writable } = require('stream');
 const parse5 = require('../../lib');
 const testUtils = require('../test_utils');
 
@@ -11,7 +11,7 @@ function serializeStreaming(node, opts) {
     return new Promise(resolve => {
         const stream = new parse5.SerializerStream(node, opts);
         let result = '';
-        const writable = new WritableStream();
+        const writable = new Writable();
 
         //NOTE: use pipe to the WritableStream to test stream
         //in the `flowing` mode.

@@ -4,7 +4,7 @@ const fs = require('fs');
 const format = require('human-format');
 const promisifyEvent = require('promisify-event');
 const memwatch = require('memwatch-next');
-const SAXParser = require('../../lib').SAXParser;
+const { SAXParser } = require('../../lib');
 
 function parse() {
     const data = fs.readFileSync('test/data/huge-page/huge-page.html');

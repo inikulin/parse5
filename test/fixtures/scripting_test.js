@@ -2,7 +2,7 @@
 
 const path = require('path');
 const assert = require('assert');
-const ParserStream = require('../../lib').ParserStream;
+const { ParserStream } = require('../../lib');
 const testUtils = require('../test_utils');
 
 function getFullTestName(test) {
