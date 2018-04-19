@@ -1,0 +1,14 @@
+{
+    "name": "parse5-benchmarks",
+    "version": "1.0.0",
+    "description": "parse5 regression benchmarks",
+    "author": "Ivan Nikulin <ifaaan@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "benchmark": "^2.1.4",
+        "parse5": "*",
+        "human-format": "^0.7.0",
+        "memwatch-next": "^0.3.0",
+        "promisify-event": "^1.0.0"
+    }
+}

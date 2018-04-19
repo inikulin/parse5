@@ -7,25 +7,13 @@
     "homepage": "https://github.com/inikulin/parse5",
     "devDependencies": {
         "@types/node": "*",
-        "del": "^2.0.2",
         "eslint": "^4.19.1",
         "eslint-config-prettier": "^2.9.0",
         "eslint-plugin-prettier": "^2.6.0",
-        "gulp": "^3.9.0",
-        "gulp-benchmark": "^1.1.1",
-        "gulp-download": "0.0.1",
-        "gulp-eslint": "^3.0.1",
-        "gulp-install": "^0.6.0",
-        "gulp-mocha": "^2.1.3",
-        "gulp-rename": "^1.2.2",
-        "gulp-typedoc": "^2.0.0",
-        "gulp-typescript": "^3.1.2",
         "husky": "^0.14.3",
         "prettier": "^1.12.0",
         "publish-please": "^2.2.0",
-        "through2": "^2.0.0",
-        "typedoc": "^0.5.1",
-        "typescript": "^2.0.6"
+        "r2": "^2.0.1"
     },
     "keywords": [
         "html",
@@ -56,13 +44,25 @@
     },
     "scripts": {
         "prettify": "prettier --write '**/*.js'",
-        "lint": "eslint lib test scripts",
-        "test": "gulp test",
+        "precommit": "npm run prettify && git add -u",
+
+        "lint": "eslint lib test scripts bench",
+        "unit-tests": "mocha --ui exports --reporter progress --timeout 20000 test/fixtures/*_test.js",
+        "test": "npm run lint && npm run unit-tests",
+
+        "generate-feedback-tests":
+            "node scripts/generate_parser_feedback_test test/data/html5lib-tests/tree-construction/*.dat test/data/tree_construction_regression/*.dat",
+        "generate-named-entity-data": "node scripts/generate_named_entity_data",
+
         "publish-please": "publish-please",
         "prepublish": "publish-please guard",
-        "precommit": "npm run prettify && git add -u"
+
+        "bench-perf": "cd bench && npm install && node perf/index.js",
+        "bench-memory-named-entities": "cd bench && npm install && node memory/named_entity_data.js",
+        "bench-memory-sax": "cd bench && npm install && node memory/sax_parser.js"
     },
-    "files": [
-        "lib"
-    ]
+    "files": ["lib"],
+    "dependencies": {
+        "mocha": "^5.1.1"
+    }
 }

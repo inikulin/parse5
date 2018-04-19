@@ -1,7 +1,27 @@
+let { readFile, writeFile } = require('fs');
+const { promisify } = require('util');
+const { basename } = require('path');
 const Parser = require('../../lib/parser');
 const Tokenizer = require('../../lib/tokenizer');
 const defaultTreeAdapter = require('../../lib/tree_adapters/default');
 const testUtils = require('../../test/test_utils');
+
+readFile = promisify(readFile);
+writeFile = promisify(writeFile);
+
+main();
+
+async function main() {
+    const convertPromises = process.argv.slice(2).map(async file => {
+        const content = await readFile(file, 'utf-8');
+        const feedbackTestContent = generateParserFeedbackTest(content);
+        const feedbackTestFile = `test/data/parser_feedback/${basename(file, '.dat')}.test`;
+
+        await writeFile(feedbackTestFile, feedbackTestContent);
+    });
+
+    await Promise.all(convertPromises);
+}
 
 function appendToken(dest, token) {
     switch (token.type) {
@@ -48,7 +68,7 @@ function collectParserTokens(html) {
     return tokens.map(testUtils.convertTokenToHtml5Lib);
 }
 
-module.exports = function generateParserFeedbackTest(parserTestFile) {
+function generateParserFeedbackTest(parserTestFile) {
     const tests = testUtils.parseTreeConstructionTestData(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {
@@ -66,4 +86,4 @@ module.exports = function generateParserFeedbackTest(parserTestFile) {
     };
 
     return JSON.stringify(feedbackTest, null, 4);
-};
+}

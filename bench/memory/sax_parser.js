@@ -6,42 +6,9 @@ const promisifyEvent = require('promisify-event');
 const memwatch = require('memwatch-next');
 const { SAXParser } = require('../../lib');
 
-function parse() {
-    const data = fs.readFileSync('test/data/huge-page/huge-page.html');
-    let parsedDataSize = 0;
-    const stream = new SAXParser();
+main();
 
-    for (let i = 0; i < 400; i++) {
-        parsedDataSize += data.length;
-        stream.write(data);
-    }
-
-    stream.end();
-
-    return promisifyEvent(stream, 'finish').then(() => {
-        return parsedDataSize;
-    });
-}
-
-function getDuration(startDate, endDate) {
-    const scale = new format.Scale({
-        seconds: 1,
-        minutes: 60,
-        hours: 3600
-    });
-
-    return format((endDate - startDate) / 1000, { scale: scale });
-}
-
-function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage) {
-    console.log('Input data size:', format(parsedDataSize, { unit: 'B' }));
-    console.log('Duration: ', getDuration(startDate, endDate));
-    console.log('Memory before: ', heapDiff.before.size);
-    console.log('Memory after: ', heapDiff.after.size);
-    console.log('Memory max: ', format(maxMemUsage, { unit: 'B' }));
-}
-
-(function() {
+async function main() {
     let parsedDataSize = 0;
     let maxMemUsage = 0;
     let startDate = null;
@@ -61,10 +28,45 @@ function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage)
         heapDiff = heapDiffMeasurement.end();
     });
 
-    Promise.all([
+    await Promise.all([
         parserPromise,
         promisifyEvent(memwatch, 'stats') // NOTE: we need at least one `stats` result
-    ]).then(() => {
-        return printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
+    ]);
+
+    printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
+}
+
+async function parse() {
+    const data = fs.readFileSync('../test/data/huge-page/huge-page.html');
+    let parsedDataSize = 0;
+    const stream = new SAXParser();
+
+    for (let i = 0; i < 200; i++) {
+        parsedDataSize += data.length;
+        stream.write(data);
+    }
+
+    stream.end();
+
+    await promisifyEvent(stream, 'finish');
+
+    return parsedDataSize;
+}
+
+function getDuration(startDate, endDate) {
+    const scale = new format.Scale({
+        seconds: 1,
+        minutes: 60,
+        hours: 3600
     });
-})();
+
+    return format((endDate - startDate) / 1000, { scale: scale });
+}
+
+function printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage) {
+    console.log('Input data size:', format(parsedDataSize, { unit: 'B' }));
+    console.log('Duration: ', getDuration(startDate, endDate));
+    console.log('Memory before: ', heapDiff.before.size);
+    console.log('Memory after: ', heapDiff.after.size);
+    console.log('Memory max: ', format(maxMemUsage, { unit: 'B' }));
+}

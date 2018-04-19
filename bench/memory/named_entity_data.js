@@ -2,7 +2,9 @@
 
 const format = require('human-format');
 
-(function() {
+main();
+
+function main() {
     const before = process.memoryUsage().rss;
 
     require('../../lib/tokenizer/named_entity_data');
@@ -10,4 +12,4 @@ const format = require('human-format');
     const after = process.memoryUsage().rss;
 
     console.log('Initial memory consumption: ', format(after - before, { unit: 'B' }));
-})();
+}
