@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { Writable } = require('stream');
 const parse5 = require('../../lib');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 function serializeStreaming(node, opts) {
     return new Promise(resolve => {

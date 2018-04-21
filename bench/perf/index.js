@@ -3,7 +3,7 @@
 const { join } = require('path');
 const { readFileSync, createReadStream, readdirSync } = require('fs');
 const Benchmark = require('benchmark');
-const testUtils = require('../../test/test_utils');
+const testUtils = require('../../test/test-utils');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, upstreamParser, hugePage, microTests, runMicro, runPages, files */

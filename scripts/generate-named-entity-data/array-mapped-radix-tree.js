@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const Node = require('./tree_node');
+const Node = require('./tree-node');
 
 const HAS_DATA_FLAG = 1 << 0;
 const DATA_DUPLET_FLAG = 1 << 1;

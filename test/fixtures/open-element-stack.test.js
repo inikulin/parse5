@@ -2,8 +2,8 @@
 
 const assert = require('assert');
 const HTML = require('../../lib/common/html');
-const OpenElementStack = require('../../lib/parser/open_element_stack');
-const testUtils = require('../test_utils');
+const OpenElementStack = require('../../lib/parser/open-element-stack');
+const testUtils = require('../test-utils');
 
 //Aliases
 const $ = HTML.TAG_NAMES;

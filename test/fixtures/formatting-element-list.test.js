@@ -2,8 +2,8 @@
 
 const assert = require('assert');
 const HTML = require('../../lib/common/html');
-const FormattingElementList = require('../../lib/parser/formatting_element_list');
-const testUtils = require('../test_utils');
+const FormattingElementList = require('../../lib/parser/formatting-element-list');
+const testUtils = require('../test-utils');
 
 //Aliases
 const $ = HTML.TAG_NAMES;

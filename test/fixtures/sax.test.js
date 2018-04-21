@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { Writable } = require('stream');
 const { SAXParser } = require('../../lib');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 function getFullTestName(test, idx) {
     return ['SAX - ', idx, '.', test.name].join('');

@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 const parse5 = require('../../lib');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     _test['Plain text conversion stream'] = function() {

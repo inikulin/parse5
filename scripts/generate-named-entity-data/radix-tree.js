@@ -1,6 +1,6 @@
 'use strict';
 
-const Node = require('./tree_node');
+const Node = require('./tree-node');
 
 class RadixTree {
     constructor(src) {

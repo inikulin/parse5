@@ -47,19 +47,19 @@
         "precommit": "npm run prettify && git add -u",
 
         "lint": "eslint lib test scripts bench",
-        "unit-tests": "mocha --ui exports --reporter progress --timeout 20000 test/fixtures/*_test.js",
+        "unit-tests": "mocha --ui exports --reporter progress --timeout 20000 test/fixtures/*.test.js",
         "test": "npm run lint && npm run unit-tests",
 
         "generate-feedback-tests":
-            "node scripts/generate_parser_feedback_test test/data/html5lib-tests/tree-construction/*.dat test/data/tree_construction_regression/*.dat",
-        "generate-named-entity-data": "node scripts/generate_named_entity_data",
+            "node scripts/generate-parser-feedback-test test/data/html5lib-tests/tree-construction/*.dat test/data/tree-construction-regression/*.dat",
+        "generate-named-entity-data": "node scripts/generate-named-entity-data",
 
         "publish-please": "publish-please",
         "prepublish": "publish-please guard",
 
         "bench-perf": "cd bench && npm install && node perf/index.js",
-        "bench-memory-named-entities": "cd bench && npm install && node memory/named_entity_data.js",
-        "bench-memory-sax": "cd bench && npm install && node memory/sax_parser.js"
+        "bench-memory-named-entities": "cd bench && npm install && node memory/named-entity-data.js",
+        "bench-memory-sax": "cd bench && npm install && node memory/sax-parser.js"
     },
     "files": ["lib"],
     "dependencies": {

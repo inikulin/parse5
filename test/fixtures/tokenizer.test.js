@@ -4,10 +4,10 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const Tokenizer = require('../../lib/tokenizer');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 const Mixin = require('../../lib/utils/mixin');
-const ParserFeedbackSimulator = require('../../lib/sax/parser_feedback_simulator');
-const ErrorReportingTokenizerMixin = require('../../lib/extensions/error_reporting/tokenizer_mixin');
+const ParserFeedbackSimulator = require('../../lib/sax/parser-feedback-simulator');
+const ErrorReportingTokenizerMixin = require('../../lib/extensions/error-reporting/tokenizer-mixin');
 
 function createTokenSource(withFeedback, tokenizer, result) {
     if (withFeedback) {
@@ -205,7 +205,7 @@ const suites = [
     },
     {
         name: 'Parser feedback',
-        dir: path.join(__dirname, '../data/parser_feedback'),
+        dir: path.join(__dirname, '../data/parser-feedback'),
         withFeedback: true
     }
 ];

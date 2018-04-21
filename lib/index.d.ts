@@ -528,7 +528,7 @@ declare namespace AST {
      * Note that `TreeAdapter` is not designed to be a general purpose AST manipulation library. You can build such library
      * on top of existing `TreeAdapter` or use one of the existing libraries from npm.
      *
-     * @see [default implementation](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters/default.js)
+     * @see [default implementation](https://github.com/inikulin/parse5/blob/master/lib/tree-adapters/default.js)
      */
     export interface TreeAdapter {
         /**

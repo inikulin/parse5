@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 const { SAXParser } = require('../../lib');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 exports['Location info (SAX)'] = function() {
     testUtils.loadSAXParserTestData().forEach(test => {

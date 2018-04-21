@@ -3,7 +3,7 @@
 const path = require('path');
 const assert = require('assert');
 const { ParserStream } = require('../../lib');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 function getFullTestName(test) {
     return ['Scripting - ', test.idx, '.', test.setName, ' - ', test.input].join('');
@@ -64,7 +64,7 @@ function parse(html, treeAdapter) {
 //Here we go..
 testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     testUtils
-        .loadTreeConstructionTestData([path.join(__dirname, '../data/tree_construction_scripting')], treeAdapter)
+        .loadTreeConstructionTestData([path.join(__dirname, '../data/tree-construction-scripting')], treeAdapter)
         .forEach(test => {
             _test[getFullTestName(test)] = function(done) {
                 parse(test.input, treeAdapter)

@@ -6,7 +6,7 @@ const fs = require('fs');
 const HTML = require('../../lib/common/html');
 const { escapeString } = require('../../lib/serializer');
 const parse5 = require('../../lib');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 function getFullLocationTestName(test) {
     return ['Location info (Parser) - ', test.name].join('');
@@ -72,7 +72,7 @@ function assertNodeLocation(node, serializedNode, html, lines) {
 }
 
 function loadTestData() {
-    const dataDirPath = path.join(__dirname, '../data/location_info');
+    const dataDirPath = path.join(__dirname, '../data/location-info');
     const testSetFileDirs = fs.readdirSync(dataDirPath);
     const tests = [];
 

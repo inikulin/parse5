@@ -4,7 +4,7 @@ const assert = require('assert');
 const path = require('path');
 const parse5 = require('../../lib');
 const Parser = require('../../lib/parser');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 function getFullTestName(test) {
     return [
@@ -58,7 +58,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) =
         .loadTreeConstructionTestData(
             [
                 path.join(__dirname, '../data/html5lib-tests/tree-construction'),
-                path.join(__dirname, '../data/tree_construction_regression')
+                path.join(__dirname, '../data/tree-construction-regression')
             ],
             treeAdapter
         )

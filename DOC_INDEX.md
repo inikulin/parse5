@@ -170,7 +170,7 @@ for other platforms (e.g. for browsers via webpack).
 ### 3.0.0
 * Added: parse5 now ships with TypeScript definitions from which [new documentation website](http://inikulin.github.io/parse5/) is generated (GH [#125](https://github.com/inikulin/parse5/issues/125)).
 * Added: [PlainTextConversionStream](http://inikulin.github.io/parse5/classes/plaintextconversionstream.html) (GH [#135](https://github.com/inikulin/parse5/issues/135)).
-* Updated: [Significantly reduced initial memory consumption](https://github.com/inikulin/parse5/tree/master/scripts/generate_named_entity_data#named-entity-array-mapped-radix-tree-generator) (GH [#52](https://github.com/inikulin/parse5/issues/52)).
+* Updated: [Significantly reduced initial memory consumption](https://github.com/inikulin/parse5/tree/master/scripts/generate_named-entity-data#named-entity-array-mapped-radix-tree-generator) (GH [#52](https://github.com/inikulin/parse5/issues/52)).
 * Updated (**breaking**): Added support for limited quirks mode. `document.quirksMode` property was replaced with `document.mode` property which can have
  `'no-quirks'`, `'quirks'` and `'limited-quirks'` values. Tree adapter `setQuirksMode ` and `isQuirksMode` methods were replaced with `setDocumentMode` and `getDocumentMode` methods (GH [#83](https://github.com/inikulin/parse5/issues/83)).
 * Updated (**breaking**): AST collections (e.g. attributes dictionary) don't have prototype anymore (GH [#119](https://github.com/inikulin/parse5/issues/119)).

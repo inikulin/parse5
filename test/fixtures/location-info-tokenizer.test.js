@@ -2,9 +2,9 @@
 
 const assert = require('assert');
 const Tokenizer = require('../../lib/tokenizer');
-const LocationInfoTokenizerMixin = require('../../lib/extensions/location_info/tokenizer_mixin');
+const LocationInfoTokenizerMixin = require('../../lib/extensions/location-info/tokenizer-mixin');
 const Mixin = require('../../lib/utils/mixin');
-const testUtils = require('../test_utils');
+const testUtils = require('../test-utils');
 
 exports['Location info (Tokenizer)'] = function() {
     const testCases = [
