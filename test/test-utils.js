@@ -231,9 +231,9 @@ exports.serializeToTestDataFormat = function(rootNode, treeAdapter) {
 
                 parts.push(treeAdapter.getDocumentTypeNodeName(node) || '');
 
-                if (publicId !== null || systemId !== null) {
-                    parts.push('"' + (publicId || '') + '"');
-                    parts.push('"' + (systemId || '') + '"');
+                if (publicId || systemId) {
+                    parts.push('"' + publicId + '"');
+                    parts.push('"' + systemId + '"');
                 }
 
                 parts.forEach(part => {

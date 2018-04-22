@@ -109,7 +109,7 @@ exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapt
 const origParseFragment = Parser.prototype.parseFragment;
 
 exports['Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)'] = {
-    beforeEach: function() {
+    beforeEach() {
         Parser.prototype.parseFragment = function(html, fragmentContext) {
             return {
                 html: html,
@@ -119,11 +119,11 @@ exports['Regression - Incorrect arguments fallback for the parser.parseFragment 
         };
     },
 
-    afterEach: function() {
+    afterEach() {
         Parser.prototype.parseFragment = origParseFragment;
     },
 
-    test: function() {
+    test() {
         const fragmentContext = parse5.treeAdapters.default.createElement('div');
         const html = '<script></script>';
         const opts = { locationInfo: true };
@@ -175,4 +175,13 @@ exports['Regression - Fix empty stream parsing with ParserStream (GH-196)'] = fu
     });
 
     parser.end();
+};
+
+exports['Regression - DOCTYPE empty fields (GH-236)'] = function() {
+    const document = parse5.parse('<!DOCTYPE>');
+    const doctype = document.childNodes[0];
+
+    assert.strictEqual(doctype.name, '');
+    assert.strictEqual(doctype.publicId, '');
+    assert.strictEqual(doctype.systemId, '');
 };
