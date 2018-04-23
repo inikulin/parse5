@@ -4,12 +4,13 @@ const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 const { Writable } = require('stream');
-const parse5 = require('../../lib');
+const parse5 = require('../../packages/parse5/lib');
+const SerializerStream = require('../../packages/parse5-serializer-stream/lib');
 const testUtils = require('../test-utils');
 
 function serializeStreaming(node, opts) {
     return new Promise(resolve => {
-        const stream = new parse5.SerializerStream(node, opts);
+        const stream = new SerializerStream(node, opts);
         let result = '';
         const writable = new Writable();
 
@@ -72,9 +73,9 @@ function testStreamingSerialization(document, opts, expected, removeNewLines, do
 exports["Regression - Get text node's parent tagName only if it's an Element node (GH-38)"] = {
     test: function() {
         const document = parse5.parse('<template>yo<div></div>42</template>');
-        const originalGetTagName = (this.originalGetTagName = parse5.treeAdapters.default.getTagName);
+        const originalGetTagName = (this.originalGetTagName = testUtils.treeAdapters.default.getTagName);
 
-        parse5.treeAdapters.default.getTagName = function(element) {
+        testUtils.treeAdapters.default.getTagName = function(element) {
             assert.ok(element.tagName);
 
             return originalGetTagName(element);
@@ -84,6 +85,6 @@ exports["Regression - Get text node's parent tagName only if it's an Element nod
     },
 
     after: function() {
-        parse5.treeAdapters.default.getTagName = this.originalGetTagName;
+        testUtils.treeAdapters.default.getTagName = this.originalGetTagName;
     }
 };

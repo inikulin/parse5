@@ -4,7 +4,7 @@ const fs = require('fs');
 const format = require('human-format');
 const promisifyEvent = require('promisify-event');
 const memwatch = require('memwatch-next');
-const { SAXParser } = require('../../lib');
+const SAXParser = require('../../packages/parse5-sax-parser/lib');
 
 main();
 

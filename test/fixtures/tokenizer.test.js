@@ -3,11 +3,11 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const Tokenizer = require('../../lib/tokenizer');
+const Tokenizer = require('../../packages/parse5/lib/tokenizer');
+const Mixin = require('../../packages/parse5/lib/utils/mixin');
+const ErrorReportingTokenizerMixin = require('../../packages/parse5/lib/extensions/error-reporting/tokenizer-mixin');
+const ParserFeedbackSimulator = require('../../packages/parse5-sax-parser/lib/parser-feedback-simulator');
 const testUtils = require('../test-utils');
-const Mixin = require('../../lib/utils/mixin');
-const ParserFeedbackSimulator = require('../../lib/sax/parser-feedback-simulator');
-const ErrorReportingTokenizerMixin = require('../../lib/extensions/error-reporting/tokenizer-mixin');
 
 function createTokenSource(withFeedback, tokenizer, result) {
     if (withFeedback) {

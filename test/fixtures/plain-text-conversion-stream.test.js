@@ -1,12 +1,13 @@
 'use strict';
 
 const assert = require('assert');
-const parse5 = require('../../lib');
+const parse5 = require('../../packages/parse5/lib');
+const PlainTextConversionStream = require('../../packages/parse5-plain-text-conversion-stream/lib');
 const testUtils = require('../test-utils');
 
 testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     _test['Plain text conversion stream'] = function() {
-        const converter = new parse5.PlainTextConversionStream({ treeAdapter: treeAdapter });
+        const converter = new PlainTextConversionStream({ treeAdapter: treeAdapter });
 
         converter.write('Hey');
         converter.write('\r\nyo');

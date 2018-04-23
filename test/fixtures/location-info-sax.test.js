@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { SAXParser } = require('../../lib');
+const SAXParser = require('../../packages/parse5-sax-parser/lib');
 const testUtils = require('../test-utils');
 
 exports['Location info (SAX)'] = function() {

@@ -1,8 +1,8 @@
 'use strict';
 
 const assert = require('assert');
-const HTML = require('../../lib/common/html');
-const OpenElementStack = require('../../lib/parser/open-element-stack');
+const HTML = require('../../packages/parse5/lib/common/html');
+const OpenElementStack = require('../../packages/parse5/lib/parser/open-element-stack');
 const testUtils = require('../test-utils');
 
 //Aliases

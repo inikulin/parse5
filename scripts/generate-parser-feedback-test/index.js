@@ -1,9 +1,9 @@
 let { readFile, writeFile } = require('fs');
 const { promisify } = require('util');
 const { basename } = require('path');
-const Parser = require('../../lib/parser');
-const Tokenizer = require('../../lib/tokenizer');
-const defaultTreeAdapter = require('../../lib/tree-adapters/default');
+const Parser = require('../../packages/parse5/lib/parser');
+const Tokenizer = require('../../packages/parse5/lib/tokenizer');
+const defaultTreeAdapter = require('../../packages/parse5/lib/tree-adapters/default');
 const testUtils = require('../../test/test-utils');
 
 readFile = promisify(readFile);

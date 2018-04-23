@@ -2,8 +2,9 @@
 
 const assert = require('assert');
 const path = require('path');
-const parse5 = require('../../lib');
-const Parser = require('../../lib/parser');
+const parse5 = require('../../packages/parse5/lib');
+const Parser = require('../../packages/parse5/lib/parser');
+const ParserStream = require('../../packages/parse5-parser-stream/lib');
 const testUtils = require('../test-utils');
 
 function getFullTestName(test) {
@@ -101,7 +102,7 @@ testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) =
 
 exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function() {
     const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
-    const document = parse5.parse(html, { treeAdapter: parse5.treeAdapters.htmlparser2 });
+    const document = parse5.parse(html, { treeAdapter: testUtils.treeAdapters.htmlparser2 });
 
     assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
 };
@@ -124,7 +125,7 @@ exports['Regression - Incorrect arguments fallback for the parser.parseFragment 
     },
 
     test() {
-        const fragmentContext = parse5.treeAdapters.default.createElement('div');
+        const fragmentContext = testUtils.treeAdapters.default.createElement('div');
         const html = '<script></script>';
         const opts = { locationInfo: true };
 
@@ -161,15 +162,15 @@ exports["Regression - Don't inherit from Object when creating collections (GH-11
 
     test: function() {
         const fragment = parse5.parseFragment('<div id="123">', {
-            treeAdapter: parse5.treeAdapters.htmlparser2
+            treeAdapter: testUtils.treeAdapters.htmlparser2
         });
 
-        assert.strictEqual(parse5.treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
+        assert.strictEqual(testUtils.treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
     }
 };
 
 exports['Regression - Fix empty stream parsing with ParserStream (GH-196)'] = function(done) {
-    const parser = new parse5.ParserStream().once('finish', () => {
+    const parser = new ParserStream().once('finish', () => {
         assert(parser.document.childNodes.length > 0);
         done();
     });

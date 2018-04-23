@@ -2,7 +2,7 @@
 
 const path = require('path');
 const assert = require('assert');
-const { ParserStream } = require('../../lib');
+const ParserStream = require('../../packages/parse5-parser-stream/lib');
 const testUtils = require('../test-utils');
 
 function getFullTestName(test) {

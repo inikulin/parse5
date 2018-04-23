@@ -6,8 +6,9 @@ const Benchmark = require('benchmark');
 const testUtils = require('../../test/test-utils');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
-/* global workingCopy, upstreamParser, hugePage, microTests, runMicro, runPages, files */
-global.workingCopy = require('../../lib');
+/* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
+global.workingCopy = require('../../packages/parse5/lib');
+global.WorkingCopyParserStream = require('../../packages/parse5-parser-stream/lib');
 global.upstreamParser = require('parse5');
 
 // Huge page data
@@ -17,7 +18,7 @@ global.hugePage = readFileSync(join(__dirname, '../../test/data/huge-page/huge-p
 global.microTests = testUtils
     .loadTreeConstructionTestData(
         [join(__dirname, '../../test/data/html5lib-tests/tree-construction')],
-        workingCopy.treeAdapters.default
+        testUtils.treeAdapters.default
     )
     .filter(
         test =>
@@ -106,7 +107,7 @@ runBench({
             fileName =>
                 new Promise(resolve => {
                     const stream = createReadStream(fileName);
-                    const parserStream = new workingCopy.ParserStream();
+                    const parserStream = new WorkingCopyParserStream();
 
                     stream.pipe(parserStream);
                     parserStream.on('finish', resolve);

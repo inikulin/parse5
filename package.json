@@ -1,68 +1,31 @@
 {
-    "name": "parse5",
-    "description": "HTML parsing/serialization toolset for Node.js. WHATWG HTML Living Standard (aka HTML5)-compliant.",
-    "version": "4.0.0",
-    "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
-    "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
-    "homepage": "https://github.com/inikulin/parse5",
+    "private": true,
     "devDependencies": {
         "@types/node": "*",
         "eslint": "^4.19.1",
         "eslint-config-prettier": "^2.9.0",
         "eslint-plugin-prettier": "^2.6.0",
         "husky": "^0.14.3",
+        "lerna": "^2.10.2",
+        "mocha": "^5.1.1",
         "prettier": "^1.12.0",
-        "publish-please": "^2.2.0",
         "r2": "^2.0.1"
     },
-    "keywords": [
-        "html",
-        "parser",
-        "html5",
-        "WHATWG",
-        "specification",
-        "fast",
-        "html parser",
-        "html5 parser",
-        "htmlparser",
-        "parse5",
-        "serializer",
-        "html serializer",
-        "htmlserializer",
-        "sax",
-        "simple api",
-        "parse",
-        "tokenize",
-        "serialize",
-        "tokenizer"
-    ],
-    "license": "MIT",
-    "main": "./lib/index.js",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/inikulin/parse5.git"
-    },
     "scripts": {
+        "bootstrap": "lerna bootstrap",
         "prettify": "prettier --write '**/*.js'",
-        "precommit": "npm run prettify && git add -u",
-
-        "lint": "eslint lib test scripts bench",
+        "lint": "eslint packages test scripts bench",
         "unit-tests": "mocha --ui exports --reporter progress --timeout 20000 test/fixtures/*.test.js",
         "test": "npm run lint && npm run unit-tests",
-
         "generate-feedback-tests":
             "node scripts/generate-parser-feedback-test test/data/html5lib-tests/tree-construction/*.dat test/data/tree-construction-regression/*.dat",
         "generate-named-entity-data": "node scripts/generate-named-entity-data",
-
-        "publish-please": "publish-please",
-        "prepublish": "publish-please guard",
-
         "bench-perf": "cd bench && npm install && node perf/index.js",
         "bench-memory-named-entities": "cd bench && npm install && node memory/named-entity-data.js",
-        "bench-memory-sax": "cd bench && npm install && node memory/sax-parser.js"
-    },
-    "files": ["lib"],
-    "dependencies": {
-        "mocha": "^5.1.1"
+        "bench-memory-sax": "cd bench && npm install && node memory/sax-parser.js",
+        "postinstall": "npm run bootstrap",
+        "preversion": "npm test",
+        "precommit": "npm run prettify && git add -u",
+        "publish": "lerna publish"
     }
 }

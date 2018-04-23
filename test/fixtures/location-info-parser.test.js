@@ -3,9 +3,9 @@
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
-const HTML = require('../../lib/common/html');
-const { escapeString } = require('../../lib/serializer');
-const parse5 = require('../../lib');
+const HTML = require('../../packages/parse5/lib/common/html');
+const { escapeString } = require('../../packages/parse5/lib/serializer');
+const parse5 = require('../../packages/parse5/lib');
 const testUtils = require('../test-utils');
 
 function getFullLocationTestName(test) {

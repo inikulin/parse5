@@ -7,7 +7,7 @@ main();
 function main() {
     const before = process.memoryUsage().rss;
 
-    require('../../lib/tokenizer/named-entity-data');
+    require('../../packages/parse5/lib/tokenizer/named-entity-data');
 
     const after = process.memoryUsage().rss;
 

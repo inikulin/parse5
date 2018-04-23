@@ -2,9 +2,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const parse5 = require('../lib/index');
-const HTML = require('../lib/common/html');
-const Tokenizer = require('../lib/tokenizer');
+const ParserStream = require('../packages/parse5-parser-stream/lib');
+const HTML = require('../packages/parse5/lib/common/html');
+const Tokenizer = require('../packages/parse5/lib/tokenizer');
+
+const treeAdapters = (exports.treeAdapters = {
+    default: require('../packages/parse5/lib/tree-adapters/default'),
+    htmlparser2: require('../packages/parse5-htmlparser2-tree-adapter/lib')
+});
 
 function addSlashes(str) {
     return str
@@ -64,9 +69,9 @@ function createFragmentContext(tagName, treeAdapter) {
 
 //NOTE: creates test suites for each available tree adapter.
 exports.generateTestsForEachTreeAdapter = function(moduleExports, ctor) {
-    Object.keys(parse5.treeAdapters).forEach(adapterName => {
+    Object.keys(treeAdapters).forEach(adapterName => {
         const tests = {};
-        const adapter = parse5.treeAdapters[adapterName];
+        const adapter = treeAdapters[adapterName];
 
         ctor(tests, adapter);
 
@@ -317,7 +322,7 @@ exports.makeChunks = function(str, minSize, maxSize) {
 };
 
 exports.parseChunked = function(html, opts, minChunkSize, maxChunkSize) {
-    const parserStream = new parse5.ParserStream(opts);
+    const parserStream = new ParserStream(opts);
     const chunks = exports.makeChunks(html, minChunkSize, maxChunkSize);
 
     // NOTE: set small waterline for testing purposes

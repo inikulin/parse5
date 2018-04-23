@@ -1,9 +1,9 @@
 'use strict';
 
 const assert = require('assert');
-const Tokenizer = require('../../lib/tokenizer');
-const LocationInfoTokenizerMixin = require('../../lib/extensions/location-info/tokenizer-mixin');
-const Mixin = require('../../lib/utils/mixin');
+const Tokenizer = require('../../packages/parse5/lib/tokenizer');
+const LocationInfoTokenizerMixin = require('../../packages/parse5/lib/extensions/location-info/tokenizer-mixin');
+const Mixin = require('../../packages/parse5/lib/utils/mixin');
 const testUtils = require('../test-utils');
 
 exports['Location info (Tokenizer)'] = function() {

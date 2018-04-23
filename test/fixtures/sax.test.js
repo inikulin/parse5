@@ -4,7 +4,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const { Writable } = require('stream');
-const { SAXParser } = require('../../lib');
+const SAXParser = require('../../packages/parse5-sax-parser/lib');
 const testUtils = require('../test-utils');
 
 function getFullTestName(test, idx) {
