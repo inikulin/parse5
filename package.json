@@ -14,8 +14,8 @@
     "scripts": {
         "bootstrap": "lerna bootstrap",
         "prettify": "prettier --write '**/*.js'",
-        "lint": "eslint packages test scripts bench",
-        "unit-tests": "mocha --ui exports --reporter progress --timeout 20000 test/fixtures/*.test.js",
+        "lint": "eslint .",
+        "unit-tests": "mocha --ui exports --reporter progress --timeout 20000 packages/**/test/*.test.js",
         "test": "npm run lint && npm run unit-tests",
         "generate-feedback-tests":
             "node scripts/generate-parser-feedback-test test/data/html5lib-tests/tree-construction/*.dat test/data/tree-construction-regression/*.dat",

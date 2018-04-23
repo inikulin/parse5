@@ -3,7 +3,9 @@
 const { join } = require('path');
 const { readFileSync, createReadStream, readdirSync } = require('fs');
 const Benchmark = require('benchmark');
-const testUtils = require('../../test/test-utils');
+const { loadTreeConstructionTestData } = require('../../test/utils/generate-parsing-tests');
+const loadSAXParserTestData = require('../../test/utils/load-sax-parser-test-data');
+const { treeAdapters } = require('../../test/utils/common');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
@@ -15,11 +17,10 @@ global.upstreamParser = require('parse5');
 global.hugePage = readFileSync(join(__dirname, '../../test/data/huge-page/huge-page.html')).toString();
 
 // Micro data
-global.microTests = testUtils
-    .loadTreeConstructionTestData(
-        [join(__dirname, '../../test/data/html5lib-tests/tree-construction')],
-        testUtils.treeAdapters.default
-    )
+global.microTests = loadTreeConstructionTestData(
+    [join(__dirname, '../../test/data/html5lib-tests/tree-construction')],
+    treeAdapters.default
+)
     .filter(
         test =>
             //NOTE: this test caused stack overflow in parse5 v1.x
@@ -41,7 +42,7 @@ global.runMicro = function(parser) {
 };
 
 // Pages data
-const pages = testUtils.loadSAXParserTestData().map(test => test.src);
+const pages = loadSAXParserTestData().map(test => test.src);
 
 global.runPages = function(parser) {
     for (let j = 0; j < pages.length; j++) {

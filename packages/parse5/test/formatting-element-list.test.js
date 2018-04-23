@@ -1,15 +1,15 @@
 'use strict';
 
 const assert = require('assert');
-const HTML = require('../../packages/parse5/lib/common/html');
-const FormattingElementList = require('../../packages/parse5/lib/parser/formatting-element-list');
-const testUtils = require('../test-utils');
+const HTML = require('../lib/common/html');
+const FormattingElementList = require('../lib/parser/formatting-element-list');
+const { generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
 
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 
-testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
+generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     _test['Insert marker'] = function() {
         const list = new FormattingElementList(treeAdapter);
 

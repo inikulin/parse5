@@ -1,15 +1,16 @@
 'use strict';
 
 const assert = require('assert');
-const SAXParser = require('../../packages/parse5-sax-parser/lib');
-const testUtils = require('../test-utils');
+const SAXParser = require('../lib');
+const loadSAXParserTestData = require('../../../test/utils/load-sax-parser-test-data');
+const { makeChunks } = require('../../../test/utils/common');
 
 exports['Location info (SAX)'] = function() {
-    testUtils.loadSAXParserTestData().forEach(test => {
+    loadSAXParserTestData().forEach(test => {
         //NOTE: we've already tested the correctness of the location info with the Tokenizer tests.
         //So here we just check that SAXParser provides this info in the handlers.
         const parser = new SAXParser({ locationInfo: true });
-        const chunks = testUtils.makeChunks(test.src);
+        const chunks = makeChunks(test.src);
         const lastChunkIdx = chunks.length - 1;
 
         const handler = function() {

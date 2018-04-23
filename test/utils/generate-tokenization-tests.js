@@ -4,27 +4,45 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const Tokenizer = require('../../packages/parse5/lib/tokenizer');
-const Mixin = require('../../packages/parse5/lib/utils/mixin');
-const ErrorReportingTokenizerMixin = require('../../packages/parse5/lib/extensions/error-reporting/tokenizer-mixin');
-const ParserFeedbackSimulator = require('../../packages/parse5-sax-parser/lib/parser-feedback-simulator');
-const testUtils = require('../test-utils');
+const { makeChunks } = require('./common');
 
-function createTokenSource(withFeedback, tokenizer, result) {
-    if (withFeedback) {
-        return new ParserFeedbackSimulator(tokenizer);
-    }
+function convertTokenToHtml5Lib(token) {
+    switch (token.type) {
+        case Tokenizer.CHARACTER_TOKEN:
+        case Tokenizer.NULL_CHARACTER_TOKEN:
+        case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
+            return ['Character', token.chars];
 
-    Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
-        onParseError: function(err) {
-            result.errors.push({
-                code: err.code,
-                line: err.startLine,
-                col: err.startCol
+        case Tokenizer.START_TAG_TOKEN: {
+            const reformatedAttrs = {};
+
+            token.attrs.forEach(attr => {
+                reformatedAttrs[attr.name] = attr.value;
             });
-        }
-    });
 
-    return tokenizer;
+            const startTagEntry = ['StartTag', token.tagName, reformatedAttrs];
+
+            if (token.selfClosing) {
+                startTagEntry.push(true);
+            }
+
+            return startTagEntry;
+        }
+
+        case Tokenizer.END_TAG_TOKEN:
+            // NOTE: parser feedback simulator can produce adjusted SVG
+            // tag names for end tag tokens so we need to lower case it
+            return ['EndTag', token.tagName.toLowerCase()];
+
+        case Tokenizer.COMMENT_TOKEN:
+            return ['Comment', token.data];
+
+        case Tokenizer.DOCTYPE_TOKEN:
+            return ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks];
+
+        default:
+            throw new TypeError('Unrecognized token type: ' + token.type);
+    }
 }
 
 function sortErrors(result) {
@@ -39,10 +57,10 @@ function sortErrors(result) {
     });
 }
 
-function tokenize(chunks, initialState, lastStartTag, withFeedback) {
-    const tokenizer = new Tokenizer();
-    let token = { type: Tokenizer.HIBERNATION_TOKEN };
+function tokenize(createTokenSource, chunks, initialState, lastStartTag) {
     const result = { tokens: [], errors: [] };
+    const { tokenizer, getNextToken } = createTokenSource(result);
+    let token = { type: Tokenizer.HIBERNATION_TOKEN };
     let chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes
@@ -59,16 +77,14 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
         tokenizer.write(chunk, ++chunkIdx === chunks.length);
     }
 
-    const tokenSource = createTokenSource(withFeedback, tokenizer, result);
-
     do {
         if (token.type === Tokenizer.HIBERNATION_TOKEN) {
             writeChunk();
         } else {
-            appendTokenEntry(result.tokens, testUtils.convertTokenToHtml5Lib(token));
+            appendTokenEntry(result.tokens, convertTokenToHtml5Lib(token));
         }
 
-        token = tokenSource.getNextToken();
+        token = getNextToken();
     } while (token.type !== Tokenizer.EOF_TOKEN);
 
     sortErrors(result);
@@ -77,9 +93,7 @@ function tokenize(chunks, initialState, lastStartTag, withFeedback) {
 }
 
 function unicodeUnescape(str) {
-    return str.replace(/\\u([\d\w]{4})/gi, (match, chCodeStr) => {
-        return String.fromCharCode(parseInt(chCodeStr, 16));
-    });
+    return str.replace(/\\u([\d\w]{4})/gi, (match, chCodeStr) => String.fromCharCode(parseInt(chCodeStr, 16)));
 }
 
 function unescapeDescrIO(testDescr) {
@@ -131,8 +145,8 @@ function getTokenizerSuitableStateName(testDataStateName) {
 
 function loadTests(dataDirPath) {
     const testSetFileNames = fs.readdirSync(dataDirPath);
-    let testIdx = 0;
     const tests = [];
+    let testIdx = 0;
 
     testSetFileNames.forEach(fileName => {
         if (path.extname(fileName) !== '.test') {
@@ -185,43 +199,18 @@ function loadTests(dataDirPath) {
     return tests;
 }
 
-function getFullTestName(kind, test) {
-    return [
-        kind + ' - ' + test.idx,
-        '.',
-        test.setName,
-        ' - `',
-        test.name,
-        '` - Initial state: ',
-        test.initialState
-    ].join('');
-}
+module.exports = function generateTokenizationTests(moduleExports, prefix, testSuite, createTokenSource) {
+    loadTests(testSuite).forEach(test => {
+        const testName = `${prefix} - ${test.idx}.${test.setName} - ${test.name} - Initial state: ${test.initialState}`;
 
-const suites = [
-    {
-        name: 'Tokenizer',
-        dir: path.join(__dirname, '../data/html5lib-tests/tokenizer'),
-        withFeedback: false
-    },
-    {
-        name: 'Parser feedback',
-        dir: path.join(__dirname, '../data/parser-feedback'),
-        withFeedback: true
-    }
-];
-
-//Here we go..
-suites.forEach(suite => {
-    loadTests(suite.dir).forEach(test => {
-        exports[getFullTestName(suite.name, test)] = function() {
-            const chunks = testUtils.makeChunks(test.input);
-            const result = tokenize(chunks, test.initialState, test.lastStartTag, suite.withFeedback);
+        moduleExports[testName] = function() {
+            const chunks = makeChunks(test.input);
+            const result = tokenize(createTokenSource, chunks, test.initialState, test.lastStartTag);
 
             assert.deepEqual(result.tokens, test.expected, 'Chunks: ' + JSON.stringify(chunks));
-
-            if (!suite.withFeedback) {
-                assert.deepEqual(result.errors, test.expectedErrors);
-            }
+            assert.deepEqual(result.errors, test.expectedErrors || []);
         };
     });
-});
+};
+
+module.exports.convertTokenToHtml5Lib = convertTokenToHtml5Lib;

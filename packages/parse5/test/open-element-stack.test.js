@@ -1,15 +1,15 @@
 'use strict';
 
 const assert = require('assert');
-const HTML = require('../../packages/parse5/lib/common/html');
-const OpenElementStack = require('../../packages/parse5/lib/parser/open-element-stack');
-const testUtils = require('../test-utils');
+const HTML = require('../lib/common/html');
+const OpenElementStack = require('../lib/parser/open-element-stack');
+const { generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
 
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 
-testUtils.generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
+generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     _test['Push element'] = function() {
         const document = treeAdapter.createDocument();
         const element1 = treeAdapter.createElement('#element1', 'namespace1', []);

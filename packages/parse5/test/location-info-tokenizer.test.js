@@ -1,10 +1,10 @@
 'use strict';
 
 const assert = require('assert');
-const Tokenizer = require('../../packages/parse5/lib/tokenizer');
-const LocationInfoTokenizerMixin = require('../../packages/parse5/lib/extensions/location-info/tokenizer-mixin');
-const Mixin = require('../../packages/parse5/lib/utils/mixin');
-const testUtils = require('../test-utils');
+const Tokenizer = require('../lib/tokenizer');
+const LocationInfoTokenizerMixin = require('../lib/extensions/location-info/tokenizer-mixin');
+const Mixin = require('../lib/utils/mixin');
+const { getSubstringByLineCol, normalizeNewLine } = require('../../../test/utils/common');
 
 exports['Location info (Tokenizer)'] = function() {
     const testCases = [
@@ -110,9 +110,9 @@ exports['Location info (Tokenizer)'] = function() {
             assert.strictEqual(actual, testCase.htmlChunks[j]);
 
             //Line/col
-            actual = testUtils.getSubstringByLineCol(lines, token.location);
+            actual = getSubstringByLineCol(lines, token.location);
 
-            const expected = testUtils.normalizeNewLine(testCase.htmlChunks[j]);
+            const expected = normalizeNewLine(testCase.htmlChunks[j]);
 
             assert.strictEqual(actual, expected);
 

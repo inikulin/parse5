@@ -4,7 +4,9 @@ const { basename } = require('path');
 const Parser = require('../../packages/parse5/lib/parser');
 const Tokenizer = require('../../packages/parse5/lib/tokenizer');
 const defaultTreeAdapter = require('../../packages/parse5/lib/tree-adapters/default');
-const testUtils = require('../../test/test-utils');
+const { convertTokenToHtml5Lib } = require('../../test/utils/generate-tokenization-tests');
+const parseDatFile = require('../../test/utils/parse-dat-file');
+const { addSlashes } = require('../../test/test/utils/common');
 
 readFile = promisify(readFile);
 writeFile = promisify(writeFile);
@@ -65,11 +67,11 @@ function collectParserTokens(html) {
 
     parser.parse(html);
 
-    return tokens.map(testUtils.convertTokenToHtml5Lib);
+    return tokens.map(convertTokenToHtml5Lib);
 }
 
 function generateParserFeedbackTest(parserTestFile) {
-    const tests = testUtils.parseTreeConstructionTestData(parserTestFile, defaultTreeAdapter);
+    const tests = parseDatFile(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {
         tests: tests
@@ -78,7 +80,7 @@ function generateParserFeedbackTest(parserTestFile) {
                 const input = test.input;
 
                 return {
-                    description: testUtils.addSlashes(input),
+                    description: addSlashes(input),
                     input,
                     output: collectParserTokens(input)
                 };
