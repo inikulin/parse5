@@ -23,7 +23,8 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         };
 
         const fragment = parse5.parseFragment(html, opts);
-        const firstPLocation = treeAdapter.getChildNodes(fragment)[0].__location;
+        const firstP = treeAdapter.getChildNodes(fragment)[0];
+        const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP);
 
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     };
@@ -37,7 +38,8 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         };
 
         const fragment = parse5.parseFragment(html, opts);
-        const location = treeAdapter.getChildNodes(fragment)[0].__location;
+        const firstChild = treeAdapter.getChildNodes(fragment)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(firstChild);
 
         assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<i>1</i>');
     };
@@ -51,8 +53,9 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         };
 
         const fragment = parse5.parseFragment(html, opts);
+        const firstChild = treeAdapter.getChildNodes(fragment)[0];
 
-        assert.ok(treeAdapter.getChildNodes(fragment)[0].__location);
+        assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild));
     };
 
     _test['Regression - location info mixin error when parsing <template> elements (GH-90)'] = function() {
@@ -77,8 +80,9 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         };
 
         const fragment = parse5.parseFragment(html, opts);
+        const firstChild = treeAdapter.getChildNodes(fragment)[0];
 
-        assert.ok(treeAdapter.getChildNodes(fragment)[0].__location.attrs['test-attr']);
+        assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild).attrs['test-attr']);
     };
 
     _test['Regression - location line incorrect when a character is unconsumed (GH-151)'] = function() {
@@ -99,9 +103,10 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         const htmlEl = treeAdapter.getChildNodes(document)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
         const scriptEl = treeAdapter.getChildNodes(bodyEl)[0];
+        const scriptLocation = treeAdapter.getNodeSourceCodeLocation(scriptEl);
 
         assert.strictEqual(treeAdapter.getTagName(scriptEl), 'script');
-        assert.equal(scriptEl.__location.endTag.startLine, 4);
+        assert.equal(scriptLocation.endTag.startLine, 4);
     };
 
     _test['Regression - location.startTag should be available if end tag is missing (GH-181)'] = function() {
@@ -114,10 +119,11 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const fragment = parse5.parseFragment(html, opts);
         const p = treeAdapter.getChildNodes(fragment)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(p);
 
-        assertNodeLocation(p, html, html, [html]);
-        assertStartTagLocation(p, html, html, [html]);
+        assertNodeLocation(location, html, html, [html]);
+        assertStartTagLocation(location, html, html, [html]);
 
-        assert.ok(!p.__location.endTag);
+        assert.ok(!location.endTag);
     };
 });

@@ -22,8 +22,8 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         const headEl = treeAdapter.getChildNodes(htmlEl)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
 
-        assert.strictEqual(htmlEl.__location, null);
-        assert.strictEqual(headEl.__location, null);
-        assert.strictEqual(bodyEl.__location, null);
+        assert.strictEqual(treeAdapter.getNodeSourceCodeLocation(htmlEl), null);
+        assert.strictEqual(treeAdapter.getNodeSourceCodeLocation(headEl), null);
+        assert.strictEqual(treeAdapter.getNodeSourceCodeLocation(bodyEl), null);
     };
 });

@@ -43,33 +43,33 @@ function assertLocation(loc, expected, html, lines) {
 }
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag
-function assertStartTagLocation(node, serializedNode, html, lines) {
-    const length = node.__location.startTag.endOffset - node.__location.startTag.startOffset;
+function assertStartTagLocation(location, serializedNode, html, lines) {
+    const length = location.startTag.endOffset - location.startTag.startOffset;
     const expected = serializedNode.substring(0, length);
 
-    assertLocation(node.__location.startTag, expected, html, lines);
+    assertLocation(location.startTag, expected, html, lines);
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
-function assertEndTagLocation(node, serializedNode, html, lines) {
-    const length = node.__location.endTag.endOffset - node.__location.endTag.startOffset;
+function assertEndTagLocation(location, serializedNode, html, lines) {
+    const length = location.endTag.endOffset - location.endTag.startOffset;
     const expected = serializedNode.slice(-length);
 
-    assertLocation(node.__location.endTag, expected, html, lines);
+    assertLocation(location.endTag, expected, html, lines);
 }
 
-function assertAttrsLocation(node, serializedNode, html, lines) {
-    node.__location.attrs.forEach(attr => {
+function assertAttrsLocation(location, serializedNode, html, lines) {
+    location.attrs.forEach(attr => {
         const expected = serializedNode.slice(attr.startOffset, attr.endOffset);
 
         assertLocation(attr, expected, html, lines);
     });
 }
 
-function assertNodeLocation(node, serializedNode, html, lines) {
+function assertNodeLocation(location, serializedNode, html, lines) {
     const expected = removeNewLines(serializedNode);
 
-    assertLocation(node.__location, expected, html, lines);
+    assertLocation(location, expected, html, lines);
 }
 
 function loadParserLocationInfoTestData() {
@@ -112,25 +112,27 @@ module.exports = function generateLocationInfoParserTests(moduleExports, prefix,
                 const document = parsingResult.node;
 
                 walkTree(document, treeAdapter, node => {
-                    if (node.__location) {
+                    const location = treeAdapter.getNodeSourceCodeLocation(node);
+
+                    if (location) {
                         const fragment = treeAdapter.createDocumentFragment();
 
                         treeAdapter.appendChild(fragment, node);
 
                         const serializedNode = parse5.serialize(fragment, serializerOpts);
 
-                        assertNodeLocation(node, serializedNode, html, lines);
+                        assertNodeLocation(location, serializedNode, html, lines);
 
-                        if (node.__location.startTag) {
-                            assertStartTagLocation(node, serializedNode, html, lines);
+                        if (location.startTag) {
+                            assertStartTagLocation(location, serializedNode, html, lines);
                         }
 
-                        if (node.__location.endTag) {
-                            assertEndTagLocation(node, serializedNode, html, lines);
+                        if (location.endTag) {
+                            assertEndTagLocation(location, serializedNode, html, lines);
                         }
 
-                        if (node.__location.attrs) {
-                            assertAttrsLocation(node, serializedNode, html, lines);
+                        if (location.attrs) {
+                            assertAttrsLocation(location, serializedNode, html, lines);
                         }
                     }
                 });

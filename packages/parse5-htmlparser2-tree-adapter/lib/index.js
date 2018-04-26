@@ -333,3 +333,12 @@ exports.isDocumentTypeNode = function(node) {
 exports.isElementNode = function(node) {
     return !!node.attribs;
 };
+
+// Source code location
+exports.setNodeSourceCodeLocation = function(node, location) {
+    node.sourceCodeLocation = location;
+};
+
+exports.getNodeSourceCodeLocation = function(node) {
+    return node.sourceCodeLocation;
+};

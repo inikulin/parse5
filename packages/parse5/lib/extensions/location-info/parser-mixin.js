@@ -14,6 +14,7 @@ class LocationInfoParserMixin extends Mixin {
         super(parser);
 
         this.parser = parser;
+        this.treeAdapter = this.parser.treeAdapter;
         this.posTracker = null;
         this.lastStartTagToken = null;
         this.lastFosterParentingLocation = null;
@@ -21,21 +22,23 @@ class LocationInfoParserMixin extends Mixin {
     }
 
     _setStartLocation(element) {
+        let loc = null;
+
         if (this.lastStartTagToken) {
-            element.__location = Object.assign({}, this.lastStartTagToken.location);
-            element.__location.startTag = this.lastStartTagToken.location;
-        } else {
-            element.__location = null;
+            loc = Object.assign({}, this.lastStartTagToken.location);
+            loc.startTag = this.lastStartTagToken.location;
         }
+
+        this.treeAdapter.setNodeSourceCodeLocation(element, loc);
     }
 
     _setEndLocation(element, closingToken) {
-        const loc = element.__location;
+        const loc = this.treeAdapter.getNodeSourceCodeLocation(element);
 
         if (loc) {
             if (closingToken.location) {
                 const ctLoc = closingToken.location;
-                const tn = this.parser.treeAdapter.getTagName(element);
+                const tn = this.treeAdapter.getTagName(element);
 
                 // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
                 // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
@@ -124,7 +127,7 @@ class LocationInfoParserMixin extends Mixin {
                     const node = documentChildren[i];
 
                     if (this.treeAdapter.isDocumentTypeNode(node)) {
-                        node.__location = token.location;
+                        this.treeAdapter.setNodeSourceCodeLocation(node, token.location);
                         break;
                     }
                 }
@@ -155,12 +158,12 @@ class LocationInfoParserMixin extends Mixin {
 
                 const tmplContent = this.treeAdapter.getTemplateContent(this.openElements.current);
 
-                tmplContent.__location = null;
+                this.treeAdapter.setNodeSourceCodeLocation(tmplContent, null);
             },
 
             _insertFakeRootElement() {
                 orig._insertFakeRootElement.call(this);
-                this.openElements.current.__location = null;
+                this.treeAdapter.setNodeSourceCodeLocation(this.openElements.current, null);
             },
 
             //Comments
@@ -170,7 +173,7 @@ class LocationInfoParserMixin extends Mixin {
                 const children = this.treeAdapter.getChildNodes(parent);
                 const commentNode = children[children.length - 1];
 
-                commentNode.__location = token.location;
+                this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location);
             },
 
             //Text
@@ -202,14 +205,14 @@ class LocationInfoParserMixin extends Mixin {
                 const textNode = siblings[textNodeIdx];
 
                 //NOTE: if we have location assigned by another token, then just update end position
-                const tnLoc = textNode.__location;
+                const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
                 if (tnLoc) {
                     tnLoc.endLine = token.location.endLine;
                     tnLoc.endCol = token.location.endCol;
                     tnLoc.endOffset = token.location.endOffset;
                 } else {
-                    textNode.__location = token.location;
+                    this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
                 }
             }
         };
