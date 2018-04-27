@@ -21,14 +21,10 @@ for Node to date. It parses HTML the way the latest version of your browser does
 as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.com/angular/angular">Angular2</a>, <a href="https://www.polymer-project.org">Polymer</a> and many more.
 </p>
 
-----
+---
 
 <p align="center">
-  <a href="http://inikulin.github.io/parse5">Documentation</a>
-</p>
-
-<p align="center">
-  <a href="http://inikulin.github.io/parse5#version-history">Version history</a>
+  <a href="https://github.com/inikulin/parse5/tree/master/docs/list-of-packages.md">List of parse5 toolset packages</a>
 </p>
 
 <p align="center">
@@ -36,5 +32,6 @@ as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.
 </p>
 
 <p align="center">
-  <a href="https://github.com/inikulin/parse5/issues">Issue tracker</a>
+  <a href="http://inikulin.github.io/parse5#version-history">Version history</a>
+</p>
 </p>

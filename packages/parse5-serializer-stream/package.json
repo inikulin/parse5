@@ -1,6 +1,6 @@
 {
     "name": "parse5-serializer-stream",
-    "description": "parse5 add-on: streaming HTML node serializer.",
+    "description": "Streaming HTML serializer.",
     "version": "5.0.0",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
@@ -8,10 +8,7 @@
     "keywords": ["parse5", "parser", "stream", "streaming"],
     "license": "MIT",
     "main": "./lib/index.js",
-    "peerDependencies": {
-        "parse5": "^5.0.0"
-    },
-    "devDependencies": {
+    "dependencies": {
         "parse5": "^5.0.0"
     },
     "repository": {
