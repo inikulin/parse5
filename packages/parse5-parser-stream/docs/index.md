@@ -31,8 +31,11 @@ http.get('http://inikulin.github.io/parse5/', res => {
 ### Methods
 
 * [end](#end)
-* [on('script')](#on)
 * [write](#write)
+
+### Events
+
+* [on("script")](#on_script)
 
 ---
 
@@ -106,10 +109,40 @@ ___
 **Returns:** `void`
 
 ___
+<a id="write"></a>
 
-<a id="on"></a>
+###  write
 
-###  on
+▸ **write**(chunk: *`any`*, cb?: *`Function`*): `boolean`
+
+▸ **write**(chunk: *`any`*, encoding?: *`string`*, cb?: *`Function`*): `boolean`
+
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| chunk | `any` |
+| `Optional` cb | `Function` |
+
+**Returns:** `boolean`
+
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| chunk | `any` |
+| `Optional` encoding | `string` |
+| `Optional` cb | `Function` |
+
+**Returns:** `boolean`
+
+___
+
+## Events
+
+<a id="on_script"></a>
+
+###  on("script")
 
 ▸ **on**(event: *"script"*, listener: *`function`*): `this`
 
@@ -143,47 +176,16 @@ parser.end('<script src="example.com/script.js"></script>');
 | Param | Type |
 | ------ | ------ |
 | event | "script" |
-| listener | `function` |
+| listener | `function` (see below) |
 
 **Returns:** `this`
 
-WritableStream events
+**listener:** (scriptElement: *Element*, documentWrite: *`function`*, resume: *`function`*): *`void`*
 
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| event | `string` |
-| listener | `Function` |
-
-**Returns:** `this`
-
-___
-<a id="write"></a>
-
-###  write
-
-▸ **write**(chunk: *`any`*, cb?: *`Function`*): `boolean`
-
-▸ **write**(chunk: *`any`*, encoding?: *`string`*, cb?: *`Function`*): `boolean`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` cb | `Function` |
-
-**Returns:** `boolean`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` encoding | `string` |
-| `Optional` cb | `Function` |
-
-**Returns:** `boolean`
+| Param | Type | Description |
+| ------ | ------ | ------ |
+| scriptElement | Element |  The script element that caused the event. |
+| documentWrite | `function (html: string): void` |  Write additional html at the current parsing position. Suitable for implementing the DOM document.write and document.writeln methods. |
+| resume | `function` | Resumes parsing.
 
 ___
