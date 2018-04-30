@@ -5,18 +5,19 @@
 </p>
 
 <div align="center">
-<h1>parse5-htmlparser2-tree-adapter</h1>
-<i><b><a href="https://github.com/fb55/htmlparser2">htmlparser2</a> tree adapter for <a href="https://github.com/inikulin/parse5">parse5</a>.</b></i>
+<h1>parse5-parser-stream</h1>
+<i><b>Streaming HTML parser with scripting support.</b></i>
 </div>
 <br>
 
 <div align="center">
-<code>npm install --save parse5-htmlparser2-tree-adapter</code>
+<code>npm install --save parse5-parser-stream</code>
 </div>
 <br>
 
+
 <p align="center">
-  📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/parse5-htmlparser2-tree-adapter/docs/index.md"><b>Documentation</b></a> 📖
+  📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/parse5-parser-stream/docs/index.md"><b>Documentation</b></a> 📖
 </p>
 
 ---

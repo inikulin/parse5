@@ -10,6 +10,11 @@
 </div>
 <br>
 
+<div align="center">
+<code>npm install --save parse5</code>
+</div>
+<br>
+
 <p align="center">
   📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/parse5/docs/index.md"><b>Documentation</b></a> 📖
 </p>

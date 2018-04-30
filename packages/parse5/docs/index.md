@@ -1,13 +1,5 @@
 # parse5
 
-## Install
-
-```
-npm install parse5
-```
-
-## API
-
 > **NOTE:** By default all functions operate with [tree format](tree-adapter/default/interface-list.md) produced
 > by the default tree adapter. Tree format can be changed by providing custom [tree adapter](tree-adapter/interface.md) implementation.
 

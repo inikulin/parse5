@@ -1,4 +1,6 @@
-# List of tree interfaces produced by htmlparser2 [tree adapter](../../parse5/docs/tree-adapter/interface.md)
+# parse5-htmlparser2-tree-adapter
+
+## List of tree interfaces produced by htmlparser2 [tree adapter](../../parse5/docs/tree-adapter/interface.md)
 
 * [CommentNode](comment-node.md)
 * [Document](document.md)
