@@ -5,12 +5,12 @@ Streaming HTML parser with scripting support. A [writable stream](https://nodejs
 *__example__*:
 
 ```js
-const parse5 = require('parse5');
+const ParserStream = require('parse5-parser-stream');
 const http = require('http');
 
 // Fetch the page content and obtain it's <head> node
 http.get('http://inikulin.github.io/parse5/', res => {
-    const parser = new parse5.ParserStream();
+    const parser = new ParserStream();
 
     parser.once('finish', () => {
         console.log(parser.document.childNodes[1].childNodes[0].tagName); //> 'head'
@@ -116,11 +116,12 @@ ___
 Raised then parser encounters a `<script>` element. If this event has listeners, parsing will be suspended once it is emitted. So, if `<script>` has the `src` attribute, you can fetch it, execute and then resume parsing just like browsers do.
 
 *__example__*:
+
 ```js
-const parse = require('parse5');
+const ParserStream = require('parse5-parser-stream');
 const http = require('http');
 
-const parser = new parse5.ParserStream();
+const parser = new ParserStream();
 
 parser.on('script', (scriptElement, documentWrite, resume) => {
     const src = scriptElement.attrs.find({ name } => name === 'src').value;
