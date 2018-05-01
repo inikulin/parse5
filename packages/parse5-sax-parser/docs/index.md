@@ -119,18 +119,9 @@ Raised when the parser encounters a start tag.
 | Param | Type |
 | ------ | ------ |
 | event | "startTag" |
-| listener | `function` (see below) |
+| listener | function (startTag: *[StartTagToken](./tokens/start-tag.md)*) |
 
 **Returns:** `this`
-
-**listener:** (name: *`string`*, attrs: *Attribute*[], selfClosing: *`boolean`*, location?: *[StartTagLocation](../../parse5/docs/source-code-location/start-tag-location.md)*): `void`
-
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| name  |`string`|Tag name.|
-|attrs|Attribute|List of attributes.|
-|selfClosing|`boolean`|Indicates if the tag is self-closing.|
-|`Optional` location|[StartTagLocation](../../parse5/docs/source-code-location/start-tag-location.md)|Start tag source code location info. Available if location info is enabled via [SAXParserOptions](sax-parser-options.md).|
 
 ___
 <a id="on_endtag"></a>
@@ -146,16 +137,9 @@ Raised then parser encounters an end tag.
 | Param | Type |
 | ------ | ------ |
 | event | "endTag" |
-| listener | `function` (see below) |
+| listener | function (endTag: *[EndTagToken](./tokens/end-tag.md)*) |
 
 **Returns:** `this`
-
-**listener:** (name: *`string`*, location?: *[Location](../../parse5/docs/source-code-location/location.md)*): `void`
-
-| Param | Type | Description |
-| ------ | ------ | ------ |
-|name|`string`|Tag name.|
-|`Optional` location|[Location](../../parse5/docs/source-code-location/location.md)| End tag source code location info. Available if location info is enabled via [SAXParserOptions](sax-parser-options.md)|
 
 ___
 <a id="on_comment"></a>
@@ -171,16 +155,10 @@ Raised then parser encounters a comment.
 | Param | Type |
 | ------ | ------ |
 | event | "comment" |
-| listener | `function` (see below) |
+| listener | function (comment: *[CommentToken](./tokens/comment.md)*) |
 
 **Returns:** `this`
 
-**listener:** (text: *`string`*, location?: *[Location](../../parse5/docs/source-code-location/location.md)*): `void`
-
-| Param | Type | Description |
-| ------ | ------ | ------ |
-|text| `string`| Comment text.|
-|`Optional` location| [Location](../../parse5/docs/source-code-location/location.md)| Comment source code location info. Available if location info is enabled via [SAXParserOptions](sax-parser-options.md)|
 ___
 <a id="on_text"></a>
 
@@ -195,16 +173,10 @@ Raised then parser encounters text content.
 | Param | Type |
 | ------ | ------ |
 | event | "text" |
-| listener | `function` (see below)|
+| listener | function (textContent: *[TextToken](./tokens/text.md)*)|
 
 **Returns:** `this`
 
-**listener:** (text: *`string`*, location?: [Location](../../parse5/docs/source-code-location/location.md)): `void`
-
-| Param | Type | Description |
-| ------ | ------ | ------ |
-|text|`string`| Text content.|
-|`Optional` location| [Location](../../parse5/docs/source-code-location/location.md)| Text content source code location info. Available if location info is enabled via [SAXParserOptions](sax-parser-options.md)|
 ___
 <a id="on_doctype"></a>
 
@@ -219,18 +191,8 @@ Raised then parser encounters a [document type declaration](https://en.wikipedia
 | Param | Type |
 | ------ | ------ |
 | event | "doctype" |
-| listener | `function` (see below) |
+| listener | function (textContent: *[DoctypeToken](./tokens/doctype.md)*) |
 
 **Returns:** `this`
-
-**listener:** (name: *`string`*, publicId: *`string`*, systemId: *`string`*, location?: [Location](../../parse5/docs/source-code-location/location.md)): `void`
-
-
-| Param | Type | Description |
-| ------ | ------ | ------ |
-|name|`string`| Document type name.|
-|publicId|`string`| Document type public identifier.|
-|systemId|`string`| Document type system identifier.|
-|`Optional` location| [Location](../../parse5/docs/source-code-location/location.md)| Document type declaration source code location info. Available if location info is enabled via [SAXParserOptions](sax-parser-options.md)|
 
 ___
