@@ -105,7 +105,7 @@ module.exports = function generateLocationInfoParserTests(moduleExports, prefix,
 
                 const parserOpts = {
                     treeAdapter: treeAdapter,
-                    locationInfo: true
+                    sourceCodeLocationInfo: true
                 };
 
                 const parsingResult = await parse(html, parserOpts);

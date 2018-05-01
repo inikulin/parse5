@@ -14,7 +14,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         const document = parseChunked(html, opts).node;

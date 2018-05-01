@@ -39,25 +39,25 @@ exports['Regression - Incorrect arguments fallback for the parser.parseFragment 
     test() {
         const fragmentContext = treeAdapters.default.createElement('div');
         const html = '<script></script>';
-        const opts = { locationInfo: true };
+        const opts = { sourceCodeLocationInfo: true };
 
         let args = parse5.parseFragment(fragmentContext, html, opts);
 
         assert.strictEqual(args.fragmentContext, fragmentContext);
         assert.strictEqual(args.html, html);
-        assert(args.options.locationInfo);
+        assert(args.options.sourceCodeLocationInfo);
 
         args = parse5.parseFragment(html, opts);
 
         assert(!args.fragmentContext);
         assert.strictEqual(args.html, html);
-        assert(args.options.locationInfo);
+        assert(args.options.sourceCodeLocationInfo);
 
         args = parse5.parseFragment(html);
 
         assert(!args.fragmentContext);
         assert.strictEqual(args.html, html);
-        assert(!args.options.locationInfo);
+        assert(!args.options.sourceCodeLocationInfo);
     }
 };
 

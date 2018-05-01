@@ -9,7 +9,7 @@ const DevNullStream = require('./dev-null-stream');
 const ParserFeedbackSimulator = require('./parser-feedback-simulator');
 
 const DEFAULT_OPTIONS = {
-    locationInfo: false
+    sourceCodeLocationInfo: false
 };
 
 class SAXParser extends Transform {
@@ -20,7 +20,7 @@ class SAXParser extends Transform {
 
         this.tokenizer = new Tokenizer(options);
 
-        if (this.options.locationInfo) {
+        if (this.options.sourceCodeLocationInfo) {
             Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
         }
 
@@ -79,7 +79,7 @@ class SAXParser extends Transform {
                 token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN ||
                 token.type === Tokenizer.NULL_CHARACTER_TOKEN
             ) {
-                if (this.options.locationInfo) {
+                if (this.options.sourceCodeLocationInfo) {
                     if (this.pendingText === null) {
                         this.currentTokenLocation = token.location;
                     } else {
@@ -96,26 +96,54 @@ class SAXParser extends Transform {
     }
 
     _handleToken(token) {
-        if (this.options.locationInfo) {
+        if (this.options.sourceCodeLocationInfo) {
             this.currentTokenLocation = token.location;
         }
 
         if (token.type === Tokenizer.START_TAG_TOKEN) {
-            this.emit('startTag', token.tagName, token.attrs, token.selfClosing, this.currentTokenLocation);
+            this._emitStartTag(token);
         } else if (token.type === Tokenizer.END_TAG_TOKEN) {
-            this.emit('endTag', token.tagName, this.currentTokenLocation);
+            this._emitEndTag(token);
         } else if (token.type === Tokenizer.COMMENT_TOKEN) {
-            this.emit('comment', token.data, this.currentTokenLocation);
+            this._emitComment(token);
         } else if (token.type === Tokenizer.DOCTYPE_TOKEN) {
-            this.emit('doctype', token.name, token.publicId, token.systemId, this.currentTokenLocation);
+            this._emitDoctype(token);
         }
     }
 
     _emitPendingText() {
         if (this.pendingText !== null) {
-            this.emit('text', this.pendingText, this.currentTokenLocation);
+            this.emit('text', { text: this.pendingText, sourceCodeLocation: this.currentTokenLocation });
             this.pendingText = null;
         }
+    }
+
+    _emitStartTag(token) {
+        this.emit('startTag', {
+            tagName: token.tagName,
+            attrs: token.attrs,
+            selfClosing: token.selfClosing,
+            sourceCodeLocation: this.currentTokenLocation
+        });
+    }
+
+    _emitEndTag(token) {
+        this.emit('endTag', { tagName: token.tagName, sourceCodeLocation: this.currentTokenLocation });
+    }
+
+    _emitComment(token) {
+        this.emit('comment', { text: token.data, sourceCodeLocation: this.currentTokenLocation });
+    }
+
+    _emitText() {}
+
+    _emitDoctype(token) {
+        this.emit('doctype', {
+            name: token.name,
+            publicId: token.publicId,
+            systemId: token.systemId,
+            sourceCodeLocation: this.currentTokenLocation
+        });
     }
 }
 

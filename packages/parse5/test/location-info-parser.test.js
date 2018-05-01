@@ -19,7 +19,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         const fragment = parse5.parseFragment(html, opts);
@@ -34,7 +34,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         const fragment = parse5.parseFragment(html, opts);
@@ -49,7 +49,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         const fragment = parse5.parseFragment(html, opts);
@@ -63,7 +63,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         assert.doesNotThrow(() => {
@@ -76,7 +76,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         const fragment = parse5.parseFragment(html, opts);
@@ -96,7 +96,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         const document = parse5.parse(html, opts);
@@ -114,7 +114,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const opts = {
             treeAdapter: treeAdapter,
-            locationInfo: true
+            sourceCodeLocationInfo: true
         };
 
         const fragment = parse5.parseFragment(html, opts);

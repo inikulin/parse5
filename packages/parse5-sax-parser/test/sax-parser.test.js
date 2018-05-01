@@ -27,7 +27,7 @@ function createBasicTest(html, expected, options) {
         const chunks = makeChunks(html);
         const lastChunkIdx = chunks.length - 1;
 
-        parser.on('doctype', (name, publicId, systemId) => {
+        parser.on('doctype', ({ name, publicId, systemId }) => {
             actual += '<!DOCTYPE ' + name;
 
             if (publicId !== null) {
@@ -43,7 +43,7 @@ function createBasicTest(html, expected, options) {
             actual += '>';
         });
 
-        parser.on('startTag', (tagName, attrs, selfClosing) => {
+        parser.on('startTag', ({ tagName, attrs, selfClosing }) => {
             actual += '<' + tagName;
 
             if (attrs.length) {
@@ -55,15 +55,15 @@ function createBasicTest(html, expected, options) {
             actual += selfClosing ? '/>' : '>';
         });
 
-        parser.on('endTag', tagName => {
+        parser.on('endTag', ({ tagName }) => {
             actual += '</' + tagName + '>';
         });
 
-        parser.on('text', text => {
+        parser.on('text', ({ text }) => {
             actual += text;
         });
 
-        parser.on('comment', text => {
+        parser.on('comment', ({ text }) => {
             actual += '<!--' + text + '-->';
         });
 

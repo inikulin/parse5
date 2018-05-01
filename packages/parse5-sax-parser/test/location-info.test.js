@@ -9,18 +9,16 @@ exports['Location info (SAX)'] = function() {
     loadSAXParserTestData().forEach(test => {
         //NOTE: we've already tested the correctness of the location info with the Tokenizer tests.
         //So here we just check that SAXParser provides this info in the handlers.
-        const parser = new SAXParser({ locationInfo: true });
+        const parser = new SAXParser({ sourceCodeLocationInfo: true });
         const chunks = makeChunks(test.src);
         const lastChunkIdx = chunks.length - 1;
 
-        const handler = function() {
-            const locationInfo = arguments[arguments.length - 1];
-
-            assert.strictEqual(typeof locationInfo.startLine, 'number');
-            assert.strictEqual(typeof locationInfo.startCol, 'number');
-            assert.strictEqual(typeof locationInfo.startOffset, 'number');
-            assert.strictEqual(typeof locationInfo.endOffset, 'number');
-            assert.ok(locationInfo.startOffset < locationInfo.endOffset);
+        const handler = ({ sourceCodeLocation }) => {
+            assert.strictEqual(typeof sourceCodeLocation.startLine, 'number');
+            assert.strictEqual(typeof sourceCodeLocation.startCol, 'number');
+            assert.strictEqual(typeof sourceCodeLocation.startOffset, 'number');
+            assert.strictEqual(typeof sourceCodeLocation.endOffset, 'number');
+            assert.ok(sourceCodeLocation.startOffset < sourceCodeLocation.endOffset);
         };
 
         parser.on('startTag', handler);
@@ -41,11 +39,11 @@ exports['Location info (SAX)'] = function() {
 
 exports['Regression - location info for text (GH-153)'] = function() {
     const html = '<!DOCTYPE html><html><head><title>Here is a title</title></html>';
-    const parser = new SAXParser({ locationInfo: true });
+    const parser = new SAXParser({ sourceCodeLocationInfo: true });
     const texts = [];
 
-    parser.on('text', (text, location) => {
-        texts.push(html.substring(location.startOffset, location.endOffset));
+    parser.on('text', ({ sourceCodeLocation }) => {
+        texts.push(html.substring(sourceCodeLocation.startOffset, sourceCodeLocation.endOffset));
     });
 
     parser.end(html);

@@ -21,7 +21,7 @@ const ATTRS = HTML.ATTRS;
 
 const DEFAULT_OPTIONS = {
     scriptingEnabled: true,
-    locationInfo: false,
+    sourceCodeLocationInfo: false,
     onParseError: null,
     treeAdapter: defaultTreeAdapter
 };
@@ -326,7 +326,7 @@ class Parser {
         this.treeAdapter = this.options.treeAdapter;
         this.pendingScript = null;
 
-        if (this.options.locationInfo) {
+        if (this.options.sourceCodeLocationInfo) {
             Mixin.install(this, LocationInfoParserMixin);
         }
 
