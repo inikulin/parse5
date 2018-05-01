@@ -3,6 +3,7 @@
 ### Properties
 
 * [sourceCodeLocationInfo](#sourcecodelocationinfo)
+* [scriptingEnabled](#scriptingenabled)
 * [treeAdapter](#treeadapter)
 
 ---
@@ -20,6 +21,19 @@ Enables source code location information. When enabled, each node (except the ro
 **Default:** `false`
 
 ___
+<a id="scriptingenabled"></a>
+
+### `<Optional>` scriptingEnabled
+
+**● scriptingEnabled**: *`boolean`*
+
+The [scripting flag](https://html.spec.whatwg.org/multipage/parsing.html#scripting-flag). If set to
+`true`, `noscript` element content will be parsed as text.
+
+**Default:** `true`
+
+___
+
 <a id="treeadapter"></a>
 
 ### `<Optional>` treeAdapter
