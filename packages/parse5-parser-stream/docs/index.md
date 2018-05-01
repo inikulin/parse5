@@ -30,12 +30,13 @@ http.get('http://inikulin.github.io/parse5/', res => {
 
 ### Methods
 
-* [end](#end)
-* [write](#write)
+See: [writable stream API](https://nodejs.org/api/stream.html#stream_class_stream_writable).
 
 ### Events
 
 * [on("script")](#on_script)
+
+Also see: [writable stream API](https://nodejs.org/api/stream.html#stream_class_stream_writable).
 
 ---
 
@@ -66,76 +67,6 @@ ___
 **● document**: *Document*
 
 The resulting document node.
-
-___
-
-## Methods
-
-<a id="end"></a>
-
-###  end
-
-▸ **end**(cb?: *`Function`*): `void`
-
-▸ **end**(chunk: *`any`*, cb?: *`Function`*): `void`
-
-▸ **end**(chunk: *`any`*, encoding?: *`string`*, cb?: *`Function`*): `void`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| `Optional` cb | `Function` |
-
-**Returns:** `void`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` cb | `Function` |
-
-**Returns:** `void`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` encoding | `string` |
-| `Optional` cb | `Function` |
-
-**Returns:** `void`
-
-___
-<a id="write"></a>
-
-###  write
-
-▸ **write**(chunk: *`any`*, cb?: *`Function`*): `boolean`
-
-▸ **write**(chunk: *`any`*, encoding?: *`string`*, cb?: *`Function`*): `boolean`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` cb | `Function` |
-
-**Returns:** `boolean`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` encoding | `string` |
-| `Optional` cb | `Function` |
-
-**Returns:** `boolean`
-
 ___
 
 ## Events

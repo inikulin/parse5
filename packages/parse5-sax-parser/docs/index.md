@@ -29,15 +29,21 @@ Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML par
 
 * [constructor](#constructor)
 
-
 ### Methods
 
-* [end](#end)
 * [stop](#stop)
-* [write](#write)
+
+See also: [transform stream API](https://nodejs.org/api/stream.html#stream_class_stream_transform).
 
 ### Events
 
+* [on("startTag")](#on_startag)
+* [on("endTag")](#on_startag)
+* [on("comment")](#on_comment)
+* [on("text")](#on_text)
+* [on("doctype")](#on_doctype)
+
+See also: [transform stream API](https://nodejs.org/api/stream.html#stream_class_stream_transform).
 
 ---
 
@@ -62,44 +68,7 @@ ___
 
 ## Methods
 
-<a id="end"></a>
 
-###  end
-
-▸ **end**(cb?: *`Function`*): `void`
-
-▸ **end**(chunk: *`any`*, cb?: *`Function`*): `void`
-
-▸ **end**(chunk: *`any`*, encoding?: *`string`*, cb?: *`Function`*): `void`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| `Optional` cb | `Function` |
-
-**Returns:** `void`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` cb | `Function` |
-
-**Returns:** `void`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` encoding | `string` |
-| `Optional` cb | `Function` |
-
-**Returns:** `void`
-
-___
 <a id="stop"></a>
 
 ###  stop
@@ -132,34 +101,6 @@ http.get('http://google.com', res => {
 ```
 
 **Returns:** `void`
-
-___
-<a id="write"></a>
-
-###  write
-
-▸ **write**(chunk: *`any`*, cb?: *`Function`*): `boolean`
-
-▸ **write**(chunk: *`any`*, encoding?: *`string`*, cb?: *`Function`*): `boolean`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` cb | `Function` |
-
-**Returns:** `boolean`
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| chunk | `any` |
-| `Optional` encoding | `string` |
-| `Optional` cb | `Function` |
-
-**Returns:** `boolean`
 
 ___
 
