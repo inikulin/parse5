@@ -2,7 +2,6 @@
 
 ### Properties
 
-* [__location](#__location)
 * [data](#data)
 * [name](#name)
 * [next](#next)
@@ -13,21 +12,13 @@
 * [parentNode](#parentnode)
 * [prev](#prev)
 * [previousSibling](#previoussibling)
+* [sourceCodeLocation](#sourcecodelocation)
 * [type](#type)
 
 ---
 
 ## Properties
 
-<a id="__location"></a>
-
-### `<Optional>` __location
-
-**● __location**: *[Location](../../parse5/docs/source-code-location/location.md)*
-
-Comment source code location info. Available if location info is enabled via [ParserOptions](../../parse5/docs/options/parser-options.md).
-
-___
 <a id="data"></a>
 
 ###  data
@@ -116,6 +107,15 @@ ___
 **● previousSibling**: *Node*
 
 Same as [prev](#prev). [DOM spec](https://dom.spec.whatwg.org)-compatible alias.
+
+___
+<a id="sourcecodelocation"></a>
+
+### `<Optional>` sourceCodeLocation
+
+**● sourceCodeLocation**: *[Location](../../parse5/docs/source-code-location/location.md)*
+
+Comment source code location info. Available if location info is enabled via [ParserOptions](../../parse5/docs/options/parser-options.md).
 
 ___
 <a id="type"></a>

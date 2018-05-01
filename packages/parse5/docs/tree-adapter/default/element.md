@@ -2,27 +2,18 @@
 
 ### Properties
 
-* [__location](#__location)
 * [attrs](#attrs)
 * [childNodes](#childnodes)
 * [namespaceURI](#namespaceuri)
 * [nodeName](#nodename)
 * [parentNode](#parentnode)
+* [sourceCodeLocation](#sourcecodelocation)
 * [tagName](#tagname)
 
 ---
 
 ## Properties
 
-<a id="__location"></a>
-
-### `<Optional>` __location
-
-**● __location**: *[ElementLocation](../../source-code-location/element-location.md)*
-
-Element source code location info. Available if location info is enabled via [ParserOptions](../../options/parser-options.md).
-
-___
 <a id="attrs"></a>
 
 ###  attrs
@@ -66,6 +57,15 @@ ___
 **● parentNode**: *Node*
 
 Parent node.
+
+___
+<a id="sourcecodelocation"></a>
+
+### `<Optional>` sourceCodeLocation
+
+**● sourceCodeLocation**: *[ElementLocation](../../source-code-location/element-location.md)*
+
+Element source code location info. Available if location info is enabled via [ParserOptions](../../options/parser-options.md).
 
 ___
 <a id="tagname"></a>

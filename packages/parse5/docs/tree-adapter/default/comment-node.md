@@ -2,24 +2,15 @@
 
 ### Properties
 
-* [__location](#__location)
 * [data](#data)
 * [nodeName](#nodename)
 * [parentNode](#parentnode)
+* [sourceCodeLocation](#sourcecodelocation)
 
 ---
 
 ## Properties
 
-<a id="__location"></a>
-
-### `<Optional>` __location
-
-**● __location**: *[Location](../../source-code-location/location.md)*
-
-Comment source code location info. Available if location info is enabled via [ParserOptions](../../options/parser-options.md).
-
-___
 <a id="data"></a>
 
 ###  data
@@ -47,4 +38,12 @@ ___
 Parent node.
 
 ___
+<a id="sourcecodelocation"></a>
 
+### `<Optional>` sourceCodeLocation
+
+**● sourceCodeLocation**: *[Location](../../source-code-location/location.md)*
+
+Comment source code location info. Available if location info is enabled via [ParserOptions](../../options/parser-options.md).
+
+___

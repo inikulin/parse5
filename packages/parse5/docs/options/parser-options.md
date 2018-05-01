@@ -2,20 +2,20 @@
 
 ### Properties
 
-* [sourceCodeLocationInfo](#locationinfo)
+* [sourceCodeLocationInfo](#sourcecodelocationinfo)
 * [treeAdapter](#treeadapter)
 
 ---
 
 ## Properties
 
-<a id="locationinfo"></a>
+<a id="sourcecodelocationinfo"></a>
 
 ### `<Optional>` sourceCodeLocationInfo
 
 **● sourceCodeLocationInfo**: *`boolean`*
 
-Enables source code location information. When enabled, each node (except the root node) will have a `__location` property. If the node is not an empty element, `__location` will be a [ElementLocation](../source-code-location/element-location.md) object, otherwise it will be [Location](../source-code-location/location.md). If the element was implicitly created by the parser (as part of [tree correction](https://html.spec.whatwg.org/multipage/syntax.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser)), its `__location` property will be `undefined`.
+Enables source code location information. When enabled, each node (except the root node) will have a `sourceCodeLocation` property (property name can be different depending on [tree adapter](../tree-adapter/interface.md) that has been used, hereinafter property names for the [DefaultTreeAdapter](../tree-adapter/interface-list.md) will be given). If the node is not an empty element, `sourceCodeLocation` will be a [ElementLocation](../source-code-location/element-location.md) object, otherwise it will be [Location](../source-code-location/location.md). If the element was implicitly created by the parser (as part of [tree correction](https://html.spec.whatwg.org/multipage/syntax.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser)), its `sourceCodeLocation` property will be `undefined`.
 
 **Default:** `false`
 
