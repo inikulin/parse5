@@ -30,5 +30,5 @@
 </p>
 
 <p align="center">
-    <a href="http://inikulin.github.io/parse5#version-history">Version history</a>
+    <a href="hhttps://github.com/inikulin/parse5/tree/master/docs/version-history.md">Version history</a>
 </p>
