@@ -3,10 +3,12 @@
 ### Properties
 
 * [attrs](#attrs)
-* [col](#col)
+* [endCol](#endcol)
 * [endOffset](#endoffset)
-* [line](#line)
+* [endLine](#endline)
+* [startCol](#startcol)
 * [startOffset](#startoffset)
+* [startLine](#startline)
 
 ---
 
@@ -21,13 +23,13 @@
 Start tag attributes' location info
 
 ___
-<a id="col"></a>
+<a id="endcol"></a>
 
-###  col
+###  endCol
 
-**● col**: *`number`*
+**● endCol**: *`number`*
 
-One-based column index
+One-based column index of the last character
 
 ___
 <a id="endoffset"></a>
@@ -39,13 +41,22 @@ ___
 Zero-based last character index
 
 ___
-<a id="line"></a>
+<a id="endline"></a>
 
-###  line
+###  endLine
 
-**● line**: *`number`*
+**● endLine**: *`number`*
 
-One-based line index
+One-based line index of the last character
+
+___
+<a id="startcol"></a>
+
+###  startCol
+
+**● startCol**: *`number`*
+
+One-based column index of the first character
 
 ___
 <a id="startoffset"></a>
@@ -57,4 +68,12 @@ ___
 Zero-based first character index
 
 ___
+<a id="startline"></a>
 
+###  startLine
+
+**● startLine**: *`number`*
+
+One-based line index of the first character
+
+___
