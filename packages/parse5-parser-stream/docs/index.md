@@ -77,7 +77,7 @@ ___
 
 ▸ **on**(event: *"script"*, listener: *`function`*): `this`
 
-Raised then parser encounters a `<script>` element. If this event has listeners, parsing will be suspended once it is emitted. So, if `<script>` has the `src` attribute, you can fetch it, execute and then resume parsing just like browsers do.
+Raised when parser encounters a `<script>` element. If this event has listeners, parsing will be suspended once it is emitted. So, if `<script>` has the `src` attribute, you can fetch it, execute and then resume parsing just like browsers do.
 
 *__example__*:
 

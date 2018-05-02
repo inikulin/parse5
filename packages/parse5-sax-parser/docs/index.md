@@ -130,7 +130,7 @@ ___
 
 ▸ **on**(event: *"endTag"*, listener: *`function`*): `this`
 
-Raised then parser encounters an end tag.
+Raised when parser encounters an end tag.
 
 **Parameters:**
 
@@ -148,7 +148,7 @@ ___
 
 ▸ **on**(event: *"comment"*, listener: *`function`*): `this`
 
-Raised then parser encounters a comment.
+Raised when parser encounters a comment.
 
 **Parameters:**
 
@@ -166,7 +166,7 @@ ___
 
 ▸ **on**(event: *"text"*, listener: *`function`*): `this`
 
-Raised then parser encounters text content.
+Raised when parser encounters text content.
 
 **Parameters:**
 
@@ -184,7 +184,7 @@ ___
 
 ▸ **on**(event: *"doctype"*, listener: *`function`*): `this`
 
-Raised then parser encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration).
+Raised when parser encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration).
 
 **Parameters:**
 

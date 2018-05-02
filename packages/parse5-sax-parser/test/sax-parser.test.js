@@ -3,14 +3,14 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { Writable } = require('stream');
 const SAXParser = require('../lib');
 const loadSAXParserTestData = require('../../../test/utils/load-sax-parser-test-data');
-const { getStringDiffMsg, makeChunks, removeNewLines } = require('../../../test/utils/common');
-
-function getFullTestName(test, idx) {
-    return ['SAX - ', idx, '.', test.name].join('');
-}
+const {
+    getStringDiffMsg,
+    writeChunkedToStream,
+    removeNewLines,
+    WritableStreamStub
+} = require('../../../test/utils/common');
 
 function sanitizeForComparison(str) {
     return removeNewLines(str)
@@ -24,8 +24,6 @@ function createBasicTest(html, expected, options) {
         //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         let actual = '';
         const parser = new SAXParser(options);
-        const chunks = makeChunks(html);
-        const lastChunkIdx = chunks.length - 1;
 
         parser.on('doctype', ({ name, publicId, systemId }) => {
             actual += '<!DOCTYPE ' + name;
@@ -75,28 +73,19 @@ function createBasicTest(html, expected, options) {
             assert.ok(actual === expected, getStringDiffMsg(actual, expected));
         });
 
-        chunks.forEach((chunk, idx) => {
-            if (idx === lastChunkIdx) {
-                parser.end(chunk);
-            } else {
-                parser.write(chunk);
-            }
-        });
+        writeChunkedToStream(html, parser);
     };
 }
 
 //Basic tests
-loadSAXParserTestData().forEach((test, idx) => {
-    const testName = getFullTestName(test, idx);
-
-    exports[testName] = createBasicTest(test.src, test.expected, test.options);
-});
+loadSAXParserTestData().forEach(
+    (test, idx) => (exports[`SAX - ${idx + 1}.${test.name}`] = createBasicTest(test.src, test.expected, test.options))
+);
 
 exports['SAX - Piping and .stop()'] = function(done) {
     const parser = new SAXParser();
-    const writable = new Writable();
+    const writable = new WritableStreamStub();
     let handlerCallCount = 0;
-    let data = '';
 
     const handler = function() {
         handlerCallCount++;
@@ -104,11 +93,6 @@ exports['SAX - Piping and .stop()'] = function(done) {
         if (handlerCallCount === 10) {
             parser.stop();
         }
-    };
-
-    writable._write = function(chunk, encoding, callback) {
-        data += chunk;
-        callback();
     };
 
     fs
@@ -128,7 +112,7 @@ exports['SAX - Piping and .stop()'] = function(done) {
             .toString();
 
         assert.strictEqual(handlerCallCount, 10);
-        assert.strictEqual(data, expected);
+        assert.strictEqual(writable.writtenData, expected);
         done();
     });
 };

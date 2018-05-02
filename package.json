@@ -2,11 +2,12 @@
     "private": true,
     "devDependencies": {
         "@types/node": "*",
+        "dedent": "^0.7.0",
         "eslint": "^4.19.1",
         "eslint-config-prettier": "^2.9.0",
         "eslint-plugin-prettier": "^2.6.0",
         "husky": "^0.14.3",
-        "lerna": "^2.10.2",
+        "lerna": "^2.11.0",
         "mocha": "^5.1.1",
         "prettier": "^1.12.0",
         "r2": "^2.0.1",

@@ -19,9 +19,10 @@ class SAXParser extends Transform {
         this.options = mergeOptions(DEFAULT_OPTIONS, options);
 
         this.tokenizer = new Tokenizer(options);
+        this.locInfoMixin = null;
 
         if (this.options.sourceCodeLocationInfo) {
-            Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
+            this.locInfoMixin = Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
         }
 
         this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.tokenizer);
@@ -40,11 +41,7 @@ class SAXParser extends Transform {
 
     //TransformStream implementation
     _transform(chunk, encoding, callback) {
-        if (!this.stopped) {
-            this.tokenizer.write(chunk.toString('utf8'), this.lastChunkWritten);
-            this._runParsingLoop();
-        }
-
+        this._parseChunk(chunk);
         this.push(chunk);
 
         callback();
@@ -64,6 +61,13 @@ class SAXParser extends Transform {
     }
 
     //Internals
+    _parseChunk(chunk) {
+        if (!this.stopped) {
+            this.tokenizer.write(chunk.toString('utf8'), this.lastChunkWritten);
+            this._runParsingLoop();
+        }
+    }
+
     _runParsingLoop() {
         let token = null;
 
@@ -101,49 +105,52 @@ class SAXParser extends Transform {
         }
 
         if (token.type === Tokenizer.START_TAG_TOKEN) {
-            this._emitStartTag(token);
+            this.emit('startTag', this._reshapeStartTagToken(token));
         } else if (token.type === Tokenizer.END_TAG_TOKEN) {
-            this._emitEndTag(token);
+            this.emit('endTag', this._reshapeEndTagToken(token));
         } else if (token.type === Tokenizer.COMMENT_TOKEN) {
-            this._emitComment(token);
+            this.emit('comment', this._reshapeCommentToken(token));
         } else if (token.type === Tokenizer.DOCTYPE_TOKEN) {
-            this._emitDoctype(token);
+            this.emit('doctype', this._reshapeDoctypeToken(token));
         }
     }
 
     _emitPendingText() {
         if (this.pendingText !== null) {
-            this.emit('text', { text: this.pendingText, sourceCodeLocation: this.currentTokenLocation });
+            this.emit('text', this._createTextToken());
             this.pendingText = null;
         }
     }
 
-    _emitStartTag(token) {
-        this.emit('startTag', {
-            tagName: token.tagName,
-            attrs: token.attrs,
-            selfClosing: token.selfClosing,
+    // Tokens
+    _createTextToken() {
+        return { text: this.pendingText, sourceCodeLocation: this.currentTokenLocation };
+    }
+
+    _reshapeStartTagToken(origToken) {
+        return {
+            tagName: origToken.tagName,
+            attrs: origToken.attrs,
+            selfClosing: origToken.selfClosing,
             sourceCodeLocation: this.currentTokenLocation
-        });
+        };
     }
 
-    _emitEndTag(token) {
-        this.emit('endTag', { tagName: token.tagName, sourceCodeLocation: this.currentTokenLocation });
+    _reshapeEndTagToken(origToken) {
+        return { tagName: origToken.tagName, sourceCodeLocation: this.currentTokenLocation };
     }
 
-    _emitComment(token) {
-        this.emit('comment', { text: token.data, sourceCodeLocation: this.currentTokenLocation });
+    _reshapeCommentToken(origToken) {
+        return { text: origToken.data, sourceCodeLocation: this.currentTokenLocation };
     }
 
-    _emitText() {}
-
-    _emitDoctype(token) {
-        this.emit('doctype', {
-            name: token.name,
-            publicId: token.publicId,
-            systemId: token.systemId,
+    _reshapeDoctypeToken(origToken) {
+        return {
+            name: origToken.name,
+            publicId: origToken.publicId,
+            systemId: origToken.systemId,
             sourceCodeLocation: this.currentTokenLocation
-        });
+        };
     }
 }
 

@@ -1,5 +1,7 @@
 'use strict';
 
+const { Writable } = require('stream');
+
 const treeAdapters = {
     default: require('../../packages/parse5/lib/tree-adapters/default'),
     htmlparser2: require('../../packages/parse5-htmlparser2-tree-adapter/lib')
@@ -34,9 +36,44 @@ function getRandomChunkSize(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+function makeChunks(str, minSize, maxSize) {
+    if (!str.length) {
+        return [''];
+    }
+
+    const chunks = [];
+    let start = 0;
+
+    // NOTE: add 1 as well, so we avoid situation when we have just one huge chunk
+    let end = Math.min(getRandomChunkSize(minSize, maxSize), str.length, 1);
+
+    while (start < str.length) {
+        chunks.push(str.substring(start, end));
+        start = end;
+        end = Math.min(end + getRandomChunkSize(minSize, maxSize), str.length);
+    }
+
+    return chunks;
+}
+
+class WritableStreamStub extends Writable {
+    constructor() {
+        super();
+
+        this.writtenData = '';
+    }
+
+    _write(chunk, encoding, callback) {
+        this.writtenData += chunk;
+        callback();
+    }
+}
+
 module.exports = {
+    WritableStreamStub,
     treeAdapters,
     addSlashes,
+    makeChunks,
 
     normalizeNewLine(str) {
         return str.replace(/\r\n/g, '\n');
@@ -44,6 +81,19 @@ module.exports = {
 
     removeNewLines(str) {
         return str.replace(/\r/g, '').replace(/\n/g, '');
+    },
+
+    writeChunkedToStream(str, stream) {
+        const chunks = makeChunks(str);
+        const lastChunkIdx = chunks.length - 1;
+
+        chunks.forEach((chunk, idx) => {
+            if (idx === lastChunkIdx) {
+                stream.end(chunk);
+            } else {
+                stream.write(chunk);
+            }
+        });
     },
 
     generateTestsForEachTreeAdapter(moduleExports, ctor) {
@@ -79,26 +129,6 @@ module.exports = {
         }
 
         return '';
-    },
-
-    makeChunks(str, minSize, maxSize) {
-        if (!str.length) {
-            return [''];
-        }
-
-        const chunks = [];
-        let start = 0;
-
-        // NOTE: add 1 as well, so we avoid situation when we have just one huge chunk
-        let end = Math.min(getRandomChunkSize(minSize, maxSize), str.length, 1);
-
-        while (start < str.length) {
-            chunks.push(str.substring(start, end));
-            start = end;
-            end = Math.min(end + getRandomChunkSize(minSize, maxSize), str.length);
-        }
-
-        return chunks;
     },
 
     getSubstringByLineCol(lines, loc) {

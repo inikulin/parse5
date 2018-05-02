@@ -22,6 +22,7 @@ Tree adapter is a set of utility functions that provides minimal required abstra
 * [getDocumentTypeNodeSystemId](#getdocumenttypenodesystemid)
 * [getFirstChild](#getfirstchild)
 * [getNamespaceURI](#getnamespaceuri)
+* [getNodeSourceCodeLocation](#getnodesourcecodelocation)
 * [getParentNode](#getparentnode)
 * [getTagName](#gettagname)
 * [getTemplateContent](#gettemplatecontent)
@@ -35,6 +36,7 @@ Tree adapter is a set of utility functions that provides minimal required abstra
 * [isTextNode](#istextnode)
 * [setDocumentMode](#setdocumentmode)
 * [setDocumentType](#setdocumenttype)
+* [setNodeSourceCodeLocation](#setnodesourcecodelocation)
 * [setTemplateContent](#settemplatecontent)
 
 ---
@@ -305,6 +307,23 @@ Returns the given element's namespace.
 **Returns:** `string`
 
 ___
+<a id="getnodesourcecodelocation"></a>
+
+###  getNodeSourceCodeLocation
+
+▸ **getNodeSourceCodeLocation**(node: *Node*): [Location](../source-code-location/location.md) | [ElementLocation](../source-code-location/element-location.md)
+
+Returns the given node's source code location information.
+
+**Parameters:**
+
+| Param | Type | Description |
+| ------ | ------ | ------ |
+| node | Node |  Node. |
+
+**Returns:** [Location](../source-code-location/location.md) | [ElementLocation](../source-code-location/element-location.md)
+
+___
 <a id="getparentnode"></a>
 
 ###  getParentNode
@@ -531,6 +550,24 @@ Sets the document type. If the `document` already contains a document type node,
 | name | `string` |  Document type name. |
 | publicId | `string` |  Document type public identifier. |
 | systemId | `string` |  Document type system identifier. |
+
+**Returns:** `void`
+
+___
+<a id="setnodesourcecodelocation"></a>
+
+###  setNodeSourceCodeLocation
+
+▸ **setNodeSourceCodeLocation**(node: *Node*, location: *[Location](../source-code-location/location.md) | [ElementLocation](../source-code-location/element-location.md)*): `void`
+
+Attaches source code location information to the node.
+
+**Parameters:**
+
+| Param | Type | Description |
+| ------ | ------ | ------ |
+| node | Node |  Node. |
+| location | [Location](../source-code-location/location.md) | [ElementLocation](../source-code-location/element-location.md) |  Source code location information. |
 
 **Returns:** `void`
 
