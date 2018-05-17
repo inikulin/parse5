@@ -2,6 +2,7 @@
 
 const SAXParser = require('parse5-sax-parser');
 const Tokenizer = require('parse5/lib/tokenizer');
+const { escapeString } = require('parse5/lib/serializer');
 
 class RewritingStream extends SAXParser {
     constructor() {
@@ -105,7 +106,7 @@ class RewritingStream extends SAXParser {
         const attrs = token.attrs;
 
         for (let i = 0; i < attrs.length; i++) {
-            res += ` ${attrs[i].name}="${attrs[i].value}"`;
+            res += ` ${attrs[i].name}="${escapeString(attrs[i].value, true)}"`;
         }
 
         res += token.selfClosing ? '/>' : '>';
@@ -118,7 +119,7 @@ class RewritingStream extends SAXParser {
     }
 
     emitText({ text }) {
-        this.push(text);
+        this.push(escapeString(text, false));
     }
 
     emitComment(token) {

@@ -218,3 +218,30 @@ exports['RewritingStream - rewrite raw'] = createRewriterTest({
             .on('comment', rewriteRaw);
     }
 });
+
+exports['RewritingStream - Should escape entities in attributes and text'] = createRewriterTest({
+    src: dedent`
+        <!DOCTYPE html "">
+        <html>
+            <head foo='bar"baz"'>
+            </head>
+            <body>
+                <div>foo&amp;bar</div>
+            </body>
+        </html>
+    `,
+    expected: dedent`
+        <!DOCTYPE html "">
+        <html>
+            <head foo="bar&quot;baz&quot;">
+            </head>
+            <body>
+                <div>foo&amp;bar</div>
+            </body>
+        </html>
+    `,
+    assignTokenHandlers: rewriter => {
+        rewriter.on('startTag', token => rewriter.emitStartTag(token));
+        rewriter.on('text', token => rewriter.emitText(token));
+    }
+});
