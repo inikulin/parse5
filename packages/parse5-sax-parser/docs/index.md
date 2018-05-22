@@ -173,7 +173,7 @@ Raised when parser encounters text content.
 | Param | Type |
 | ------ | ------ |
 | event | "text" |
-| listener | function (textContent: *[TextToken](./tokens/text.md)*)|
+| listener | function (text: *[TextToken](./tokens/text.md)*)|
 
 **Returns:** `this`
 
@@ -191,7 +191,7 @@ Raised when parser encounters a [document type declaration](https://en.wikipedia
 | Param | Type |
 | ------ | ------ |
 | event | "doctype" |
-| listener | function (textContent: *[DoctypeToken](./tokens/doctype.md)*) |
+| listener | function (doctype: *[DoctypeToken](./tokens/doctype.md)*) |
 
 **Returns:** `this`
 
