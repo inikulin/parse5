@@ -1,5 +1,35 @@
 # Version history
 
+# 5.0.0
+
+Starting from this release `parse5` functionality will be shipped in separate packages.
+With `parse5` package contatining only basic functionality. Please, refer to the [list of packages](https://github.com/inikulin/parse5/tree/master/) for more info.
+
+* Updated (**breaking**): source code location now inserted by tree adapter, so tree adapter developers
+have control over location info property name. Tree adapters should implement [setNodeSourceCodeLocation](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/tree-adapter/interface.md#setnodesourcecodelocation) and
+[getNodeSourceCodeLocation](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/tree-adapter/interface.md#getnodesourcecodelocation) methods.
+Location info property name added by currently implemented tree adapters has been renamed from `__location` to `sourceCodeLocation`
+(GH [#189](https://github.com/inikulin/parse5/issues/189)).
+
+* Updated (**breaking**): Location info `line` and `col` properties have been renamed to [startLine](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/source-code-location/location.md#startline) and
+[startCol](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/source-code-location/location.md#startcol)
+respectively.
+
+* Updated (**breaking**): `SAXParser` now passes token objects to event handlers instead of separate arguments. See [SAXParser documentation](https://github.com/inikulin/parse5/blob/master/packages/parse5-sax-parser/docs/index.md) for more info.
+(GH [#247](https://github.com/inikulin/parse5/issues/247)).
+
+* Added: [endLine](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/source-code-location/location.md#endline) and [endCol](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/source-code-location/location.md#endcol) location info
+properties.
+
+* Added: [scriptingEnabled](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/options/parser-options.md#scriptingenabled) flag to the `ParserOptions` which controls how `<noscript>` tags are handled by the parser. (GH [#192](https://github.com/inikulin/parse5/issues/192)).
+
+* Added: [HTML rewriting stream](https://github.com/inikulin/parse5/tree/master/packages/parse5-html-rewriting-stream#readme).
+(GH [#222](https://github.com/inikulin/parse5/issues/222)).
+
+* Removed (**breaking**): `parse5` no longer ship TypeScript definitions. Existing TypeScript definitions
+have been moved to DefinitelyTyped repo. Please, track the [PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/25943) in the DefinitelyTyped repo for the updates.
+
+
 ## 4.0.0
 This is a major release that delivers few minor (but breaking) changes to workaround recently appeared
 issues with TypeScript Node.js typings versioning and usage of parse5 in environments that are
