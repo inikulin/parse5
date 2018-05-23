@@ -28,6 +28,6 @@
         "postinstall": "npm run bootstrap",
         "preversion": "npm test",
         "precommit": "npm run prettify && git add -u",
-        "publish": "lerna publish"
+        "publish": "lerna exec 'npm publish'"
     }
 }
