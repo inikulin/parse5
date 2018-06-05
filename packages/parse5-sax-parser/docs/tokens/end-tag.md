@@ -2,18 +2,18 @@
 
 ### Properties
 
-* [name](#name)
 * [sourceCodeLocation](#sourcecodelocation)
+* [tagName](#tagname)
 
 ---
 
 ## Properties
 
-<a id="name"></a>
+<a id="tagname"></a>
 
-###  name
+###  tagName
 
-**● name**: *`string`*
+**● tagName**: *`string`*
 
 Tag name
 

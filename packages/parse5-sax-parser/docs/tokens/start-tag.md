@@ -3,9 +3,9 @@
 ### Properties
 
 * [attrs](#attrs)
-* [name](#name)
 * [selfClosing](#selfclosing)
 * [sourceCodeLocation](#sourcecodelocation)
+* [tagName](#tagname)
 
 ---
 
@@ -20,11 +20,11 @@
 List of attributes
 
 ___
-<a id="name"></a>
+<a id="tagname"></a>
 
-###  name
+###  tagName
 
-**● name**: *`string`*
+**● tagName**: *`string`*
 
 Tag name
 
