@@ -95,8 +95,7 @@ exports['SAX - Piping and .stop()'] = function(done) {
         }
     };
 
-    fs
-        .createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'))
+    fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'))
         .pipe(parser)
         .pipe(writable);
 
