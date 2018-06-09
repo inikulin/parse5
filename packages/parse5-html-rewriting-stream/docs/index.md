@@ -15,7 +15,7 @@ HTML is not affected by parser error-recovery mechanisms as in the classical par
     const rewriter = new RewritingStream();
 
     // Replace divs with spans
-    rewriter.on('starTag', startTag => {
+    rewriter.on('startTag', startTag => {
         if (startTag.tagName === 'span') {
             startTag.tagName = 'div';
         }
