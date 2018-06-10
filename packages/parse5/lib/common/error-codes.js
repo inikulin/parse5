@@ -23,7 +23,7 @@ module.exports = {
     missingAttributeValue: 'missing-attribute-value',
     missingWhitespaceBetweenAttributes: 'missing-whitespace-between-attributes',
     missingWhitespaceAfterDoctypePublicKeyword: 'missing-whitespace-after-doctype-public-keyword',
-    missingWhitespaceBetweenDoctypePublicAndSytemIdentifier:
+    missingWhitespaceBetweenDoctypePublicAndSystemIdentifiers:
         'missing-whitespace-between-doctype-public-and-system-identifiers',
     missingWhitespaceAfterDoctypeSystemKeyword: 'missing-whitespace-after-doctype-system-keyword',
     missingQuoteBeforeDoctypePublicIdentifier: 'missing-quote-before-doctype-public-identifier',

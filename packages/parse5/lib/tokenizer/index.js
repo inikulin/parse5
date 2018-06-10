@@ -1777,11 +1777,11 @@ class Tokenizer {
             this.state = DATA_STATE;
             this._emitCurrentToken();
         } else if (cp === $.QUOTATION_MARK) {
-            this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSytemIdentifier);
+            this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSystemIdentifiers);
             this.currentToken.systemId = '';
             this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
         } else if (cp === $.APOSTROPHE) {
-            this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSytemIdentifier);
+            this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSystemIdentifiers);
             this.currentToken.systemId = '';
             this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
         } else if (cp === $.EOF) {
