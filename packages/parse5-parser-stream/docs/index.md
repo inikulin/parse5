@@ -88,7 +88,7 @@ const http = require('http');
 const parser = new ParserStream();
 
 parser.on('script', (scriptElement, documentWrite, resume) => {
-    const src = scriptElement.attrs.find({ name } => name === 'src').value;
+    const src = scriptElement.attrs.find(({ name }) => name === 'src').value;
 
     http.get(src, res => {
         // Fetch the script content, execute it with DOM built around `parser.document` and
