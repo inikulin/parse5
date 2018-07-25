@@ -16,7 +16,7 @@
 
 Specifies input tree format.
 
-**Default:** [DefaultTreeAdapter](../tree-adapter/interface-list.md).
+**Default:** [DefaultTreeAdapter](../tree-adapter/default/interface-list.md).
 
 ___
 
