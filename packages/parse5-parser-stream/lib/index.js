@@ -67,7 +67,7 @@ class ParserStream extends Writable {
     }
 
     _scriptHandler(scriptElement) {
-        if (this.listeners('script').length) {
+        if (this.listenerCount('script') > 0) {
             this.pausedByScript = true;
             this.emit('script', scriptElement, this._documentWrite, this._resume);
         } else {
