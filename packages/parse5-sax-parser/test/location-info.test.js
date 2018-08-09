@@ -29,16 +29,20 @@ exports['Location info (SAX)'] = function() {
     });
 };
 
-exports['Regression - location info for text (GH-153)'] = function() {
+exports['Regression - location info for text (GH-153, GH-266)'] = function() {
     const html = '<!DOCTYPE html><html><head><title>Here is a title</title></html>';
     const parser = new SAXParser({ sourceCodeLocationInfo: true });
-    const texts = [];
 
     parser.on('text', ({ sourceCodeLocation }) => {
-        texts.push(html.substring(sourceCodeLocation.startOffset, sourceCodeLocation.endOffset));
+        assert.deepStrictEqual(sourceCodeLocation, {
+            startLine: 1,
+            startCol: 35,
+            startOffset: 34,
+            endLine: 1,
+            endCol: 50,
+            endOffset: 49
+        });
     });
 
     parser.end(html);
-
-    assert.deepEqual(texts, ['Here is a title']);
 };
