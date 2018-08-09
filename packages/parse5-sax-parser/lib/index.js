@@ -115,7 +115,7 @@ class SAXParser extends Transform {
             return false;
         }
 
-        this._emitToken(eventName, reshapeToken.call(this, token));
+        this._emitToken(eventName, reshapeToken(token));
 
         return true;
     }
@@ -130,59 +130,38 @@ class SAXParser extends Transform {
             this.pendingText = null;
         }
     }
-
-    // Tokens
-    _reshapeStartTagToken(origToken) {
-        return {
-            tagName: origToken.tagName,
-            attrs: origToken.attrs,
-            selfClosing: origToken.selfClosing,
-            sourceCodeLocation: origToken.location
-        };
-    }
-
-    _reshapeEndTagToken(origToken) {
-        return { tagName: origToken.tagName, sourceCodeLocation: origToken.location };
-    }
-
-    _reshapeCommentToken(origToken) {
-        return { text: origToken.data, sourceCodeLocation: origToken.location };
-    }
-
-    _reshapeDoctypeToken(origToken) {
-        return {
-            name: origToken.name,
-            publicId: origToken.publicId,
-            systemId: origToken.systemId,
-            sourceCodeLocation: origToken.location
-        };
-    }
-
-    _reshapeCharToken(origToken) {
-        return { text: origToken.chars, sourceCodeLocation: origToken.location };
-    }
 }
 
 const TOKEN_EMISSION_HELPERS = {
     [Tokenizer.START_TAG_TOKEN]: {
         eventName: 'startTag',
-        reshapeToken: SAXParser.prototype._reshapeStartTagToken
+        reshapeToken: origToken => ({
+            tagName: origToken.tagName,
+            attrs: origToken.attrs,
+            selfClosing: origToken.selfClosing,
+            sourceCodeLocation: origToken.location
+        })
     },
     [Tokenizer.END_TAG_TOKEN]: {
         eventName: 'endTag',
-        reshapeToken: SAXParser.prototype._reshapeEndTagToken
+        reshapeToken: origToken => ({ tagName: origToken.tagName, sourceCodeLocation: origToken.location })
     },
     [Tokenizer.COMMENT_TOKEN]: {
         eventName: 'comment',
-        reshapeToken: SAXParser.prototype._reshapeCommentToken
+        reshapeToken: origToken => ({ text: origToken.data, sourceCodeLocation: origToken.location })
     },
     [Tokenizer.DOCTYPE_TOKEN]: {
         eventName: 'doctype',
-        reshapeToken: SAXParser.prototype._reshapeDoctypeToken
+        reshapeToken: origToken => ({
+            name: origToken.name,
+            publicId: origToken.publicId,
+            systemId: origToken.systemId,
+            sourceCodeLocation: origToken.location
+        })
     },
     [Tokenizer.CHARACTER_TOKEN]: {
         eventName: 'text',
-        reshapeToken: SAXParser.prototype._reshapeCharToken
+        reshapeToken: origToken => ({ text: origToken.chars, sourceCodeLocation: origToken.location })
     }
 };
 
