@@ -28,7 +28,6 @@ class SAXParser extends Transform {
         this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.tokenizer);
 
         this.pendingText = null;
-        this.currentTokenLocation = void 0;
 
         this.lastChunkWritten = false;
         this.stopped = false;
@@ -112,10 +111,6 @@ class SAXParser extends Transform {
 
         const { eventName, reshapeToken } = TOKEN_EMISSION_HELPERS[token.type];
 
-        if (this.options.sourceCodeLocationInfo) {
-            this.currentTokenLocation = token.location;
-        }
-
         if (this.listenerCount(eventName) === 0) {
             return false;
         }
@@ -142,16 +137,16 @@ class SAXParser extends Transform {
             tagName: origToken.tagName,
             attrs: origToken.attrs,
             selfClosing: origToken.selfClosing,
-            sourceCodeLocation: this.currentTokenLocation
+            sourceCodeLocation: origToken.location
         };
     }
 
     _reshapeEndTagToken(origToken) {
-        return { tagName: origToken.tagName, sourceCodeLocation: this.currentTokenLocation };
+        return { tagName: origToken.tagName, sourceCodeLocation: origToken.location };
     }
 
     _reshapeCommentToken(origToken) {
-        return { text: origToken.data, sourceCodeLocation: this.currentTokenLocation };
+        return { text: origToken.data, sourceCodeLocation: origToken.location };
     }
 
     _reshapeDoctypeToken(origToken) {
@@ -159,12 +154,12 @@ class SAXParser extends Transform {
             name: origToken.name,
             publicId: origToken.publicId,
             systemId: origToken.systemId,
-            sourceCodeLocation: this.currentTokenLocation
+            sourceCodeLocation: origToken.location
         };
     }
 
     _reshapeCharToken(origToken) {
-        return { text: origToken.chars, sourceCodeLocation: this.currentTokenLocation };
+        return { text: origToken.chars, sourceCodeLocation: origToken.location };
     }
 }
 

@@ -16,10 +16,10 @@ class RewritingStream extends SAXParser {
         callback();
     }
 
-    _getCurrentTokenRawHtml() {
+    _getRawHtml(location) {
         const droppedBufferSize = this.posTracker.droppedBufferSize;
-        const start = this.currentTokenLocation.startOffset - droppedBufferSize;
-        const end = this.currentTokenLocation.endOffset - droppedBufferSize;
+        const start = location.startOffset - droppedBufferSize;
+        const end = location.endOffset - droppedBufferSize;
 
         return this.tokenizer.preprocessor.html.slice(start, end);
     }
@@ -27,7 +27,7 @@ class RewritingStream extends SAXParser {
     // Events
     _handleToken(token) {
         if (!super._handleToken(token)) {
-            this.emitRaw(this._getCurrentTokenRawHtml());
+            this.emitRaw(this._getRawHtml(token.location));
         }
 
         // NOTE: don't skip new lines after <pre> and other tags,
@@ -37,7 +37,7 @@ class RewritingStream extends SAXParser {
 
     // Emitter API
     _emitToken(eventName, token) {
-        this.emit(eventName, token, this._getCurrentTokenRawHtml());
+        this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation));
     }
 
     emitDoctype(token) {
