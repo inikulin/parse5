@@ -87,7 +87,12 @@ class SAXParser extends Transform {
                     if (this.pendingText === null) {
                         this.currentTokenLocation = token.location;
                     } else {
-                        this.currentTokenLocation.endOffset = token.location.endOffset;
+                        const { endLine, endCol, endOffset } = token.location;
+                        Object.assign(this.currentTokenLocation, {
+                            endLine,
+                            endCol,
+                            endOffset
+                        });
                     }
                 }
 
