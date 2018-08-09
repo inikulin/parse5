@@ -1,7 +1,6 @@
 'use strict';
 
 const SAXParser = require('parse5-sax-parser');
-const Tokenizer = require('parse5/lib/tokenizer');
 const { escapeString } = require('parse5/lib/serializer');
 
 class RewritingStream extends SAXParser {
@@ -9,25 +8,6 @@ class RewritingStream extends SAXParser {
         super({ sourceCodeLocationInfo: true });
 
         this.posTracker = this.locInfoMixin.posTracker;
-
-        this.tokenEmissionHelpers = {
-            [Tokenizer.START_TAG_TOKEN]: {
-                eventName: 'startTag',
-                reshapeToken: token => this._reshapeStartTagToken(token)
-            },
-            [Tokenizer.END_TAG_TOKEN]: {
-                eventName: 'endTag',
-                reshapeToken: token => this._reshapeEndTagToken(token)
-            },
-            [Tokenizer.COMMENT_TOKEN]: {
-                eventName: 'comment',
-                reshapeToken: token => this._reshapeCommentToken(token)
-            },
-            [Tokenizer.DOCTYPE_TOKEN]: {
-                eventName: 'doctype',
-                reshapeToken: token => this._reshapeDoctypeToken(token)
-            }
-        };
     }
 
     _transform(chunk, encoding, callback) {
@@ -46,20 +26,8 @@ class RewritingStream extends SAXParser {
 
     // Events
     _handleToken(token) {
-        if (token.type === Tokenizer.EOF_TOKEN) {
-            return;
-        }
-
-        const { eventName, reshapeToken } = this.tokenEmissionHelpers[token.type];
-
-        this.currentTokenLocation = token.location;
-
-        const raw = this._getCurrentTokenRawHtml();
-
-        if (this.listenerCount(eventName) > 0) {
-            this.emit(eventName, reshapeToken(token), raw);
-        } else {
-            this.emitRaw(raw);
+        if (!super._handleToken(token)) {
+            this.emitRaw(this._getCurrentTokenRawHtml());
         }
 
         // NOTE: don't skip new lines after <pre> and other tags,
@@ -67,21 +35,11 @@ class RewritingStream extends SAXParser {
         this.parserFeedbackSimulator.skipNextNewLine = false;
     }
 
-    _emitPendingText() {
-        if (this.pendingText !== null) {
-            const raw = this._getCurrentTokenRawHtml();
-
-            if (this.listenerCount('text') > 0) {
-                this.emit('text', this._createTextToken(), raw);
-            } else {
-                this.emitRaw(raw);
-            }
-
-            this.pendingText = null;
-        }
+    // Emitter API
+    _emitToken(eventName, token) {
+        this.emit(eventName, token, this._getCurrentTokenRawHtml());
     }
 
-    // Emitter API
     emitDoctype(token) {
         let res = `<!DOCTYPE ${token.name}`;
 

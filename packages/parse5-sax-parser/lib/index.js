@@ -83,20 +83,21 @@ class SAXParser extends Transform {
                 token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN ||
                 token.type === Tokenizer.NULL_CHARACTER_TOKEN
             ) {
-                if (this.options.sourceCodeLocationInfo) {
-                    if (this.pendingText === null) {
-                        this.currentTokenLocation = token.location;
-                    } else {
+                if (this.pendingText === null) {
+                    token.type = Tokenizer.CHARACTER_TOKEN;
+                    this.pendingText = token;
+                } else {
+                    this.pendingText.chars += token.chars;
+
+                    if (this.options.sourceCodeLocationInfo) {
                         const { endLine, endCol, endOffset } = token.location;
-                        Object.assign(this.currentTokenLocation, {
+                        Object.assign(this.pendingText.location, {
                             endLine,
                             endCol,
                             endOffset
                         });
                     }
                 }
-
-                this.pendingText = (this.pendingText || '') + token.chars;
             } else {
                 this._emitPendingText();
                 this._handleToken(token);
@@ -105,33 +106,37 @@ class SAXParser extends Transform {
     }
 
     _handleToken(token) {
+        if (token.type === Tokenizer.EOF_TOKEN) {
+            return true;
+        }
+
+        const { eventName, reshapeToken } = TOKEN_EMISSION_HELPERS[token.type];
+
         if (this.options.sourceCodeLocationInfo) {
             this.currentTokenLocation = token.location;
         }
 
-        if (token.type === Tokenizer.START_TAG_TOKEN) {
-            this.emit('startTag', this._reshapeStartTagToken(token));
-        } else if (token.type === Tokenizer.END_TAG_TOKEN) {
-            this.emit('endTag', this._reshapeEndTagToken(token));
-        } else if (token.type === Tokenizer.COMMENT_TOKEN) {
-            this.emit('comment', this._reshapeCommentToken(token));
-        } else if (token.type === Tokenizer.DOCTYPE_TOKEN) {
-            this.emit('doctype', this._reshapeDoctypeToken(token));
+        if (this.listenerCount(eventName) === 0) {
+            return false;
         }
+
+        this._emitToken(eventName, reshapeToken.call(this, token));
+
+        return true;
+    }
+
+    _emitToken(eventName, token) {
+        this.emit(eventName, token);
     }
 
     _emitPendingText() {
         if (this.pendingText !== null) {
-            this.emit('text', this._createTextToken());
+            this._handleToken(this.pendingText);
             this.pendingText = null;
         }
     }
 
     // Tokens
-    _createTextToken() {
-        return { text: this.pendingText, sourceCodeLocation: this.currentTokenLocation };
-    }
-
     _reshapeStartTagToken(origToken) {
         return {
             tagName: origToken.tagName,
@@ -157,6 +162,33 @@ class SAXParser extends Transform {
             sourceCodeLocation: this.currentTokenLocation
         };
     }
+
+    _reshapeCharToken(origToken) {
+        return { text: origToken.chars, sourceCodeLocation: this.currentTokenLocation };
+    }
 }
+
+const TOKEN_EMISSION_HELPERS = {
+    [Tokenizer.START_TAG_TOKEN]: {
+        eventName: 'startTag',
+        reshapeToken: SAXParser.prototype._reshapeStartTagToken
+    },
+    [Tokenizer.END_TAG_TOKEN]: {
+        eventName: 'endTag',
+        reshapeToken: SAXParser.prototype._reshapeEndTagToken
+    },
+    [Tokenizer.COMMENT_TOKEN]: {
+        eventName: 'comment',
+        reshapeToken: SAXParser.prototype._reshapeCommentToken
+    },
+    [Tokenizer.DOCTYPE_TOKEN]: {
+        eventName: 'doctype',
+        reshapeToken: SAXParser.prototype._reshapeDoctypeToken
+    },
+    [Tokenizer.CHARACTER_TOKEN]: {
+        eventName: 'text',
+        reshapeToken: SAXParser.prototype._reshapeCharToken
+    }
+};
 
 module.exports = SAXParser;
