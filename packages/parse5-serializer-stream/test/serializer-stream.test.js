@@ -1,24 +1,16 @@
 'use strict';
 
-const { Writable } = require('stream');
 const SerializerStream = require('../lib');
 const generateSeriliazerTests = require('../../../test/utils/generate-serializer-tests');
+const { WritableStreamStub } = require('../../../test/utils/common');
 
 generateSeriliazerTests(exports, 'SeriliazerStream', (document, opts) => {
     const stream = new SerializerStream(document, opts);
-    const writable = new Writable();
-    let result = '';
-
-    //NOTE: use pipe to the WritableStream to test stream
-    //in the `flowing` mode.
-    writable._write = (chunk, encoding, callback) => {
-        result += chunk.toString();
-        callback();
-    };
+    const writable = new WritableStreamStub();
 
     stream.pipe(writable);
 
     return new Promise(resolve => {
-        writable.once('finish', () => resolve(result));
+        writable.once('finish', () => resolve(writable.writtenData));
     });
 });

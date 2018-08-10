@@ -5,7 +5,7 @@ const Serializer = require('parse5/lib/serializer');
 
 class SerializerStream extends Readable {
     constructor(node, options) {
-        super();
+        super({ encoding: 'utf8' });
 
         this.serializer = new Serializer(node, options);
 

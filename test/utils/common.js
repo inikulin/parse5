@@ -1,6 +1,7 @@
 'use strict';
 
 const { Writable } = require('stream');
+const assert = require('assert');
 
 const treeAdapters = {
     default: require('../../packages/parse5/lib/tree-adapters/default'),
@@ -58,12 +59,13 @@ function makeChunks(str, minSize, maxSize) {
 
 class WritableStreamStub extends Writable {
     constructor() {
-        super();
+        super({ decodeStrings: false });
 
         this.writtenData = '';
     }
 
     _write(chunk, encoding, callback) {
+        assert.strictEqual(typeof chunk, 'string', 'Expected output to be a string stream');
         this.writtenData += chunk;
         callback();
     }

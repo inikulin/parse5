@@ -107,7 +107,7 @@ runBench({
         const parsePromises = files.map(
             fileName =>
                 new Promise(resolve => {
-                    const stream = createReadStream(fileName);
+                    const stream = createReadStream(fileName, 'utf8');
                     const parserStream = new WorkingCopyParserStream();
 
                     stream.pipe(parserStream);
@@ -122,10 +122,10 @@ runBench({
         const parsePromises = files.map(
             fileName =>
                 new Promise(resolve => {
-                    const stream = createReadStream(fileName);
+                    const stream = createReadStream(fileName, 'utf8');
                     let data = '';
 
-                    stream.on('data', chunk => (data += chunk.toString('utf8')));
+                    stream.on('data', chunk => (data += chunk));
 
                     stream.on('end', () => {
                         upstreamParser.parse(data);

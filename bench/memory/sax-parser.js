@@ -37,7 +37,7 @@ async function main() {
 }
 
 async function parse() {
-    const data = fs.readFileSync('../test/data/huge-page/huge-page.html');
+    const data = fs.readFileSync('../test/data/huge-page/huge-page.html', 'utf8');
     let parsedDataSize = 0;
     const stream = new SAXParser();
 

@@ -5,7 +5,7 @@ const Parser = require('parse5/lib/parser');
 
 class ParserStream extends Writable {
     constructor(options) {
-        super();
+        super({ decodeStrings: false });
 
         this.parser = new Parser(options);
 
@@ -26,8 +26,12 @@ class ParserStream extends Writable {
 
     //WritableStream implementation
     _write(chunk, encoding, callback) {
+        if (typeof chunk !== 'string') {
+            throw new TypeError('Parser can work only with string streams.');
+        }
+
         this.writeCallback = callback;
-        this.parser.tokenizer.write(chunk.toString('utf8'), this.lastChunkWritten);
+        this.parser.tokenizer.write(chunk, this.lastChunkWritten);
         this._runParsingLoop();
     }
 
