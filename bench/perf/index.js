@@ -5,7 +5,7 @@ const { readFileSync, createReadStream, readdirSync } = require('fs');
 const Benchmark = require('benchmark');
 const { loadTreeConstructionTestData } = require('../../test/utils/generate-parsing-tests');
 const loadSAXParserTestData = require('../../test/utils/load-sax-parser-test-data');
-const { treeAdapters } = require('../../test/utils/common');
+const { treeAdapters, WritableStreamStub } = require('../../test/utils/common');
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
@@ -123,14 +123,14 @@ runBench({
             fileName =>
                 new Promise(resolve => {
                     const stream = createReadStream(fileName, 'utf8');
-                    let data = '';
+                    const writable = new WritableStreamStub();
 
-                    stream.on('data', chunk => (data += chunk));
-
-                    stream.on('end', () => {
-                        upstreamParser.parse(data);
+                    writable.on('finish', () => {
+                        upstreamParser.parse(writable.writtenData);
                         resolve();
                     });
+
+                    stream.pipe(writable);
                 })
         );
 
