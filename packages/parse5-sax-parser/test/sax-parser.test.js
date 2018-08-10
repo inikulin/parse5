@@ -95,7 +95,7 @@ exports['SAX - Piping and .stop()'] = function(done) {
         }
     };
 
-    fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'))
+    fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'), 'utf8')
         .pipe(parser)
         .pipe(writable);
 
@@ -119,7 +119,7 @@ exports['SAX - Piping and .stop()'] = function(done) {
 exports['Regression - SAX - Parser silently exits on big files (GH-97)'] = function(done) {
     const parser = new SAXParser();
 
-    fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html')).pipe(parser);
+    fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'), 'utf8').pipe(parser);
 
     //NOTE: This is a smoke test - in case of regression it will fail with timeout.
     parser.once('finish', done);

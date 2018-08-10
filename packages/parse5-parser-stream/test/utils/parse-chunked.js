@@ -9,6 +9,9 @@ module.exports = function parseChunked(html, opts, minChunkSize, maxChunkSize) {
     parserStream.parser.tokenizer.preprocessor.bufferWaterline = 8;
 
     for (let i = 0; i < chunks.length - 1; i++) {
+        if (typeof chunks[i] !== 'string') {
+            throw new TypeError();
+        }
         parserStream.write(chunks[i]);
     }
 

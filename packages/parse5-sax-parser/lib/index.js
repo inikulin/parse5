@@ -14,7 +14,7 @@ const DEFAULT_OPTIONS = {
 
 class SAXParser extends Transform {
     constructor(options) {
-        super();
+        super({ encoding: 'utf8', decodeStrings: false });
 
         this.options = mergeOptions(DEFAULT_OPTIONS, options);
 
@@ -40,6 +40,10 @@ class SAXParser extends Transform {
 
     //TransformStream implementation
     _transform(chunk, encoding, callback) {
+        if (typeof chunk !== 'string') {
+            throw new TypeError('Parser can work only with string streams.');
+        }
+
         callback(null, this._transformChunk(chunk));
     }
 
@@ -55,7 +59,7 @@ class SAXParser extends Transform {
     //Internals
     _transformChunk(chunk) {
         if (!this.stopped) {
-            this.tokenizer.write(chunk.toString('utf8'), this.lastChunkWritten);
+            this.tokenizer.write(chunk, this.lastChunkWritten);
             this._runParsingLoop();
         }
         return chunk;
