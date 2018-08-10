@@ -10,10 +10,10 @@ class RewritingStream extends SAXParser {
         this.posTracker = this.locInfoMixin.posTracker;
     }
 
-    _transform(chunk, encoding, callback) {
-        this._parseChunk(chunk);
-
-        callback();
+    _transformChunk(chunk) {
+        // NOTE: ignore upstream return value as we want to push to
+        // the Writable part of Transform stream ourselves.
+        super._transformChunk(chunk);
     }
 
     _getRawHtml(location) {

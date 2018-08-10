@@ -40,10 +40,7 @@ class SAXParser extends Transform {
 
     //TransformStream implementation
     _transform(chunk, encoding, callback) {
-        this._parseChunk(chunk);
-        this.push(chunk);
-
-        callback();
+        callback(null, this._transformChunk(chunk));
     }
 
     _flush(callback) {
@@ -60,11 +57,12 @@ class SAXParser extends Transform {
     }
 
     //Internals
-    _parseChunk(chunk) {
+    _transformChunk(chunk) {
         if (!this.stopped) {
             this.tokenizer.write(chunk.toString('utf8'), this.lastChunkWritten);
             this._runParsingLoop();
         }
+        return chunk;
     }
 
     _runParsingLoop() {
