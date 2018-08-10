@@ -3,7 +3,7 @@
 const fs = require('fs');
 const format = require('human-format');
 const promisifyEvent = require('promisify-event');
-const memwatch = require('memwatch-next');
+const memwatch = require('node-memwatch');
 const SAXParser = require('../../packages/parse5-sax-parser/lib');
 
 main();

@@ -6,9 +6,9 @@
     "license": "MIT",
     "dependencies": {
         "benchmark": "^2.1.4",
-        "parse5": "*",
         "human-format": "^0.7.0",
-        "memwatch-next": "^0.3.0",
+        "node-memwatch": "^1.0.1",
+        "parse5": "*",
         "promisify-event": "^1.0.0"
     }
 }
