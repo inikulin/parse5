@@ -263,3 +263,10 @@ exports['Regression - RewritingStream - Last text chunk must be flushed (GH-271)
     parser.write('text');
     parser.end();
 };
+
+exports['Regression - RewritingStream - Should not accept binary input (GH-269)'] = () => {
+    const stream = new RewritingStream();
+    const buf = Buffer.from('test');
+
+    assert.throws(() => stream.write(buf), TypeError);
+};
