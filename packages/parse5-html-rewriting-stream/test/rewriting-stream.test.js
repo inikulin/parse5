@@ -245,3 +245,21 @@ exports['RewritingStream - Should escape entities in attributes and text'] = cre
         rewriter.on('text', token => rewriter.emitText(token));
     }
 });
+
+exports['Regression - RewritingStream - Last text chunk must be flushed (GH-271)'] = done => {
+    const parser = new RewritingStream();
+    let foundText = false;
+
+    parser.on('text', ({ text }) => {
+        foundText = true;
+        assert.strictEqual(text, 'text');
+    });
+
+    parser.once('finish', () => {
+        assert.ok(foundText);
+        done();
+    });
+
+    parser.write('text');
+    parser.end();
+};
