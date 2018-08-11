@@ -142,3 +142,10 @@ exports['Regression - SAX - Last text chunk must be flushed (GH-271)'] = done =>
     parser.write('text');
     parser.end();
 };
+
+exports['Regression - SAX - Should not accept binary input (GH-269)'] = () => {
+    const stream = new SAXParser();
+    const buf = Buffer.from('test');
+
+    assert.throws(() => stream.write(buf), TypeError);
+};

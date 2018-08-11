@@ -22,3 +22,10 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         );
     };
 });
+
+exports['Regression - Plain text conversion stream - Should not accept binary input (GH-269)'] = () => {
+    const stream = new PlainTextConversionStream();
+    const buf = Buffer.from('test');
+
+    assert.throws(() => stream.write(buf), TypeError);
+};

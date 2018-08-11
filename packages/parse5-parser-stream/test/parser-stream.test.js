@@ -13,3 +13,10 @@ exports['Regression - Fix empty stream parsing with ParserStream (GH-196)'] = fu
 
     parser.end();
 };
+
+exports['Regression - ParserStream - Should not accept binary input (GH-269)'] = () => {
+    const stream = new ParserStream();
+    const buf = Buffer.from('test');
+
+    assert.throws(() => stream.write(buf), TypeError);
+};
