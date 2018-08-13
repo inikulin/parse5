@@ -116,11 +116,29 @@ exports['SAX - Piping and .stop()'] = function(done) {
     });
 };
 
-exports['Regression-SAX-SAX parser silently exits on big files (GH-97)'] = function(done) {
+exports['Regression - SAX - Parser silently exits on big files (GH-97)'] = function(done) {
     const parser = new SAXParser();
 
     fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html')).pipe(parser);
 
     //NOTE: This is a smoke test - in case of regression it will fail with timeout.
     parser.once('finish', done);
+};
+
+exports['Regression - SAX - Last text chunk must be flushed (GH-271)'] = done => {
+    const parser = new SAXParser();
+    let foundText = false;
+
+    parser.on('text', ({ text }) => {
+        foundText = true;
+        assert.strictEqual(text, 'text');
+    });
+
+    parser.once('finish', () => {
+        assert.ok(foundText);
+        done();
+    });
+
+    parser.write('text');
+    parser.end();
 };

@@ -43,9 +43,9 @@ class SAXParser extends Transform {
         callback(null, this._transformChunk(chunk));
     }
 
-    end(chunk, encoding, callback) {
+    _final(callback) {
         this.lastChunkWritten = true;
-        super.end(chunk, encoding, callback);
+        callback(null, this._transformChunk(''));
     }
 
     stop() {
