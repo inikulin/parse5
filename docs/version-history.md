@@ -3,11 +3,11 @@
 # 5.1.0
 
 * Fixed: Location info for `text` events in `SAXParser` and `RewritingStream` now contains
-correct `endCol` and `endLine` covering all concatenated raw tokens (GH #266).
+correct `endCol` and `endLine` covering all concatenated raw tokens (GH [#266](https://github.com/inikulin/parse5/issues/266)).
 * Fixed: `SAXParser` and `RewritingStream` now flush last buffered chunk when calling `.end()` with
-no parameters (GH #271).
+no parameters (GH [#271](https://github.com/inikulin/parse5/issues/271)).
 * Updated (**breaking**): `ParserStream`, `SAXParser` and `RewritingStream` no longer assume that
-each binary chunk is a valid finished UTF-8 chunk, and instead accept only decoded strings (GH #269).
+each binary chunk is a valid finished UTF-8 chunk, and instead accept only decoded strings (GH [#269](https://github.com/inikulin/parse5/issues/269)).
 
 # 5.0.0
 
