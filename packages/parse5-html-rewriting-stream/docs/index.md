@@ -38,6 +38,8 @@ HTML is not affected by parser error-recovery mechanisms as in the classical par
     });
 
     http.get('http://google.com', res => {
+       // Assumes response is UTF-8.
+       res.setEncoding('utf8');
        // RewritingStream is the Transform stream, which means you can pipe
        // through it.
        res.pipe(rewriter).pipe(file);
