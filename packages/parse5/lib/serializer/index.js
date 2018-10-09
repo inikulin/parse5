@@ -100,7 +100,7 @@ class Serializer {
 
         for (let i = 0, attrsLength = attrs.length; i < attrsLength; i++) {
             const attr = attrs[i];
-            const value = Serializer.escapeString(attr.value, true);
+            const value = this.options.escapeString(attr.value, true);
 
             this.html += ' ';
 
@@ -145,7 +145,7 @@ class Serializer {
         ) {
             this.html += content;
         } else {
-            this.html += Serializer.escapeString(content, false);
+            this.html += this.options.escapeString(content, false);
         }
     }
 
@@ -161,7 +161,7 @@ class Serializer {
 }
 
 // NOTE: used in tests and by rewriting stream
-Serializer.escapeString = function(str, attrMode) {
+Serializer.escapeString = DEFAULT_OPTIONS.escapeString = function(str, attrMode) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     if (attrMode) {
