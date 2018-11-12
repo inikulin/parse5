@@ -31,7 +31,7 @@ ___
 
 **● endCol**: *`number`*
 
-One-based column index of the last character
+One-based column index plus 1 of the last character, ie. it points *after* the last character
 
 ___
 <a id="endoffset"></a>
@@ -40,7 +40,7 @@ ___
 
 **● endOffset**: *`number`*
 
-Zero-based last character index
+Zero-based last character index plus 1, ie. it points *after* the last character
 
 ___
 <a id="endline"></a>
