@@ -117,7 +117,7 @@ class Serializer {
             } else if (attr.namespace === NS.XLINK) {
                 this.html += 'xlink:' + attr.name;
             } else {
-                this.html += attr.namespace + ':' + attr.name;
+                this.html += attr.prefix + ':' + attr.name;
             }
 
             this.html += '="' + value + '"';
