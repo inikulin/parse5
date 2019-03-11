@@ -1,4 +1,5 @@
 {
+    "name": "parse5-build-scripts",
     "private": true,
     "devDependencies": {
         "dedent": "^0.7.0",
