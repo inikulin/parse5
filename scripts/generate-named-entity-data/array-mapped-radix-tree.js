@@ -64,19 +64,21 @@ class ArrayMappedRadixTree {
         // NOTE: allocate space for transition table
         this.arr.length += count * 2;
 
-        kvPairs.sort((pair1, pair2) => pair1.key - pair2.key).forEach((pair, idx) => {
-            const keyIdx = transitionTableIdx + idx;
-            const branchIdx = keyIdx + count;
+        kvPairs
+            .sort((pair1, pair2) => pair1.key - pair2.key)
+            .forEach((pair, idx) => {
+                const keyIdx = transitionTableIdx + idx;
+                const branchIdx = keyIdx + count;
 
-            this.arr[keyIdx] = pair.key;
-            this.arr[branchIdx] = this.arr.length;
+                this.arr[keyIdx] = pair.key;
+                this.arr[branchIdx] = this.arr.length;
 
-            if (pair.branch instanceof Node) {
-                this._convertNode(pair.branch);
-            } else {
-                this._convertEdge(pair.branch);
-            }
-        });
+                if (pair.branch instanceof Node) {
+                    this._convertNode(pair.branch);
+                } else {
+                    this._convertEdge(pair.branch);
+                }
+            });
     }
 
     _convertNode(node) {
