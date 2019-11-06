@@ -1,5 +1,9 @@
 # Version history
 
+# 5.1.1
+* Fixed: Serialization of attributes in non-standard namespaces (by [@Zirro](https://github.com/Zirro)).
+* Fixed: Quirks and limited-quirks mode detection by doctype (by [@squidfunk](https://github.com/squidfunk)).
+
 # 5.1.0
 
 * Fixed: Location info for `text` events in `SAXParser` and `RewritingStream` now contains
