@@ -1,6 +1,5 @@
 'use strict';
-
-module.exports = {
+const errorCodes = {
     controlCharacterInInputStream: 'control-character-in-input-stream',
     noncharacterInInputStream: 'noncharacter-in-input-stream',
     surrogateInInputStream: 'surrogate-in-input-stream',
@@ -63,3 +62,4 @@ module.exports = {
     nestedNoscriptInHead: 'nested-noscript-in-head',
     eofInElementThatCanContainOnlyText: 'eof-in-element-that-can-contain-only-text'
 };
+module.exports = errorCodes;

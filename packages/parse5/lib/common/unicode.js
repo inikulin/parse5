@@ -36,10 +36,10 @@ const UNDEFINED_CODE_POINTS = [
     0x10fffe,
     0x10ffff
 ];
+const unicode = {}
+unicode.REPLACEMENT_CHARACTER = '\uFFFD';
 
-exports.REPLACEMENT_CHARACTER = '\uFFFD';
-
-exports.CODE_POINTS = {
+unicode.CODE_POINTS = {
     EOF: -1,
     NULL: 0x00,
     TABULATION: 0x09,
@@ -74,7 +74,7 @@ exports.CODE_POINTS = {
     REPLACEMENT_CHARACTER: 0xfffd
 };
 
-exports.CODE_POINT_SEQUENCES = {
+unicode.CODE_POINT_SEQUENCES = {
     DASH_DASH_STRING: [0x2d, 0x2d], //--
     DOCTYPE_STRING: [0x44, 0x4f, 0x43, 0x54, 0x59, 0x50, 0x45], //DOCTYPE
     CDATA_START_STRING: [0x5b, 0x43, 0x44, 0x41, 0x54, 0x41, 0x5b], //[CDATA[
@@ -84,26 +84,27 @@ exports.CODE_POINT_SEQUENCES = {
 };
 
 //Surrogates
-exports.isSurrogate = function(cp) {
+unicode.isSurrogate = function(cp) {
     return cp >= 0xd800 && cp <= 0xdfff;
 };
 
-exports.isSurrogatePair = function(cp) {
+unicode.isSurrogatePair = function(cp) {
     return cp >= 0xdc00 && cp <= 0xdfff;
 };
 
-exports.getSurrogatePairCodePoint = function(cp1, cp2) {
+unicode.getSurrogatePairCodePoint = function(cp1, cp2) {
     return (cp1 - 0xd800) * 0x400 + 0x2400 + cp2;
 };
 
 //NOTE: excluding NULL and ASCII whitespace
-exports.isControlCodePoint = function(cp) {
+unicode.isControlCodePoint = function(cp) {
     return (
         (cp !== 0x20 && cp !== 0x0a && cp !== 0x0d && cp !== 0x09 && cp !== 0x0c && cp >= 0x01 && cp <= 0x1f) ||
         (cp >= 0x7f && cp <= 0x9f)
     );
 };
 
-exports.isUndefinedCodePoint = function(cp) {
+unicode.isUndefinedCodePoint = function(cp) {
     return (cp >= 0xfdd0 && cp <= 0xfdef) || UNDEFINED_CODE_POINTS.indexOf(cp) > -1;
 };
+module.exports = unicode;

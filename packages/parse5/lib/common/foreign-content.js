@@ -2,7 +2,7 @@
 
 const Tokenizer = require('../tokenizer');
 const HTML = require('./html');
-
+const foreignContent = {};
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
@@ -94,7 +94,7 @@ const XML_ATTRS_ADJUSTMENT_MAP = {
 };
 
 //SVG tag names adjustment map
-const SVG_TAG_NAMES_ADJUSTMENT_MAP = (exports.SVG_TAG_NAMES_ADJUSTMENT_MAP = {
+const SVG_TAG_NAMES_ADJUSTMENT_MAP = (foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP = {
     altglyph: 'altGlyph',
     altglyphdef: 'altGlyphDef',
     altglyphitem: 'altGlyphItem',
@@ -182,7 +182,7 @@ const EXITS_FOREIGN_CONTENT = {
 };
 
 //Check exit from foreign content
-exports.causesExit = function(startTagToken) {
+foreignContent.causesExit = function(startTagToken) {
     const tn = startTagToken.tagName;
     const isFontWithAttrs =
         tn === $.FONT &&
@@ -194,7 +194,7 @@ exports.causesExit = function(startTagToken) {
 };
 
 //Token adjustments
-exports.adjustTokenMathMLAttrs = function(token) {
+foreignContent.adjustTokenMathMLAttrs = function(token) {
     for (let i = 0; i < token.attrs.length; i++) {
         if (token.attrs[i].name === DEFINITION_URL_ATTR) {
             token.attrs[i].name = ADJUSTED_DEFINITION_URL_ATTR;
@@ -203,7 +203,7 @@ exports.adjustTokenMathMLAttrs = function(token) {
     }
 };
 
-exports.adjustTokenSVGAttrs = function(token) {
+foreignContent.adjustTokenSVGAttrs = function(token) {
     for (let i = 0; i < token.attrs.length; i++) {
         const adjustedAttrName = SVG_ATTRS_ADJUSTMENT_MAP[token.attrs[i].name];
 
@@ -213,7 +213,7 @@ exports.adjustTokenSVGAttrs = function(token) {
     }
 };
 
-exports.adjustTokenXMLAttrs = function(token) {
+foreignContent.adjustTokenXMLAttrs = function(token) {
     for (let i = 0; i < token.attrs.length; i++) {
         const adjustedAttrEntry = XML_ATTRS_ADJUSTMENT_MAP[token.attrs[i].name];
 
@@ -225,12 +225,24 @@ exports.adjustTokenXMLAttrs = function(token) {
     }
 };
 
-exports.adjustTokenSVGTagName = function(token) {
+foreignContent.adjustTokenSVGTagName = function(token) {
     const adjustedTagName = SVG_TAG_NAMES_ADJUSTMENT_MAP[token.tagName];
 
     if (adjustedTagName) {
         token.tagName = adjustedTagName;
     }
+};
+
+foreignContent.isIntegrationPoint = function(tn, ns, attrs, foreignNS) {
+    if ((!foreignNS || foreignNS === NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs)) {
+        return true;
+    }
+
+    if ((!foreignNS || foreignNS === NS.MATHML) && isMathMLTextIntegrationPoint(tn, ns)) {
+        return true;
+    }
+
+    return false;
 };
 
 //Integration points
@@ -251,15 +263,4 @@ function isHtmlIntegrationPoint(tn, ns, attrs) {
 
     return ns === NS.SVG && (tn === $.FOREIGN_OBJECT || tn === $.DESC || tn === $.TITLE);
 }
-
-exports.isIntegrationPoint = function(tn, ns, attrs, foreignNS) {
-    if ((!foreignNS || foreignNS === NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs)) {
-        return true;
-    }
-
-    if ((!foreignNS || foreignNS === NS.MATHML) && isMathMLTextIntegrationPoint(tn, ns)) {
-        return true;
-    }
-
-    return false;
-};
+module.exports = foreignContent;

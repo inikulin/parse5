@@ -1,6 +1,6 @@
 'use strict';
 
-const { DOCUMENT_MODE } = require('./html');
+const DOCUMENT_MODE  = require('./html').DOCUMENT_MODE;
 
 //Const
 const VALID_DOCTYPE_NAME = 'html';
