@@ -162,6 +162,9 @@ class Serializer {
 
 // NOTE: used in tests and by rewriting stream
 Serializer.escapeString = function(str, attrMode) {
+    if (str === null) {
+        str = '';
+    }
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     if (attrMode) {
