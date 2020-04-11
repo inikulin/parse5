@@ -343,6 +343,6 @@ exports.getNodeSourceCodeLocation = function(node) {
     return node.sourceCodeLocation;
 };
 
-exports.updateNodeSourceCodeLocation = function(node, location) {
-    node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, location);
+exports.updateNodeSourceCodeLocation = function(node, endLocation) {
+    node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
 };
