@@ -595,14 +595,14 @@ ___
 
 ▸ **updateNodeSourceCodeLocation**(node: *Node*, endLocation: *[EndLocation](../source-code-location/end-location.md)*): `void`
 
-Updates the source code location of element nodes.
+Updates the source code location of nodes.
 
 **Parameters:**
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
 | node | Node |  Node. |
-| endLocation | [EndLocation](../source-code-location/end-location.md) |  Source code location information of the end of the element. |
+| endLocation | [EndLocation](../source-code-location/end-location.md) |  Source code location information of the end of the node. |
 
 **Returns:** `void`
 ___
