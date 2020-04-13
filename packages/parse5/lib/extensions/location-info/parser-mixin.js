@@ -210,9 +210,8 @@ class LocationInfoParserMixin extends Mixin {
                 const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
                 if (tnLoc) {
-                    tnLoc.endLine = token.location.endLine;
-                    tnLoc.endCol = token.location.endCol;
-                    tnLoc.endOffset = token.location.endOffset;
+                    const { endLine, endCol, endOffset } = token.location;
+                    this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
                 } else {
                     this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
                 }
