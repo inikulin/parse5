@@ -1,7 +1,7 @@
 {
     "name": "parse5-html-rewriting-stream",
     "description": "Streaming HTML rewriter.",
-    "version": "5.1.1",
+    "version": "6.0.0",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
     "homepage": "https://github.com/inikulin/parse5",
@@ -17,8 +17,8 @@
     "license": "MIT",
     "main": "./lib/index.js",
     "dependencies": {
-        "parse5": "^5.1.1",
-        "parse5-sax-parser": "^5.1.1"
+        "parse5": "^6.0.0",
+        "parse5-sax-parser": "^6.0.0"
     },
     "repository": {
         "type": "git",
