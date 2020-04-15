@@ -1,5 +1,10 @@
 # Version history
 
+# 6.0.0
+* Added (**breaking**): Tree adapter interface now has `updateNodeSourceCodeLocation` method which
+enables usage of custom location info formats (GH [#314](https://github.com/inikulin/parse5/issues/314)) (by [@DMartens](https://github.com/DMartens)).
+
+
 # 5.1.1
 * Fixed: Serialization of attributes in non-standard namespaces (by [@Zirro](https://github.com/Zirro)).
 * Fixed: Quirks and limited-quirks mode detection by doctype (by [@squidfunk](https://github.com/squidfunk)).
