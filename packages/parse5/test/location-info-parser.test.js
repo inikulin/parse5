@@ -7,7 +7,7 @@ const {
     assertStartTagLocation,
     assertNodeLocation
 } = require('../../../test/utils/generate-location-info-parser-tests');
-const { generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
+const { generateTestsForEachTreeAdapter, treeAdapters } = require('../../../test/utils/common');
 
 generateLocationInfoParserTests(module.exports, 'Parser', (input, opts) => ({
     node: parse5.parse(input, opts)
@@ -127,3 +127,56 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         assert.ok(!location.endTag);
     };
 });
+
+exports['Updating node source code location (GH-314)'] = function() {
+    const sourceCodeLocationSetter = {
+        setNodeSourceCodeLocation(node, location) {
+            if (location === null) {
+                node.sourceCodeLocation = null;
+            } else {
+                node.sourceCodeLocation = {
+                    start: {
+                        line: location.startLine,
+                        column: location.startCol,
+                        offset: location.startOffset
+                    },
+                    end: {
+                        line: location.endLine,
+                        column: location.endCol,
+                        offset: location.endOffset
+                    }
+                };
+            }
+        },
+        updateNodeSourceCodeLocation(node, endLocation) {
+            node.sourceCodeLocation = {
+                start: node.sourceCodeLocation.start,
+                end: {
+                    line: endLocation.endLine,
+                    column: endLocation.endCol,
+                    offset: endLocation.endOffset
+                }
+            };
+        }
+    };
+    const adapter = Object.assign(treeAdapters.default, sourceCodeLocationSetter);
+    const document = parse5.parse('<!doctype><body>Testing location</body>', { adapter, sourceCodeLocationInfo: true });
+    const [doctype, html] = document.childNodes;
+    const [head, body] = html.childNodes;
+    const [text] = body.childNodes;
+
+    assert.deepEqual(doctype.sourceCodeLocation, {
+        start: { line: 1, column: 1, offset: 0 },
+        end: { line: 1, column: 11, offset: 10 }
+    });
+    assert.strictEqual(html.sourceCodeLocation, null);
+    assert.strictEqual(head.sourceCodeLocation, null);
+    assert.deepEqual(body.sourceCodeLocation, {
+        start: { line: 1, column: 11, offset: 10 },
+        end: { line: 1, column: 40, offset: 39 }
+    });
+    assert.deepEqual(text.sourceCodeLocation, {
+        start: { line: 1, column: 17, offset: 16 },
+        end: { line: 1, column: 33, offset: 32 }
+    });
+};
