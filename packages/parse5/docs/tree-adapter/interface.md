@@ -38,7 +38,7 @@ Tree adapter is a set of utility functions that provides minimal required abstra
 * [setDocumentType](#setdocumenttype)
 * [setNodeSourceCodeLocation](#setnodesourcecodelocation)
 * [setTemplateContent](#settemplatecontent)
-
+* [updateNodeSourceCodeLocation](#updatenodesourcecodelocation)
 ---
 
 ## Methods
@@ -588,6 +588,21 @@ Sets the `<template>` element content element.
 | contentElement | DocumentFragment |  Content element. |
 
 **Returns:** `void`
-
 ___
+<a id="updatenodesourcecodelocation"></a>
 
+###  updateNodeSourceCodeLocation
+
+▸ **updateNodeSourceCodeLocation**(node: *Node*, endLocation: *[EndLocation](../source-code-location/end-location.md)*): `void`
+
+Updates the source code location of nodes.
+
+**Parameters:**
+
+| Param | Type | Description |
+| ------ | ------ | ------ |
+| node | Node |  Node. |
+| endLocation | [EndLocation](../source-code-location/end-location.md) |  Source code location information of the end of the node. |
+
+**Returns:** `void`
+___

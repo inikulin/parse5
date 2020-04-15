@@ -43,17 +43,19 @@ class LocationInfoParserMixin extends Mixin {
                 // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
                 // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
                 const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
-
+                const endLoc = {};
                 if (isClosingEndTag) {
-                    loc.endTag = Object.assign({}, ctLoc);
-                    loc.endLine = ctLoc.endLine;
-                    loc.endCol = ctLoc.endCol;
-                    loc.endOffset = ctLoc.endOffset;
+                    endLoc.endTag = Object.assign({}, ctLoc);
+                    endLoc.endLine = ctLoc.endLine;
+                    endLoc.endCol = ctLoc.endCol;
+                    endLoc.endOffset = ctLoc.endOffset;
                 } else {
-                    loc.endLine = ctLoc.startLine;
-                    loc.endCol = ctLoc.startCol;
-                    loc.endOffset = ctLoc.startOffset;
+                    endLoc.endLine = ctLoc.startLine;
+                    endLoc.endCol = ctLoc.startCol;
+                    endLoc.endOffset = ctLoc.startOffset;
                 }
+
+                this.treeAdapter.updateNodeSourceCodeLocation(element, endLoc);
             }
         }
     }
@@ -208,9 +210,8 @@ class LocationInfoParserMixin extends Mixin {
                 const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
                 if (tnLoc) {
-                    tnLoc.endLine = token.location.endLine;
-                    tnLoc.endCol = token.location.endCol;
-                    tnLoc.endOffset = token.location.endOffset;
+                    const { endLine, endCol, endOffset } = token.location;
+                    this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
                 } else {
                     this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
                 }
