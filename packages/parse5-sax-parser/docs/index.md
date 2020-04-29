@@ -87,8 +87,8 @@ const fs = require('fs');
 const file = fs.createWriteStream('google.com.html');
 const parser = new SAXParser();
 
-parser.on('doctype', (name, publicId, systemId) => {
-    // Process doctype info ans stop parsing
+parser.on('doctype', ({ name, publicId, systemId }) => {
+    // Process doctype info and stop parsing
     ...
     parser.stop();
 });
