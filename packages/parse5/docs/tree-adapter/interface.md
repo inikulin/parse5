@@ -2,7 +2,7 @@
 
 Tree adapter is a set of utility functions that provides minimal required abstraction layer beetween parser and a specific AST format. Note that `TreeAdapter` is not designed to be a general purpose AST manipulation library. You can build such library on top of existing `TreeAdapter` or use one of the existing libraries from npm.
 
-*__See__*: [default implementation](https://github.com/inikulin/parse5/blob/master/lib/tree_adapters/default.js)
+*__See__*: [default implementation](https://github.com/inikulin/parse5/blob/master/packages/parse5/lib/tree-adapters/default.js)
 
 ### Methods
 
