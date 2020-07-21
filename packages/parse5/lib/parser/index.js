@@ -1546,7 +1546,7 @@ function hrStartTagInBody(p, token) {
 
     p._appendElement(token, NS.HTML);
     p.framesetOk = false;
-    p.ackSelfClosing = true;
+    token.ackSelfClosing = true;
 }
 
 function imageStartTagInBody(p, token) {
