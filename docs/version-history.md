@@ -1,5 +1,10 @@
 # Version history
 
+# 6.0.1
+* Fixed: Handling of self-closing `<hr>` tags (by [@43081j](https://github.com/43081j)).
+* Fixed: Broken link in TreeAdapter document (GH [#317](https://github.com/inikulin/parse5/issues/317)) (by [@ursm](https://github.com/ursm)).
+* Fixed: SAXParser example (GH [#316](https://github.com/inikulin/parse5/issues/316)) (by [@mvasilkov](https://github.com/mvasilkov)).
+
 # 6.0.0
 * Added (**breaking**): Tree adapter interface now has `updateNodeSourceCodeLocation` method which
 enables usage of custom location info formats (GH [#314](https://github.com/inikulin/parse5/issues/314)) (by [@DMartens](https://github.com/DMartens)).
