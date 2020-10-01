@@ -1,5 +1,7 @@
 'use strict';
 
+const assert = require('assert');
+const parse5 = require('../lib');
 const path = require('path');
 const Tokenizer = require('../lib/tokenizer');
 const Mixin = require('../lib/utils/mixin');
@@ -26,3 +28,10 @@ generateTokenizationTests(
         return { tokenizer, getNextToken: () => tokenizer.getNextToken() };
     }
 );
+
+exports['Regression - `<<` in comment parses correctly (GH-325)'] = {
+    test() {
+        const document = parse5.parse('<!--<<-->');
+        assert.equal(document.childNodes[0].data, '<<');
+    }
+};
