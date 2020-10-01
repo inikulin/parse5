@@ -1468,7 +1468,7 @@ class Tokenizer {
             this.currentToken.data += '!';
             this.state = COMMENT_LESS_THAN_SIGN_BANG_STATE;
         } else if (cp === $.LESS_THAN_SIGN) {
-            this.currentToken.data += '!';
+            this.currentToken.data += '<';
         } else {
             this._reconsumeInState(COMMENT_STATE);
         }
