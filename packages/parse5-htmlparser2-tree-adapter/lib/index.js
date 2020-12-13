@@ -2,85 +2,20 @@
 
 const doctype = require('parse5/lib/common/doctype');
 const { DOCUMENT_MODE } = require('parse5/lib/common/html');
-
-//Conversion tables for DOM Level1 structure emulation
-const nodeTypes = {
-    element: 1,
-    text: 3,
-    cdata: 4,
-    comment: 8
-};
-
-const nodePropertyShorthands = {
-    tagName: 'name',
-    childNodes: 'children',
-    parentNode: 'parent',
-    previousSibling: 'prev',
-    nextSibling: 'next',
-    nodeValue: 'data'
-};
-
-//Node
-class Node {
-    constructor(props) {
-        for (const key of Object.keys(props)) {
-            this[key] = props[key];
-        }
-    }
-
-    get firstChild() {
-        const children = this.children;
-
-        return (children && children[0]) || null;
-    }
-
-    get lastChild() {
-        const children = this.children;
-
-        return (children && children[children.length - 1]) || null;
-    }
-
-    get nodeType() {
-        return nodeTypes[this.type] || nodeTypes.element;
-    }
-}
-
-Object.keys(nodePropertyShorthands).forEach(key => {
-    const shorthand = nodePropertyShorthands[key];
-
-    Object.defineProperty(Node.prototype, key, {
-        get: function() {
-            return this[shorthand] || null;
-        },
-        set: function(val) {
-            this[shorthand] = val;
-            return val;
-        }
-    });
-});
+const { NodeWithChildren, Element, ProcessingInstruction, Comment, Text } = require('domhandler');
 
 //Node construction
 exports.createDocument = function() {
-    return new Node({
-        type: 'root',
-        name: 'root',
-        parent: null,
-        prev: null,
-        next: null,
-        children: [],
-        'x-mode': DOCUMENT_MODE.NO_QUIRKS
-    });
+    const node = new NodeWithChildren('root', []);
+    node.name = 'root';
+    node['x-mode'] = DOCUMENT_MODE.NO_QUIRKS;
+    return node;
 };
 
 exports.createDocumentFragment = function() {
-    return new Node({
-        type: 'root',
-        name: 'root',
-        parent: null,
-        prev: null,
-        next: null,
-        children: []
-    });
+    const node = new NodeWithChildren('root', []);
+    node.name = 'root';
+    return node;
 };
 
 exports.createElement = function(tagName, namespaceURI, attrs) {
@@ -96,38 +31,19 @@ exports.createElement = function(tagName, namespaceURI, attrs) {
         attribsPrefix[attrName] = attrs[i].prefix;
     }
 
-    return new Node({
-        type: tagName === 'script' || tagName === 'style' ? tagName : 'tag',
-        name: tagName,
-        namespace: namespaceURI,
-        attribs: attribs,
-        'x-attribsNamespace': attribsNamespace,
-        'x-attribsPrefix': attribsPrefix,
-        children: [],
-        parent: null,
-        prev: null,
-        next: null
-    });
+    const node = new Element(tagName, attribs, []);
+    node.namespace = namespaceURI;
+    node['x-attribsNamespace'] = attribsNamespace;
+    node['x-attribsPrefix'] = attribsPrefix;
+    return node;
 };
 
 exports.createCommentNode = function(data) {
-    return new Node({
-        type: 'comment',
-        data: data,
-        parent: null,
-        prev: null,
-        next: null
-    });
+    return new Comment(data);
 };
 
 const createTextNode = function(value) {
-    return new Node({
-        type: 'text',
-        data: value,
-        parent: null,
-        prev: null,
-        next: null
-    });
+    return new Text(value);
 };
 
 //Tree mutation
@@ -184,17 +100,11 @@ exports.setDocumentType = function(document, name, publicId, systemId) {
         doctypeNode['x-publicId'] = publicId;
         doctypeNode['x-systemId'] = systemId;
     } else {
-        appendChild(
-            document,
-            new Node({
-                type: 'directive',
-                name: '!doctype',
-                data: data,
-                'x-name': name,
-                'x-publicId': publicId,
-                'x-systemId': systemId
-            })
-        );
+        const node = new ProcessingInstruction('!doctype', data);
+        node['x-name'] = name;
+        node['x-publicId'] = publicId;
+        node['x-systemId'] = systemId;
+        appendChild(document, node);
     }
 };
 
