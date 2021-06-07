@@ -161,8 +161,12 @@ class Serializer {
 }
 
 // NOTE: used in tests and by rewriting stream
-Serializer.escapeString = function(str, attrMode) {
-    str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
+Serializer.escapeString = function(str, attrMode, urlMode) {
+    if (!urlMode) {
+        str = str.replace(AMP_REGEX, '&amp;');
+    }
+
+    str = str.replace(NBSP_REGEX, '&nbsp;');
 
     if (attrMode) {
         str = str.replace(DOUBLE_QUOTE_REGEX, '&quot;');

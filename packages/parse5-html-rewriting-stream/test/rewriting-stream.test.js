@@ -246,6 +246,33 @@ exports['RewritingStream - Should escape entities in attributes and text'] = cre
     }
 });
 
+exports['Regression - RewritingStream - Should not escape ampersand in URLs'] = createRewriterTest({
+    src: dedent`
+        <!DOCTYPE html "">
+        <html>
+            <head>
+                <link href="https://foo.com?bar=0&bla=1">
+            </head>
+            <body>
+            </body>
+        </html>
+    `,
+    expected: dedent`
+        <!DOCTYPE html "">
+        <html>
+            <head>
+                <link href="https://foo.com?bar=0&bla=1">
+            </head>
+            <body>
+            </body>
+        </html>
+    `,
+    assignTokenHandlers: rewriter => {
+        rewriter.on('startTag', token => rewriter.emitStartTag(token));
+        rewriter.on('text', token => rewriter.emitText(token));
+    }
+});
+
 exports['Regression - RewritingStream - Last text chunk must be flushed (GH-271)'] = done => {
     const parser = new RewritingStream();
     let foundText = false;
