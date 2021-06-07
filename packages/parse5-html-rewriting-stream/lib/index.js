@@ -64,7 +64,7 @@ class RewritingStream extends SAXParser {
         const attrs = token.attrs;
 
         for (let i = 0; i < attrs.length; i++) {
-            res += ` ${attrs[i].name}="${escapeString(attrs[i].value, true)}"`;
+            res += ` ${attrs[i].name}="${escapeString(attrs[i].value, true, attrs[i].name === 'href')}"`;
         }
 
         res += token.selfClosing ? '/>' : '>';
