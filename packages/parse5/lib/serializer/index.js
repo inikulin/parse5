@@ -11,7 +11,8 @@ const NS = HTML.NAMESPACES;
 
 //Default serializer options
 const DEFAULT_OPTIONS = {
-    treeAdapter: defaultTreeAdapter
+    treeAdapter: defaultTreeAdapter,
+    outerHTML: false
 };
 
 //Escaping regexes
@@ -33,7 +34,11 @@ class Serializer {
 
     //API
     serialize() {
-        this._serializeChildNodes(this.startNode);
+        if (this.options.outerHTML) {
+            this._serializeElement(this.startNode);
+        } else {
+            this._serializeChildNodes(this.startNode);
+        }
 
         return this.html;
     }
