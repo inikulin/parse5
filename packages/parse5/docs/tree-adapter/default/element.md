@@ -78,3 +78,12 @@ Element tag name.
 
 ___
 
+<a id="sourcecodelocation"></a>
+
+### `<Optional>` content
+
+**● content**: *[DocumentFragment](./document-fragment.md)*
+
+Only available for `template` tags.
+
+___
