@@ -78,3 +78,12 @@ Element tag name.
 
 ___
 
+<a id="content"></a>
+
+### `<Optional>` content
+
+**● content**: *[DocumentFragment](./document-fragment.md)*
+
+The content of a `template` tag.
+
+___
