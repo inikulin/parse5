@@ -71,7 +71,8 @@ exports.CODE_POINTS = {
     LATIN_SMALL_F: 0x66,
     LATIN_SMALL_X: 0x78,
     LATIN_SMALL_Z: 0x7a,
-    REPLACEMENT_CHARACTER: 0xfffd
+    REPLACEMENT_CHARACTER: 0xfffd,
+    BOM: 0xfeff
 };
 
 exports.CODE_POINT_SEQUENCES = {

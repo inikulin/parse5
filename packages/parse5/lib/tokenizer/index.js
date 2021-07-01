@@ -134,7 +134,7 @@ const NUMERIC_CHARACTER_REFERENCE_END_STATE = 'NUMERIC_CHARACTER_REFERENCE_END_S
 //this functions if they will be situated in another module due to context switch.
 //Always perform inlining check before modifying this functions ('node --trace-inlining').
 function isWhitespace(cp) {
-    return cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED;
+    return cp === $.BOM || cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED;
 }
 
 function isAsciiDigit(cp) {
