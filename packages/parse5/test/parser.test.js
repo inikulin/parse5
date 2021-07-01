@@ -89,3 +89,24 @@ exports['Regression - DOCTYPE empty fields (GH-236)'] = function() {
     assert.strictEqual(doctype.publicId, '');
     assert.strictEqual(doctype.systemId, '');
 };
+
+exports['Regression - Handle BOM Correctly (GH-349)'] = {
+    test: function() {
+        const fragment = parse5.parse(
+            `${String.fromCharCode(0xfeff)}<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta http-equiv="X-UA-Compatible" content="IE=edge">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Document</title>
+          </head>
+          <body>
+              <p>Nice Valid Html</p>
+          </body>
+          </html>`
+        );
+        assert.strictEqual(fragment.childNodes.length, 2);
+        assert.strictEqual(fragment.childNodes[0].nodeName, '#documentType');
+    }
+};
