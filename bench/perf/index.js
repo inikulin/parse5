@@ -1,17 +1,18 @@
-'use strict';
-
-const { join } = require('path');
-const { readFileSync, createReadStream, readdirSync } = require('fs');
-const Benchmark = require('benchmark');
-const { loadTreeConstructionTestData } = require('../../test/utils/generate-parsing-tests');
-const loadSAXParserTestData = require('../../test/utils/load-sax-parser-test-data');
-const { treeAdapters, WritableStreamStub } = require('../../test/utils/common');
+import { join } from 'path';
+import { readFileSync, createReadStream, readdirSync } from 'fs';
+import Benchmark from 'benchmark';
+import { loadTreeConstructionTestData } from '../../test/utils/generate-parsing-tests.js';
+import { loadSAXParserTestData } from '../../test/utils/load-sax-parser-test-data.js';
+import { treeAdapters, WritableStreamStub } from '../../test/utils/common.js';
+import parse5 from '../../packages/parse5/lib/index.js';
+import parse5Stream from '../../packages/parse5-parser-stream/lib/index.js';
+import parse5Upstream from 'parse5';
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
-global.workingCopy = require('../../packages/parse5/lib');
-global.WorkingCopyParserStream = require('../../packages/parse5-parser-stream/lib');
-global.upstreamParser = require('parse5');
+global.workingCopy = parse5;
+global.WorkingCopyParserStream = parse5Stream;
+global.upstreamParser = parse5Upstream;
 
 // Huge page data
 global.hugePage = readFileSync(join(__dirname, '../../test/data/huge-page/huge-page.html')).toString();

@@ -1,10 +1,8 @@
-'use strict';
-
-const fs = require('fs');
-const format = require('human-format');
-const promisifyEvent = require('promisify-event');
-const memwatch = require('node-memwatch');
-const SAXParser = require('../../packages/parse5-sax-parser/lib');
+import * as fs from 'fs';
+import format from 'human-format';
+import promisifyEvent from 'promisify-event';
+import memwatch from 'node-memwatch';
+import SAXParser from '../../packages/parse5-sax-parser/lib/index.js';
 
 main();
 
