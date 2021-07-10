@@ -1,18 +1,16 @@
-'use strict';
-
-const { Transform } = require('stream');
-const Tokenizer = require('parse5/lib/tokenizer');
-const LocationInfoTokenizerMixin = require('parse5/lib/extensions/location-info/tokenizer-mixin');
-const Mixin = require('parse5/lib/utils/mixin');
-const mergeOptions = require('parse5/lib/utils/merge-options');
-const DevNullStream = require('./dev-null-stream');
-const ParserFeedbackSimulator = require('./parser-feedback-simulator');
+import { Transform } from 'stream';
+import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
+import { LocationInfoTokenizerMixin } from 'parse5/lib/extensions/location-info/tokenizer-mixin.js';
+import { Mixin } from 'parse5/lib/utils/mixin.js';
+import { mergeOptions } from 'parse5/lib/utils/merge-options.js';
+import { DevNullStream } from './dev-null-stream.js';
+import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
 const DEFAULT_OPTIONS = {
     sourceCodeLocationInfo: false
 };
 
-class SAXParser extends Transform {
+export class SAXParser extends Transform {
     constructor(options) {
         super({ encoding: 'utf8', decodeStrings: false });
 
@@ -162,5 +160,3 @@ const TOKEN_EMISSION_HELPERS = {
         reshapeToken: origToken => ({ text: origToken.chars, sourceCodeLocation: origToken.location })
     }
 };
-
-module.exports = SAXParser;

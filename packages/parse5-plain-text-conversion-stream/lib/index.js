@@ -1,9 +1,7 @@
-'use strict';
+import { ParserStream } from 'parse5-parser-stream';
+import { TAG_NAMES as $ } from 'parse5/lib/common/html.js';
 
-const ParserStream = require('parse5-parser-stream');
-const $ = require('parse5/lib/common/html').TAG_NAMES;
-
-class PlainTextConversionStream extends ParserStream {
+export class PlainTextConversionStream extends ParserStream {
     constructor(options) {
         super(options);
 
@@ -17,5 +15,3 @@ class PlainTextConversionStream extends ParserStream {
         this.parser.switchToPlaintextParsing();
     }
 }
-
-module.exports = PlainTextConversionStream;

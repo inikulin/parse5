@@ -1,9 +1,7 @@
-'use strict';
+import { Readable } from 'stream';
+import { Serializer } from 'parse5/lib/serializer/index.js';
 
-const { Readable } = require('stream');
-const Serializer = require('parse5/lib/serializer');
-
-class SerializerStream extends Readable {
+export class SerializerStream extends Readable {
     constructor(node, options) {
         super({ encoding: 'utf8' });
 
@@ -25,5 +23,3 @@ class SerializerStream extends Readable {
         this.push(null);
     }
 }
-
-module.exports = SerializerStream;
