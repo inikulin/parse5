@@ -1,8 +1,6 @@
-'use strict';
+import { Node } from './tree-node.js';
 
-const Node = require('./tree-node');
-
-class RadixTree {
+export class RadixTree {
     constructor(src) {
         this.root = new Node(null);
 
@@ -191,5 +189,3 @@ class RadixTree {
         }
     }
 }
-
-module.exports = RadixTree;

@@ -1,7 +1,5 @@
-'use strict';
-
-const assert = require('assert');
-const Node = require('./tree-node');
+import assert from 'assert';
+import { Node } from './tree-node.js';
 
 const HAS_DATA_FLAG = 1 << 0;
 const DATA_DUPLET_FLAG = 1 << 1;
@@ -10,7 +8,7 @@ const HAS_BRANCHES_FLAG = 1 << 2;
 const MAX_UINT16 = (1 << 16) - 1;
 const MAX_BRANCH_MARKER_VALUE = HAS_DATA_FLAG | DATA_DUPLET_FLAG | HAS_BRANCHES_FLAG;
 
-class ArrayMappedRadixTree {
+export class ArrayMappedRadixTree {
     constructor(radixTree) {
         this.arr = [];
 
@@ -96,5 +94,3 @@ class ArrayMappedRadixTree {
         }
     }
 }
-
-module.exports = ArrayMappedRadixTree;
