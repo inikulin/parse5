@@ -1,6 +1,4 @@
-'use strict';
-
-module.exports = {
+export const ERR = {
     controlCharacterInInputStream: 'control-character-in-input-stream',
     noncharacterInInputStream: 'noncharacter-in-input-stream',
     surrogateInInputStream: 'surrogate-in-input-stream',

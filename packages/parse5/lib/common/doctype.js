@@ -1,6 +1,4 @@
-'use strict';
-
-const { DOCUMENT_MODE } = require('./html');
+import { DOCUMENT_MODE } from './html.js';
 
 //Const
 const VALID_DOCTYPE_NAME = 'html';
@@ -96,15 +94,15 @@ function hasPrefix(publicId, prefixes) {
 }
 
 //API
-exports.isConforming = function(token) {
+export function isConforming(token) {
     return (
         token.name === VALID_DOCTYPE_NAME &&
         token.publicId === null &&
         (token.systemId === null || token.systemId === VALID_SYSTEM_ID)
     );
-};
+}
 
-exports.getDocumentMode = function(token) {
+export function getDocumentMode(token) {
     if (token.name !== VALID_DOCTYPE_NAME) {
         return DOCUMENT_MODE.QUIRKS;
     }
@@ -139,9 +137,9 @@ exports.getDocumentMode = function(token) {
     }
 
     return DOCUMENT_MODE.NO_QUIRKS;
-};
+}
 
-exports.serializeContent = function(name, publicId, systemId) {
+export function serializeContent(name, publicId, systemId) {
     let str = '!DOCTYPE ';
 
     if (name) {
@@ -159,4 +157,4 @@ exports.serializeContent = function(name, publicId, systemId) {
     }
 
     return str;
-};
+}

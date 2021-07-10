@@ -1,8 +1,6 @@
-'use strict';
+import { Mixin } from '../../utils/mixin.js';
 
-const Mixin = require('../../utils/mixin');
-
-class ErrorReportingMixinBase extends Mixin {
+export class ErrorReportingMixinBase extends Mixin {
     constructor(host, opts) {
         super(host);
 
@@ -39,5 +37,3 @@ class ErrorReportingMixinBase extends Mixin {
         };
     }
 }
-
-module.exports = ErrorReportingMixinBase;

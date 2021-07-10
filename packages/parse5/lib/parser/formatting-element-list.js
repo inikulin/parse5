@@ -1,10 +1,8 @@
-'use strict';
-
 //Const
 const NOAH_ARK_CAPACITY = 3;
 
 //List of formatting elements
-class FormattingElementList {
+export class FormattingElementList {
     constructor(treeAdapter) {
         this.length = 0;
         this.entries = [];
@@ -177,5 +175,3 @@ class FormattingElementList {
 //Entry types
 FormattingElementList.MARKER_ENTRY = 'MARKER_ENTRY';
 FormattingElementList.ELEMENT_ENTRY = 'ELEMENT_ENTRY';
-
-module.exports = FormattingElementList;

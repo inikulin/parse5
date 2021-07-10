@@ -1,9 +1,7 @@
-'use strict';
-
-const defaultTreeAdapter = require('../tree-adapters/default');
-const mergeOptions = require('../utils/merge-options');
-const doctype = require('../common/doctype');
-const HTML = require('../common/html');
+import { defaultTreeAdapter } from '../tree-adapters/default.js';
+import { mergeOptions } from '../utils/merge-options.js';
+import { doctype } from '../common/doctype.js';
+import { HTML } from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -22,7 +20,7 @@ const LT_REGEX = /</g;
 const GT_REGEX = />/g;
 
 //Serializer
-class Serializer {
+export class Serializer {
     constructor(node, options) {
         this.options = mergeOptions(DEFAULT_OPTIONS, options);
         this.treeAdapter = this.options.treeAdapter;
@@ -172,5 +170,3 @@ Serializer.escapeString = function(str, attrMode) {
 
     return str;
 };
-
-module.exports = Serializer;

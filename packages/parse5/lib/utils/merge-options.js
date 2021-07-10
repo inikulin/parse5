@@ -1,6 +1,4 @@
-'use strict';
-
-module.exports = function mergeOptions(defaults, options) {
+export function mergeOptions(defaults, options) {
     options = options || Object.create(null);
 
     return [defaults, options].reduce((merged, optObj) => {
@@ -10,4 +8,4 @@ module.exports = function mergeOptions(defaults, options) {
 
         return merged;
     }, Object.create(null));
-};
+}

@@ -1,8 +1,6 @@
-'use strict';
+import { Mixin } from '../../utils/mixin.js';
 
-const Mixin = require('../../utils/mixin');
-
-class PositionTrackingPreprocessorMixin extends Mixin {
+export class PositionTrackingPreprocessorMixin extends Mixin {
     constructor(preprocessor) {
         super(preprocessor);
 
@@ -60,5 +58,3 @@ class PositionTrackingPreprocessorMixin extends Mixin {
         };
     }
 }
-
-module.exports = PositionTrackingPreprocessorMixin;

@@ -1,9 +1,7 @@
-'use strict';
-
-const Preprocessor = require('./preprocessor');
-const unicode = require('../common/unicode');
-const neTree = require('./named-entity-data');
-const ERR = require('../common/error-codes');
+import { Preprocessor } from './preprocessor.js';
+import { unicode } from '../common/unicode.js';
+import { neTree } from './named-entity-data.js';
+import { ERR } from '../common/error-codes.js';
 
 //Aliases
 const $ = unicode.CODE_POINTS;
@@ -211,7 +209,7 @@ function findNamedEntityTreeBranch(nodeIx, cp) {
 }
 
 //Tokenizer
-class Tokenizer {
+export class Tokenizer {
     constructor() {
         this.preprocessor = new Preprocessor();
 
@@ -2192,5 +2190,3 @@ Tokenizer.getTokenAttr = function(token, attrName) {
 
     return null;
 };
-
-module.exports = Tokenizer;

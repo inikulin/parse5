@@ -1,6 +1,4 @@
-'use strict';
-
-class Mixin {
+export class Mixin {
     constructor(host) {
         const originalMethods = {};
         const overriddenMethods = this._getOverriddenMethods(this, originalMethods);
@@ -35,5 +33,3 @@ Mixin.install = function(host, Ctor, opts) {
 
     return mixin;
 };
-
-module.exports = Mixin;

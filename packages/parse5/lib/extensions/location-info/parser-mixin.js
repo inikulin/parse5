@@ -1,15 +1,13 @@
-'use strict';
-
-const Mixin = require('../../utils/mixin');
-const Tokenizer = require('../../tokenizer');
-const LocationInfoTokenizerMixin = require('./tokenizer-mixin');
-const LocationInfoOpenElementStackMixin = require('./open-element-stack-mixin');
-const HTML = require('../../common/html');
+import { Mixin } from '../../utils/mixin.js';
+import { Tokenizer } from '../../tokenizer/index.js';
+import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
+import { LocationInfoOpenElementStackMixin } from './open-element-stack-mixin.js';
+import { HTML } from '../../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
 
-class LocationInfoParserMixin extends Mixin {
+export class LocationInfoParserMixin extends Mixin {
     constructor(parser) {
         super(parser);
 
@@ -219,5 +217,3 @@ class LocationInfoParserMixin extends Mixin {
         };
     }
 }
-
-module.exports = LocationInfoParserMixin;

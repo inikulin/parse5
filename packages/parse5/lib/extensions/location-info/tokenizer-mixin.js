@@ -1,10 +1,8 @@
-'use strict';
+import { Mixin } from '../../utils/mixin.js';
+import { Tokenizer } from '../../tokenizer/index.js';
+import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
 
-const Mixin = require('../../utils/mixin');
-const Tokenizer = require('../../tokenizer');
-const PositionTrackingPreprocessorMixin = require('../position-tracking/preprocessor-mixin');
-
-class LocationInfoTokenizerMixin extends Mixin {
+export class LocationInfoTokenizerMixin extends Mixin {
     constructor(tokenizer) {
         super(tokenizer);
 
@@ -142,5 +140,3 @@ class LocationInfoTokenizerMixin extends Mixin {
         return methods;
     }
 }
-
-module.exports = LocationInfoTokenizerMixin;

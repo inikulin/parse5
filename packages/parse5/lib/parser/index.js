@@ -1,18 +1,16 @@
-'use strict';
-
-const Tokenizer = require('../tokenizer');
-const OpenElementStack = require('./open-element-stack');
-const FormattingElementList = require('./formatting-element-list');
-const LocationInfoParserMixin = require('../extensions/location-info/parser-mixin');
-const ErrorReportingParserMixin = require('../extensions/error-reporting/parser-mixin');
-const Mixin = require('../utils/mixin');
-const defaultTreeAdapter = require('../tree-adapters/default');
-const mergeOptions = require('../utils/merge-options');
-const doctype = require('../common/doctype');
-const foreignContent = require('../common/foreign-content');
-const ERR = require('../common/error-codes');
-const unicode = require('../common/unicode');
-const HTML = require('../common/html');
+import { Tokenizer } from '../tokenizer.js';
+import { OpenElementStack } from './open-element-stack.js';
+import { FormattingElementList } from './formatting-element-list.js';
+import { LocationInfoParserMixin } from '../extensions/location-info/parser-mixin.js';
+import { ErrorReportingParserMixin } from '../extensions/error-reporting/parser-mixin.js';
+import { Mixin } from '../utils/mixin.js';
+import { defaultTreeAdapter } from '../tree-adapters/default.js';
+import { mergeOptions } from '../utils/merge-options.js';
+import { doctype } from '../common/doctype.js';
+import { foreignContent } from '../common/foreign-content.js';
+import { ERR } from '../common/error-codes.js';
+import { unicode } from '../common/unicode';
+import { HTML } from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -319,7 +317,7 @@ const TOKEN_HANDLERS = {
 };
 
 //Parser
-class Parser {
+export class Parser {
     constructor(options) {
         this.options = mergeOptions(DEFAULT_OPTIONS, options);
 
@@ -881,8 +879,6 @@ class Parser {
         return HTML.SPECIAL_ELEMENTS[ns][tn];
     }
 }
-
-module.exports = Parser;
 
 //Adoption agency algorithm
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#adoptionAgency)

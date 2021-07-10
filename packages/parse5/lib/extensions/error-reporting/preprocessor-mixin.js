@@ -1,10 +1,8 @@
-'use strict';
+import { ErrorReportingMixinBase } from './mixin-base.js';
+import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
+import { Mixin } from '../../utils/mixin.js';
 
-const ErrorReportingMixinBase = require('./mixin-base');
-const PositionTrackingPreprocessorMixin = require('../position-tracking/preprocessor-mixin');
-const Mixin = require('../../utils/mixin');
-
-class ErrorReportingPreprocessorMixin extends ErrorReportingMixinBase {
+export class ErrorReportingPreprocessorMixin extends ErrorReportingMixinBase {
     constructor(preprocessor, opts) {
         super(preprocessor, opts);
 
@@ -20,5 +18,3 @@ class ErrorReportingPreprocessorMixin extends ErrorReportingMixinBase {
         }
     }
 }
-
-module.exports = ErrorReportingPreprocessorMixin;
