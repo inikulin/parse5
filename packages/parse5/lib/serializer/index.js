@@ -9,7 +9,7 @@ const NS = HTML.NAMESPACES;
 
 //Default serializer options
 const DEFAULT_OPTIONS = {
-    treeAdapter: defaultTreeAdapter
+    treeAdapter: defaultTreeAdapter,
 };
 
 //Escaping regexes
@@ -159,7 +159,7 @@ export class Serializer {
 }
 
 // NOTE: used in tests and by rewriting stream
-Serializer.escapeString = function(str, attrMode) {
+Serializer.escapeString = function (str, attrMode) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     if (attrMode) {

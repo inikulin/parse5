@@ -9,18 +9,15 @@ const {
     getStringDiffMsg,
     writeChunkedToStream,
     removeNewLines,
-    WritableStreamStub
+    WritableStreamStub,
 } = require('../../../test/utils/common');
 
 function sanitizeForComparison(str) {
-    return removeNewLines(str)
-        .replace(/\s/g, '')
-        .replace(/'/g, '"')
-        .toLowerCase();
+    return removeNewLines(str).replace(/\s/g, '').replace(/'/g, '"').toLowerCase();
 }
 
 function createBasicTest(html, expected, options) {
-    return function() {
+    return function () {
         //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         let actual = '';
         const parser = new SAXParser(options);
@@ -82,12 +79,12 @@ loadSAXParserTestData().forEach(
     (test, idx) => (exports[`SAX - ${idx + 1}.${test.name}`] = createBasicTest(test.src, test.expected, test.options))
 );
 
-exports['SAX - Piping and .stop()'] = function(done) {
+exports['SAX - Piping and .stop()'] = function (done) {
     const parser = new SAXParser();
     const writable = new WritableStreamStub();
     let handlerCallCount = 0;
 
-    const handler = function() {
+    const handler = function () {
         handlerCallCount++;
 
         if (handlerCallCount === 10) {
@@ -116,7 +113,7 @@ exports['SAX - Piping and .stop()'] = function(done) {
     });
 };
 
-exports['Regression - SAX - Parser silently exits on big files (GH-97)'] = function(done) {
+exports['Regression - SAX - Parser silently exits on big files (GH-97)'] = function (done) {
     const parser = new SAXParser();
 
     fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'), 'utf8').pipe(parser);
@@ -125,7 +122,7 @@ exports['Regression - SAX - Parser silently exits on big files (GH-97)'] = funct
     parser.once('finish', done);
 };
 
-exports['Regression - SAX - Last text chunk must be flushed (GH-271)'] = done => {
+exports['Regression - SAX - Last text chunk must be flushed (GH-271)'] = (done) => {
     const parser = new SAXParser();
     let foundText = false;
 

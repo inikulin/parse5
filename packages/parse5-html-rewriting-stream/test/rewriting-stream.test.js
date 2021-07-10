@@ -20,7 +20,7 @@ const srcHtml = dedent`
 `;
 
 function createRewriterTest({ src, expected, assignTokenHandlers = () => {} }) {
-    return done => {
+    return (done) => {
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
 
@@ -43,7 +43,7 @@ loadSAXParserTestData().forEach(
     (test, idx) =>
         (exports[`RewritingStream - Raw token serialization - ${idx + 1}.${test.name}`] = createRewriterTest({
             src: test.src,
-            expected: test.src
+            expected: test.src,
         }))
 );
 
@@ -61,8 +61,8 @@ exports['RewritingStream - rewrite start tags'] = createRewriterTest({
             </body>
         </html>
     `,
-    assignTokenHandlers: rewriter => {
-        rewriter.on('startTag', token => {
+    assignTokenHandlers: (rewriter) => {
+        rewriter.on('startTag', (token) => {
             if (token.tagName === 'head') {
                 token.tagName = 'body';
             } else if (token.tagName === 'body') {
@@ -71,7 +71,7 @@ exports['RewritingStream - rewrite start tags'] = createRewriterTest({
 
             rewriter.emitStartTag(token);
         });
-    }
+    },
 });
 
 exports['RewritingStream - rewrite end tags'] = createRewriterTest({
@@ -88,13 +88,13 @@ exports['RewritingStream - rewrite end tags'] = createRewriterTest({
             </rewritten>
         </rewritten>
     `,
-    assignTokenHandlers: rewriter => {
-        rewriter.on('endTag', token => {
+    assignTokenHandlers: (rewriter) => {
+        rewriter.on('endTag', (token) => {
             token.tagName = 'rewritten';
 
             rewriter.emitEndTag(token);
         });
-    }
+    },
 });
 
 exports['RewritingStream - rewrite text'] = createRewriterTest({
@@ -111,15 +111,15 @@ exports['RewritingStream - rewrite text'] = createRewriterTest({
             </body>
         </html>
     `,
-    assignTokenHandlers: rewriter => {
-        rewriter.on('text', token => {
+    assignTokenHandlers: (rewriter) => {
+        rewriter.on('text', (token) => {
             if (token.text.trim().length > 0) {
                 token.text = '42';
             }
 
             rewriter.emitText(token);
         });
-    }
+    },
 });
 
 exports['RewritingStream - rewrite comment'] = createRewriterTest({
@@ -136,13 +136,13 @@ exports['RewritingStream - rewrite comment'] = createRewriterTest({
             </body>
         </html>
     `,
-    assignTokenHandlers: rewriter => {
-        rewriter.on('comment', token => {
+    assignTokenHandlers: (rewriter) => {
+        rewriter.on('comment', (token) => {
             token.text = '42';
 
             rewriter.emitComment(token);
         });
-    }
+    },
 });
 
 exports['RewritingStream - rewrite doctype'] = createRewriterTest({
@@ -159,14 +159,14 @@ exports['RewritingStream - rewrite doctype'] = createRewriterTest({
             </body>
         </html>
     `,
-    assignTokenHandlers: rewriter => {
-        rewriter.on('doctype', token => {
+    assignTokenHandlers: (rewriter) => {
+        rewriter.on('doctype', (token) => {
             token.publicId = '42';
             token.systemId = 'hey';
 
             rewriter.emitDoctype(token);
         });
-    }
+    },
 });
 
 exports['RewritingStream - emit multiple'] = createRewriterTest({
@@ -183,13 +183,13 @@ exports['RewritingStream - emit multiple'] = createRewriterTest({
             </body>
         </html>
     `,
-    assignTokenHandlers: rewriter => {
-        rewriter.on('startTag', token => {
+    assignTokenHandlers: (rewriter) => {
+        rewriter.on('startTag', (token) => {
             rewriter.emitRaw('<wrap>');
             rewriter.emitStartTag(token);
             rewriter.emitRaw('</wrap>');
         });
-    }
+    },
 });
 
 exports['RewritingStream - rewrite raw'] = createRewriterTest({
@@ -206,7 +206,7 @@ exports['RewritingStream - rewrite raw'] = createRewriterTest({
             </body>42
         </html>42
     `,
-    assignTokenHandlers: rewriter => {
+    assignTokenHandlers: (rewriter) => {
         const rewriteRaw = (_, raw) => {
             rewriter.emitRaw(raw + '42');
         };
@@ -216,7 +216,7 @@ exports['RewritingStream - rewrite raw'] = createRewriterTest({
             .on('startTag', rewriteRaw)
             .on('endTag', rewriteRaw)
             .on('comment', rewriteRaw);
-    }
+    },
 });
 
 exports['RewritingStream - Should escape entities in attributes and text'] = createRewriterTest({
@@ -240,13 +240,13 @@ exports['RewritingStream - Should escape entities in attributes and text'] = cre
             </body>
         </html>
     `,
-    assignTokenHandlers: rewriter => {
-        rewriter.on('startTag', token => rewriter.emitStartTag(token));
-        rewriter.on('text', token => rewriter.emitText(token));
-    }
+    assignTokenHandlers: (rewriter) => {
+        rewriter.on('startTag', (token) => rewriter.emitStartTag(token));
+        rewriter.on('text', (token) => rewriter.emitText(token));
+    },
 });
 
-exports['Regression - RewritingStream - Last text chunk must be flushed (GH-271)'] = done => {
+exports['Regression - RewritingStream - Last text chunk must be flushed (GH-271)'] = (done) => {
     const parser = new RewritingStream();
     let foundText = false;
 

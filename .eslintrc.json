@@ -1,6 +1,6 @@
 {
     "env": {
-        "es6": true,
+        "es2020": true,
         "node": true
     },
     "extends": ["eslint:recommended", "prettier"],
@@ -15,6 +15,6 @@
         "prefer-const": "error"
     },
     "parserOptions": {
-        "ecmaVersion": 6
+        "sourceType": "module"
     }
 }

@@ -7,7 +7,7 @@ module.exports = function loadSAXParserTestData() {
     const testSetFileDirs = fs.readdirSync(dataDirPath);
     const tests = [];
 
-    testSetFileDirs.forEach(dirName => {
+    testSetFileDirs.forEach((dirName) => {
         const srcFilePath = path.join(dataDirPath, dirName, 'src.html');
         const expectedFilePath = path.join(dataDirPath, dirName, 'expected.html');
         const src = fs.readFileSync(srcFilePath).toString();
@@ -16,7 +16,7 @@ module.exports = function loadSAXParserTestData() {
         tests.push({
             name: dirName,
             src: normalizeNewLine(src),
-            expected: normalizeNewLine(expected)
+            expected: normalizeNewLine(expected),
         });
     });
 

@@ -5,14 +5,14 @@ export function createDocument() {
     return {
         nodeName: '#document',
         mode: DOCUMENT_MODE.NO_QUIRKS,
-        childNodes: []
+        childNodes: [],
     };
 }
 
 export function createDocumentFragment() {
     return {
         nodeName: '#document-fragment',
-        childNodes: []
+        childNodes: [],
     };
 }
 
@@ -23,7 +23,7 @@ export function createElement(tagName, namespaceURI, attrs) {
         attrs: attrs,
         namespaceURI: namespaceURI,
         childNodes: [],
-        parentNode: null
+        parentNode: null,
     };
 }
 
@@ -31,15 +31,15 @@ export function createCommentNode(data) {
     return {
         nodeName: '#comment',
         data: data,
-        parentNode: null
+        parentNode: null,
     };
 }
 
-const createTextNode = function(value) {
+const createTextNode = function (value) {
     return {
         nodeName: '#text',
         value: value,
-        parentNode: null
+        parentNode: null,
     };
 };
 
@@ -83,7 +83,7 @@ export function setDocumentType(document, name, publicId, systemId) {
             nodeName: '#documentType',
             name: name,
             publicId: publicId,
-            systemId: systemId
+            systemId: systemId,
         });
     }
 }

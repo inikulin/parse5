@@ -4,7 +4,7 @@ export const NAMESPACES = {
     SVG: 'http://www.w3.org/2000/svg',
     XLINK: 'http://www.w3.org/1999/xlink',
     XML: 'http://www.w3.org/XML/1998/namespace',
-    XMLNS: 'http://www.w3.org/2000/xmlns/'
+    XMLNS: 'http://www.w3.org/2000/xmlns/',
 };
 
 const NS = NAMESPACES;
@@ -17,13 +17,13 @@ export const ATTRS = {
     NAME: 'name',
     COLOR: 'color',
     FACE: 'face',
-    SIZE: 'size'
+    SIZE: 'size',
 };
 
 export const DOCUMENT_MODE = {
     NO_QUIRKS: 'no-quirks',
     QUIRKS: 'quirks',
-    LIMITED_QUIRKS: 'limited-quirks'
+    LIMITED_QUIRKS: 'limited-quirks',
 };
 
 export const TAG_NAMES = {
@@ -169,7 +169,7 @@ export const TAG_NAMES = {
 
     WBR: 'wbr',
 
-    XMP: 'xmp'
+    XMP: 'xmp',
 };
 
 const $ = TAG_NAMES;
@@ -256,7 +256,7 @@ export const SPECIAL_ELEMENTS = {
         [$.TRACK]: true,
         [$.UL]: true,
         [$.WBR]: true,
-        [$.XMP]: true
+        [$.XMP]: true,
     },
     [NS.MATHML]: {
         [$.MI]: true,
@@ -264,11 +264,11 @@ export const SPECIAL_ELEMENTS = {
         [$.MN]: true,
         [$.MS]: true,
         [$.MTEXT]: true,
-        [$.ANNOTATION_XML]: true
+        [$.ANNOTATION_XML]: true,
     },
     [NS.SVG]: {
         [$.TITLE]: true,
         [$.FOREIGN_OBJECT]: true,
-        [$.DESC]: true
-    }
+        [$.DESC]: true,
+    },
 };

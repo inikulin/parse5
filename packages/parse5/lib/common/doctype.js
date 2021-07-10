@@ -60,12 +60,12 @@ const QUIRKS_MODE_PUBLIC_ID_PREFIXES = [
     '-//w3c//dtd w3 html//',
     '-//w3o//dtd w3 html 3.0//',
     '-//webtechs//dtd mozilla html 2.0//',
-    '-//webtechs//dtd mozilla html//'
+    '-//webtechs//dtd mozilla html//',
 ];
 
 const QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES = QUIRKS_MODE_PUBLIC_ID_PREFIXES.concat([
     '-//w3c//dtd html 4.01 frameset//',
-    '-//w3c//dtd html 4.01 transitional//'
+    '-//w3c//dtd html 4.01 transitional//',
 ]);
 
 const QUIRKS_MODE_PUBLIC_IDS = ['-//w3o//dtd w3 html strict 3.0//en//', '-/w3c/dtd html 4.0 transitional/en', 'html'];
@@ -73,7 +73,7 @@ const LIMITED_QUIRKS_PUBLIC_ID_PREFIXES = ['-//w3c//dtd xhtml 1.0 frameset//', '
 
 const LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES = LIMITED_QUIRKS_PUBLIC_ID_PREFIXES.concat([
     '-//w3c//dtd html 4.01 frameset//',
-    '-//w3c//dtd html 4.01 transitional//'
+    '-//w3c//dtd html 4.01 transitional//',
 ]);
 
 //Utils

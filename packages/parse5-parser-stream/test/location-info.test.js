@@ -9,12 +9,12 @@ generateLocationInfoParserTests(module.exports, 'ParserStream', (input, opts) =>
 );
 
 generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
-    _test['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function() {
+    _test['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
         const html = '</head><div class="test"></div></body></html>';
 
         const opts = {
             treeAdapter: treeAdapter,
-            sourceCodeLocationInfo: true
+            sourceCodeLocationInfo: true,
         };
 
         const document = parseChunked(html, opts).node;

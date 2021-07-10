@@ -5,8 +5,8 @@ const SAXParser = require('../lib');
 const loadSAXParserTestData = require('../../../test/utils/load-sax-parser-test-data');
 const { writeChunkedToStream } = require('../../../test/utils/common');
 
-exports['Location info (SAX)'] = function() {
-    loadSAXParserTestData().forEach(test => {
+exports['Location info (SAX)'] = function () {
+    loadSAXParserTestData().forEach((test) => {
         //NOTE: we've already tested the correctness of the location info with the Tokenizer tests.
         //So here we just check that SAXParser provides this info in the handlers.
         const parser = new SAXParser({ sourceCodeLocationInfo: true });
@@ -29,7 +29,7 @@ exports['Location info (SAX)'] = function() {
     });
 };
 
-exports['Regression - location info for text (GH-153, GH-266)'] = function() {
+exports['Regression - location info for text (GH-153, GH-266)'] = function () {
     const html = '<!DOCTYPE html><html><head><title>Here is a title</title></html>';
     const parser = new SAXParser({ sourceCodeLocationInfo: true });
 
@@ -40,7 +40,7 @@ exports['Regression - location info for text (GH-153, GH-266)'] = function() {
             startOffset: 34,
             endLine: 1,
             endCol: 50,
-            endOffset: 49
+            endOffset: 49,
         });
     });
 

@@ -9,10 +9,10 @@ const { treeAdapters } = require('../../../test/utils/common');
 generateParsingTests(exports, 'Parser', { skipFragments: false }, (test, opts) => ({
     node: test.fragmentContext
         ? parse5.parseFragment(test.fragmentContext, test.input, opts)
-        : parse5.parse(test.input, opts)
+        : parse5.parse(test.input, opts),
 }));
 
-exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function() {
+exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function () {
     const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
     const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
@@ -23,11 +23,11 @@ const origParseFragment = Parser.prototype.parseFragment;
 
 exports['Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)'] = {
     beforeEach() {
-        Parser.prototype.parseFragment = function(html, fragmentContext) {
+        Parser.prototype.parseFragment = function (html, fragmentContext) {
             return {
                 html: html,
                 fragmentContext: fragmentContext,
-                options: this.options
+                options: this.options,
             };
         };
     },
@@ -58,30 +58,30 @@ exports['Regression - Incorrect arguments fallback for the parser.parseFragment 
         assert(!args.fragmentContext);
         assert.strictEqual(args.html, html);
         assert(!args.options.sourceCodeLocationInfo);
-    }
+    },
 };
 
 exports["Regression - Don't inherit from Object when creating collections (GH-119)"] = {
-    beforeEach: function() {
+    beforeEach: function () {
         /*eslint-disable no-extend-native*/
         Object.prototype.heyYo = 123;
         /*eslint-enable no-extend-native*/
     },
 
-    afterEach: function() {
+    afterEach: function () {
         delete Object.prototype.heyYo;
     },
 
-    test: function() {
+    test: function () {
         const fragment = parse5.parseFragment('<div id="123">', {
-            treeAdapter: treeAdapters.htmlparser2
+            treeAdapter: treeAdapters.htmlparser2,
         });
 
         assert.strictEqual(treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
-    }
+    },
 };
 
-exports['Regression - DOCTYPE empty fields (GH-236)'] = function() {
+exports['Regression - DOCTYPE empty fields (GH-236)'] = function () {
     const document = parse5.parse('<!DOCTYPE>');
     const doctype = document.childNodes[0];
 

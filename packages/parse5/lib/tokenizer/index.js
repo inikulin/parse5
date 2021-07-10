@@ -35,7 +35,7 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = {
     0x9b: 0x203a,
     0x9c: 0x0153,
     0x9e: 0x017e,
-    0x9f: 0x0178
+    0x9f: 0x0178,
 };
 
 // Named entity tree flags
@@ -358,7 +358,7 @@ export class Tokenizer {
             tagName: '',
             selfClosing: false,
             ackSelfClosing: false,
-            attrs: []
+            attrs: [],
         };
     }
 
@@ -367,14 +367,14 @@ export class Tokenizer {
             type: Tokenizer.END_TAG_TOKEN,
             tagName: '',
             selfClosing: false,
-            attrs: []
+            attrs: [],
         };
     }
 
     _createCommentToken() {
         this.currentToken = {
             type: Tokenizer.COMMENT_TOKEN,
-            data: ''
+            data: '',
         };
     }
 
@@ -384,14 +384,14 @@ export class Tokenizer {
             name: initialName,
             forceQuirks: false,
             publicId: null,
-            systemId: null
+            systemId: null,
         };
     }
 
     _createCharacterToken(type, ch) {
         this.currentCharacterToken = {
             type: type,
-            chars: ch
+            chars: ch,
         };
     }
 
@@ -403,7 +403,7 @@ export class Tokenizer {
     _createAttr(attrNameFirstCh) {
         this.currentAttr = {
             name: attrNameFirstCh,
-            value: ''
+            value: '',
         };
     }
 
@@ -2177,11 +2177,11 @@ Tokenizer.MODE = {
     RCDATA: RCDATA_STATE,
     RAWTEXT: RAWTEXT_STATE,
     SCRIPT_DATA: SCRIPT_DATA_STATE,
-    PLAINTEXT: PLAINTEXT_STATE
+    PLAINTEXT: PLAINTEXT_STATE,
 };
 
 //Static
-Tokenizer.getTokenAttr = function(token, attrName) {
+Tokenizer.getTokenAttr = function (token, attrName) {
     for (let i = token.attrs.length - 1; i >= 0; i--) {
         if (token.attrs[i].name === attrName) {
             return token.attrs[i].value;

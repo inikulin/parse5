@@ -9,7 +9,7 @@ const ATTRS = HTML.ATTRS;
 //MIME types
 const MIME_TYPES = {
     TEXT_HTML: 'text/html',
-    APPLICATION_XML: 'application/xhtml+xml'
+    APPLICATION_XML: 'application/xhtml+xml',
 };
 
 //Attributes
@@ -73,7 +73,7 @@ const SVG_ATTRS_ADJUSTMENT_MAP = {
     viewtarget: 'viewTarget',
     xchannelselector: 'xChannelSelector',
     ychannelselector: 'yChannelSelector',
-    zoomandpan: 'zoomAndPan'
+    zoomandpan: 'zoomAndPan',
 };
 
 const XML_ATTRS_ADJUSTMENT_MAP = {
@@ -88,7 +88,7 @@ const XML_ATTRS_ADJUSTMENT_MAP = {
     'xml:lang': { prefix: 'xml', name: 'lang', namespace: NS.XML },
     'xml:space': { prefix: 'xml', name: 'space', namespace: NS.XML },
     xmlns: { prefix: '', name: 'xmlns', namespace: NS.XMLNS },
-    'xmlns:xlink': { prefix: 'xmlns', name: 'xlink', namespace: NS.XMLNS }
+    'xmlns:xlink': { prefix: 'xmlns', name: 'xlink', namespace: NS.XMLNS },
 };
 
 //SVG tag names adjustment map
@@ -128,7 +128,7 @@ export const SVG_TAG_NAMES_ADJUSTMENT_MAP = {
     glyphref: 'glyphRef',
     lineargradient: 'linearGradient',
     radialgradient: 'radialGradient',
-    textpath: 'textPath'
+    textpath: 'textPath',
 };
 
 //Tags that causes exit from foreign content
@@ -176,7 +176,7 @@ const EXITS_FOREIGN_CONTENT = {
     [$.TT]: true,
     [$.U]: true,
     [$.UL]: true,
-    [$.VAR]: true
+    [$.VAR]: true,
 };
 
 //Check exit from foreign content

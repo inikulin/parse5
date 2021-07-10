@@ -2,8 +2,5 @@
     "extends": ["../.eslintrc.json"],
     "rules": {
         "no-console": "off"
-    },
-    "parserOptions": {
-        "ecmaVersion": 8
     }
 }

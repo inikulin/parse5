@@ -6,7 +6,7 @@ const LocationInfoTokenizerMixin = require('../lib/extensions/location-info/toke
 const Mixin = require('../lib/utils/mixin');
 const { getSubstringByLineCol, normalizeNewLine } = require('../../../test/utils/common');
 
-exports['Location info (Tokenizer)'] = function() {
+exports['Location info (Tokenizer)'] = function () {
     const testCases = [
         {
             initialMode: Tokenizer.MODE.DATA,
@@ -57,32 +57,32 @@ exports['Location info (Tokenizer)'] = function() {
                 '</a>',
                 '\n',
                 '</div>',
-                '</body>'
-            ]
+                '</body>',
+            ],
         },
         {
             initialMode: Tokenizer.MODE.RCDATA,
             lastStartTagName: 'title',
-            htmlChunks: ['<div>Test', ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->']
+            htmlChunks: ['<div>Test', ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->'],
         },
         {
             initialMode: Tokenizer.MODE.RAWTEXT,
             lastStartTagName: 'style',
-            htmlChunks: ['.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text']
+            htmlChunks: ['.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text'],
         },
         {
             initialMode: Tokenizer.MODE.SCRIPT_DATA,
             lastStartTagName: 'script',
-            htmlChunks: ['var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>']
+            htmlChunks: ['var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>'],
         },
         {
             initialMode: Tokenizer.MODE.PLAINTEXT,
             lastStartTagName: 'plaintext',
-            htmlChunks: ['Text', ' \n', 'Test</plaintext><div>']
-        }
+            htmlChunks: ['Text', ' \n', 'Test</plaintext><div>'],
+        },
     ];
 
-    testCases.forEach(testCase => {
+    testCases.forEach((testCase) => {
         const html = testCase.htmlChunks.join('');
         const lines = html.split(/\r?\n/g);
         const tokenizer = new Tokenizer();

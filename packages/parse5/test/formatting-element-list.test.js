@@ -10,7 +10,7 @@ const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 
 generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
-    _test['Insert marker'] = function() {
+    _test['Insert marker'] = function () {
         const list = new FormattingElementList(treeAdapter);
 
         list.insertMarker();
@@ -22,7 +22,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         assert.strictEqual(list.entries[1].type, FormattingElementList.MARKER_ENTRY);
     };
 
-    _test['Push element'] = function() {
+    _test['Push element'] = function () {
         const list = new FormattingElementList(treeAdapter);
         const element1Token = 'token1';
         const element2Token = 'token2';
@@ -42,7 +42,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         assert.strictEqual(list.entries[1].token, element2Token);
     };
 
-    _test['Insert element after bookmark'] = function() {
+    _test['Insert element after bookmark'] = function () {
         const list = new FormattingElementList(treeAdapter);
         const token = 'token1';
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
@@ -62,7 +62,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         assert.strictEqual(list.entries[1].element, element4);
     };
 
-    _test['Push element - Noah Ark condition'] = function() {
+    _test['Push element - Noah Ark condition'] = function () {
         const list = new FormattingElementList(treeAdapter);
         const token1 = 'token1';
         const token2 = 'token2';
@@ -73,12 +73,12 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
-            { name: 'attr2', value: 'val2' }
+            { name: 'attr2', value: 'val2' },
         ]);
 
         const element2 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
-            { name: 'attr2', value: 'someOtherValue' }
+            { name: 'attr2', value: 'someOtherValue' },
         ]);
 
         list.pushElement(element1, token1);
@@ -112,18 +112,18 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         assert.strictEqual(list.entries[5].token, token6);
     };
 
-    _test['Clear to the last marker'] = function() {
+    _test['Clear to the last marker'] = function () {
         const list = new FormattingElementList(treeAdapter);
         const token = 'token';
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
-            { name: 'attr2', value: 'val2' }
+            { name: 'attr2', value: 'val2' },
         ]);
 
         const element2 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
-            { name: 'attr2', value: 'someOtherValue' }
+            { name: 'attr2', value: 'someOtherValue' },
         ]);
 
         list.pushElement(element1, token);
@@ -138,18 +138,18 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         assert.strictEqual(list.length, 2);
     };
 
-    _test['Remove entry'] = function() {
+    _test['Remove entry'] = function () {
         const list = new FormattingElementList(treeAdapter);
         const token = 'token';
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
-            { name: 'attr2', value: 'val2' }
+            { name: 'attr2', value: 'val2' },
         ]);
 
         const element2 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
-            { name: 'attr2', value: 'someOtherValue' }
+            { name: 'attr2', value: 'someOtherValue' },
         ]);
 
         list.pushElement(element1, token);
@@ -165,7 +165,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         }
     };
 
-    _test['Get entry in scope with given tag name'] = function() {
+    _test['Get entry in scope with given tag name'] = function () {
         const list = new FormattingElementList(treeAdapter);
         const token = 'token';
         const element = treeAdapter.createElement($.DIV, NS.HTML, []);
@@ -183,7 +183,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         assert.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[3]);
     };
 
-    _test['Get element entry'] = function() {
+    _test['Get element entry'] = function () {
         const list = new FormattingElementList(treeAdapter);
         const token = 'token';
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);

@@ -15,7 +15,7 @@ export class RadixTree {
         return entity
             .replace(/^&/, '')
             .split('')
-            .map(ch => ch.charCodeAt(0));
+            .map((ch) => ch.charCodeAt(0));
     }
 
     static _decoupleSurrogatePair(cp) {

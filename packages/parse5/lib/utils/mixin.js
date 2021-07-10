@@ -16,7 +16,7 @@ export class Mixin {
     }
 }
 
-Mixin.install = function(host, Ctor, opts) {
+Mixin.install = function (host, Ctor, opts) {
     if (!host.__mixins) {
         host.__mixins = [];
     }

@@ -5,7 +5,7 @@ const assert = require('assert');
 
 const treeAdapters = {
     default: require('../../packages/parse5/lib/tree-adapters/default'),
-    htmlparser2: require('../../packages/parse5-htmlparser2-tree-adapter/lib')
+    htmlparser2: require('../../packages/parse5-htmlparser2-tree-adapter/lib'),
 };
 
 function addSlashes(str) {
@@ -99,13 +99,13 @@ module.exports = {
     },
 
     generateTestsForEachTreeAdapter(moduleExports, ctor) {
-        Object.keys(treeAdapters).forEach(adapterName => {
+        Object.keys(treeAdapters).forEach((adapterName) => {
             const tests = {};
             const adapter = treeAdapters[adapterName];
 
             ctor(tests, adapter);
 
-            Object.keys(tests).forEach(testName => {
+            Object.keys(tests).forEach((testName) => {
                 moduleExports['Tree adapter: ' + adapterName + ' - ' + testName] = tests[testName];
             });
         });
@@ -142,5 +142,5 @@ module.exports = {
         lines[0] = lines[0].substring(loc.startCol - 1);
 
         return lines.join('\n');
-    }
+    },
 };

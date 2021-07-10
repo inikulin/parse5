@@ -22,7 +22,7 @@ export class ErrorReportingMixinBase extends Mixin {
             startOffset: -1,
             endLine: -1,
             endCol: -1,
-            endOffset: -1
+            endOffset: -1,
         };
 
         this._setErrorLocation(err);
@@ -33,7 +33,7 @@ export class ErrorReportingMixinBase extends Mixin {
         return {
             _err(code) {
                 mxn._reportError(code);
-            }
+            },
         };
     }
 }

@@ -40,7 +40,7 @@ module.exports = function parseDatFile(testSet, treeAdapter) {
         }
     });
 
-    return testDescrs.map(descr => {
+    return testDescrs.map((descr) => {
         const fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
         return {
@@ -50,7 +50,7 @@ module.exports = function parseDatFile(testSet, treeAdapter) {
             disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
             lineNum: descr['#line'],
             scriptingEnabled: !descr['#script-off'],
-            fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter)
+            fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter),
         };
     });
 };

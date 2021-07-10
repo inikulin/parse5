@@ -12,7 +12,7 @@ exports["Regression - Get text node's parent tagName only if it's an Element nod
         const document = parse5.parse('<template>yo<div></div>42</template>');
         const originalGetTagName = (this.originalGetTagName = treeAdapters.default.getTagName);
 
-        treeAdapters.default.getTagName = function(element) {
+        treeAdapters.default.getTagName = function (element) {
             assert.ok(element.tagName);
 
             return originalGetTagName(element);
@@ -23,5 +23,5 @@ exports["Regression - Get text node's parent tagName only if it's an Element nod
 
     after() {
         treeAdapters.default.getTagName = this.originalGetTagName;
-    }
+    },
 };

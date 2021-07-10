@@ -6,7 +6,7 @@ const PlainTextConversionStream = require('../lib');
 const { generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
 
 generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
-    _test['Plain text conversion stream'] = function() {
+    _test['Plain text conversion stream'] = function () {
         const converter = new PlainTextConversionStream({ treeAdapter: treeAdapter });
 
         converter.write('Hey');

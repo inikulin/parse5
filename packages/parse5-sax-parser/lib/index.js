@@ -7,7 +7,7 @@ import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
 const DEFAULT_OPTIONS = {
-    sourceCodeLocationInfo: false
+    sourceCodeLocationInfo: false,
 };
 
 export class SAXParser extends Transform {
@@ -89,7 +89,7 @@ export class SAXParser extends Transform {
                         Object.assign(this.pendingText.location, {
                             endLine,
                             endCol,
-                            endOffset
+                            endOffset,
                         });
                     }
                 }
@@ -131,32 +131,32 @@ export class SAXParser extends Transform {
 const TOKEN_EMISSION_HELPERS = {
     [Tokenizer.START_TAG_TOKEN]: {
         eventName: 'startTag',
-        reshapeToken: origToken => ({
+        reshapeToken: (origToken) => ({
             tagName: origToken.tagName,
             attrs: origToken.attrs,
             selfClosing: origToken.selfClosing,
-            sourceCodeLocation: origToken.location
-        })
+            sourceCodeLocation: origToken.location,
+        }),
     },
     [Tokenizer.END_TAG_TOKEN]: {
         eventName: 'endTag',
-        reshapeToken: origToken => ({ tagName: origToken.tagName, sourceCodeLocation: origToken.location })
+        reshapeToken: (origToken) => ({ tagName: origToken.tagName, sourceCodeLocation: origToken.location }),
     },
     [Tokenizer.COMMENT_TOKEN]: {
         eventName: 'comment',
-        reshapeToken: origToken => ({ text: origToken.data, sourceCodeLocation: origToken.location })
+        reshapeToken: (origToken) => ({ text: origToken.data, sourceCodeLocation: origToken.location }),
     },
     [Tokenizer.DOCTYPE_TOKEN]: {
         eventName: 'doctype',
-        reshapeToken: origToken => ({
+        reshapeToken: (origToken) => ({
             name: origToken.name,
             publicId: origToken.publicId,
             systemId: origToken.systemId,
-            sourceCodeLocation: origToken.location
-        })
+            sourceCodeLocation: origToken.location,
+        }),
     },
     [Tokenizer.CHARACTER_TOKEN]: {
         eventName: 'text',
-        reshapeToken: origToken => ({ text: origToken.chars, sourceCodeLocation: origToken.location })
-    }
+        reshapeToken: (origToken) => ({ text: origToken.chars, sourceCodeLocation: origToken.location }),
+    },
 };

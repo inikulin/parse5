@@ -96,7 +96,7 @@ export class FormattingElementList {
         this.entries.push({
             type: FormattingElementList.ELEMENT_ENTRY,
             element: element,
-            token: token
+            token: token,
         });
 
         this.length++;
@@ -114,7 +114,7 @@ export class FormattingElementList {
         this.entries.splice(bookmarkIdx + 1, 0, {
             type: FormattingElementList.ELEMENT_ENTRY,
             element: element,
-            token: token
+            token: token,
         });
 
         this.length++;

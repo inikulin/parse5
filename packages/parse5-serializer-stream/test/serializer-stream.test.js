@@ -10,7 +10,7 @@ generateSeriliazerTests(exports, 'SeriliazerStream', (document, opts) => {
 
     stream.pipe(writable);
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         writable.once('finish', () => resolve(writable.writtenData));
     });
 });

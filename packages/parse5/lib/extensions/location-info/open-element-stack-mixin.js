@@ -25,7 +25,7 @@ export class LocationInfoOpenElementStackMixin extends Mixin {
             remove(element) {
                 mxn.onItemPop(this.current);
                 orig.remove.call(this, element);
-            }
+            },
         };
     }
 }

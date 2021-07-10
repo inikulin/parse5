@@ -54,7 +54,7 @@ export class PositionTrackingPreprocessorMixin extends Mixin {
                 mxn.lineStartPos -= reduction;
                 mxn.droppedBufferSize += reduction;
                 mxn.offset = mxn.droppedBufferSize + this.pos;
-            }
+            },
         };
     }
 }

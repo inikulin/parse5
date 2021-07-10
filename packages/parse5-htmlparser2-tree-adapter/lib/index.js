@@ -6,7 +6,7 @@ const nodeTypes = {
     element: 1,
     text: 3,
     cdata: 4,
-    comment: 8
+    comment: 8,
 };
 
 const nodePropertyShorthands = {
@@ -15,7 +15,7 @@ const nodePropertyShorthands = {
     parentNode: 'parent',
     previousSibling: 'prev',
     nextSibling: 'next',
-    nodeValue: 'data'
+    nodeValue: 'data',
 };
 
 //Node
@@ -43,17 +43,16 @@ class Node {
     }
 }
 
-Object.keys(nodePropertyShorthands).forEach(key => {
+Object.keys(nodePropertyShorthands).forEach((key) => {
     const shorthand = nodePropertyShorthands[key];
 
     Object.defineProperty(Node.prototype, key, {
-        get: function() {
+        get: function () {
             return this[shorthand] || null;
         },
-        set: function(val) {
+        set: function (val) {
             this[shorthand] = val;
-            return val;
-        }
+        },
     });
 });
 
@@ -66,7 +65,7 @@ export function createDocument() {
         prev: null,
         next: null,
         children: [],
-        'x-mode': DOCUMENT_MODE.NO_QUIRKS
+        'x-mode': DOCUMENT_MODE.NO_QUIRKS,
     });
 }
 
@@ -77,7 +76,7 @@ export function createDocumentFragment() {
         parent: null,
         prev: null,
         next: null,
-        children: []
+        children: [],
     });
 }
 
@@ -104,7 +103,7 @@ export function createElement(tagName, namespaceURI, attrs) {
         children: [],
         parent: null,
         prev: null,
-        next: null
+        next: null,
     });
 }
 
@@ -114,17 +113,17 @@ export function createCommentNode(data) {
         data: data,
         parent: null,
         prev: null,
-        next: null
+        next: null,
     });
 }
 
-const createTextNode = function(value) {
+const createTextNode = function (value) {
     return new Node({
         type: 'text',
         data: value,
         parent: null,
         prev: null,
-        next: null
+        next: null,
     });
 };
 
@@ -190,7 +189,7 @@ export function setDocumentType(document, name, publicId, systemId) {
                 data: data,
                 'x-name': name,
                 'x-publicId': publicId,
-                'x-systemId': systemId
+                'x-systemId': systemId,
             })
         );
     }
@@ -279,7 +278,7 @@ export function getAttrList(element) {
             name: name,
             value: element.attribs[name],
             namespace: element['x-attribsNamespace'][name],
-            prefix: element['x-attribsPrefix'][name]
+            prefix: element['x-attribsPrefix'][name],
         });
     }
 

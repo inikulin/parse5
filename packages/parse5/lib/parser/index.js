@@ -21,7 +21,7 @@ const DEFAULT_OPTIONS = {
     scriptingEnabled: true,
     sourceCodeLocationInfo: false,
     onParseError: null,
-    treeAdapter: defaultTreeAdapter
+    treeAdapter: defaultTreeAdapter,
 };
 
 //Misc constants
@@ -66,7 +66,7 @@ const INSERTION_MODE_RESET_MAP = {
     [$.COLGROUP]: IN_COLUMN_GROUP_MODE,
     [$.TABLE]: IN_TABLE_MODE,
     [$.BODY]: IN_BODY_MODE,
-    [$.FRAMESET]: IN_FRAMESET_MODE
+    [$.FRAMESET]: IN_FRAMESET_MODE,
 };
 
 //Template insertion mode switch map
@@ -79,7 +79,7 @@ const TEMPLATE_INSERTION_MODE_SWITCH_MAP = {
     [$.COL]: IN_COLUMN_GROUP_MODE,
     [$.TR]: IN_TABLE_BODY_MODE,
     [$.TD]: IN_ROW_MODE,
-    [$.TH]: IN_ROW_MODE
+    [$.TH]: IN_ROW_MODE,
 };
 
 //Token handlers map for insertion modes
@@ -92,7 +92,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: doctypeInInitialMode,
         [Tokenizer.START_TAG_TOKEN]: tokenInInitialMode,
         [Tokenizer.END_TAG_TOKEN]: tokenInInitialMode,
-        [Tokenizer.EOF_TOKEN]: tokenInInitialMode
+        [Tokenizer.EOF_TOKEN]: tokenInInitialMode,
     },
     [BEFORE_HTML_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenBeforeHtml,
@@ -102,7 +102,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagBeforeHtml,
         [Tokenizer.END_TAG_TOKEN]: endTagBeforeHtml,
-        [Tokenizer.EOF_TOKEN]: tokenBeforeHtml
+        [Tokenizer.EOF_TOKEN]: tokenBeforeHtml,
     },
     [BEFORE_HEAD_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenBeforeHead,
@@ -112,7 +112,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: misplacedDoctype,
         [Tokenizer.START_TAG_TOKEN]: startTagBeforeHead,
         [Tokenizer.END_TAG_TOKEN]: endTagBeforeHead,
-        [Tokenizer.EOF_TOKEN]: tokenBeforeHead
+        [Tokenizer.EOF_TOKEN]: tokenBeforeHead,
     },
     [IN_HEAD_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenInHead,
@@ -122,7 +122,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: misplacedDoctype,
         [Tokenizer.START_TAG_TOKEN]: startTagInHead,
         [Tokenizer.END_TAG_TOKEN]: endTagInHead,
-        [Tokenizer.EOF_TOKEN]: tokenInHead
+        [Tokenizer.EOF_TOKEN]: tokenInHead,
     },
     [IN_HEAD_NO_SCRIPT_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenInHeadNoScript,
@@ -132,7 +132,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: misplacedDoctype,
         [Tokenizer.START_TAG_TOKEN]: startTagInHeadNoScript,
         [Tokenizer.END_TAG_TOKEN]: endTagInHeadNoScript,
-        [Tokenizer.EOF_TOKEN]: tokenInHeadNoScript
+        [Tokenizer.EOF_TOKEN]: tokenInHeadNoScript,
     },
     [AFTER_HEAD_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenAfterHead,
@@ -142,7 +142,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: misplacedDoctype,
         [Tokenizer.START_TAG_TOKEN]: startTagAfterHead,
         [Tokenizer.END_TAG_TOKEN]: endTagAfterHead,
-        [Tokenizer.EOF_TOKEN]: tokenAfterHead
+        [Tokenizer.EOF_TOKEN]: tokenAfterHead,
     },
     [IN_BODY_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInBody,
@@ -152,7 +152,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInBody,
         [Tokenizer.END_TAG_TOKEN]: endTagInBody,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [TEXT_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: insertCharacters,
@@ -162,7 +162,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: ignoreToken,
         [Tokenizer.END_TAG_TOKEN]: endTagInText,
-        [Tokenizer.EOF_TOKEN]: eofInText
+        [Tokenizer.EOF_TOKEN]: eofInText,
     },
     [IN_TABLE_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInTable,
@@ -172,7 +172,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInTable,
         [Tokenizer.END_TAG_TOKEN]: endTagInTable,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_TABLE_TEXT_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInTableText,
@@ -182,7 +182,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: tokenInTableText,
         [Tokenizer.START_TAG_TOKEN]: tokenInTableText,
         [Tokenizer.END_TAG_TOKEN]: tokenInTableText,
-        [Tokenizer.EOF_TOKEN]: tokenInTableText
+        [Tokenizer.EOF_TOKEN]: tokenInTableText,
     },
     [IN_CAPTION_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInBody,
@@ -192,7 +192,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInCaption,
         [Tokenizer.END_TAG_TOKEN]: endTagInCaption,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_COLUMN_GROUP_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenInColumnGroup,
@@ -202,7 +202,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInColumnGroup,
         [Tokenizer.END_TAG_TOKEN]: endTagInColumnGroup,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_TABLE_BODY_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInTable,
@@ -212,7 +212,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInTableBody,
         [Tokenizer.END_TAG_TOKEN]: endTagInTableBody,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_ROW_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInTable,
@@ -222,7 +222,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInRow,
         [Tokenizer.END_TAG_TOKEN]: endTagInRow,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_CELL_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInBody,
@@ -232,7 +232,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInCell,
         [Tokenizer.END_TAG_TOKEN]: endTagInCell,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_SELECT_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: insertCharacters,
@@ -242,7 +242,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInSelect,
         [Tokenizer.END_TAG_TOKEN]: endTagInSelect,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_SELECT_IN_TABLE_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: insertCharacters,
@@ -252,7 +252,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInSelectInTable,
         [Tokenizer.END_TAG_TOKEN]: endTagInSelectInTable,
-        [Tokenizer.EOF_TOKEN]: eofInBody
+        [Tokenizer.EOF_TOKEN]: eofInBody,
     },
     [IN_TEMPLATE_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: characterInBody,
@@ -262,7 +262,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInTemplate,
         [Tokenizer.END_TAG_TOKEN]: endTagInTemplate,
-        [Tokenizer.EOF_TOKEN]: eofInTemplate
+        [Tokenizer.EOF_TOKEN]: eofInTemplate,
     },
     [AFTER_BODY_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenAfterBody,
@@ -272,7 +272,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagAfterBody,
         [Tokenizer.END_TAG_TOKEN]: endTagAfterBody,
-        [Tokenizer.EOF_TOKEN]: stopParsing
+        [Tokenizer.EOF_TOKEN]: stopParsing,
     },
     [IN_FRAMESET_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: ignoreToken,
@@ -282,7 +282,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagInFrameset,
         [Tokenizer.END_TAG_TOKEN]: endTagInFrameset,
-        [Tokenizer.EOF_TOKEN]: stopParsing
+        [Tokenizer.EOF_TOKEN]: stopParsing,
     },
     [AFTER_FRAMESET_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: ignoreToken,
@@ -292,7 +292,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagAfterFrameset,
         [Tokenizer.END_TAG_TOKEN]: endTagAfterFrameset,
-        [Tokenizer.EOF_TOKEN]: stopParsing
+        [Tokenizer.EOF_TOKEN]: stopParsing,
     },
     [AFTER_AFTER_BODY_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: tokenAfterAfterBody,
@@ -302,7 +302,7 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagAfterAfterBody,
         [Tokenizer.END_TAG_TOKEN]: tokenAfterAfterBody,
-        [Tokenizer.EOF_TOKEN]: stopParsing
+        [Tokenizer.EOF_TOKEN]: stopParsing,
     },
     [AFTER_AFTER_FRAMESET_MODE]: {
         [Tokenizer.CHARACTER_TOKEN]: ignoreToken,
@@ -312,8 +312,8 @@ const TOKEN_HANDLERS = {
         [Tokenizer.DOCTYPE_TOKEN]: ignoreToken,
         [Tokenizer.START_TAG_TOKEN]: startTagAfterAfterFrameset,
         [Tokenizer.END_TAG_TOKEN]: ignoreToken,
-        [Tokenizer.EOF_TOKEN]: stopParsing
-    }
+        [Tokenizer.EOF_TOKEN]: stopParsing,
+    },
 };
 
 //Parser
@@ -820,7 +820,7 @@ export class Parser {
     _findFosterParentingLocation() {
         const location = {
             parent: null,
-            beforeElement: null
+            beforeElement: null,
         };
 
         for (let i = this.openElements.stackTop; i >= 0; i--) {
@@ -1625,14 +1625,6 @@ function rtStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
-function menuStartTagInBody(p, token) {
-    if (p.openElements.hasInButtonScope($.P)) {
-        p._closePElement();
-    }
-
-    p._insertElement(token, NS.HTML);
-}
-
 function mathStartTagInBody(p, token) {
     p._reconstructActiveFormattingElements();
 
@@ -1750,8 +1742,6 @@ function startTagInBody(p, token) {
                 areaStartTagInBody(p, token);
             } else if (tn === $.MATH) {
                 mathStartTagInBody(p, token);
-            } else if (tn === $.MENU) {
-                menuStartTagInBody(p, token);
             } else if (tn !== $.HEAD) {
                 genericStartTagInBody(p, token);
             }

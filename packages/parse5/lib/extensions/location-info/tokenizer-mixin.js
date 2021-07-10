@@ -19,7 +19,7 @@ export class LocationInfoTokenizerMixin extends Mixin {
             startOffset: this.posTracker.offset,
             endLine: -1,
             endCol: -1,
-            endOffset: -1
+            endOffset: -1,
         };
     }
 
@@ -124,14 +124,14 @@ export class LocationInfoTokenizerMixin extends Mixin {
                 }
 
                 orig._emitCurrentCharacterToken.call(this);
-            }
+            },
         };
 
         //NOTE: patch initial states for each mode to obtain token start position
-        Object.keys(Tokenizer.MODE).forEach(modeName => {
+        Object.keys(Tokenizer.MODE).forEach((modeName) => {
             const state = Tokenizer.MODE[modeName];
 
-            methods[state] = function(cp) {
+            methods[state] = function (cp) {
                 mxn.ctLoc = mxn._getCurrentLocation();
                 orig[state].call(this, cp);
             };

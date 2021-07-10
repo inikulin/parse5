@@ -72,9 +72,9 @@ export class LocationInfoParserMixin extends Mixin {
                 mxn.posTracker = tokenizerMixin.posTracker;
 
                 Mixin.install(this.openElements, LocationInfoOpenElementStackMixin, {
-                    onItemPop: function(element) {
+                    onItemPop: function (element) {
                         mxn._setEndLocation(element, mxn.currentToken);
-                    }
+                    },
                 });
             },
 
@@ -213,7 +213,7 @@ export class LocationInfoParserMixin extends Mixin {
                 } else {
                     this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
                 }
-            }
+            },
         };
     }
 }

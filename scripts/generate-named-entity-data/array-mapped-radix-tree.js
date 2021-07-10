@@ -51,7 +51,7 @@ export class ArrayMappedRadixTree {
     _writeBranches(branches) {
         const kvPairs = Object.keys(branches)
             .map(Number)
-            .map(key => ({ key, branch: branches[key] }));
+            .map((key) => ({ key, branch: branches[key] }));
 
         const count = kvPairs.length;
 
@@ -86,7 +86,7 @@ export class ArrayMappedRadixTree {
         this._writeNodeMarker(data, branches);
 
         if (data) {
-            data.forEach(cp => this.arr.push(cp));
+            data.forEach((cp) => this.arr.push(cp));
         }
 
         if (branches) {

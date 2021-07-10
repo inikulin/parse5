@@ -10,7 +10,7 @@ const {
     getSubstringByLineCol,
     getStringDiffMsg,
     normalizeNewLine,
-    generateTestsForEachTreeAdapter
+    generateTestsForEachTreeAdapter,
 } = require('./common');
 
 function walkTree(document, treeAdapter, handler) {
@@ -59,7 +59,7 @@ function assertEndTagLocation(location, serializedNode, html, lines) {
 }
 
 function assertAttrsLocation(location, serializedNode, html, lines) {
-    location.attrs.forEach(attr => {
+    location.attrs.forEach((attr) => {
         const expected = serializedNode.slice(attr.startOffset, attr.endOffset);
 
         assertLocation(attr, expected, html, lines);
@@ -77,13 +77,13 @@ function loadParserLocationInfoTestData() {
     const testSetFileDirs = fs.readdirSync(dataDirPath);
     const tests = [];
 
-    testSetFileDirs.forEach(dirName => {
+    testSetFileDirs.forEach((dirName) => {
         const dataFilePath = path.join(dataDirPath, dirName, 'data.html');
         const data = fs.readFileSync(dataFilePath).toString();
 
         tests.push({
             name: dirName,
-            data: normalizeNewLine(data)
+            data: normalizeNewLine(data),
         });
     });
 
@@ -92,26 +92,26 @@ function loadParserLocationInfoTestData() {
 
 module.exports = function generateLocationInfoParserTests(moduleExports, prefix, parse) {
     generateTestsForEachTreeAdapter(moduleExports, (_test, treeAdapter) => {
-        loadParserLocationInfoTestData().forEach(test => {
+        loadParserLocationInfoTestData().forEach((test) => {
             const testName = `Location info (Parser) - ${test.name}`;
 
             //NOTE: How it works: we parse document with the location info.
             //Then for each node in the tree we run serializer and compare results with the substring
             //obtained via location info from the expected serialization results.
-            _test[testName] = async function() {
+            _test[testName] = async function () {
                 const serializerOpts = { treeAdapter: treeAdapter };
                 const html = escapeString(test.data);
                 const lines = html.split(/\r?\n/g);
 
                 const parserOpts = {
                     treeAdapter: treeAdapter,
-                    sourceCodeLocationInfo: true
+                    sourceCodeLocationInfo: true,
                 };
 
                 const parsingResult = await parse(html, parserOpts);
                 const document = parsingResult.node;
 
-                walkTree(document, treeAdapter, node => {
+                walkTree(document, treeAdapter, (node) => {
                     const location = treeAdapter.getNodeSourceCodeLocation(node);
 
                     if (location) {

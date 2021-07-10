@@ -10,10 +10,10 @@ export class SerializerStream extends Readable {
         Object.defineProperty(this.serializer, 'html', {
             //NOTE: To make `+=` concat operator work properly we define
             //getter which always returns empty string
-            get: function() {
+            get: function () {
                 return '';
             },
-            set: this.push.bind(this)
+            set: this.push.bind(this),
         });
     }
 

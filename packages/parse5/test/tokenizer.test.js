@@ -20,9 +20,9 @@ generateTokenizationTests(
                 errors.push({
                     code: err.code,
                     line: err.startLine,
-                    col: err.startCol
+                    col: err.startCol,
                 });
-            }
+            },
         });
 
         return { tokenizer, getNextToken: () => tokenizer.getNextToken() };
@@ -33,5 +33,5 @@ exports['Regression - `<<` in comment parses correctly (GH-325)'] = {
     test() {
         const document = parse5.parse('<!--<<-->');
         assert.equal(document.childNodes[0].data, '<<');
-    }
+    },
 };
