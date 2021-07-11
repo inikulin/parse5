@@ -9,19 +9,16 @@ suite('serializer', () => {
     suite("Regression - Get text node's parent tagName only if it's an Element node (GH-38)", () => {
         test('serializes correctly', () => {
             const document = parse5.parse('<template>yo<div></div>42</template>');
-            const originalGetTagName = (this.originalGetTagName = treeAdapters.default.getTagName);
+            const treeAdapter = {
+                ...treeAdapters.default,
+                getTagName: (element) => {
+                    assert.ok(element.tagName);
 
-            treeAdapters.default.getTagName = function (element) {
-                assert.ok(element.tagName);
-
-                return originalGetTagName(element);
+                    return treeAdapters.default.getTagName(element);
+                },
             };
 
-            parse5.serialize(document);
-        });
-
-        after(() => {
-            treeAdapters.default.getTagName = this.originalGetTagName;
+            parse5.serialize(document, { treeAdapter });
         });
     });
 });

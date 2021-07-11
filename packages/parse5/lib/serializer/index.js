@@ -1,7 +1,7 @@
-import { defaultTreeAdapter } from '../tree-adapters/default.js';
+import * as defaultTreeAdapter from '../tree-adapters/default.js';
 import { mergeOptions } from '../utils/merge-options.js';
-import { doctype } from '../common/doctype.js';
-import { HTML } from '../common/html.js';
+import * as doctype from '../common/doctype.js';
+import * as HTML from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -98,7 +98,7 @@ export class Serializer {
 
         for (let i = 0, attrsLength = attrs.length; i < attrsLength; i++) {
             const attr = attrs[i];
-            const value = Serializer.escapeString(attr.value, true);
+            const value = escapeString(attr.value, true);
 
             this.html += ' ';
 
@@ -143,7 +143,7 @@ export class Serializer {
         ) {
             this.html += content;
         } else {
-            this.html += Serializer.escapeString(content, false);
+            this.html += escapeString(content, false);
         }
     }
 
@@ -159,7 +159,7 @@ export class Serializer {
 }
 
 // NOTE: used in tests and by rewriting stream
-Serializer.escapeString = function (str, attrMode) {
+export function escapeString(str, attrMode) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     if (attrMode) {
@@ -169,4 +169,4 @@ Serializer.escapeString = function (str, attrMode) {
     }
 
     return str;
-};
+}

@@ -1,16 +1,16 @@
-import { Tokenizer } from '../tokenizer.js';
+import { Tokenizer } from '../tokenizer/index.js';
 import { OpenElementStack } from './open-element-stack.js';
 import { FormattingElementList } from './formatting-element-list.js';
 import { LocationInfoParserMixin } from '../extensions/location-info/parser-mixin.js';
 import { ErrorReportingParserMixin } from '../extensions/error-reporting/parser-mixin.js';
 import { Mixin } from '../utils/mixin.js';
-import { defaultTreeAdapter } from '../tree-adapters/default.js';
+import * as defaultTreeAdapter from '../tree-adapters/default.js';
 import { mergeOptions } from '../utils/merge-options.js';
-import { doctype } from '../common/doctype.js';
-import { foreignContent } from '../common/foreign-content.js';
+import * as doctype from '../common/doctype.js';
+import * as foreignContent from '../common/foreign-content.js';
 import { ERR } from '../common/error-codes.js';
-import { unicode } from '../common/unicode';
-import { HTML } from '../common/html.js';
+import * as unicode from '../common/unicode.js';
+import * as HTML from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;

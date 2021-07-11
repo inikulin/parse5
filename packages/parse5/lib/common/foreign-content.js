@@ -1,5 +1,5 @@
 import { Tokenizer } from '../tokenizer/index.js';
-import { HTML } from './html.js';
+import * as HTML from './html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;

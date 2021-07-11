@@ -22,13 +22,12 @@ export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
             const setName = fileName.replace('.dat', '');
 
             parseDatFile(testSet, treeAdapter).forEach((test) => {
-                tests.push(
-                    Object.assign(test, {
-                        idx: tests.length,
-                        setName: setName,
-                        dirName: dirName,
-                    })
-                );
+                tests.push({
+                    ...test,
+                    idx: tests.length,
+                    setName: setName,
+                    dirName: dirName,
+                });
             });
         });
     });
@@ -87,17 +86,13 @@ function createParsingTest(test, treeAdapter, parse, { withoutErrors }) {
     };
 }
 
+const treePath = new URL('../data/html5lib-tests/tree-construction', import.meta.url);
+const treeRegressionPath = new URL('../data/tree-construction-regression', import.meta.url);
+
 export function generateParsingTests(
     name,
     prefix,
-    {
-        skipFragments,
-        withoutErrors,
-        testSuite = [
-            path.join(__dirname, '../data/html5lib-tests/tree-construction'),
-            path.join(__dirname, '../data/tree-construction-regression'),
-        ],
-    },
+    { skipFragments, withoutErrors, testSuite = [treePath.pathname, treeRegressionPath.pathname] },
     parse
 ) {
     generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {

@@ -1,4 +1,4 @@
-import { HTML } from '../../packages/parse5/lib/common/html.js';
+import * as HTML from '../../packages/parse5/lib/common/html.js';
 
 function getSerializedTreeIndent(indent) {
     let str = '|';

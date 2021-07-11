@@ -71,12 +71,12 @@ export function assertNodeLocation(location, serializedNode, html, lines) {
 }
 
 function loadParserLocationInfoTestData() {
-    const dataDirPath = path.join(__dirname, '../data/location-info');
+    const dataDirPath = new URL('../data/location-info', import.meta.url);
     const testSetFileDirs = fs.readdirSync(dataDirPath);
     const tests = [];
 
     testSetFileDirs.forEach((dirName) => {
-        const dataFilePath = path.join(dataDirPath, dirName, 'data.html');
+        const dataFilePath = path.join(dataDirPath.pathname, dirName, 'data.html');
         const data = fs.readFileSync(dataFilePath).toString();
 
         tests.push({

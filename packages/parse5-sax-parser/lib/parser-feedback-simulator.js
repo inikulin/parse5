@@ -1,7 +1,7 @@
 import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
-import { foreignContent } from 'parse5/lib/common/foreign-content.js';
-import { unicode } from 'parse5/lib/common/unicode.js';
-import { HTML } from 'parse5/lib/common/html.js';
+import * as foreignContent from 'parse5/lib/common/foreign-content.js';
+import * as unicode from 'parse5/lib/common/unicode.js';
+import * as HTML from 'parse5/lib/common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;

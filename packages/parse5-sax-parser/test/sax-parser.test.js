@@ -1,6 +1,5 @@
 import assert from 'assert';
 import * as fs from 'fs';
-import * as path from 'path';
 import { SAXParser } from '../lib/index.js';
 import { loadSAXParserTestData } from '../../../test/utils/load-sax-parser-test-data.js';
 import {
@@ -72,10 +71,12 @@ function createBasicTest(html, expected, options) {
     };
 }
 
+const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.meta.url);
+
 suite('SAX parser', () => {
     //Basic tests
-    loadSAXParserTestData().forEach((test, idx) =>
-        test(`${idx + 1}.${test.name}`, createBasicTest(test.src, test.expected, test.options))
+    loadSAXParserTestData().forEach((data, idx) =>
+        test(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected, data.options))
     );
 
     test('Piping and .stop()', (done) => {
@@ -91,9 +92,7 @@ suite('SAX parser', () => {
             }
         };
 
-        fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'), 'utf8')
-            .pipe(parser)
-            .pipe(writable);
+        fs.createReadStream(hugePage, 'utf8').pipe(parser).pipe(writable);
 
         parser.on('startTag', handler);
         parser.on('endTag', handler);
@@ -102,9 +101,7 @@ suite('SAX parser', () => {
         parser.on('text', handler);
 
         writable.once('finish', () => {
-            const expected = fs
-                .readFileSync(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'))
-                .toString();
+            const expected = fs.readFileSync(hugePage).toString();
 
             assert.strictEqual(handlerCallCount, 10);
             assert.strictEqual(writable.writtenData, expected);
@@ -115,7 +112,7 @@ suite('SAX parser', () => {
     test('Parser silently exits on big files (GH-97)', (done) => {
         const parser = new SAXParser();
 
-        fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'), 'utf8').pipe(parser);
+        fs.createReadStream(hugePage, 'utf8').pipe(parser);
 
         //NOTE: This is a smoke test - in case of regression it will fail with timeout.
         parser.once('finish', done);

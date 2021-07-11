@@ -155,9 +155,9 @@ suite('location-info-parser', () => {
                 };
             },
         };
-        const adapter = Object.assign(treeAdapters.default, sourceCodeLocationSetter);
+        const treeAdapter = { ...treeAdapters.default, ...sourceCodeLocationSetter };
         const document = parse5.parse('<!doctype><body>Testing location</body>', {
-            adapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         });
         const [doctype, html] = document.childNodes;

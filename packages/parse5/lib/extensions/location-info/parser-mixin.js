@@ -2,7 +2,7 @@ import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
 import { LocationInfoOpenElementStackMixin } from './open-element-stack-mixin.js';
-import { HTML } from '../../common/html.js';
+import * as HTML from '../../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -23,8 +23,10 @@ export class LocationInfoParserMixin extends Mixin {
         let loc = null;
 
         if (this.lastStartTagToken) {
-            loc = Object.assign({}, this.lastStartTagToken.location);
-            loc.startTag = this.lastStartTagToken.location;
+            loc = {
+                ...this.lastStartTagToken.location,
+                startTag: this.lastStartTagToken.location,
+            };
         }
 
         this.treeAdapter.setNodeSourceCodeLocation(element, loc);
@@ -43,7 +45,7 @@ export class LocationInfoParserMixin extends Mixin {
                 const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
                 const endLoc = {};
                 if (isClosingEndTag) {
-                    endLoc.endTag = Object.assign({}, ctLoc);
+                    endLoc.endTag = { ...ctLoc };
                     endLoc.endLine = ctLoc.endLine;
                     endLoc.endCol = ctLoc.endCol;
                     endLoc.endOffset = ctLoc.endOffset;

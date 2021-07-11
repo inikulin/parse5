@@ -1,6 +1,6 @@
 import assert from 'assert';
 import * as parse5 from '../lib/index.js';
-import { Parser } from '../lib/parser.js';
+import { Parser } from '../lib/parser/index.js';
 import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
 import { treeAdapters } from '../../../test/utils/common.js';
 
@@ -21,7 +21,7 @@ suite('parser', () => {
     });
 
     suite('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
-        beforeEach(() => {
+        setup(() => {
             Parser.prototype.parseFragment = function (html, fragmentContext) {
                 return {
                     html: html,
@@ -31,7 +31,7 @@ suite('parser', () => {
             };
         });
 
-        afterEach(() => {
+        teardown(() => {
             Parser.prototype.parseFragment = origParseFragment;
         });
 
@@ -61,13 +61,13 @@ suite('parser', () => {
     });
 
     suite("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
-        beforeEach(() => {
+        setup(() => {
             /*eslint-disable no-extend-native*/
             Object.prototype.heyYo = 123;
             /*eslint-enable no-extend-native*/
         });
 
-        afterEach(() => {
+        teardown(() => {
             delete Object.prototype.heyYo;
         });
 

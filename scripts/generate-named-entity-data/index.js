@@ -20,5 +20,5 @@ async function main() {
         `//(details: https://github.com/inikulin/parse5/tree/master/scripts/generate-named-entity-data/README.md)\n` +
         `export const namedEntityData = new Uint16Array(${JSON.stringify(arr)});`;
 
-    await writeFileAsync('packages/parse5/lib/tokenizer/named-entity-data.ts', data);
+    await writeFileAsync('packages/parse5/lib/tokenizer/named-entity-data.js', data);
 }

@@ -1,4 +1,4 @@
-import { doctype } from 'parse5/lib/common/doctype.js';
+import * as doctype from 'parse5/lib/common/doctype.js';
 import { DOCUMENT_MODE } from 'parse5/lib/common/html.js';
 
 //Conversion tables for DOM Level1 structure emulation
@@ -298,7 +298,7 @@ export function getTextNodeContent(textNode) {
     return textNode.data;
 }
 
-export function getCommentNodeWithContent(commentNode) {
+export function getCommentNodeContent(commentNode) {
     return commentNode.data;
 }
 
@@ -341,5 +341,8 @@ export function getNodeSourceCodeLocation(node) {
 }
 
 export function updateNodeSourceCodeLocation(node, endLocation) {
-    node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
+    node.sourceCodeLocation = {
+        ...node.sourceCodeLocation,
+        ...endLocation,
+    };
 }

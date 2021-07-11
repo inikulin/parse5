@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { readFileSync, createReadStream, readdirSync } from 'fs';
 import Benchmark from 'benchmark';
 import { loadTreeConstructionTestData } from '../../test/utils/generate-parsing-tests.js';
@@ -8,6 +7,10 @@ import parse5 from '../../packages/parse5/lib/index.js';
 import parse5Stream from '../../packages/parse5-parser-stream/lib/index.js';
 import parse5Upstream from 'parse5';
 
+const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
+const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);
+const saxPath = new URL('../../test/data/sax', import.meta.url);
+
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
 global.workingCopy = parse5;
@@ -15,13 +18,10 @@ global.WorkingCopyParserStream = parse5Stream;
 global.upstreamParser = parse5Upstream;
 
 // Huge page data
-global.hugePage = readFileSync(join(__dirname, '../../test/data/huge-page/huge-page.html')).toString();
+global.hugePage = readFileSync(hugePagePath).toString();
 
 // Micro data
-global.microTests = loadTreeConstructionTestData(
-    [join(__dirname, '../../test/data/html5lib-tests/tree-construction')],
-    treeAdapters.default
-)
+global.microTests = loadTreeConstructionTestData([treeConstructionPath], treeAdapters.default)
     .filter(
         (test) =>
             //NOTE: this test caused stack overflow in parse5 v1.x
@@ -52,9 +52,7 @@ global.runPages = function (parser) {
 };
 
 // Stream data
-global.files = readdirSync(join(__dirname, '../../test/data/sax')).map((dirName) =>
-    join(__dirname, '../../test/data/sax', dirName, 'src.html')
-);
+global.files = readdirSync(saxPath).map((dirName) => new URL('./src.html', dirName).pathname);
 
 // Utils
 function getHz(suite, testName) {

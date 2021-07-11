@@ -39,12 +39,12 @@ suite('RewritingStream', () => {
     loadSAXParserTestData().forEach(
         // NOTE: if we don't have any event handlers assigned, stream should use raw
         // data for the serialization, so serialized content should identical to the original.
-        (test, idx) =>
+        (data, idx) =>
             test(
-                `Raw token serialization - ${idx + 1}.${test.name}`,
+                `Raw token serialization - ${idx + 1}.${data.name}`,
                 createRewriterTest({
-                    src: test.src,
-                    expected: test.src,
+                    src: data.src,
+                    expected: data.src,
                 })
             )
     );

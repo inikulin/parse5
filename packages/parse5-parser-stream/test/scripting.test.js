@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
 import { makeChunks, generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
@@ -7,13 +6,15 @@ function pause() {
     return new Promise((resolve) => setTimeout(resolve, 5));
 }
 
+const suitePath = new URL('../../../test/data/tree-construction-scripting', import.meta.url);
+
 generateParsingTests(
     'ParserStream - Scripting',
     'ParserStream - Scripting',
     {
         skipFragments: true,
         withoutErrors: true,
-        testSuite: [path.join(__dirname, '../../../test/data/tree-construction-scripting')],
+        testSuite: [suitePath.pathname],
     },
     async (test, opts) => {
         const chunks = makeChunks(test.input);

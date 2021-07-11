@@ -86,11 +86,12 @@ export class SAXParser extends Transform {
 
                     if (this.options.sourceCodeLocationInfo) {
                         const { endLine, endCol, endOffset } = token.location;
-                        Object.assign(this.pendingText.location, {
+                        this.pendingText.location = {
+                            ...this.pendingText.location,
                             endLine,
                             endCol,
                             endOffset,
-                        });
+                        };
                     }
                 }
             } else {

@@ -197,16 +197,16 @@ function loadTests(dataDirPath) {
     return tests;
 }
 
-export function generateTokenizationTests(moduleExports, prefix, testSuite, createTokenSource) {
-    loadTests(testSuite).forEach((test) => {
-        const testName = `${prefix} - ${test.idx}.${test.setName} - ${test.name} - Initial state: ${test.initialState}`;
+export function generateTokenizationTests(name, prefix, testSuite, createTokenSource) {
+    loadTests(testSuite).forEach((testData) => {
+        const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${testData.initialState}`;
 
-        moduleExports[testName] = function () {
-            const chunks = makeChunks(test.input);
-            const result = tokenize(createTokenSource, chunks, test.initialState, test.lastStartTag);
+        test(testName, () => {
+            const chunks = makeChunks(testData.input);
+            const result = tokenize(createTokenSource, chunks, testData.initialState, testData.lastStartTag);
 
-            assert.deepEqual(result.tokens, test.expected, 'Chunks: ' + JSON.stringify(chunks));
-            assert.deepEqual(result.errors, test.expectedErrors || []);
-        };
+            assert.deepEqual(result.tokens, testData.expected, 'Chunks: ' + JSON.stringify(chunks));
+            assert.deepEqual(result.errors, testData.expectedErrors || []);
+        });
     });
 }

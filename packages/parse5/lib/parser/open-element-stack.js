@@ -1,4 +1,4 @@
-import { HTML } from '../common/html.js';
+import * as HTML from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;

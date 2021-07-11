@@ -215,5 +215,5 @@ export function getNodeSourceCodeLocation(node) {
 }
 
 export function updateNodeSourceCodeLocation(node, endLocation) {
-    node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
+    node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
 }
