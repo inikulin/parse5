@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const { normalizeNewLine } = require('./common');
+import * as fs from 'fs';
+import * as path from 'path';
+import { normalizeNewLine } from './common.js';
 
-module.exports = function loadSAXParserTestData() {
+export function loadSAXParserTestData() {
     const dataDirPath = path.join(__dirname, '../data/sax');
     const testSetFileDirs = fs.readdirSync(dataDirPath);
     const tests = [];
@@ -21,4 +21,4 @@ module.exports = function loadSAXParserTestData() {
     });
 
     return tests;
-};
+}

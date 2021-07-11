@@ -1,4 +1,4 @@
-import { unicode } from '../common/unicode.js';
+import * as unicode from '../common/unicode.js';
 import { ERR } from '../common/error-codes.js';
 
 //Aliases

@@ -1,17 +1,15 @@
-'use strict';
-
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const { escapeString } = require('../../packages/parse5/lib/serializer');
-const parse5 = require('../../packages/parse5/lib');
-const {
+import assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
+import { escapeString } from '../../packages/parse5/lib/serializer/index.js';
+import * as parse5 from '../../packages/parse5/lib/index.js';
+import {
     removeNewLines,
     getSubstringByLineCol,
     getStringDiffMsg,
     normalizeNewLine,
     generateTestsForEachTreeAdapter,
-} = require('./common');
+} from './common.js';
 
 function walkTree(document, treeAdapter, handler) {
     for (let stack = treeAdapter.getChildNodes(document).slice(); stack.length; ) {
@@ -43,7 +41,7 @@ function assertLocation(loc, expected, html, lines) {
 }
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag
-function assertStartTagLocation(location, serializedNode, html, lines) {
+export function assertStartTagLocation(location, serializedNode, html, lines) {
     const length = location.startTag.endOffset - location.startTag.startOffset;
     const expected = serializedNode.substring(0, length);
 
@@ -66,7 +64,7 @@ function assertAttrsLocation(location, serializedNode, html, lines) {
     });
 }
 
-function assertNodeLocation(location, serializedNode, html, lines) {
+export function assertNodeLocation(location, serializedNode, html, lines) {
     const expected = removeNewLines(serializedNode);
 
     assertLocation(location, expected, html, lines);
@@ -90,8 +88,8 @@ function loadParserLocationInfoTestData() {
     return tests;
 }
 
-module.exports = function generateLocationInfoParserTests(moduleExports, prefix, parse) {
-    generateTestsForEachTreeAdapter(moduleExports, (_test, treeAdapter) => {
+export function generateLocationInfoParserTests(name, prefix, parse) {
+    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
         loadParserLocationInfoTestData().forEach((test) => {
             const testName = `Location info (Parser) - ${test.name}`;
 
@@ -139,7 +137,4 @@ module.exports = function generateLocationInfoParserTests(moduleExports, prefix,
             };
         });
     });
-};
-
-module.exports.assertStartTagLocation = assertStartTagLocation;
-module.exports.assertNodeLocation = assertNodeLocation;
+}

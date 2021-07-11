@@ -1,91 +1,91 @@
-'use strict';
+import assert from 'assert';
+import * as parse5 from '../lib/index.js';
+import { Parser } from '../lib/parser.js';
+import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
+import { treeAdapters } from '../../../test/utils/common.js';
 
-const assert = require('assert');
-const parse5 = require('../lib');
-const Parser = require('../lib/parser');
-const generateParsingTests = require('../../../test/utils/generate-parsing-tests');
-const { treeAdapters } = require('../../../test/utils/common');
+const origParseFragment = Parser.prototype.parseFragment;
 
-generateParsingTests(exports, 'Parser', { skipFragments: false }, (test, opts) => ({
+generateParsingTests('parser', 'Parser', { skipFragments: false }, (test, opts) => ({
     node: test.fragmentContext
         ? parse5.parseFragment(test.fragmentContext, test.input, opts)
         : parse5.parse(test.input, opts),
 }));
 
-exports['Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)'] = function () {
-    const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
-    const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
+suite('parser', () => {
+    test('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {
+        const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
+        const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
-    assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
-};
+        assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
+    });
 
-const origParseFragment = Parser.prototype.parseFragment;
-
-exports['Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)'] = {
-    beforeEach() {
-        Parser.prototype.parseFragment = function (html, fragmentContext) {
-            return {
-                html: html,
-                fragmentContext: fragmentContext,
-                options: this.options,
+    suite('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
+        beforeEach(() => {
+            Parser.prototype.parseFragment = function (html, fragmentContext) {
+                return {
+                    html: html,
+                    fragmentContext: fragmentContext,
+                    options: this.options,
+                };
             };
-        };
-    },
-
-    afterEach() {
-        Parser.prototype.parseFragment = origParseFragment;
-    },
-
-    test() {
-        const fragmentContext = treeAdapters.default.createElement('div');
-        const html = '<script></script>';
-        const opts = { sourceCodeLocationInfo: true };
-
-        let args = parse5.parseFragment(fragmentContext, html, opts);
-
-        assert.strictEqual(args.fragmentContext, fragmentContext);
-        assert.strictEqual(args.html, html);
-        assert(args.options.sourceCodeLocationInfo);
-
-        args = parse5.parseFragment(html, opts);
-
-        assert(!args.fragmentContext);
-        assert.strictEqual(args.html, html);
-        assert(args.options.sourceCodeLocationInfo);
-
-        args = parse5.parseFragment(html);
-
-        assert(!args.fragmentContext);
-        assert.strictEqual(args.html, html);
-        assert(!args.options.sourceCodeLocationInfo);
-    },
-};
-
-exports["Regression - Don't inherit from Object when creating collections (GH-119)"] = {
-    beforeEach: function () {
-        /*eslint-disable no-extend-native*/
-        Object.prototype.heyYo = 123;
-        /*eslint-enable no-extend-native*/
-    },
-
-    afterEach: function () {
-        delete Object.prototype.heyYo;
-    },
-
-    test: function () {
-        const fragment = parse5.parseFragment('<div id="123">', {
-            treeAdapter: treeAdapters.htmlparser2,
         });
 
-        assert.strictEqual(treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
-    },
-};
+        afterEach(() => {
+            Parser.prototype.parseFragment = origParseFragment;
+        });
 
-exports['Regression - DOCTYPE empty fields (GH-236)'] = function () {
-    const document = parse5.parse('<!DOCTYPE>');
-    const doctype = document.childNodes[0];
+        test('parses correctly', () => {
+            const fragmentContext = treeAdapters.default.createElement('div');
+            const html = '<script></script>';
+            const opts = { sourceCodeLocationInfo: true };
 
-    assert.strictEqual(doctype.name, '');
-    assert.strictEqual(doctype.publicId, '');
-    assert.strictEqual(doctype.systemId, '');
-};
+            let args = parse5.parseFragment(fragmentContext, html, opts);
+
+            assert.strictEqual(args.fragmentContext, fragmentContext);
+            assert.strictEqual(args.html, html);
+            assert(args.options.sourceCodeLocationInfo);
+
+            args = parse5.parseFragment(html, opts);
+
+            assert(!args.fragmentContext);
+            assert.strictEqual(args.html, html);
+            assert(args.options.sourceCodeLocationInfo);
+
+            args = parse5.parseFragment(html);
+
+            assert(!args.fragmentContext);
+            assert.strictEqual(args.html, html);
+            assert(!args.options.sourceCodeLocationInfo);
+        });
+    });
+
+    suite("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
+        beforeEach(() => {
+            /*eslint-disable no-extend-native*/
+            Object.prototype.heyYo = 123;
+            /*eslint-enable no-extend-native*/
+        });
+
+        afterEach(() => {
+            delete Object.prototype.heyYo;
+        });
+
+        test('parses correctly', () => {
+            const fragment = parse5.parseFragment('<div id="123">', {
+                treeAdapter: treeAdapters.htmlparser2,
+            });
+
+            assert.strictEqual(treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
+        });
+    });
+
+    test('Regression - DOCTYPE empty fields (GH-236)', () => {
+        const document = parse5.parse('<!DOCTYPE>');
+        const doctype = document.childNodes[0];
+
+        assert.strictEqual(doctype.name, '');
+        assert.strictEqual(doctype.publicId, '');
+        assert.strictEqual(doctype.systemId, '');
+    });
+});

@@ -1,16 +1,14 @@
-'use strict';
-
-const path = require('path');
-const ParserStream = require('../lib');
-const generateParsingTests = require('../../../test/utils/generate-parsing-tests');
-const { makeChunks, generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
+import * as path from 'path';
+import { ParserStream } from '../lib/index.js';
+import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
+import { makeChunks, generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
 
 function pause() {
     return new Promise((resolve) => setTimeout(resolve, 5));
 }
 
 generateParsingTests(
-    module.exports,
+    'ParserStream - Scripting',
     'ParserStream - Scripting',
     {
         skipFragments: true,
@@ -57,7 +55,7 @@ generateParsingTests(
     }
 );
 
-generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
+generateTestsForEachTreeAdapter('ParserStream', (_test, treeAdapter) => {
     _test['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function (done) {
         const parser = new ParserStream({ treeAdapter: treeAdapter });
 

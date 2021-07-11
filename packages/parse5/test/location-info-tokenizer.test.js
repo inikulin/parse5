@@ -1,12 +1,10 @@
-'use strict';
+import assert from 'assert';
+import { Tokenizer } from '../lib/tokenizer/index.js';
+import { LocationInfoTokenizerMixin } from '../lib/extensions/location-info/tokenizer-mixin.js';
+import { Mixin } from '../lib/utils/mixin.js';
+import { getSubstringByLineCol, normalizeNewLine } from '../../../test/utils/common.js';
 
-const assert = require('assert');
-const Tokenizer = require('../lib/tokenizer');
-const LocationInfoTokenizerMixin = require('../lib/extensions/location-info/tokenizer-mixin');
-const Mixin = require('../lib/utils/mixin');
-const { getSubstringByLineCol, normalizeNewLine } = require('../../../test/utils/common');
-
-exports['Location info (Tokenizer)'] = function () {
+test('Location Info (Tokenizer)', () => {
     const testCases = [
         {
             initialMode: Tokenizer.MODE.DATA,
@@ -120,4 +118,4 @@ exports['Location info (Tokenizer)'] = function () {
             j++;
         }
     });
-};
+});

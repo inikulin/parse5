@@ -1,6 +1,6 @@
 import { Preprocessor } from './preprocessor.js';
 import { unicode } from '../common/unicode.js';
-import { neTree } from './named-entity-data.js';
+import { namedEntityData as neTree } from './named-entity-data/index.js';
 import { ERR } from '../common/error-codes.js';
 
 //Aliases

@@ -1,15 +1,13 @@
-'use strict';
-
-const assert = require('assert');
-const parse5 = require('../lib');
-const path = require('path');
-const Tokenizer = require('../lib/tokenizer');
-const Mixin = require('../lib/utils/mixin');
-const ErrorReportingTokenizerMixin = require('../lib/extensions/error-reporting/tokenizer-mixin');
-const generateTokenizationTests = require('../../../test/utils/generate-tokenization-tests');
+import assert from 'assert';
+import * as parse5 from '../lib/index.js';
+import * as path from 'path';
+import { Tokenizer } from '../lib/tokenizer/index.js';
+import { Mixin } from '../lib/utils/mixin.js';
+import { ErrorReportingTokenizerMixin } from '../lib/extensions/error-reporting/tokenizer-mixin.js';
+import { generateTokenizationTests } from '../../../test/utils/generate-tokenization-tests.js';
 
 generateTokenizationTests(
-    exports,
+    'tokenizer',
     'Tokenizer',
     path.join(__dirname, '../../../test/data/html5lib-tests/tokenizer'),
     ({ errors }) => {
@@ -29,9 +27,9 @@ generateTokenizationTests(
     }
 );
 
-exports['Regression - `<<` in comment parses correctly (GH-325)'] = {
-    test() {
+suite('tokenizer', () => {
+    test('Regression - `<<` in comment parses correctly (GH-325)', () => {
         const document = parse5.parse('<!--<<-->');
         assert.equal(document.childNodes[0].data, '<<');
-    },
-};
+    });
+});

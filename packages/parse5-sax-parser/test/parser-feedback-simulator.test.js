@@ -1,10 +1,10 @@
-const path = require('path');
-const Tokenizer = require('parse5/lib/tokenizer');
-const generateTokenizationTests = require('../../../test/utils/generate-tokenization-tests');
-const ParserFeedbackSimulator = require('../lib/parser-feedback-simulator');
+import * as path from 'path';
+import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
+import { generateTokenizationTests } from '../../../test/utils/generate-tokenization-tests.js';
+import { ParserFeedbackSimulator } from '../lib/parser-feedback-simulator.js';
 
 generateTokenizationTests(
-    exports,
+    'ParserFeedbackSimulator',
     'ParserFeedbackSimulator',
     path.join(__dirname, '../../../test/data/parser-feedback'),
     () => {

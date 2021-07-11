@@ -1,12 +1,10 @@
-'use strict';
+import assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Tokenizer } from '../../packages/parse5/lib/tokenizer/index.js';
+import { makeChunks } from './common.js';
 
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const Tokenizer = require('../../packages/parse5/lib/tokenizer');
-const { makeChunks } = require('./common');
-
-function convertTokenToHtml5Lib(token) {
+export function convertTokenToHtml5Lib(token) {
     switch (token.type) {
         case Tokenizer.CHARACTER_TOKEN:
         case Tokenizer.NULL_CHARACTER_TOKEN:
@@ -199,7 +197,7 @@ function loadTests(dataDirPath) {
     return tests;
 }
 
-module.exports = function generateTokenizationTests(moduleExports, prefix, testSuite, createTokenSource) {
+export function generateTokenizationTests(moduleExports, prefix, testSuite, createTokenSource) {
     loadTests(testSuite).forEach((test) => {
         const testName = `${prefix} - ${test.idx}.${test.setName} - ${test.name} - Initial state: ${test.initialState}`;
 
@@ -211,6 +209,4 @@ module.exports = function generateTokenizationTests(moduleExports, prefix, testS
             assert.deepEqual(result.errors, test.expectedErrors || []);
         };
     });
-};
-
-module.exports.convertTokenToHtml5Lib = convertTokenToHtml5Lib;
+}

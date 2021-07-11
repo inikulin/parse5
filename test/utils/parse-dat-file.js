@@ -1,4 +1,4 @@
-const HTML = require('../../packages/parse5/lib/common/html');
+import { HTML } from '../../packages/parse5/lib/common/html.js';
 
 function createFragmentContext(tagName, treeAdapter) {
     if (!tagName) {
@@ -21,7 +21,7 @@ function createFragmentContext(tagName, treeAdapter) {
     return treeAdapter.createElement(tagName, namespace, []);
 }
 
-module.exports = function parseDatFile(testSet, treeAdapter) {
+export function parseDatFile(testSet, treeAdapter) {
     const testDescrs = [];
     let curDirective = '';
     let curDescr = null;
@@ -53,4 +53,4 @@ module.exports = function parseDatFile(testSet, treeAdapter) {
             fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter),
         };
     });
-};
+}

@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const assert = require('assert');
-const serializeToDatFileFormat = require('./serialize-to-dat-file-format');
-const { generateTestsForEachTreeAdapter } = require('./common');
-const parseDatFile = require('../../test/utils/parse-dat-file');
+import * as fs from 'fs';
+import * as path from 'path';
+import assert from 'assert';
+import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
+import { generateTestsForEachTreeAdapter } from './common.js';
+import { parseDatFile } from '../../test/utils/parse-dat-file.js';
 
-function loadTreeConstructionTestData(dataDirs, treeAdapter) {
+export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
     const tests = [];
 
     dataDirs.forEach((dataDirPath) => {
@@ -87,8 +87,8 @@ function createParsingTest(test, treeAdapter, parse, { withoutErrors }) {
     };
 }
 
-module.exports = function generateParsingTests(
-    moduleExports,
+export function generateParsingTests(
+    name,
     prefix,
     {
         skipFragments,
@@ -100,7 +100,7 @@ module.exports = function generateParsingTests(
     },
     parse
 ) {
-    generateTestsForEachTreeAdapter(moduleExports, (_test, treeAdapter) => {
+    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
         loadTreeConstructionTestData(testSuite, treeAdapter).forEach((test) => {
             if (!(test.fragmentContext && skipFragments)) {
                 const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`;
@@ -109,6 +109,4 @@ module.exports = function generateParsingTests(
             }
         });
     });
-};
-
-module.exports.loadTreeConstructionTestData = loadTreeConstructionTestData;
+}

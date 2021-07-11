@@ -1,19 +1,14 @@
-'use strict';
+import assert from 'assert';
+import * as parse5 from '../lib/index.js';
+import { generateLocationInfoParserTests } from '../../../test/utils/generate-location-info-parser-tests.js';
+import { assertStartTagLocation, assertNodeLocation } from '../../../test/utils/generate-location-info-parser-tests.js';
+import { generateTestsForEachTreeAdapter, treeAdapters } from '../../../test/utils/common.js';
 
-const assert = require('assert');
-const parse5 = require('../lib');
-const generateLocationInfoParserTests = require('../../../test/utils/generate-location-info-parser-tests');
-const {
-    assertStartTagLocation,
-    assertNodeLocation,
-} = require('../../../test/utils/generate-location-info-parser-tests');
-const { generateTestsForEachTreeAdapter, treeAdapters } = require('../../../test/utils/common');
-
-generateLocationInfoParserTests(module.exports, 'Parser', (input, opts) => ({
+generateLocationInfoParserTests('location-info-parser', 'Parser', (input, opts) => ({
     node: parse5.parse(input, opts),
 }));
 
-generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
+generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => {
     _test['Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)'] = function () {
         const html = '<p>1<p class="2">3';
 
@@ -128,55 +123,60 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     };
 });
 
-exports['Updating node source code location (GH-314)'] = function () {
-    const sourceCodeLocationSetter = {
-        setNodeSourceCodeLocation(node, location) {
-            if (location === null) {
-                node.sourceCodeLocation = null;
-            } else {
+suite('location-info-parser', () => {
+    test('Updating node source code location (GH-314)', () => {
+        const sourceCodeLocationSetter = {
+            setNodeSourceCodeLocation(node, location) {
+                if (location === null) {
+                    node.sourceCodeLocation = null;
+                } else {
+                    node.sourceCodeLocation = {
+                        start: {
+                            line: location.startLine,
+                            column: location.startCol,
+                            offset: location.startOffset,
+                        },
+                        end: {
+                            line: location.endLine,
+                            column: location.endCol,
+                            offset: location.endOffset,
+                        },
+                    };
+                }
+            },
+            updateNodeSourceCodeLocation(node, endLocation) {
                 node.sourceCodeLocation = {
-                    start: {
-                        line: location.startLine,
-                        column: location.startCol,
-                        offset: location.startOffset,
-                    },
+                    start: node.sourceCodeLocation.start,
                     end: {
-                        line: location.endLine,
-                        column: location.endCol,
-                        offset: location.endOffset,
+                        line: endLocation.endLine,
+                        column: endLocation.endCol,
+                        offset: endLocation.endOffset,
                     },
                 };
-            }
-        },
-        updateNodeSourceCodeLocation(node, endLocation) {
-            node.sourceCodeLocation = {
-                start: node.sourceCodeLocation.start,
-                end: {
-                    line: endLocation.endLine,
-                    column: endLocation.endCol,
-                    offset: endLocation.endOffset,
-                },
-            };
-        },
-    };
-    const adapter = Object.assign(treeAdapters.default, sourceCodeLocationSetter);
-    const document = parse5.parse('<!doctype><body>Testing location</body>', { adapter, sourceCodeLocationInfo: true });
-    const [doctype, html] = document.childNodes;
-    const [head, body] = html.childNodes;
-    const [text] = body.childNodes;
+            },
+        };
+        const adapter = Object.assign(treeAdapters.default, sourceCodeLocationSetter);
+        const document = parse5.parse('<!doctype><body>Testing location</body>', {
+            adapter,
+            sourceCodeLocationInfo: true,
+        });
+        const [doctype, html] = document.childNodes;
+        const [head, body] = html.childNodes;
+        const [text] = body.childNodes;
 
-    assert.deepEqual(doctype.sourceCodeLocation, {
-        start: { line: 1, column: 1, offset: 0 },
-        end: { line: 1, column: 11, offset: 10 },
+        assert.deepEqual(doctype.sourceCodeLocation, {
+            start: { line: 1, column: 1, offset: 0 },
+            end: { line: 1, column: 11, offset: 10 },
+        });
+        assert.strictEqual(html.sourceCodeLocation, null);
+        assert.strictEqual(head.sourceCodeLocation, null);
+        assert.deepEqual(body.sourceCodeLocation, {
+            start: { line: 1, column: 11, offset: 10 },
+            end: { line: 1, column: 40, offset: 39 },
+        });
+        assert.deepEqual(text.sourceCodeLocation, {
+            start: { line: 1, column: 17, offset: 16 },
+            end: { line: 1, column: 33, offset: 32 },
+        });
     });
-    assert.strictEqual(html.sourceCodeLocation, null);
-    assert.strictEqual(head.sourceCodeLocation, null);
-    assert.deepEqual(body.sourceCodeLocation, {
-        start: { line: 1, column: 11, offset: 10 },
-        end: { line: 1, column: 40, offset: 39 },
-    });
-    assert.deepEqual(text.sourceCodeLocation, {
-        start: { line: 1, column: 17, offset: 16 },
-        end: { line: 1, column: 33, offset: 32 },
-    });
-};
+});

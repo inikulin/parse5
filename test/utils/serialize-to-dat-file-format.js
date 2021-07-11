@@ -1,4 +1,4 @@
-const HTML = require('../../packages/parse5/lib/common/html');
+import { HTML } from '../../packages/parse5/lib/common/html.js';
 
 function getSerializedTreeIndent(indent) {
     let str = '|';
@@ -77,6 +77,6 @@ function serializeNodeList(nodes, indent, treeAdapter) {
     return str;
 }
 
-module.exports = function serializeToDatFileFormat(rootNode, treeAdapter) {
+export function serializeToDatFileFormat(rootNode, treeAdapter) {
     return serializeNodeList(treeAdapter.getChildNodes(rootNode), 0, treeAdapter);
-};
+}
