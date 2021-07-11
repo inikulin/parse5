@@ -1,72 +1,70 @@
-'use strict';
-
-const { DOCUMENT_MODE } = require('../common/html');
+import { DOCUMENT_MODE } from '../common/html.js';
 
 //Node construction
-exports.createDocument = function() {
+export function createDocument() {
     return {
         nodeName: '#document',
         mode: DOCUMENT_MODE.NO_QUIRKS,
-        childNodes: []
+        childNodes: [],
     };
-};
+}
 
-exports.createDocumentFragment = function() {
+export function createDocumentFragment() {
     return {
         nodeName: '#document-fragment',
-        childNodes: []
+        childNodes: [],
     };
-};
+}
 
-exports.createElement = function(tagName, namespaceURI, attrs) {
+export function createElement(tagName, namespaceURI, attrs) {
     return {
         nodeName: tagName,
         tagName: tagName,
         attrs: attrs,
         namespaceURI: namespaceURI,
         childNodes: [],
-        parentNode: null
+        parentNode: null,
     };
-};
+}
 
-exports.createCommentNode = function(data) {
+export function createCommentNode(data) {
     return {
         nodeName: '#comment',
         data: data,
-        parentNode: null
+        parentNode: null,
     };
-};
+}
 
-const createTextNode = function(value) {
+const createTextNode = function (value) {
     return {
         nodeName: '#text',
         value: value,
-        parentNode: null
+        parentNode: null,
     };
 };
 
 //Tree mutation
-const appendChild = (exports.appendChild = function(parentNode, newNode) {
+export function appendChild(parentNode, newNode) {
     parentNode.childNodes.push(newNode);
     newNode.parentNode = parentNode;
-});
+}
 
-const insertBefore = (exports.insertBefore = function(parentNode, newNode, referenceNode) {
+export function insertBefore(parentNode, newNode, referenceNode) {
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
 
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
     newNode.parentNode = parentNode;
-});
+}
 
-exports.setTemplateContent = function(templateElement, contentElement) {
+export function setTemplateContent(templateElement, contentElement) {
     templateElement.content = contentElement;
-};
+}
 
-exports.getTemplateContent = function(templateElement) {
+export function getTemplateContent(templateElement) {
     return templateElement.content;
-};
+}
 
-exports.setDocumentType = function(document, name, publicId, systemId) {
+export function setDocumentType(document, name, publicId, systemId) {
     let doctypeNode = null;
 
     for (let i = 0; i < document.childNodes.length; i++) {
@@ -85,29 +83,29 @@ exports.setDocumentType = function(document, name, publicId, systemId) {
             nodeName: '#documentType',
             name: name,
             publicId: publicId,
-            systemId: systemId
+            systemId: systemId,
         });
     }
-};
+}
 
-exports.setDocumentMode = function(document, mode) {
+export function setDocumentMode(document, mode) {
     document.mode = mode;
-};
+}
 
-exports.getDocumentMode = function(document) {
+export function getDocumentMode(document) {
     return document.mode;
-};
+}
 
-exports.detachNode = function(node) {
+export function detachNode(node) {
     if (node.parentNode) {
         const idx = node.parentNode.childNodes.indexOf(node);
 
         node.parentNode.childNodes.splice(idx, 1);
         node.parentNode = null;
     }
-};
+}
 
-exports.insertText = function(parentNode, text) {
+export function insertText(parentNode, text) {
     if (parentNode.childNodes.length) {
         const prevNode = parentNode.childNodes[parentNode.childNodes.length - 1];
 
@@ -118,9 +116,9 @@ exports.insertText = function(parentNode, text) {
     }
 
     appendChild(parentNode, createTextNode(text));
-};
+}
 
-exports.insertTextBefore = function(parentNode, text, referenceNode) {
+export function insertTextBefore(parentNode, text, referenceNode) {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
 
     if (prevNode && prevNode.nodeName === '#text') {
@@ -128,9 +126,9 @@ exports.insertTextBefore = function(parentNode, text, referenceNode) {
     } else {
         insertBefore(parentNode, createTextNode(text), referenceNode);
     }
-};
+}
 
-exports.adoptAttributes = function(recipient, attrs) {
+export function adoptAttributes(recipient, attrs) {
     const recipientAttrsMap = [];
 
     for (let i = 0; i < recipient.attrs.length; i++) {
@@ -142,80 +140,80 @@ exports.adoptAttributes = function(recipient, attrs) {
             recipient.attrs.push(attrs[j]);
         }
     }
-};
+}
 
 //Tree traversing
-exports.getFirstChild = function(node) {
+export function getFirstChild(node) {
     return node.childNodes[0];
-};
+}
 
-exports.getChildNodes = function(node) {
+export function getChildNodes(node) {
     return node.childNodes;
-};
+}
 
-exports.getParentNode = function(node) {
+export function getParentNode(node) {
     return node.parentNode;
-};
+}
 
-exports.getAttrList = function(element) {
+export function getAttrList(element) {
     return element.attrs;
-};
+}
 
 //Node data
-exports.getTagName = function(element) {
+export function getTagName(element) {
     return element.tagName;
-};
+}
 
-exports.getNamespaceURI = function(element) {
+export function getNamespaceURI(element) {
     return element.namespaceURI;
-};
+}
 
-exports.getTextNodeContent = function(textNode) {
+export function getTextNodeContent(textNode) {
     return textNode.value;
-};
+}
 
-exports.getCommentNodeContent = function(commentNode) {
+export function getCommentNodeContent(commentNode) {
     return commentNode.data;
-};
+}
 
-exports.getDocumentTypeNodeName = function(doctypeNode) {
+export function getDocumentTypeNodeName(doctypeNode) {
     return doctypeNode.name;
-};
+}
 
-exports.getDocumentTypeNodePublicId = function(doctypeNode) {
+export function getDocumentTypeNodePublicId(doctypeNode) {
     return doctypeNode.publicId;
-};
+}
 
-exports.getDocumentTypeNodeSystemId = function(doctypeNode) {
+export function getDocumentTypeNodeSystemId(doctypeNode) {
     return doctypeNode.systemId;
-};
+}
 
 //Node types
-exports.isTextNode = function(node) {
+export function isTextNode(node) {
     return node.nodeName === '#text';
-};
+}
 
-exports.isCommentNode = function(node) {
+export function isCommentNode(node) {
     return node.nodeName === '#comment';
-};
+}
 
-exports.isDocumentTypeNode = function(node) {
+export function isDocumentTypeNode(node) {
     return node.nodeName === '#documentType';
-};
+}
 
-exports.isElementNode = function(node) {
+export function isElementNode(node) {
     return !!node.tagName;
-};
+}
 
 // Source code location
-exports.setNodeSourceCodeLocation = function(node, location) {
+export function setNodeSourceCodeLocation(node, location) {
     node.sourceCodeLocation = location;
-};
+}
 
-exports.getNodeSourceCodeLocation = function(node) {
+export function getNodeSourceCodeLocation(node) {
     return node.sourceCodeLocation;
-};
+}
 
-exports.updateNodeSourceCodeLocation = function(node, endLocation) {
-    node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
-};
+export function updateNodeSourceCodeLocation(node, endLocation) {
+    node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
+}

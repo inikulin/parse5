@@ -1,10 +1,8 @@
-'use strict';
+import { ErrorReportingMixinBase } from './mixin-base.js';
+import { ErrorReportingPreprocessorMixin } from './preprocessor-mixin.js';
+import { Mixin } from '../../utils/mixin.js';
 
-const ErrorReportingMixinBase = require('./mixin-base');
-const ErrorReportingPreprocessorMixin = require('./preprocessor-mixin');
-const Mixin = require('../../utils/mixin');
-
-class ErrorReportingTokenizerMixin extends ErrorReportingMixinBase {
+export class ErrorReportingTokenizerMixin extends ErrorReportingMixinBase {
     constructor(tokenizer, opts) {
         super(tokenizer, opts);
 
@@ -13,5 +11,3 @@ class ErrorReportingTokenizerMixin extends ErrorReportingMixinBase {
         this.posTracker = preprocessorMixin.posTracker;
     }
 }
-
-module.exports = ErrorReportingTokenizerMixin;

@@ -1,18 +1,18 @@
-const fs = require('fs');
-const path = require('path');
-const assert = require('assert');
-const serializeToDatFileFormat = require('./serialize-to-dat-file-format');
-const { generateTestsForEachTreeAdapter } = require('./common');
-const parseDatFile = require('../../test/utils/parse-dat-file');
+import * as fs from 'fs';
+import * as path from 'path';
+import assert from 'assert';
+import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
+import { generateTestsForEachTreeAdapter } from './common.js';
+import { parseDatFile } from '../../test/utils/parse-dat-file.js';
 
-function loadTreeConstructionTestData(dataDirs, treeAdapter) {
+export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
     const tests = [];
 
-    dataDirs.forEach(dataDirPath => {
+    dataDirs.forEach((dataDirPath) => {
         const testSetFileNames = fs.readdirSync(dataDirPath);
         const dirName = path.basename(dataDirPath);
 
-        testSetFileNames.forEach(fileName => {
+        testSetFileNames.forEach((fileName) => {
             if (path.extname(fileName) !== '.dat') {
                 return;
             }
@@ -21,14 +21,13 @@ function loadTreeConstructionTestData(dataDirs, treeAdapter) {
             const testSet = fs.readFileSync(filePath, 'utf-8');
             const setName = fileName.replace('.dat', '');
 
-            parseDatFile(testSet, treeAdapter).forEach(test => {
-                tests.push(
-                    Object.assign(test, {
-                        idx: tests.length,
-                        setName: setName,
-                        dirName: dirName
-                    })
-                );
+            parseDatFile(testSet, treeAdapter).forEach((test) => {
+                tests.push({
+                    ...test,
+                    idx: tests.length,
+                    setName: setName,
+                    dirName: dirName,
+                });
             });
         });
     });
@@ -61,7 +60,7 @@ function createParsingTest(test, treeAdapter, parse, { withoutErrors }) {
             scriptingEnabled: test.scriptingEnabled,
             treeAdapter: treeAdapter,
 
-            onParseError: err => {
+            onParseError: (err) => {
                 let errStr = `(${err.startLine}:${err.startCol}`;
 
                 // NOTE: use ranges for token errors
@@ -72,7 +71,7 @@ function createParsingTest(test, treeAdapter, parse, { withoutErrors }) {
                 errStr += `) ${err.code}`;
 
                 errs.push(errStr);
-            }
+            },
         };
 
         const { node, chunks } = await parse(test, opts);
@@ -87,30 +86,22 @@ function createParsingTest(test, treeAdapter, parse, { withoutErrors }) {
     };
 }
 
-module.exports = function generateParsingTests(
-    moduleExports,
+const treePath = new URL('../data/html5lib-tests/tree-construction', import.meta.url);
+const treeRegressionPath = new URL('../data/tree-construction-regression', import.meta.url);
+
+export function generateParsingTests(
+    name,
     prefix,
-    {
-        skipFragments,
-        withoutErrors,
-        testSuite = [
-            path.join(__dirname, '../data/html5lib-tests/tree-construction'),
-            path.join(__dirname, '../data/tree-construction-regression')
-        ]
-    },
+    { skipFragments, withoutErrors, testSuite = [treePath.pathname, treeRegressionPath.pathname] },
     parse
 ) {
-    generateTestsForEachTreeAdapter(moduleExports, (_test, treeAdapter) => {
-        loadTreeConstructionTestData(testSuite, treeAdapter).forEach(test => {
+    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
+        loadTreeConstructionTestData(testSuite, treeAdapter).forEach((test) => {
             if (!(test.fragmentContext && skipFragments)) {
-                const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${
-                    test.lineNum
-                })`;
+                const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`;
 
                 _test[testName] = createParsingTest(test, treeAdapter, parse, { withoutErrors });
             }
         });
     });
-};
-
-module.exports.loadTreeConstructionTestData = loadTreeConstructionTestData;
+}

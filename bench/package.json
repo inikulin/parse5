@@ -1,5 +1,6 @@
 {
     "name": "parse5-benchmarks",
+    "type": "module",
     "version": "1.0.0",
     "description": "parse5 regression benchmarks",
     "author": "Ivan Nikulin <ifaaan@gmail.com>",

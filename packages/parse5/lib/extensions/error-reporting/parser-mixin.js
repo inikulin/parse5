@@ -1,11 +1,9 @@
-'use strict';
+import { ErrorReportingMixinBase } from './mixin-base.js';
+import { ErrorReportingTokenizerMixin } from './tokenizer-mixin.js';
+import { LocationInfoTokenizerMixin } from '../location-info/tokenizer-mixin.js';
+import { Mixin } from '../../utils/mixin.js';
 
-const ErrorReportingMixinBase = require('./mixin-base');
-const ErrorReportingTokenizerMixin = require('./tokenizer-mixin');
-const LocationInfoTokenizerMixin = require('../location-info/tokenizer-mixin');
-const Mixin = require('../../utils/mixin');
-
-class ErrorReportingParserMixin extends ErrorReportingMixinBase {
+export class ErrorReportingParserMixin extends ErrorReportingMixinBase {
     constructor(parser, opts) {
         super(parser, opts);
 
@@ -44,9 +42,7 @@ class ErrorReportingParserMixin extends ErrorReportingMixinBase {
             _err(code, options) {
                 mxn.locBeforeToken = options && options.beforeToken;
                 mxn._reportError(code);
-            }
+            },
         };
     }
 }
-
-module.exports = ErrorReportingParserMixin;

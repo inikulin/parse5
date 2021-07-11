@@ -1,25 +1,25 @@
-let { readFile, writeFile } = require('fs');
-const { promisify } = require('util');
-const { basename } = require('path');
-const Parser = require('../../packages/parse5/lib/parser');
-const Tokenizer = require('../../packages/parse5/lib/tokenizer');
-const defaultTreeAdapter = require('../../packages/parse5/lib/tree-adapters/default');
-const { convertTokenToHtml5Lib } = require('../../test/utils/generate-tokenization-tests');
-const parseDatFile = require('../../test/utils/parse-dat-file');
-const { addSlashes } = require('../../test/test/utils/common');
+import { readFile, writeFile } from 'fs';
+import { promisify } from 'util';
+import { basename } from 'path';
+import { Parser } from '../../packages/parse5/lib/parser.js';
+import { Tokenizer } from '../../packages/parse5/lib/tokenzer.js';
+import { defaultTreeAdapter } from '../../packages/parse5/lib/tree-adapters/default.js';
+import { convertTokenToHtml5Lib } from '../../test/utils/generate-tokenization-tests.js';
+import { parseDatFile } from '../../test/utils/parse-dat-file.js';
+import { addSlashes } from '../../test/test/utils/common.js';
 
-readFile = promisify(readFile);
-writeFile = promisify(writeFile);
+const readFileAsync = promisify(readFile);
+const writeFileAsync = promisify(writeFile);
 
 main();
 
 async function main() {
-    const convertPromises = process.argv.slice(2).map(async file => {
-        const content = await readFile(file, 'utf-8');
+    const convertPromises = process.argv.slice(2).map(async (file) => {
+        const content = await readFileAsync(file, 'utf-8');
         const feedbackTestContent = generateParserFeedbackTest(content);
         const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
 
-        await writeFile(feedbackTestFile, feedbackTestContent);
+        await writeFileAsync(feedbackTestFile, feedbackTestContent);
     });
 
     await Promise.all(convertPromises);
@@ -53,7 +53,7 @@ function collectParserTokens(html) {
     const tokens = [];
     const parser = new Parser();
 
-    parser._processInputToken = function(token) {
+    parser._processInputToken = function (token) {
         Parser.prototype._processInputToken.call(this, token);
 
         // NOTE: Needed to split attributes of duplicate <html> and <body>
@@ -75,16 +75,16 @@ function generateParserFeedbackTest(parserTestFile) {
 
     const feedbackTest = {
         tests: tests
-            .filter(test => !test.fragmentContext) // TODO
-            .map(test => {
+            .filter((test) => !test.fragmentContext) // TODO
+            .map((test) => {
                 const input = test.input;
 
                 return {
                     description: addSlashes(input),
                     input,
-                    output: collectParserTokens(input)
+                    output: collectParserTokens(input),
                 };
-            })
+            }),
     };
 
     return JSON.stringify(feedbackTest, null, 4);

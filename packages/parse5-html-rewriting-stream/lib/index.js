@@ -1,9 +1,7 @@
-'use strict';
+import { SAXParser } from 'parse5-sax-parser';
+import { escapeString } from 'parse5/lib/serializer/index.js';
 
-const SAXParser = require('parse5-sax-parser');
-const { escapeString } = require('parse5/lib/serializer');
-
-class RewritingStream extends SAXParser {
+export class RewritingStream extends SAXParser {
     constructor() {
         super({ sourceCodeLocationInfo: true });
 
@@ -88,5 +86,3 @@ class RewritingStream extends SAXParser {
         this.push(html);
     }
 }
-
-module.exports = RewritingStream;

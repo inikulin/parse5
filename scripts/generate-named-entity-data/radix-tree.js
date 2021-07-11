@@ -1,8 +1,6 @@
-'use strict';
+import { Node } from './tree-node.js';
 
-const Node = require('./tree-node');
-
-class RadixTree {
+export class RadixTree {
     constructor(src) {
         this.root = new Node(null);
 
@@ -17,7 +15,7 @@ class RadixTree {
         return entity
             .replace(/^&/, '')
             .split('')
-            .map(ch => ch.charCodeAt(0));
+            .map((ch) => ch.charCodeAt(0));
     }
 
     static _decoupleSurrogatePair(cp) {
@@ -191,5 +189,3 @@ class RadixTree {
         }
     }
 }
-
-module.exports = RadixTree;

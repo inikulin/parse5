@@ -1,14 +1,14 @@
-'use strict';
+import { Writable } from 'stream';
+import assert from 'assert';
+import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
+import * as htmlTreeAdapter from '../../packages/parse5-htmlparser2-tree-adapter/lib/index.js';
 
-const { Writable } = require('stream');
-const assert = require('assert');
-
-const treeAdapters = {
-    default: require('../../packages/parse5/lib/tree-adapters/default'),
-    htmlparser2: require('../../packages/parse5-htmlparser2-tree-adapter/lib')
+export const treeAdapters = {
+    default: defaultTreeAdapter,
+    htmlparser2: htmlTreeAdapter,
 };
 
-function addSlashes(str) {
+export function addSlashes(str) {
     return str
         .replace(/\t/g, '\\t')
         .replace(/\n/g, '\\n')
@@ -37,7 +37,7 @@ function getRandomChunkSize(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-function makeChunks(str, minSize, maxSize) {
+export function makeChunks(str, minSize, maxSize) {
     if (!str.length) {
         return [''];
     }
@@ -57,7 +57,7 @@ function makeChunks(str, minSize, maxSize) {
     return chunks;
 }
 
-class WritableStreamStub extends Writable {
+export class WritableStreamStub extends Writable {
     constructor() {
         super({ decodeStrings: false });
 
@@ -71,76 +71,71 @@ class WritableStreamStub extends Writable {
     }
 }
 
-module.exports = {
-    WritableStreamStub,
-    treeAdapters,
-    addSlashes,
-    makeChunks,
+export function normalizeNewLine(str) {
+    return str.replace(/\r\n/g, '\n');
+}
 
-    normalizeNewLine(str) {
-        return str.replace(/\r\n/g, '\n');
-    },
+export function removeNewLines(str) {
+    return str.replace(/\r/g, '').replace(/\n/g, '');
+}
 
-    removeNewLines(str) {
-        return str.replace(/\r/g, '').replace(/\n/g, '');
-    },
+export function writeChunkedToStream(str, stream) {
+    const chunks = makeChunks(str);
+    const lastChunkIdx = chunks.length - 1;
 
-    writeChunkedToStream(str, stream) {
-        const chunks = makeChunks(str);
-        const lastChunkIdx = chunks.length - 1;
+    chunks.forEach((chunk, idx) => {
+        if (idx === lastChunkIdx) {
+            stream.end(chunk);
+        } else {
+            stream.write(chunk);
+        }
+    });
+}
 
-        chunks.forEach((chunk, idx) => {
-            if (idx === lastChunkIdx) {
-                stream.end(chunk);
-            } else {
-                stream.write(chunk);
-            }
-        });
-    },
-
-    generateTestsForEachTreeAdapter(moduleExports, ctor) {
-        Object.keys(treeAdapters).forEach(adapterName => {
+export function generateTestsForEachTreeAdapter(name, ctor) {
+    suite(name, () => {
+        Object.keys(treeAdapters).forEach((adapterName) => {
             const tests = {};
             const adapter = treeAdapters[adapterName];
 
             ctor(tests, adapter);
 
-            Object.keys(tests).forEach(testName => {
-                moduleExports['Tree adapter: ' + adapterName + ' - ' + testName] = tests[testName];
+            Object.keys(tests).forEach((testName) => {
+                test('Tree adapter: ' + adapterName + ' - ' + testName, tests[testName]);
             });
         });
-    },
+    });
+}
 
-    getStringDiffMsg(actual, expected) {
-        for (let i = 0; i < expected.length; i++) {
-            if (actual[i] !== expected[i]) {
-                let diffMsg = '\nString differ at index ' + i + '\n';
+export function getStringDiffMsg(actual, expected) {
+    for (let i = 0; i < expected.length; i++) {
+        if (actual[i] !== expected[i]) {
+            let diffMsg = '\nString differ at index ' + i + '\n';
 
-                const expectedStr = 'Expected: ' + addSlashes(expected.substring(i - 100, i + 1));
-                const expectedDiffMarker = createDiffMarker(expectedStr.length);
+            const expectedStr = 'Expected: ' + addSlashes(expected.substring(i - 100, i + 1));
+            const expectedDiffMarker = createDiffMarker(expectedStr.length);
 
-                diffMsg += expectedStr + addSlashes(expected.substring(i + 1, i + 20)) + '\n' + expectedDiffMarker;
+            diffMsg += expectedStr + addSlashes(expected.substring(i + 1, i + 20)) + '\n' + expectedDiffMarker;
 
-                const actualStr = 'Actual:   ' + addSlashes(actual.substring(i - 100, i + 1));
-                const actualDiffMarker = createDiffMarker(actualStr.length);
+            const actualStr = 'Actual:   ' + addSlashes(actual.substring(i - 100, i + 1));
+            const actualDiffMarker = createDiffMarker(actualStr.length);
 
-                diffMsg += actualStr + addSlashes(actual.substring(i + 1, i + 20)) + '\n' + actualDiffMarker;
+            diffMsg += actualStr + addSlashes(actual.substring(i + 1, i + 20)) + '\n' + actualDiffMarker;
 
-                return diffMsg;
-            }
+            return diffMsg;
         }
-
-        return '';
-    },
-
-    getSubstringByLineCol(lines, loc) {
-        lines = lines.slice(loc.startLine - 1, loc.endLine);
-
-        const last = lines.length - 1;
-
-        lines[last] = lines[last].substring(0, loc.endCol - 1);
-        lines[0] = lines[0].substring(loc.startCol - 1);
-
-        return lines.join('\n');
     }
-};
+
+    return '';
+}
+
+export function getSubstringByLineCol(lines, loc) {
+    lines = lines.slice(loc.startLine - 1, loc.endLine);
+
+    const last = lines.length - 1;
+
+    lines[last] = lines[last].substring(0, loc.endCol - 1);
+    lines[0] = lines[0].substring(loc.startCol - 1);
+
+    return lines.join('\n');
+}

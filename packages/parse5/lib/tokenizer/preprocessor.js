@@ -1,7 +1,5 @@
-'use strict';
-
-const unicode = require('../common/unicode');
-const ERR = require('../common/error-codes');
+import * as unicode from '../common/unicode.js';
+import { ERR } from '../common/error-codes.js';
 
 //Aliases
 const $ = unicode.CODE_POINTS;
@@ -12,7 +10,7 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 //Preprocessor
 //NOTE: HTML input preprocessing
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream)
-class Preprocessor {
+export class Preprocessor {
     constructor() {
         this.html = null;
 
@@ -155,5 +153,3 @@ class Preprocessor {
         this.pos--;
     }
 }
-
-module.exports = Preprocessor;

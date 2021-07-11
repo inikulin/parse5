@@ -1,37 +1,31 @@
-'use strict';
+import assert from 'assert';
+import * as parse5 from '../lib/index.js';
+import { Tokenizer } from '../lib/tokenizer/index.js';
+import { Mixin } from '../lib/utils/mixin.js';
+import { ErrorReportingTokenizerMixin } from '../lib/extensions/error-reporting/tokenizer-mixin.js';
+import { generateTokenizationTests } from '../../../test/utils/generate-tokenization-tests.js';
 
-const assert = require('assert');
-const parse5 = require('../lib');
-const path = require('path');
-const Tokenizer = require('../lib/tokenizer');
-const Mixin = require('../lib/utils/mixin');
-const ErrorReportingTokenizerMixin = require('../lib/extensions/error-reporting/tokenizer-mixin');
-const generateTokenizationTests = require('../../../test/utils/generate-tokenization-tests');
+const dataPath = new URL('../../../test/data/html5lib-tests/tokenizer', import.meta.url);
 
-generateTokenizationTests(
-    exports,
-    'Tokenizer',
-    path.join(__dirname, '../../../test/data/html5lib-tests/tokenizer'),
-    ({ errors }) => {
-        const tokenizer = new Tokenizer();
+generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors }) => {
+    const tokenizer = new Tokenizer();
 
-        Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
-            onParseError(err) {
-                errors.push({
-                    code: err.code,
-                    line: err.startLine,
-                    col: err.startCol
-                });
-            }
-        });
+    Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
+        onParseError(err) {
+            errors.push({
+                code: err.code,
+                line: err.startLine,
+                col: err.startCol,
+            });
+        },
+    });
 
-        return { tokenizer, getNextToken: () => tokenizer.getNextToken() };
-    }
-);
+    return { tokenizer, getNextToken: () => tokenizer.getNextToken() };
+});
 
-exports['Regression - `<<` in comment parses correctly (GH-325)'] = {
-    test() {
+suite('tokenizer', () => {
+    test('Regression - `<<` in comment parses correctly (GH-325)', () => {
         const document = parse5.parse('<!--<<-->');
         assert.equal(document.childNodes[0].data, '<<');
-    }
-};
+    });
+});

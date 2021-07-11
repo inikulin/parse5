@@ -1,12 +1,10 @@
-'use strict';
+import assert from 'assert';
+import * as parse5 from 'parse5';
+import { PlainTextConversionStream } from '../lib/index.js';
+import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
 
-const assert = require('assert');
-const parse5 = require('parse5');
-const PlainTextConversionStream = require('../lib');
-const { generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
-
-generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
-    _test['Plain text conversion stream'] = function() {
+generateTestsForEachTreeAdapter('plain-test-conversion-stream', (_test, treeAdapter) => {
+    _test['Plain text conversion stream'] = function () {
         const converter = new PlainTextConversionStream({ treeAdapter: treeAdapter });
 
         converter.write('Hey');
@@ -23,9 +21,11 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
     };
 });
 
-exports['Regression - Plain text conversion stream - Should not accept binary input (GH-269)'] = () => {
-    const stream = new PlainTextConversionStream();
-    const buf = Buffer.from('test');
+suite('plain-text-conversion-stream', () => {
+    test('Should not accept binary input (GH-269)', () => {
+        const stream = new PlainTextConversionStream();
+        const buf = Buffer.from('test');
 
-    assert.throws(() => stream.write(buf), TypeError);
-};
+        assert.throws(() => stream.write(buf), TypeError);
+    });
+});

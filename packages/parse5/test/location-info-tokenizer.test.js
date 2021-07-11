@@ -1,12 +1,10 @@
-'use strict';
+import assert from 'assert';
+import { Tokenizer } from '../lib/tokenizer/index.js';
+import { LocationInfoTokenizerMixin } from '../lib/extensions/location-info/tokenizer-mixin.js';
+import { Mixin } from '../lib/utils/mixin.js';
+import { getSubstringByLineCol, normalizeNewLine } from '../../../test/utils/common.js';
 
-const assert = require('assert');
-const Tokenizer = require('../lib/tokenizer');
-const LocationInfoTokenizerMixin = require('../lib/extensions/location-info/tokenizer-mixin');
-const Mixin = require('../lib/utils/mixin');
-const { getSubstringByLineCol, normalizeNewLine } = require('../../../test/utils/common');
-
-exports['Location info (Tokenizer)'] = function() {
+test('Location Info (Tokenizer)', () => {
     const testCases = [
         {
             initialMode: Tokenizer.MODE.DATA,
@@ -57,32 +55,32 @@ exports['Location info (Tokenizer)'] = function() {
                 '</a>',
                 '\n',
                 '</div>',
-                '</body>'
-            ]
+                '</body>',
+            ],
         },
         {
             initialMode: Tokenizer.MODE.RCDATA,
             lastStartTagName: 'title',
-            htmlChunks: ['<div>Test', ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->']
+            htmlChunks: ['<div>Test', ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->'],
         },
         {
             initialMode: Tokenizer.MODE.RAWTEXT,
             lastStartTagName: 'style',
-            htmlChunks: ['.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text']
+            htmlChunks: ['.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text'],
         },
         {
             initialMode: Tokenizer.MODE.SCRIPT_DATA,
             lastStartTagName: 'script',
-            htmlChunks: ['var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>']
+            htmlChunks: ['var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>'],
         },
         {
             initialMode: Tokenizer.MODE.PLAINTEXT,
             lastStartTagName: 'plaintext',
-            htmlChunks: ['Text', ' \n', 'Test</plaintext><div>']
-        }
+            htmlChunks: ['Text', ' \n', 'Test</plaintext><div>'],
+        },
     ];
 
-    testCases.forEach(testCase => {
+    testCases.forEach((testCase) => {
         const html = testCase.htmlChunks.join('');
         const lines = html.split(/\r?\n/g);
         const tokenizer = new Tokenizer();
@@ -120,4 +118,4 @@ exports['Location info (Tokenizer)'] = function() {
             j++;
         }
     });
-};
+});

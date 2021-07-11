@@ -1,16 +1,14 @@
-'use strict';
+import { SerializerStream } from '../lib/index.js';
+import { generateSeriliazerTests } from '../../../test/utils/generate-serializer-tests.js';
+import { WritableStreamStub } from '../../../test/utils/common.js';
 
-const SerializerStream = require('../lib');
-const generateSeriliazerTests = require('../../../test/utils/generate-serializer-tests');
-const { WritableStreamStub } = require('../../../test/utils/common');
-
-generateSeriliazerTests(exports, 'SeriliazerStream', (document, opts) => {
+generateSeriliazerTests('SerializerStream', 'SerializerStream', (document, opts) => {
     const stream = new SerializerStream(document, opts);
     const writable = new WritableStreamStub();
 
     stream.pipe(writable);
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         writable.once('finish', () => resolve(writable.writtenData));
     });
 });

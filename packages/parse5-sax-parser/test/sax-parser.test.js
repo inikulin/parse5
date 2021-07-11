@@ -1,26 +1,20 @@
-'use strict';
-
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const SAXParser = require('../lib');
-const loadSAXParserTestData = require('../../../test/utils/load-sax-parser-test-data');
-const {
+import assert from 'assert';
+import * as fs from 'fs';
+import { SAXParser } from '../lib/index.js';
+import { loadSAXParserTestData } from '../../../test/utils/load-sax-parser-test-data.js';
+import {
     getStringDiffMsg,
     writeChunkedToStream,
     removeNewLines,
-    WritableStreamStub
-} = require('../../../test/utils/common');
+    WritableStreamStub,
+} from '../../../test/utils/common.js';
 
 function sanitizeForComparison(str) {
-    return removeNewLines(str)
-        .replace(/\s/g, '')
-        .replace(/'/g, '"')
-        .toLowerCase();
+    return removeNewLines(str).replace(/\s/g, '').replace(/'/g, '"').toLowerCase();
 }
 
 function createBasicTest(html, expected, options) {
-    return function() {
+    return function () {
         //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         let actual = '';
         const parser = new SAXParser(options);
@@ -77,75 +71,75 @@ function createBasicTest(html, expected, options) {
     };
 }
 
-//Basic tests
-loadSAXParserTestData().forEach(
-    (test, idx) => (exports[`SAX - ${idx + 1}.${test.name}`] = createBasicTest(test.src, test.expected, test.options))
-);
+const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.meta.url);
 
-exports['SAX - Piping and .stop()'] = function(done) {
-    const parser = new SAXParser();
-    const writable = new WritableStreamStub();
-    let handlerCallCount = 0;
+suite('SAX parser', () => {
+    //Basic tests
+    loadSAXParserTestData().forEach((data, idx) =>
+        test(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected, data.options))
+    );
 
-    const handler = function() {
-        handlerCallCount++;
+    test('Piping and .stop()', (done) => {
+        const parser = new SAXParser();
+        const writable = new WritableStreamStub();
+        let handlerCallCount = 0;
 
-        if (handlerCallCount === 10) {
-            parser.stop();
-        }
-    };
+        const handler = function () {
+            handlerCallCount++;
 
-    fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'), 'utf8')
-        .pipe(parser)
-        .pipe(writable);
+            if (handlerCallCount === 10) {
+                parser.stop();
+            }
+        };
 
-    parser.on('startTag', handler);
-    parser.on('endTag', handler);
-    parser.on('doctype', handler);
-    parser.on('comment', handler);
-    parser.on('text', handler);
+        fs.createReadStream(hugePage, 'utf8').pipe(parser).pipe(writable);
 
-    writable.once('finish', () => {
-        const expected = fs
-            .readFileSync(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'))
-            .toString();
+        parser.on('startTag', handler);
+        parser.on('endTag', handler);
+        parser.on('doctype', handler);
+        parser.on('comment', handler);
+        parser.on('text', handler);
 
-        assert.strictEqual(handlerCallCount, 10);
-        assert.strictEqual(writable.writtenData, expected);
-        done();
-    });
-};
+        writable.once('finish', () => {
+            const expected = fs.readFileSync(hugePage).toString();
 
-exports['Regression - SAX - Parser silently exits on big files (GH-97)'] = function(done) {
-    const parser = new SAXParser();
-
-    fs.createReadStream(path.join(__dirname, '../../../test/data/huge-page/huge-page.html'), 'utf8').pipe(parser);
-
-    //NOTE: This is a smoke test - in case of regression it will fail with timeout.
-    parser.once('finish', done);
-};
-
-exports['Regression - SAX - Last text chunk must be flushed (GH-271)'] = done => {
-    const parser = new SAXParser();
-    let foundText = false;
-
-    parser.on('text', ({ text }) => {
-        foundText = true;
-        assert.strictEqual(text, 'text');
+            assert.strictEqual(handlerCallCount, 10);
+            assert.strictEqual(writable.writtenData, expected);
+            done();
+        });
     });
 
-    parser.once('finish', () => {
-        assert.ok(foundText);
-        done();
+    test('Parser silently exits on big files (GH-97)', (done) => {
+        const parser = new SAXParser();
+
+        fs.createReadStream(hugePage, 'utf8').pipe(parser);
+
+        //NOTE: This is a smoke test - in case of regression it will fail with timeout.
+        parser.once('finish', done);
     });
 
-    parser.write('text');
-    parser.end();
-};
+    test('Last text chunk must be flushed (GH-271)', (done) => {
+        const parser = new SAXParser();
+        let foundText = false;
 
-exports['Regression - SAX - Should not accept binary input (GH-269)'] = () => {
-    const stream = new SAXParser();
-    const buf = Buffer.from('test');
+        parser.on('text', ({ text }) => {
+            foundText = true;
+            assert.strictEqual(text, 'text');
+        });
 
-    assert.throws(() => stream.write(buf), TypeError);
-};
+        parser.once('finish', () => {
+            assert.ok(foundText);
+            done();
+        });
+
+        parser.write('text');
+        parser.end();
+    });
+
+    test('Should not accept binary input (GH-269)', () => {
+        const stream = new SAXParser();
+        const buf = Buffer.from('test');
+
+        assert.throws(() => stream.write(buf), TypeError);
+    });
+});

@@ -1,15 +1,13 @@
-'use strict';
-
-const Mixin = require('../../utils/mixin');
-const Tokenizer = require('../../tokenizer');
-const LocationInfoTokenizerMixin = require('./tokenizer-mixin');
-const LocationInfoOpenElementStackMixin = require('./open-element-stack-mixin');
-const HTML = require('../../common/html');
+import { Mixin } from '../../utils/mixin.js';
+import { Tokenizer } from '../../tokenizer/index.js';
+import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
+import { LocationInfoOpenElementStackMixin } from './open-element-stack-mixin.js';
+import * as HTML from '../../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
 
-class LocationInfoParserMixin extends Mixin {
+export class LocationInfoParserMixin extends Mixin {
     constructor(parser) {
         super(parser);
 
@@ -25,8 +23,10 @@ class LocationInfoParserMixin extends Mixin {
         let loc = null;
 
         if (this.lastStartTagToken) {
-            loc = Object.assign({}, this.lastStartTagToken.location);
-            loc.startTag = this.lastStartTagToken.location;
+            loc = {
+                ...this.lastStartTagToken.location,
+                startTag: this.lastStartTagToken.location,
+            };
         }
 
         this.treeAdapter.setNodeSourceCodeLocation(element, loc);
@@ -45,7 +45,7 @@ class LocationInfoParserMixin extends Mixin {
                 const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
                 const endLoc = {};
                 if (isClosingEndTag) {
-                    endLoc.endTag = Object.assign({}, ctLoc);
+                    endLoc.endTag = { ...ctLoc };
                     endLoc.endLine = ctLoc.endLine;
                     endLoc.endCol = ctLoc.endCol;
                     endLoc.endOffset = ctLoc.endOffset;
@@ -74,9 +74,9 @@ class LocationInfoParserMixin extends Mixin {
                 mxn.posTracker = tokenizerMixin.posTracker;
 
                 Mixin.install(this.openElements, LocationInfoOpenElementStackMixin, {
-                    onItemPop: function(element) {
+                    onItemPop: function (element) {
                         mxn._setEndLocation(element, mxn.currentToken);
-                    }
+                    },
                 });
             },
 
@@ -215,9 +215,7 @@ class LocationInfoParserMixin extends Mixin {
                 } else {
                     this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
                 }
-            }
+            },
         };
     }
 }
-
-module.exports = LocationInfoParserMixin;

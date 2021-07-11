@@ -1,14 +1,13 @@
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const parse5 = require('../../packages/parse5/lib');
-const { generateTestsForEachTreeAdapter, getStringDiffMsg } = require('./common');
+import assert from 'assert';
+import * as fs from 'fs';
+import * as parse5 from '../../packages/parse5/lib/index.js';
+import { generateTestsForEachTreeAdapter, getStringDiffMsg } from './common.js';
 
-module.exports = function generateSeriliazerTests(moduleExports, prefix, serialize) {
-    const data = fs.readFileSync(path.join(__dirname, '../data/serialization/tests.json'));
+export function generateSeriliazerTests(name, prefix, serialize) {
+    const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url));
     const tests = JSON.parse(data);
 
-    generateTestsForEachTreeAdapter(moduleExports, (_test, treeAdapter) => {
+    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
         tests.forEach((test, idx) => {
             _test[`${prefix} - ${idx}.${test.name}`] = async () => {
                 const opts = { treeAdapter: treeAdapter };
@@ -20,4 +19,4 @@ module.exports = function generateSeriliazerTests(moduleExports, prefix, seriali
             };
         });
     });
-};
+}

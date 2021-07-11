@@ -1,9 +1,7 @@
-'use strict';
+import { Writable } from 'stream';
+import { Parser } from 'parse5/lib/parser/index.js';
 
-const { Writable } = require('stream');
-const Parser = require('parse5/lib/parser');
-
-class ParserStream extends Writable {
+export class ParserStream extends Writable {
     constructor(options) {
         super({ decodeStrings: false });
 
@@ -79,5 +77,3 @@ class ParserStream extends Writable {
         }
     }
 }
-
-module.exports = ParserStream;

@@ -1,9 +1,7 @@
-'use strict';
-
-const defaultTreeAdapter = require('../tree-adapters/default');
-const mergeOptions = require('../utils/merge-options');
-const doctype = require('../common/doctype');
-const HTML = require('../common/html');
+import * as defaultTreeAdapter from '../tree-adapters/default.js';
+import { mergeOptions } from '../utils/merge-options.js';
+import * as doctype from '../common/doctype.js';
+import * as HTML from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -11,7 +9,7 @@ const NS = HTML.NAMESPACES;
 
 //Default serializer options
 const DEFAULT_OPTIONS = {
-    treeAdapter: defaultTreeAdapter
+    treeAdapter: defaultTreeAdapter,
 };
 
 //Escaping regexes
@@ -22,7 +20,7 @@ const LT_REGEX = /</g;
 const GT_REGEX = />/g;
 
 //Serializer
-class Serializer {
+export class Serializer {
     constructor(node, options) {
         this.options = mergeOptions(DEFAULT_OPTIONS, options);
         this.treeAdapter = this.options.treeAdapter;
@@ -100,7 +98,7 @@ class Serializer {
 
         for (let i = 0, attrsLength = attrs.length; i < attrsLength; i++) {
             const attr = attrs[i];
-            const value = Serializer.escapeString(attr.value, true);
+            const value = escapeString(attr.value, true);
 
             this.html += ' ';
 
@@ -145,7 +143,7 @@ class Serializer {
         ) {
             this.html += content;
         } else {
-            this.html += Serializer.escapeString(content, false);
+            this.html += escapeString(content, false);
         }
     }
 
@@ -161,7 +159,7 @@ class Serializer {
 }
 
 // NOTE: used in tests and by rewriting stream
-Serializer.escapeString = function(str, attrMode) {
+export function escapeString(str, attrMode) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     if (attrMode) {
@@ -171,6 +169,4 @@ Serializer.escapeString = function(str, attrMode) {
     }
 
     return str;
-};
-
-module.exports = Serializer;
+}
