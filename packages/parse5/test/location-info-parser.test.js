@@ -126,6 +126,26 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
 
         assert.ok(!location.endTag);
     };
+
+    _test['Regression - location.endTag should be available adjusted SVG elements (GH-352)'] = function() {
+        const html = '<svg><foreignObject></foreignObject></svg>';
+
+        const opts = {
+            treeAdapter: treeAdapter,
+            sourceCodeLocationInfo: true
+        };
+
+        const fragment = parse5.parseFragment(html, opts);
+        const svg = treeAdapter.getChildNodes(fragment)[0];
+        const foreignObject = treeAdapter.getChildNodes(svg)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(foreignObject);
+
+        assert.ok(location.endTag);
+        assert.strictEqual(
+            html.slice(location.startTag.startOffset, location.endTag.endOffset),
+            '<foreignObject></foreignObject>'
+        );
+    };
 });
 
 exports['Updating node source code location (GH-314)'] = function() {
