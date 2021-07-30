@@ -163,6 +163,7 @@ const $ = (exports.TAG_NAMES = {
     U: 'u',
     UL: 'ul',
 
+    SLOT: 'slot',
     SVG: 'svg',
 
     VAR: 'var',
@@ -235,6 +236,7 @@ exports.SPECIAL_ELEMENTS = {
         [$.PARAM]: true,
         [$.PLAINTEXT]: true,
         [$.PRE]: true,
+        [$.SLOT]: true,
         [$.SCRIPT]: true,
         [$.SECTION]: true,
         [$.SELECT]: true,
