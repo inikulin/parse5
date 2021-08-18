@@ -7,6 +7,7 @@ const Mixin = require('parse5/lib/utils/mixin');
 const mergeOptions = require('parse5/lib/utils/merge-options');
 const DevNullStream = require('./dev-null-stream');
 const ParserFeedbackSimulator = require('./parser-feedback-simulator');
+const BufferSafekeepingPreprocessorMixin = require('../../parse5/lib/extensions/buffer-safekeeping/preprocessor-mixin');
 
 const DEFAULT_OPTIONS = {
     sourceCodeLocationInfo: false
@@ -20,9 +21,16 @@ class SAXParser extends Transform {
 
         this.tokenizer = new Tokenizer(options);
         this.locInfoMixin = null;
+        this.bufferSafekeepingMixin = null;
 
         if (this.options.sourceCodeLocationInfo) {
             this.locInfoMixin = Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
+            if (this.options.bufferSafekeeping) {
+                this.bufferSafekeepingMixin = Mixin.install(
+                    this.tokenizer.preprocessor,
+                    BufferSafekeepingPreprocessorMixin
+                );
+            }
         }
 
         this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.tokenizer);

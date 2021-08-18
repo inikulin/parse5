@@ -270,3 +270,21 @@ exports['Regression - RewritingStream - Should not accept binary input (GH-269)'
 
     assert.throws(() => stream.write(buf), TypeError);
 };
+
+exports['Regression - RewritingStream - should pass long text correctly (GH-292)'] = done => {
+    const source = 'a'.repeat(65540);
+    const parser = new RewritingStream();
+    let output = '';
+
+    parser.on('data', data => {
+        output += data.toString();
+    });
+
+    parser.once('finish', () => {
+        assert.strictEqual(output.length, source.length);
+        done();
+    });
+
+    parser.write(source);
+    parser.end();
+};

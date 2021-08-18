@@ -67,13 +67,30 @@ class Preprocessor {
     }
 
     dropParsedChunk() {
-        if (this.pos > this.bufferWaterline) {
-            this.lastCharPos -= this.pos;
-            this.html = this.html.substring(this.pos);
-            this.pos = 0;
-            this.lastGapPos = -1;
-            this.gapStack = [];
+        const lastPos = this.getDropPosition();
+        if (lastPos > this.bufferWaterline) {
+            this.lastCharPos -= lastPos;
+            this.html = this.html.substring(lastPos);
+            this.pos -= lastPos;
+            if (this.pos === 0) {
+                this.lastGapPos = -1;
+                this.gapStack = [];
+            } else {
+                this.gapStack.push(this.lastGapPos);
+                const newGapStack = [-1];
+                for (let i = 1; i < this.gapStack.length; i++) {
+                    if (this.gapStack[i] >= lastPos) {
+                        newGapStack.push(this.gapStack[i] >= lastPos);
+                    }
+                }
+                this.gapStack = newGapStack;
+                this.lastGapPos = this.gapStack.pop();
+            }
         }
+    }
+
+    getDropPosition() {
+        return this.pos;
     }
 
     write(chunk, isLastChunk) {

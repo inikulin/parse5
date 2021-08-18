@@ -5,7 +5,7 @@ const { escapeString } = require('parse5/lib/serializer');
 
 class RewritingStream extends SAXParser {
     constructor() {
-        super({ sourceCodeLocationInfo: true });
+        super({ sourceCodeLocationInfo: true, bufferSafekeeping: true });
 
         this.posTracker = this.locInfoMixin.posTracker;
     }
@@ -21,7 +21,9 @@ class RewritingStream extends SAXParser {
         const start = location.startOffset - droppedBufferSize;
         const end = location.endOffset - droppedBufferSize;
 
-        return this.tokenizer.preprocessor.html.slice(start, end);
+        const slice = this.tokenizer.preprocessor.html.slice(start, end);
+        this.bufferSafekeepingMixin.safekeepingOffset = location.endOffset;
+        return slice;
     }
 
     // Events
