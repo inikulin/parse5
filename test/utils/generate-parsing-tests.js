@@ -9,7 +9,7 @@ export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
     const tests = [];
 
     for (const dataDirPath of dataDirs) {
-        const testSetFileNames = fs.readdirSync(dataDirPath);
+        const testSetFileNames = fs.readdirSync(dataDirPath.pathname);
         const dirName = path.basename(dataDirPath.pathname);
 
         for (const fileName of testSetFileNames) {
