@@ -5,7 +5,8 @@ import { loadSAXParserTestData } from '../../test/utils/load-sax-parser-test-dat
 import { treeAdapters, WritableStreamStub } from '../../test/utils/common.js';
 import * as parse5 from '../../packages/parse5/lib/index.js';
 import { ParserStream as parse5Stream } from '../../packages/parse5-parser-stream/lib/index.js';
-import * as parse5Upstream from 'parse5';
+import parse5Upstream from 'parse5';
+import path from 'path';
 
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
 const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);

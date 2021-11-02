@@ -10,14 +10,14 @@ export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
 
     for (const dataDirPath of dataDirs) {
         const testSetFileNames = fs.readdirSync(dataDirPath);
-        const dirName = path.basename(dataDirPath);
+        const dirName = path.basename(dataDirPath.pathname);
 
         for (const fileName of testSetFileNames) {
             if (path.extname(fileName) !== '.dat') {
                 continue;
             }
 
-            const filePath = path.join(dataDirPath, fileName);
+            const filePath = path.join(dataDirPath.pathname, fileName);
             const testSet = fs.readFileSync(filePath, 'utf-8');
             const setName = fileName.replace('.dat', '');
 
