@@ -3,13 +3,13 @@ import Benchmark from 'benchmark';
 import { loadTreeConstructionTestData } from '../../test/utils/generate-parsing-tests.js';
 import { loadSAXParserTestData } from '../../test/utils/load-sax-parser-test-data.js';
 import { treeAdapters, WritableStreamStub } from '../../test/utils/common.js';
-import parse5 from '../../packages/parse5/lib/index.js';
-import parse5Stream from '../../packages/parse5-parser-stream/lib/index.js';
-import parse5Upstream from 'parse5';
+import * as parse5 from '../../packages/parse5/lib/index.js';
+import { ParserStream as parse5Stream } from '../../packages/parse5-parser-stream/lib/index.js';
+import * as parse5Upstream from 'parse5';
 
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
 const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);
-const saxPath = new URL('../../test/data/sax', import.meta.url);
+const saxPath = new URL('../../test/data/sax/', import.meta.url);
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
@@ -52,7 +52,9 @@ global.runPages = function (parser) {
 };
 
 // Stream data
-global.files = readdirSync(saxPath).map((dirName) => new URL('./src.html', dirName).pathname);
+global.files = readdirSync(saxPath).map((dirName) => {
+    return new URL(`./${dirName}/src.html`, saxPath).pathname;
+});
 
 // Utils
 function getHz(suite, testName) {

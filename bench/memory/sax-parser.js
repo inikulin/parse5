@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import format from 'human-format';
 import promisifyEvent from 'promisify-event';
-import memwatch from 'node-memwatch';
+import memwatch from '@airbnb/node-memwatch';
 import SAXParser from '../../packages/parse5-sax-parser/lib/index.js';
 
 main();
