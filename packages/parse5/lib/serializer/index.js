@@ -1,16 +1,10 @@
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
-import { mergeOptions } from '../utils/merge-options.js';
 import * as doctype from '../common/doctype.js';
 import * as HTML from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
-
-//Default serializer options
-const DEFAULT_OPTIONS = {
-    treeAdapter: defaultTreeAdapter,
-};
 
 //Escaping regexes
 const AMP_REGEX = /&/g;
@@ -22,7 +16,11 @@ const GT_REGEX = />/g;
 //Serializer
 export class Serializer {
     constructor(node, options) {
-        this.options = mergeOptions(DEFAULT_OPTIONS, options);
+        this.options = {
+            treeAdapter: defaultTreeAdapter,
+            ...options,
+        };
+
         this.treeAdapter = this.options.treeAdapter;
 
         this.html = '';

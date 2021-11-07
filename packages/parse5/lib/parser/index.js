@@ -5,7 +5,6 @@ import { LocationInfoParserMixin } from '../extensions/location-info/parser-mixi
 import { ErrorReportingParserMixin } from '../extensions/error-reporting/parser-mixin.js';
 import { Mixin } from '../utils/mixin.js';
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
-import { mergeOptions } from '../utils/merge-options.js';
 import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
 import { ERR } from '../common/error-codes.js';
@@ -16,13 +15,6 @@ import * as HTML from '../common/html.js';
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 const { ATTRS } = HTML;
-
-const DEFAULT_OPTIONS = {
-    scriptingEnabled: true,
-    sourceCodeLocationInfo: false,
-    onParseError: null,
-    treeAdapter: defaultTreeAdapter,
-};
 
 //Misc constants
 const HIDDEN_INPUT_TYPE = 'hidden';
@@ -319,7 +311,13 @@ const TOKEN_HANDLERS = {
 //Parser
 export class Parser {
     constructor(options) {
-        this.options = mergeOptions(DEFAULT_OPTIONS, options);
+        this.options = {
+            scriptingEnabled: true,
+            sourceCodeLocationInfo: false,
+            onParseError: null,
+            treeAdapter: defaultTreeAdapter,
+            ...options,
+        };
 
         this.treeAdapter = this.options.treeAdapter;
         this.pendingScript = null;

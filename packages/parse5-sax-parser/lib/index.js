@@ -2,19 +2,17 @@ import { Transform } from 'node:stream';
 import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from 'parse5/lib/extensions/location-info/tokenizer-mixin.js';
 import { Mixin } from 'parse5/lib/utils/mixin.js';
-import { mergeOptions } from 'parse5/lib/utils/merge-options.js';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
-
-const DEFAULT_OPTIONS = {
-    sourceCodeLocationInfo: false,
-};
 
 export class SAXParser extends Transform {
     constructor(options) {
         super({ encoding: 'utf8', decodeStrings: false });
 
-        this.options = mergeOptions(DEFAULT_OPTIONS, options);
+        this.options = {
+            sourceCodeLocationInfo: false,
+            ...options,
+        };
 
         this.tokenizer = new Tokenizer(options);
         this.locInfoMixin = null;
