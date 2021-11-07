@@ -910,7 +910,7 @@ export class Parser {
         const tn = this.treeAdapter.getTagName(element);
         const ns = this.treeAdapter.getNamespaceURI(element);
 
-        return HTML.SPECIAL_ELEMENTS[ns][tn];
+        return HTML.SPECIAL_ELEMENTS[ns].has(tn);
     }
 }
 
