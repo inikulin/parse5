@@ -73,19 +73,16 @@ export function assertNodeLocation(location, serializedNode, html, lines) {
 function loadParserLocationInfoTestData() {
     const dataDirPath = new URL('../data/location-info', import.meta.url);
     const testSetFileDirs = fs.readdirSync(dataDirPath);
-    const tests = [];
 
-    for (const dirName of testSetFileDirs) {
+    return testSetFileDirs.map((dirName) => {
         const dataFilePath = path.join(dataDirPath.pathname, dirName, 'data.html');
         const data = fs.readFileSync(dataFilePath).toString();
 
-        tests.push({
+        return {
             name: dirName,
             data: normalizeNewLine(data),
-        });
-    }
-
-    return tests;
+        };
+    });
 }
 
 export function generateLocationInfoParserTests(name, prefix, parse) {

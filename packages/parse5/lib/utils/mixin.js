@@ -21,10 +21,10 @@ Mixin.install = function (host, Ctor, opts) {
         host.__mixins = [];
     }
 
-    for (let i = 0; i < host.__mixins.length; i++) {
-        if (host.__mixins[i].constructor === Ctor) {
-            return host.__mixins[i];
-        }
+    const installedMixin = host.__mixins.find((mixin) => mixin.constructor === Ctor);
+
+    if (installedMixin) {
+        return installedMixin;
     }
 
     const mixin = new Ctor(host, opts);

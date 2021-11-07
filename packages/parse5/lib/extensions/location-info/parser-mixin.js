@@ -121,15 +121,10 @@ export class LocationInfoParserMixin extends Mixin {
                 orig._setDocumentType.call(this, token);
 
                 const documentChildren = this.treeAdapter.getChildNodes(this.document);
-                const cnLength = documentChildren.length;
+                const docTypeNode = documentChildren.find((node) => this.treeAdapter.isDocumentTypeNode(node));
 
-                for (let i = 0; i < cnLength; i++) {
-                    const node = documentChildren[i];
-
-                    if (this.treeAdapter.isDocumentTypeNode(node)) {
-                        this.treeAdapter.setNodeSourceCodeLocation(node, token.location);
-                        break;
-                    }
+                if (docTypeNode) {
+                    this.treeAdapter.setNodeSourceCodeLocation(docTypeNode, token.location);
                 }
             },
 

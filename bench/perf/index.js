@@ -46,8 +46,8 @@ global.runMicro = function (parser) {
 const pages = loadSAXParserTestData().map((test) => test.src);
 
 global.runPages = function (parser) {
-    for (let j = 0; j < pages.length; j++) {
-        parser.parse(pages[j]);
+    for (const page of pages) {
+        parser.parse(page);
     }
 };
 

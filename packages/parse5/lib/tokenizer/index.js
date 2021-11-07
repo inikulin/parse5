@@ -302,30 +302,16 @@ export class Tokenizer {
 
     _consumeSequenceIfMatch(pattern, startCp, caseSensitive) {
         let consumedCount = 0;
-        let isMatch = true;
-        const patternLength = pattern.length;
-        let patternPos = 0;
         let cp = startCp;
-        let patternCp = void 0;
 
-        for (; patternPos < patternLength; patternPos++) {
+        const isMatch = pattern.every((patternCp, patternPos) => {
             if (patternPos > 0) {
                 cp = this._consume();
                 consumedCount++;
             }
 
-            if (cp === $.EOF) {
-                isMatch = false;
-                break;
-            }
-
-            patternCp = pattern[patternPos];
-
-            if (cp !== patternCp && (caseSensitive || cp !== toAsciiLowerCodePoint(patternCp))) {
-                isMatch = false;
-                break;
-            }
-        }
+            return cp !== $.EOF && (cp === patternCp || (!caseSensitive && cp === toAsciiLowerCodePoint(patternCp)));
+        });
 
         if (!isMatch) {
             while (consumedCount--) {
@@ -338,17 +324,10 @@ export class Tokenizer {
 
     //Temp buffer
     _isTempBufferEqualToScriptString() {
-        if (this.tempBuff.length !== $$.SCRIPT_STRING.length) {
-            return false;
-        }
-
-        for (let i = 0; i < this.tempBuff.length; i++) {
-            if (this.tempBuff[i] !== $$.SCRIPT_STRING[i]) {
-                return false;
-            }
-        }
-
-        return true;
+        return (
+            this.tempBuff.length === $$.SCRIPT_STRING.length &&
+            this.tempBuff.every((value, index) => value === $$.SCRIPT_STRING[index])
+        );
     }
 
     //Token creation

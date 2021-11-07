@@ -41,9 +41,7 @@ export class Serializer {
         const childNodes = this.treeAdapter.getChildNodes(parentNode);
 
         if (childNodes) {
-            for (let i = 0, cnLength = childNodes.length; i < cnLength; i++) {
-                const currentNode = childNodes[i];
-
+            for (const currentNode of childNodes) {
                 if (this.treeAdapter.isElementNode(currentNode)) {
                     this._serializeElement(currentNode);
                 } else if (this.treeAdapter.isTextNode(currentNode)) {
@@ -94,10 +92,7 @@ export class Serializer {
     }
 
     _serializeAttributes(node) {
-        const attrs = this.treeAdapter.getAttrList(node);
-
-        for (let i = 0, attrsLength = attrs.length; i < attrsLength; i++) {
-            const attr = attrs[i];
+        for (const attr of this.treeAdapter.getAttrList(node)) {
             const value = escapeString(attr.value, true);
 
             this.html += ' ';
@@ -138,7 +133,7 @@ export class Serializer {
     _serializeTextNode(node) {
         const content = this.treeAdapter.getTextNodeContent(node);
         const parent = this.treeAdapter.getParentNode(node);
-        let parentTn = void 0;
+        let parentTn;
 
         if (parent && this.treeAdapter.isElementNode(parent)) {
             parentTn = this.treeAdapter.getTagName(parent);

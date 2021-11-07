@@ -121,12 +121,11 @@ export class FormattingElementList {
     }
 
     removeEntry(entry) {
-        for (let i = this.length - 1; i >= 0; i--) {
-            if (this.entries[i] === entry) {
-                this.entries.splice(i, 1);
-                this.length--;
-                break;
-            }
+        const entryIndex = this.entries.lastIndexOf(entry);
+
+        if (entryIndex >= 0) {
+            this.entries.splice(entryIndex, 1);
+            this.length--;
         }
     }
 

@@ -1,13 +1,7 @@
 import * as HTML from '../../packages/parse5/lib/common/html.js';
 
 function getSerializedTreeIndent(indent) {
-    let str = '|';
-
-    for (let i = 0; i < indent + 1; i++) {
-        str += ' ';
-    }
-
-    return str;
+    return '|'.padEnd(indent + 2, ' ');
 }
 
 function getElementSerializedNamespaceURI(element, treeAdapter) {
@@ -48,9 +42,7 @@ function serializeNodeList(nodes, indent, treeAdapter) {
             str += `<${getElementSerializedNamespaceURI(node, treeAdapter) + tn}>\n`;
 
             let childrenIndent = indent + 2;
-            const serializedAttrs = [];
-
-            for (const attr of treeAdapter.getAttrList(node)) {
+            const serializedAttrs = treeAdapter.getAttrList(node).map((attr) => {
                 let attrStr = getSerializedTreeIndent(childrenIndent);
 
                 if (attr.prefix) {
@@ -59,8 +51,8 @@ function serializeNodeList(nodes, indent, treeAdapter) {
 
                 attrStr += `${attr.name}="${attr.value}"\n`;
 
-                serializedAttrs.push(attrStr);
-            }
+                return attrStr;
+            });
 
             str += serializedAttrs.sort().join('');
 

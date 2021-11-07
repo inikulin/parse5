@@ -171,13 +171,7 @@ function loadTests(dataDirPath) {
                 unescapeDescrIO(descr);
             }
 
-            const expected = [];
-
-            for (const tokenEntry of descr.output) {
-                if (tokenEntry !== 'ParseError') {
-                    expected.push(tokenEntry);
-                }
-            }
+            const expected = descr.output.filter((tokenEntry) => tokenEntry !== 'ParseError');
 
             for (const initialState of descr.initialStates) {
                 tests.push({

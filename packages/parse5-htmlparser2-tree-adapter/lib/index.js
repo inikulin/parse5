@@ -83,14 +83,7 @@ export function getTemplateContent(templateElement) {
 
 export function setDocumentType(document, name, publicId, systemId) {
     const data = doctype.serializeContent(name, publicId, systemId);
-    let doctypeNode = null;
-
-    for (let i = 0; i < document.children.length; i++) {
-        if (document.children[i].type === 'directive' && document.children[i].name === '!doctype') {
-            doctypeNode = document.children[i];
-            break;
-        }
-    }
+    const doctypeNode = document.children.find((node) => node.type === 'directive' && node.name === '!doctype');
 
     if (doctypeNode) {
         doctypeNode.data = data;
@@ -182,18 +175,12 @@ export function getParentNode(node) {
 }
 
 export function getAttrList(element) {
-    const attrList = [];
-
-    for (const name in element.attribs) {
-        attrList.push({
-            name,
-            value: element.attribs[name],
-            namespace: element['x-attribsNamespace'][name],
-            prefix: element['x-attribsPrefix'][name],
-        });
-    }
-
-    return attrList;
+    return Object.keys(element.attribs).map((name) => ({
+        name,
+        value: element.attribs[name],
+        namespace: element['x-attribsNamespace'][name],
+        prefix: element['x-attribsPrefix'][name],
+    }));
 }
 
 //Node data

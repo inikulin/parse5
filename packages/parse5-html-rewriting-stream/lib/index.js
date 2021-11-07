@@ -58,13 +58,7 @@ export class RewritingStream extends SAXParser {
 
     emitStartTag(token) {
         let res = `<${token.tagName}`;
-
-        const { attrs } = token;
-
-        for (let i = 0; i < attrs.length; i++) {
-            res += ` ${attrs[i].name}="${escapeString(attrs[i].value, true)}"`;
-        }
-
+        res += token.attrs.reduce((res, attr) => `${res} ${attr.name}="${escapeString(attr.value, true)}"`, '');
         res += token.selfClosing ? '/>' : '>';
 
         this.push(res);

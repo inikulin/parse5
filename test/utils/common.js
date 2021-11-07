@@ -18,13 +18,7 @@ export function addSlashes(str) {
 }
 
 function createDiffMarker(markerPosition) {
-    let marker = '';
-
-    for (let i = 0; i < markerPosition - 1; i++) {
-        marker += ' ';
-    }
-
-    return `${marker}^\n`;
+    return '^\n'.padStart(markerPosition + 1, ' ');
 }
 
 function getRandomChunkSize(min, max) {

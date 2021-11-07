@@ -76,15 +76,11 @@ function generateParserFeedbackTest(parserTestFile) {
     const feedbackTest = {
         tests: tests
             .filter((test) => !test.fragmentContext) // TODO
-            .map((test) => {
-                const { input } = test;
-
-                return {
-                    description: addSlashes(input),
-                    input,
-                    output: collectParserTokens(input),
-                };
-            }),
+            .map(({ input }) => ({
+                description: addSlashes(input),
+                input,
+                output: collectParserTokens(input),
+            })),
     };
 
     return JSON.stringify(feedbackTest, null, 4);

@@ -37,13 +37,7 @@ function createBasicTest(html, expected, options) {
 
         parser.on('startTag', ({ tagName, attrs, selfClosing }) => {
             actual += `<${tagName}`;
-
-            if (attrs.length > 0) {
-                for (let i = 0; i < attrs.length; i++) {
-                    actual += ` ${attrs[i].name}="${attrs[i].value}"`;
-                }
-            }
-
+            actual += attrs.reduce((res, attr) => `${res} ${attr.name}="${attr.value}"`, '');
             actual += selfClosing ? '/>' : '>';
         });
 
