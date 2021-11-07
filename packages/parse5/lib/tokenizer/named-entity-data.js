@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use strict';
 
 //NOTE: this file contains auto-generated array mapped radix tree that is used for the named entity references consumption

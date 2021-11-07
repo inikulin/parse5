@@ -16,6 +16,12 @@
     ],
     "license": "MIT",
     "main": "./lib/index.js",
+    "scripts": {
+        "lint": "eslint \"lib/**/*.js\"",
+        "test": "nyc --reporter=html --reporter=text-summary --reporter=lcov mocha \"test/**/*.test.js\"",
+        "format": "prettier --write \"lib/**/*.js\"",
+        "prepublishOnly": "npm run lint && npm run test"
+    },
     "dependencies": {
         "parse5": "^6.0.1"
     },
@@ -25,5 +31,9 @@
     },
     "files": [
         "lib"
-    ]
+    ],
+    "devDependencies": {
+        "mocha": "^9.1.3",
+        "nyc": "^15.1.0"
+    }
 }

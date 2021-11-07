@@ -7,3 +7,5 @@ docs/05_api_reference.md
 package-lock.json
 bench/package-lock.json
 .DS_Store
+.nyc_output
+packages/*/coverage
