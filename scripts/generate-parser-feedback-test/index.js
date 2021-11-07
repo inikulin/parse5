@@ -28,7 +28,7 @@ async function main() {
 function appendToken(dest, token) {
     switch (token.type) {
         case Tokenizer.EOF_TOKEN:
-            return false;
+            return;
 
         case Tokenizer.NULL_CHARACTER_TOKEN:
         case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
@@ -38,15 +38,12 @@ function appendToken(dest, token) {
         case Tokenizer.CHARACTER_TOKEN:
             if (dest.length > 0 && dest[dest.length - 1].type === Tokenizer.CHARACTER_TOKEN) {
                 dest[dest.length - 1].chars += token.chars;
-
-                return true;
+                return;
             }
             break;
     }
 
     dest.push(token);
-
-    return true;
 }
 
 function collectParserTokens(html) {
