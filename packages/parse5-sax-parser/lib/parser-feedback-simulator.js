@@ -146,8 +146,12 @@ export class ParserFeedbackSimulator {
         if (!this.inForeignContent) {
             const previousNs = this.namespaceStack[this.namespaceStackTop - 1];
 
-            if (previousNs === NS.SVG && foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP[tn]) {
-                tn = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP[tn];
+            if (previousNs === NS.SVG) {
+                const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
+
+                if (adjustedTagName) {
+                    tn = adjustedTagName;
+                }
             }
 
             //NOTE: check for exit from integration point
