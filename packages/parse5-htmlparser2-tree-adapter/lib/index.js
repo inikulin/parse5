@@ -110,8 +110,7 @@ export function getDocumentMode(document) {
 export function detachNode(node) {
     if (node.parent) {
         const idx = node.parent.children.indexOf(node);
-        const { prev } = node;
-        const { next } = node;
+        const { prev, next } = node;
 
         node.prev = null;
         node.next = null;

@@ -78,8 +78,7 @@ export class ArrayMappedRadixTree {
     }
 
     _convertNode(node) {
-        const { data } = node;
-        const { branches } = node;
+        const { data, branches } = node;
 
         this._writeNodeMarker(data, branches);
 

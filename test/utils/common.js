@@ -109,12 +109,12 @@ export function getStringDiffMsg(actual, expected) {
             const expectedStr = `Expected: ${addSlashes(expected.substring(i - 100, i + 1))}`;
             const expectedDiffMarker = createDiffMarker(expectedStr.length);
 
-            diffMsg += `${expectedStr + addSlashes(expected.substring(i + 1, i + 20))}\n${expectedDiffMarker}`;
+            diffMsg += `${expectedStr}${addSlashes(expected.substring(i + 1, i + 20))}\n${expectedDiffMarker}`;
 
             const actualStr = `Actual:   ${addSlashes(actual.substring(i - 100, i + 1))}`;
             const actualDiffMarker = createDiffMarker(actualStr.length);
 
-            diffMsg += `${actualStr + addSlashes(actual.substring(i + 1, i + 20))}\n${actualDiffMarker}`;
+            diffMsg += `${actualStr}${addSlashes(actual.substring(i + 1, i + 20))}\n${actualDiffMarker}`;
 
             return diffMsg;
         }
