@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import format from 'human-format';
 import promisifyEvent from 'promisify-event';
 import memwatch from '@airbnb/node-memwatch';
-import SAXParser from '../../packages/parse5-sax-parser/lib/index.js';
+import { SAXParser } from '../../packages/parse5-sax-parser/lib/index.js';
 
 main();
 
@@ -15,7 +15,7 @@ async function main() {
     let heapDiff = null;
 
     memwatch.on('stats', (stats) => {
-        maxMemUsage = Math.max(maxMemUsage, stats['current_base']);
+        maxMemUsage = Math.max(maxMemUsage, stats.used_heap_size);
     });
 
     startDate = new Date();

@@ -1,12 +1,12 @@
 import { readFile, writeFile } from 'node:fs';
 import { promisify } from 'node:util';
 import { basename } from 'node:path';
-import { Parser } from '../../packages/parse5/lib/parser.js';
-import { Tokenizer } from '../../packages/parse5/lib/tokenzer.js';
-import { defaultTreeAdapter } from '../../packages/parse5/lib/tree-adapters/default.js';
+import { Parser } from '../../packages/parse5/lib/parser/index.js';
+import { Tokenizer } from '../../packages/parse5/lib/tokenizer/index.js';
+import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
 import { convertTokenToHtml5Lib } from '../../test/utils/generate-tokenization-tests.js';
 import { parseDatFile } from '../../test/utils/parse-dat-file.js';
-import { addSlashes } from '../../test/test/utils/common.js';
+import { addSlashes } from '../../test/utils/common.js';
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
