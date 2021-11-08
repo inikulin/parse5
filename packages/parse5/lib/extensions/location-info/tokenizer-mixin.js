@@ -127,9 +127,8 @@ export class LocationInfoTokenizerMixin extends Mixin {
         };
 
         //NOTE: patch initial states for each mode to obtain token start position
-        for (const modeName of Object.keys(Tokenizer.MODE)) {
-            const state = Tokenizer.MODE[modeName];
-
+        const statesToPatch = ['_stateData', '_stateRcdata', '_stateRawtext', '_stateScriptData', '_statePlaintext'];
+        for (const state of statesToPatch) {
             methods[state] = function (cp) {
                 mxn.ctLoc = mxn._getCurrentLocation();
                 orig[state].call(this, cp);

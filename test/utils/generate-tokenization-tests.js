@@ -138,7 +138,9 @@ function concatCharacterTokens(tokenEntries) {
 }
 
 function getTokenizerSuitableStateName(testDataStateName) {
-    return testDataStateName.toUpperCase().replace(/\s/g, '_');
+    const state = Tokenizer.MODE[testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase()];
+
+    return state;
 }
 
 function loadTests(dataDirPath) {
