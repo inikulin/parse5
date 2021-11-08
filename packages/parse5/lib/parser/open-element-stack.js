@@ -5,122 +5,38 @@ const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 
 //Element utils
-
-//OPTIMIZATION: Integer comparisons are low-cost, so we can use very fast tag name length filters here.
-//It's faster than using dictionary.
-function isImpliedEndTagRequired(tn) {
-    switch (tn.length) {
-        case 1:
-            return tn === $.P;
-
-        case 2:
-            return tn === $.RB || tn === $.RP || tn === $.RT || tn === $.DD || tn === $.DT || tn === $.LI;
-
-        case 3:
-            return tn === $.RTC;
-
-        case 6:
-            return tn === $.OPTION;
-
-        case 8:
-            return tn === $.OPTGROUP;
-    }
-
-    return false;
-}
-
-function isImpliedEndTagRequiredThoroughly(tn) {
-    switch (tn.length) {
-        case 1:
-            return tn === $.P;
-
-        case 2:
-            return (
-                tn === $.RB ||
-                tn === $.RP ||
-                tn === $.RT ||
-                tn === $.DD ||
-                tn === $.DT ||
-                tn === $.LI ||
-                tn === $.TD ||
-                tn === $.TH ||
-                tn === $.TR
-            );
-
-        case 3:
-            return tn === $.RTC;
-
-        case 5:
-            return tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD;
-
-        case 6:
-            return tn === $.OPTION;
-
-        case 7:
-            return tn === $.CAPTION;
-
-        case 8:
-            return tn === $.OPTGROUP || tn === $.COLGROUP;
-    }
-
-    return false;
-}
-
-function isScopingElement(tn, ns) {
-    switch (tn.length) {
-        case 2:
-            if (tn === $.TD || tn === $.TH) {
-                return ns === NS.HTML;
-            } else if (tn === $.MI || tn === $.MO || tn === $.MN || tn === $.MS) {
-                return ns === NS.MATHML;
-            }
-
-            break;
-
-        case 4:
-            if (tn === $.HTML) {
-                return ns === NS.HTML;
-            } else if (tn === $.DESC) {
-                return ns === NS.SVG;
-            }
-
-            break;
-
-        case 5:
-            switch (tn) {
-                case $.TABLE: {
-                    return ns === NS.HTML;
-                }
-                case $.MTEXT: {
-                    return ns === NS.MATHML;
-                }
-                case $.TITLE: {
-                    return ns === NS.SVG;
-                }
-                default:
-                // Do nothing
-            }
-
-            break;
-
-        case 6:
-            return (tn === $.APPLET || tn === $.OBJECT) && ns === NS.HTML;
-
-        case 7:
-            return (tn === $.CAPTION || tn === $.MARQUEE) && ns === NS.HTML;
-
-        case 8:
-            return tn === $.TEMPLATE && ns === NS.HTML;
-
-        case 13:
-            return tn === $.FOREIGN_OBJECT && ns === NS.SVG;
-
-        case 14:
-            return tn === $.ANNOTATION_XML && ns === NS.MATHML;
-    }
-
-    return false;
-}
+const IMPLICIT_END_TAG_REQUIRED = new Set([$.DD, $.DT, $.LI, $.OPTGROUP, $.OPTION, $.P, $.RB, $.RP, $.RT, $.RTC]);
+const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set([
+    ...IMPLICIT_END_TAG_REQUIRED,
+    $.CAPTION,
+    $.COLGROUP,
+    $.TBODY,
+    $.TD,
+    $.TFOOT,
+    $.TH,
+    $.THEAD,
+    $.TR,
+]);
+const SCOPING_ELEMENT_NS = new Map([
+    [$.APPLET, NS.HTML],
+    [$.CAPTION, NS.HTML],
+    [$.HTML, NS.HTML],
+    [$.MARQUEE, NS.HTML],
+    [$.OBJECT, NS.HTML],
+    [$.TABLE, NS.HTML],
+    [$.TD, NS.HTML],
+    [$.TEMPLATE, NS.HTML],
+    [$.TH, NS.HTML],
+    [$.ANNOTATION_XML, NS.MATHML],
+    [$.MI, NS.MATHML],
+    [$.MN, NS.MATHML],
+    [$.MO, NS.MATHML],
+    [$.MS, NS.MATHML],
+    [$.MTEXT, NS.MATHML],
+    [$.DESC, NS.SVG],
+    [$.FOREIGN_OBJECT, NS.SVG],
+    [$.TITLE, NS.SVG],
+]);
 
 //Stack of open elements
 export class OpenElementStack {
@@ -338,7 +254,7 @@ export class OpenElementStack {
                 return true;
             }
 
-            if (isScopingElement(tn, ns)) {
+            if (SCOPING_ELEMENT_NS.get(tn) === ns) {
                 return false;
             }
         }
@@ -358,7 +274,7 @@ export class OpenElementStack {
                 return true;
             }
 
-            if (isScopingElement(tn, ns)) {
+            if (SCOPING_ELEMENT_NS.get(tn) === ns) {
                 return false;
             }
         }
@@ -375,7 +291,7 @@ export class OpenElementStack {
                 return true;
             }
 
-            if (((tn === $.UL || tn === $.OL) && ns === NS.HTML) || isScopingElement(tn, ns)) {
+            if (((tn === $.UL || tn === $.OL) && ns === NS.HTML) || SCOPING_ELEMENT_NS.get(tn) === ns) {
                 return false;
             }
         }
@@ -392,7 +308,7 @@ export class OpenElementStack {
                 return true;
             }
 
-            if ((tn === $.BUTTON && ns === NS.HTML) || isScopingElement(tn, ns)) {
+            if ((tn === $.BUTTON && ns === NS.HTML) || SCOPING_ELEMENT_NS.get(tn) === ns) {
                 return false;
             }
         }
@@ -465,19 +381,19 @@ export class OpenElementStack {
 
     //Implied end tags
     generateImpliedEndTags() {
-        while (isImpliedEndTagRequired(this.currentTagName)) {
+        while (IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName)) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsThoroughly() {
-        while (isImpliedEndTagRequiredThoroughly(this.currentTagName)) {
+        while (IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagName)) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsWithExclusion(exclusionTagName) {
-        while (isImpliedEndTagRequired(this.currentTagName) && this.currentTagName !== exclusionTagName) {
+        while (IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName) && this.currentTagName !== exclusionTagName) {
             this.pop();
         }
     }
