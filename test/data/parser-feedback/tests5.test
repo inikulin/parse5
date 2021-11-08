@@ -408,6 +408,33 @@
                     "noscript"
                 ]
             ]
+        },
+        {
+            "description": "<noscript><!--</noscript>--></noscript>",
+            "input": "<noscript><!--</noscript>--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
         }
     ]
 }

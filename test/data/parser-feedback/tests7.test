@@ -427,8 +427,8 @@
             ]
         },
         {
-            "description": "<!doctype html><listing>\\r\\nX</listing>",
-            "input": "<!doctype html><listing>\r\nX</listing>",
+            "description": "<!doctype html><listing>\\nX</listing>",
+            "input": "<!doctype html><listing>\nX</listing>",
             "output": [
                 [
                     "DOCTYPE",
