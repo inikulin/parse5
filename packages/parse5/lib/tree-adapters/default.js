@@ -125,7 +125,7 @@ export function adoptAttributes(recipient, attrs) {
     const recipientAttrsMap = new Set(recipient.attrs.map((attr) => attr.name));
 
     for (let j = 0; j < attrs.length; j++) {
-        if (!recipientAttrsMap.includes(attrs[j].name)) {
+        if (!recipientAttrsMap.has(attrs[j].name)) {
             recipient.attrs.push(attrs[j]);
         }
     }

@@ -49,30 +49,30 @@ const AFTER_AFTER_BODY_MODE = 'AFTER_AFTER_BODY_MODE';
 const AFTER_AFTER_FRAMESET_MODE = 'AFTER_AFTER_FRAMESET_MODE';
 
 //Insertion mode reset map
-const INSERTION_MODE_RESET_MAP = {
-    [$.TR]: IN_ROW_MODE,
-    [$.TBODY]: IN_TABLE_BODY_MODE,
-    [$.THEAD]: IN_TABLE_BODY_MODE,
-    [$.TFOOT]: IN_TABLE_BODY_MODE,
-    [$.CAPTION]: IN_CAPTION_MODE,
-    [$.COLGROUP]: IN_COLUMN_GROUP_MODE,
-    [$.TABLE]: IN_TABLE_MODE,
-    [$.BODY]: IN_BODY_MODE,
-    [$.FRAMESET]: IN_FRAMESET_MODE,
-};
+const INSERTION_MODE_RESET_MAP = new Map([
+    [$.TR, IN_ROW_MODE],
+    [$.TBODY, IN_TABLE_BODY_MODE],
+    [$.THEAD, IN_TABLE_BODY_MODE],
+    [$.TFOOT, IN_TABLE_BODY_MODE],
+    [$.CAPTION, IN_CAPTION_MODE],
+    [$.COLGROUP, IN_COLUMN_GROUP_MODE],
+    [$.TABLE, IN_TABLE_MODE],
+    [$.BODY, IN_BODY_MODE],
+    [$.FRAMESET, IN_FRAMESET_MODE],
+]);
 
 //Template insertion mode switch map
-const TEMPLATE_INSERTION_MODE_SWITCH_MAP = {
-    [$.CAPTION]: IN_TABLE_MODE,
-    [$.COLGROUP]: IN_TABLE_MODE,
-    [$.TBODY]: IN_TABLE_MODE,
-    [$.TFOOT]: IN_TABLE_MODE,
-    [$.THEAD]: IN_TABLE_MODE,
-    [$.COL]: IN_COLUMN_GROUP_MODE,
-    [$.TR]: IN_TABLE_BODY_MODE,
-    [$.TD]: IN_ROW_MODE,
-    [$.TH]: IN_ROW_MODE,
-};
+const TEMPLATE_INSERTION_MODE_SWITCH_MAP = new Map([
+    [$.CAPTION, IN_TABLE_MODE],
+    [$.COLGROUP, IN_TABLE_MODE],
+    [$.TBODY, IN_TABLE_MODE],
+    [$.TFOOT, IN_TABLE_MODE],
+    [$.THEAD, IN_TABLE_MODE],
+    [$.COL, IN_COLUMN_GROUP_MODE],
+    [$.TR, IN_TABLE_BODY_MODE],
+    [$.TD, IN_ROW_MODE],
+    [$.TH, IN_ROW_MODE],
+]);
 
 //Token handlers map for insertion modes
 const TOKEN_HANDLERS = new Map([
@@ -378,6 +378,8 @@ const TOKEN_HANDLERS = new Map([
 ]);
 
 const TOKEN_HANDLER_IN_BODY = TOKEN_HANDLERS.get(IN_BODY_MODE);
+
+const TABLE_STRUCTURE_TAGS = new Set([$.TABLE, $.TBODY, $.TFOOT, $.THEAD, $.TR]);
 
 //Parser
 export class Parser {
@@ -853,9 +855,9 @@ export class Parser {
             }
 
             const tn = this.treeAdapter.getTagName(element);
-            const newInsertionMode = INSERTION_MODE_RESET_MAP[tn];
+            const newInsertionMode = INSERTION_MODE_RESET_MAP.get(tn);
 
-            if (newInsertionMode) {
+            if (newInsertionMode !== undefined) {
                 this.insertionMode = newInsertionMode;
                 break;
             } else if (!last && (tn === $.TD || tn === $.TH)) {
@@ -915,7 +917,7 @@ export class Parser {
     _isElementCausesFosterParenting(element) {
         const tn = this.treeAdapter.getTagName(element);
 
-        return tn === $.TABLE || tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD || tn === $.TR;
+        return TABLE_STRUCTURE_TAGS.has(tn);
     }
 
     _shouldFosterParentOnInsertion() {
@@ -1420,6 +1422,19 @@ function tokenInHeadNoScript(p, token) {
 
 // The "after head" insertion mode
 //------------------------------------------------------------------
+const ABANDONED_HEAD_ELEMENT_CHILDS = new Set([
+    $.BASE,
+    $.BASEFONT,
+    $.BGSOUND,
+    $.LINK,
+    $.META,
+    $.NOFRAMES,
+    $.SCRIPT,
+    $.STYLE,
+    $.TEMPLATE,
+    $.TITLE,
+]);
+
 function startTagAfterHead(p, token) {
     const tn = token.tagName;
 
@@ -1442,31 +1457,17 @@ function startTagAfterHead(p, token) {
 
             break;
         }
-        case $.BASE:
-        case $.BASEFONT:
-        case $.BGSOUND:
-        case $.LINK:
-        case $.META:
-        case $.NOFRAMES:
-        case $.SCRIPT:
-        case $.STYLE:
-        case $.TEMPLATE:
-        case $.TITLE: {
-            p._err(ERR.abandonedHeadElementChild);
-            p.openElements.push(p.headElement);
-            startTagInHead(p, token);
-            p.openElements.remove(p.headElement);
-
-            break;
-        }
-        case $.HEAD: {
-            p._err(ERR.misplacedStartTagForHeadElement);
-
-            break;
-        }
-        default: {
-            tokenAfterHead(p, token);
-        }
+        default:
+            if (ABANDONED_HEAD_ELEMENT_CHILDS.has(tn)) {
+                p._err(ERR.abandonedHeadElementChild);
+                p.openElements.push(p.headElement);
+                startTagInHead(p, token);
+                p.openElements.remove(p.headElement);
+            } else if (tn === $.HEAD) {
+                p._err(ERR.misplacedStartTagForHeadElement);
+            } else {
+                tokenAfterHead(p, token);
+            }
     }
 }
 
@@ -1542,7 +1543,7 @@ function numberedHeaderStartTagInBody(p, token) {
 
     const tn = p.openElements.currentTagName;
 
-    if (tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6) {
+    if (NUMBERED_HEADERS.has(tn)) {
         p.openElements.pop();
     }
 
@@ -1830,6 +1831,8 @@ function genericStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
+const NUMBERED_HEADERS = new Set([$.H1, $.H2, $.H3, $.H4, $.H5, $.H6]);
+
 //OPTIMIZATION: Integer comparisons are low-cost, so we can use very fast tag name length filters here.
 //It's faster than using dictionary.
 function startTagInBody(p, token) {
@@ -1864,62 +1867,51 @@ function startTagInBody(p, token) {
             break;
 
         case 2:
-            switch (tn) {
-                case $.DL:
-                case $.OL:
-                case $.UL: {
-                    addressStartTagInBody(p, token);
+            if (tn === $.DL || tn === $.OL || tn === $.UL) {
+                addressStartTagInBody(p, token);
+            } else if (NUMBERED_HEADERS.has(tn)) {
+                numberedHeaderStartTagInBody(p, token);
+            } else {
+                switch (tn) {
+                    case $.LI:
+                    case $.DD:
+                    case $.DT: {
+                        listItemStartTagInBody(p, token);
 
-                    break;
-                }
-                case $.H1:
-                case $.H2:
-                case $.H3:
-                case $.H4:
-                case $.H5:
-                case $.H6: {
-                    numberedHeaderStartTagInBody(p, token);
-
-                    break;
-                }
-                case $.LI:
-                case $.DD:
-                case $.DT: {
-                    listItemStartTagInBody(p, token);
-
-                    break;
-                }
-                case $.EM:
-                case $.TT: {
-                    bStartTagInBody(p, token);
-
-                    break;
-                }
-                case $.BR: {
-                    areaStartTagInBody(p, token);
-
-                    break;
-                }
-                case $.HR: {
-                    hrStartTagInBody(p, token);
-
-                    break;
-                }
-                case $.RB: {
-                    rbStartTagInBody(p, token);
-
-                    break;
-                }
-                case $.RT:
-                case $.RP: {
-                    rtStartTagInBody(p, token);
-
-                    break;
-                }
-                default:
-                    if (tn !== $.TH && tn !== $.TD && tn !== $.TR) {
-                        genericStartTagInBody(p, token);
+                        break;
                     }
+                    case $.EM:
+                    case $.TT: {
+                        bStartTagInBody(p, token);
+
+                        break;
+                    }
+                    case $.BR: {
+                        areaStartTagInBody(p, token);
+
+                        break;
+                    }
+                    case $.HR: {
+                        hrStartTagInBody(p, token);
+
+                        break;
+                    }
+                    case $.RB: {
+                        rbStartTagInBody(p, token);
+
+                        break;
+                    }
+                    case $.RT:
+                    case $.RP: {
+                        rtStartTagInBody(p, token);
+
+                        break;
+                    }
+                    default:
+                        if (tn !== $.TH && tn !== $.TD && tn !== $.TR) {
+                            genericStartTagInBody(p, token);
+                        }
+                }
             }
 
             break;
@@ -2404,30 +2396,16 @@ function endTagInBody(p, token) {
 
                     break;
                 }
-                case $.H1:
-                case $.H2:
-                case $.H3:
-                case $.H4:
-                case $.H5:
-                case $.H6: {
-                    numberedHeaderEndTagInBody(p, token);
-
-                    break;
-                }
-                case $.BR: {
-                    brEndTagInBody(p, token);
-
-                    break;
-                }
-                case $.EM:
-                case $.TT: {
-                    callAdoptionAgency(p, token);
-
-                    break;
-                }
-                default: {
-                    genericEndTagInBody(p, token);
-                }
+                default:
+                    if (NUMBERED_HEADERS.has(tn)) {
+                        numberedHeaderEndTagInBody(p, token);
+                    } else if (tn === $.BR) {
+                        brEndTagInBody(p, token);
+                    } else if (tn === $.EM || tn === $.TT) {
+                        callAdoptionAgency(p, token);
+                    } else {
+                        genericEndTagInBody(p, token);
+                    }
             }
 
             break;
@@ -2829,20 +2807,12 @@ function tokenInTableText(p, token) {
 
 // The "in caption" insertion mode
 //------------------------------------------------------------------
+const TABLE_VOID_ELEMENTS = new Set([$.CAPTION, $.COL, $.COLGROUP, $.TBODY, $.TD, $.TFOOT, $.TH, $.THEAD, $.TR]);
+
 function startTagInCaption(p, token) {
     const tn = token.tagName;
 
-    if (
-        tn === $.CAPTION ||
-        tn === $.COL ||
-        tn === $.COLGROUP ||
-        tn === $.TBODY ||
-        tn === $.TD ||
-        tn === $.TFOOT ||
-        tn === $.TH ||
-        tn === $.THEAD ||
-        tn === $.TR
-    ) {
+    if (TABLE_VOID_ELEMENTS.has(tn)) {
         if (p.openElements.hasInTableScope($.CAPTION)) {
             p.openElements.generateImpliedEndTags();
             p.openElements.popUntilTagNamePopped($.CAPTION);
@@ -3088,17 +3058,7 @@ function endTagInRow(p, token) {
 function startTagInCell(p, token) {
     const tn = token.tagName;
 
-    if (
-        tn === $.CAPTION ||
-        tn === $.COL ||
-        tn === $.COLGROUP ||
-        tn === $.TBODY ||
-        tn === $.TD ||
-        tn === $.TFOOT ||
-        tn === $.TH ||
-        tn === $.THEAD ||
-        tn === $.TR
-    ) {
+    if (TABLE_VOID_ELEMENTS.has(tn)) {
         if (p.openElements.hasInTableScope($.TD) || p.openElements.hasInTableScope($.TH)) {
             p._closeTableCell();
             p._processToken(token);
@@ -3118,7 +3078,7 @@ function endTagInCell(p, token) {
             p.activeFormattingElements.clearToLastMarker();
             p.insertionMode = IN_ROW_MODE;
         }
-    } else if (tn === $.TABLE || tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD || tn === $.TR) {
+    } else if (TABLE_STRUCTURE_TAGS.has(tn)) {
         if (p.openElements.hasInTableScope(tn)) {
             p._closeTableCell();
             p._processToken(token);
@@ -3261,24 +3221,26 @@ function endTagInSelectInTable(p, token) {
 
 // The "in template" insertion mode
 //------------------------------------------------------------------
+const TEMPLATE_START_TAGS = new Set([
+    $.BASE,
+    $.BASEFONT,
+    $.BGSOUND,
+    $.LINK,
+    $.META,
+    $.NOFRAMES,
+    $.SCRIPT,
+    $.STYLE,
+    $.TEMPLATE,
+    $.TITLE,
+]);
+
 function startTagInTemplate(p, token) {
     const tn = token.tagName;
 
-    if (
-        tn === $.BASE ||
-        tn === $.BASEFONT ||
-        tn === $.BGSOUND ||
-        tn === $.LINK ||
-        tn === $.META ||
-        tn === $.NOFRAMES ||
-        tn === $.SCRIPT ||
-        tn === $.STYLE ||
-        tn === $.TEMPLATE ||
-        tn === $.TITLE
-    ) {
+    if (TEMPLATE_START_TAGS.has(tn)) {
         startTagInHead(p, token);
     } else {
-        const newInsertionMode = TEMPLATE_INSERTION_MODE_SWITCH_MAP[tn] || IN_BODY_MODE;
+        const newInsertionMode = TEMPLATE_INSERTION_MODE_SWITCH_MAP.get(tn) ?? IN_BODY_MODE;
 
         p._popTmplInsertionMode();
         p._pushTmplInsertionMode(newInsertionMode);

@@ -39,7 +39,7 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
 ]);
 
 // Named entity tree flags
-const HAS_DATA_FLAG = 1;
+const HAS_DATA_FLAG = Math.trunc(1);
 const DATA_DUPLET_FLAG = 1 << 1;
 const HAS_BRANCHES_FLAG = 1 << 2;
 const MAX_BRANCH_MARKER_VALUE = HAS_DATA_FLAG | DATA_DUPLET_FLAG | HAS_BRANCHES_FLAG;
