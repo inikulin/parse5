@@ -13,6 +13,29 @@ const DOUBLE_QUOTE_REGEX = /"/g;
 const LT_REGEX = /</g;
 const GT_REGEX = />/g;
 
+// Sets
+const VOID_ELEMENTS = new Set([
+    $.AREA,
+    $.BASE,
+    $.BASEFONT,
+    $.BGSOUND,
+    $.BR,
+    $.COL,
+    $.EMBED,
+    $.FRAME,
+    $.HR,
+    $.IMG,
+    $.INPUT,
+    $.KEYGEN,
+    $.LINK,
+    $.META,
+    $.PARAM,
+    $.SOURCE,
+    $.TRACK,
+    $.WBR,
+]);
+const UNESCAPED_TEXT = new Set([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT, $.NOSCRIPT]);
+
 //Serializer
 export class Serializer {
     constructor(node, options) {
@@ -61,26 +84,7 @@ export class Serializer {
         this._serializeAttributes(node);
         this.html += '>';
 
-        if (
-            tn !== $.AREA &&
-            tn !== $.BASE &&
-            tn !== $.BASEFONT &&
-            tn !== $.BGSOUND &&
-            tn !== $.BR &&
-            tn !== $.COL &&
-            tn !== $.EMBED &&
-            tn !== $.FRAME &&
-            tn !== $.HR &&
-            tn !== $.IMG &&
-            tn !== $.INPUT &&
-            tn !== $.KEYGEN &&
-            tn !== $.LINK &&
-            tn !== $.META &&
-            tn !== $.PARAM &&
-            tn !== $.SOURCE &&
-            tn !== $.TRACK &&
-            tn !== $.WBR
-        ) {
+        if (!VOID_ELEMENTS.has(tn)) {
             const childNodesHolder =
                 tn === $.TEMPLATE && ns === NS.HTML ? this.treeAdapter.getTemplateContent(node) : node;
 
@@ -131,21 +135,9 @@ export class Serializer {
     _serializeTextNode(node) {
         const content = this.treeAdapter.getTextNodeContent(node);
         const parent = this.treeAdapter.getParentNode(node);
-        let parentTn;
-
-        if (parent && this.treeAdapter.isElementNode(parent)) {
-            parentTn = this.treeAdapter.getTagName(parent);
-        }
 
         this.html +=
-            parentTn === $.STYLE ||
-            parentTn === $.SCRIPT ||
-            parentTn === $.XMP ||
-            parentTn === $.IFRAME ||
-            parentTn === $.NOEMBED ||
-            parentTn === $.NOFRAMES ||
-            parentTn === $.PLAINTEXT ||
-            parentTn === $.NOSCRIPT
+            parent && this.treeAdapter.isElementNode(parent) && UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent))
                 ? content
                 : escapeString(content, false);
     }
@@ -165,9 +157,7 @@ export class Serializer {
 export function escapeString(str, attrMode) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
-    str = attrMode
+    return attrMode
         ? str.replace(DOUBLE_QUOTE_REGEX, '&quot;')
         : str.replace(LT_REGEX, '&lt;').replace(GT_REGEX, '&gt;');
-
-    return str;
 }
