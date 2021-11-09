@@ -148,12 +148,8 @@ export class OpenElementStack {
             this.pop();
 
             if (
-                tn === $.H1 ||
-                tn === $.H2 ||
-                tn === $.H3 ||
-                tn === $.H4 ||
-                tn === $.H5 ||
-                (tn === $.H6 && ns === NS.HTML)
+                (tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6) &&
+                ns === NS.HTML
             ) {
                 break;
             }
@@ -167,7 +163,7 @@ export class OpenElementStack {
 
             this.pop();
 
-            if (tn === $.TD || (tn === $.TH && ns === NS.HTML)) {
+            if ((tn === $.TD || tn === $.TH) && ns === NS.HTML) {
                 break;
             }
         }
