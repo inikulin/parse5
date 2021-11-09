@@ -13,11 +13,11 @@ export class FormattingElementList {
     //Noah Ark's condition
     //OPTIMIZATION: at first we try to find possible candidates for exclusion using
     //lightweight heuristics without thorough attributes check.
-    _getNoahArkConditionCandidates(newElement) {
+    _getNoahArkConditionCandidates(newElement, neAttrs) {
         const candidates = [];
 
         if (this.length >= NOAH_ARK_CAPACITY) {
-            const neAttrsLength = this.treeAdapter.getAttrList(newElement).length;
+            const neAttrsLength = neAttrs.length;
             const neTagName = this.treeAdapter.getTagName(newElement);
             const neNamespaceURI = this.treeAdapter.getNamespaceURI(newElement);
 
@@ -42,43 +42,24 @@ export class FormattingElementList {
             }
         }
 
-        return candidates.length < NOAH_ARK_CAPACITY ? [] : candidates;
+        return candidates;
     }
 
     _ensureNoahArkCondition(newElement) {
-        const candidates = this._getNoahArkConditionCandidates(newElement);
-        let cLength = candidates.length;
+        const neAttrs = this.treeAdapter.getAttrList(newElement);
+        const candidates = this._getNoahArkConditionCandidates(newElement, neAttrs);
 
-        if (cLength) {
-            const neAttrs = this.treeAdapter.getAttrList(newElement);
-            const neAttrsLength = neAttrs.length;
-            const neAttrsMap = Object.create(null);
-
+        if (candidates.length >= NOAH_ARK_CAPACITY) {
             //NOTE: build attrs map for the new element so we can perform fast lookups
-            for (let i = 0; i < neAttrsLength; i++) {
-                const neAttr = neAttrs[i];
-
-                neAttrsMap[neAttr.name] = neAttr.value;
-            }
-
-            for (let i = 0; i < neAttrsLength; i++) {
-                for (let j = 0; j < cLength; j++) {
-                    const cAttr = candidates[j].attrs[i];
-
-                    if (neAttrsMap[cAttr.name] !== cAttr.value) {
-                        candidates.splice(j, 1);
-                        cLength--;
-                    }
-
-                    if (candidates.length < NOAH_ARK_CAPACITY) {
-                        return;
-                    }
-                }
-            }
+            const neAttrsMap = new Map(neAttrs.map((neAttr) => [neAttr.name, neAttr.value]));
+            const filteredCandidates = candidates.filter((candidate) =>
+                // We know that `candidate.attrs.length === neAttrs.length`
+                candidate.attrs.every((cAttr) => neAttrsMap.get(cAttr.name) === cAttr.value)
+            );
 
             //NOTE: remove bottommost candidates until Noah's Ark condition will not be met
-            for (let i = cLength - 1; i >= NOAH_ARK_CAPACITY - 1; i--) {
-                this.entries.splice(candidates[i].idx, 1);
+            for (let i = filteredCandidates.length - 1; i >= NOAH_ARK_CAPACITY - 1; i--) {
+                this.entries.splice(filteredCandidates[i].idx, 1);
                 this.length--;
             }
         }
@@ -103,13 +84,7 @@ export class FormattingElementList {
     }
 
     insertElementAfterBookmark(element, token) {
-        let bookmarkIdx = this.length - 1;
-
-        for (; bookmarkIdx >= 0; bookmarkIdx--) {
-            if (this.entries[bookmarkIdx] === this.bookmark) {
-                break;
-            }
-        }
+        const bookmarkIdx = this.entries.lastIndexOf(this.bookmark);
 
         this.entries.splice(bookmarkIdx + 1, 0, {
             type: FormattingElementList.ELEMENT_ENTRY,
