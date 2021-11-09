@@ -43,35 +43,35 @@ export const CODE_POINTS = {
 };
 
 export const CODE_POINT_SEQUENCES = {
-    DASH_DASH_STRING: [0x2d, 0x2d], //--
-    DOCTYPE_STRING: [0x44, 0x4f, 0x43, 0x54, 0x59, 0x50, 0x45], //DOCTYPE
-    CDATA_START_STRING: [0x5b, 0x43, 0x44, 0x41, 0x54, 0x41, 0x5b], //[CDATA[
-    SCRIPT_STRING: [0x73, 0x63, 0x72, 0x69, 0x70, 0x74], //script
-    PUBLIC_STRING: [0x50, 0x55, 0x42, 0x4c, 0x49, 0x43], //PUBLIC
-    SYSTEM_STRING: [0x53, 0x59, 0x53, 0x54, 0x45, 0x4d], //SYSTEM
+    DASH_DASH_STRING: new Uint16Array([0x2d, 0x2d]), //--
+    DOCTYPE_STRING: new Uint16Array([0x44, 0x4f, 0x43, 0x54, 0x59, 0x50, 0x45]), //DOCTYPE
+    CDATA_START_STRING: new Uint16Array([0x5b, 0x43, 0x44, 0x41, 0x54, 0x41, 0x5b]), //[CDATA[
+    SCRIPT_STRING: new Uint16Array([0x73, 0x63, 0x72, 0x69, 0x70, 0x74]), //script
+    PUBLIC_STRING: new Uint16Array([0x50, 0x55, 0x42, 0x4c, 0x49, 0x43]), //PUBLIC
+    SYSTEM_STRING: new Uint16Array([0x53, 0x59, 0x53, 0x54, 0x45, 0x4d]), //SYSTEM
 };
 
 //Surrogates
-export function isSurrogate(cp) {
+export function isSurrogate(cp: number) {
     return cp >= 0xd8_00 && cp <= 0xdf_ff;
 }
 
-export function isSurrogatePair(cp) {
+export function isSurrogatePair(cp: number) {
     return cp >= 0xdc_00 && cp <= 0xdf_ff;
 }
 
-export function getSurrogatePairCodePoint(cp1, cp2) {
+export function getSurrogatePairCodePoint(cp1: number, cp2: number) {
     return (cp1 - 0xd8_00) * 0x4_00 + 0x24_00 + cp2;
 }
 
 //NOTE: excluding NULL and ASCII whitespace
-export function isControlCodePoint(cp) {
+export function isControlCodePoint(cp: number) {
     return (
         (cp !== 0x20 && cp !== 0x0a && cp !== 0x0d && cp !== 0x09 && cp !== 0x0c && cp >= 0x01 && cp <= 0x1f) ||
         (cp >= 0x7f && cp <= 0x9f)
     );
 }
 
-export function isUndefinedCodePoint(cp) {
+export function isUndefinedCodePoint(cp: number) {
     return (cp >= 0xfd_d0 && cp <= 0xfd_ef) || UNDEFINED_CODE_POINTS.has(cp);
 }

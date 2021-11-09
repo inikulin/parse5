@@ -1,4 +1,5 @@
 import { DOCUMENT_MODE } from './html.js';
+import { DoctypeToken } from './token.js';
 
 //Const
 const VALID_DOCTYPE_NAME = 'html';
@@ -83,18 +84,18 @@ const LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES = [
 ];
 
 //Utils
-function enquoteDoctypeId(id) {
+function enquoteDoctypeId(id: string): string {
     const quote = id.includes('"') ? "'" : '"';
 
     return quote + id + quote;
 }
 
-function hasPrefix(publicId, prefixes) {
+function hasPrefix(publicId: string, prefixes: string[]): boolean {
     return prefixes.some((prefix) => publicId.startsWith(prefix));
 }
 
 //API
-export function isConforming(token) {
+export function isConforming(token: DoctypeToken): boolean {
     return (
         token.name === VALID_DOCTYPE_NAME &&
         token.publicId === null &&
@@ -102,7 +103,7 @@ export function isConforming(token) {
     );
 }
 
-export function getDocumentMode(token) {
+export function getDocumentMode(token: DoctypeToken): string | null {
     if (token.name !== VALID_DOCTYPE_NAME) {
         return DOCUMENT_MODE.QUIRKS;
     }
@@ -139,7 +140,7 @@ export function getDocumentMode(token) {
     return DOCUMENT_MODE.NO_QUIRKS;
 }
 
-export function serializeContent(name, publicId, systemId) {
+export function serializeContent(name: string, publicId: string | null, systemId: string | null): string {
     let str = '!DOCTYPE ';
 
     if (name) {

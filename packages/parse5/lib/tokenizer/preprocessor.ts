@@ -11,35 +11,29 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 //NOTE: HTML input preprocessing
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream)
 export class Preprocessor {
-    constructor() {
-        this.html = null;
+    html: string | null = null;
+    pos = -1;
+    lastGapPos = -1;
+    lastCharPos = -1;
+    gapStack: number[] = [];
+    skipNextNewLine = false;
+    lastChunkWritten = false;
+    endOfChunkHit = false;
+    bufferWaterline = DEFAULT_BUFFER_WATERLINE;
 
-        this.pos = -1;
-        this.lastGapPos = -1;
-        this.lastCharPos = -1;
-
-        this.gapStack = [];
-
-        this.skipNextNewLine = false;
-
-        this.lastChunkWritten = false;
-        this.endOfChunkHit = false;
-        this.bufferWaterline = DEFAULT_BUFFER_WATERLINE;
-    }
-
-    _err() {
+    _err(_err: string) {
         // NOTE: err reporting is noop by default. Enabled by mixin.
     }
 
-    _addGap() {
+    private _addGap() {
         this.gapStack.push(this.lastGapPos);
         this.lastGapPos = this.pos;
     }
 
-    _processSurrogate(cp) {
+    private _processSurrogate(cp: number) {
         //NOTE: try to peek a surrogate pair
         if (this.pos !== this.lastCharPos) {
-            const nextCp = this.html.charCodeAt(this.pos + 1);
+            const nextCp = this.html!.charCodeAt(this.pos + 1);
 
             if (unicode.isSurrogatePair(nextCp)) {
                 //NOTE: we have a surrogate pair. Peek pair character and recalculate code point.
@@ -67,14 +61,14 @@ export class Preprocessor {
     dropParsedChunk() {
         if (this.pos > this.bufferWaterline) {
             this.lastCharPos -= this.pos;
-            this.html = this.html.substring(this.pos);
+            this.html = this.html!.substring(this.pos);
             this.pos = 0;
             this.lastGapPos = -1;
             this.gapStack = [];
         }
     }
 
-    write(chunk, isLastChunk) {
+    write(chunk: string, isLastChunk: boolean) {
         if (this.html) {
             this.html += chunk;
         } else {
@@ -86,14 +80,15 @@ export class Preprocessor {
         this.lastChunkWritten = isLastChunk;
     }
 
-    insertHtmlAtCurrentPos(chunk) {
-        this.html = this.html.substring(0, this.pos + 1) + chunk + this.html.substring(this.pos + 1, this.html.length);
+    insertHtmlAtCurrentPos(chunk: string) {
+        this.html =
+            this.html!.substring(0, this.pos + 1) + chunk + this.html!.substring(this.pos + 1, this.html!.length);
 
         this.lastCharPos = this.html.length - 1;
         this.endOfChunkHit = false;
     }
 
-    advance() {
+    advance(): number {
         this.pos++;
 
         if (this.pos > this.lastCharPos) {
@@ -101,7 +96,7 @@ export class Preprocessor {
             return $.EOF;
         }
 
-        let cp = this.html.charCodeAt(this.pos);
+        let cp = this.html!.charCodeAt(this.pos);
 
         //NOTE: any U+000A LINE FEED (LF) characters that immediately follow a U+000D CARRIAGE RETURN (CR) character
         //must be ignored.
@@ -136,7 +131,7 @@ export class Preprocessor {
         return cp;
     }
 
-    _checkForProblematicCharacters(cp) {
+    private _checkForProblematicCharacters(cp: number) {
         if (unicode.isControlCodePoint(cp)) {
             this._err(ERR.controlCharacterInInputStream);
         } else if (unicode.isUndefinedCodePoint(cp)) {
@@ -146,7 +141,7 @@ export class Preprocessor {
 
     retreat() {
         if (this.pos === this.lastGapPos) {
-            this.lastGapPos = this.gapStack.pop();
+            this.lastGapPos = this.gapStack.pop()!;
             this.pos--;
         }
 
