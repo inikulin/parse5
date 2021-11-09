@@ -13,6 +13,7 @@
         "noImplicitOverride": true,
         "noPropertyAccessFromIndexSignature": true,
         "moduleResolution": "node",
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "allowJs": true
     }
 }
