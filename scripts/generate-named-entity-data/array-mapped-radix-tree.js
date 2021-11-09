@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 import { Node } from './tree-node.js';
 
 const HAS_DATA_FLAG = Math.trunc(1);

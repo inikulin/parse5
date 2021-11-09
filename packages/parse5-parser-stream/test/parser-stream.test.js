@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
 import { parseChunked } from './utils/parse-chunked.js';
@@ -10,7 +10,7 @@ generateParsingTests('ParserStream', 'ParserStream', { skipFragments: true }, (t
 describe('ParserStream', () => {
     it('Fix empty stream parsing with ParserStream (GH-196)', (done) => {
         const parser = new ParserStream().once('finish', () => {
-            assert(parser.document.childNodes.length > 0);
+            assert.ok(parser.document.childNodes.length > 0);
             done();
         });
 

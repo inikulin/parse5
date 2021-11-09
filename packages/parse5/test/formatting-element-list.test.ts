@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 import * as HTML from '../lib/common/html.js';
 import { FormattingElementList } from '../lib/parser/formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
@@ -22,8 +22,8 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Push element'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const element1Token = 'token1';
-        const element2Token = 'token2';
+        const element1Token: any = 'token1';
+        const element2Token: any = 'token2';
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.P, NS.HTML, []);
 
@@ -42,7 +42,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Insert element after bookmark'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token = 'token1';
+        const token: any = 'token1';
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.P, NS.HTML, []);
         const element3 = treeAdapter.createElement($.SPAN, NS.HTML, []);
@@ -57,17 +57,17 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
         list.insertElementAfterBookmark(element4, token);
 
         assert.strictEqual(list.length, 4);
-        assert.strictEqual(list.entries[1].element, element4);
+        expect(list.entries[1]).toHaveProperty('element', element4);
     };
 
     _test['Push element - Noah Ark condition'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token1 = 'token1';
-        const token2 = 'token2';
-        const token3 = 'token3';
-        const token4 = 'token4';
-        const token5 = 'token5';
-        const token6 = 'token6';
+        const token1: any = 'token1';
+        const token2: any = 'token2';
+        const token3: any = 'token3';
+        const token4: any = 'token4';
+        const token5: any = 'token5';
+        const token6: any = 'token6';
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -85,34 +85,34 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
         list.pushElement(element1, token4);
 
         assert.strictEqual(list.length, 4);
-        assert.strictEqual(list.entries[0].token, token1);
-        assert.strictEqual(list.entries[1].token, token2);
-        assert.strictEqual(list.entries[2].token, token3);
-        assert.strictEqual(list.entries[3].token, token4);
+        expect(list.entries[0]).toHaveProperty('token', token1);
+        expect(list.entries[1]).toHaveProperty('token', token2);
+        expect(list.entries[2]).toHaveProperty('token', token3);
+        expect(list.entries[3]).toHaveProperty('token', token4);
 
         list.pushElement(element1, token5);
 
         assert.strictEqual(list.length, 4);
-        assert.strictEqual(list.entries[0].token, token2);
-        assert.strictEqual(list.entries[1].token, token3);
-        assert.strictEqual(list.entries[2].token, token4);
-        assert.strictEqual(list.entries[3].token, token5);
+        expect(list.entries[0]).toHaveProperty('token', token2);
+        expect(list.entries[1]).toHaveProperty('token', token3);
+        expect(list.entries[2]).toHaveProperty('token', token4);
+        expect(list.entries[3]).toHaveProperty('token', token5);
 
         list.insertMarker();
         list.pushElement(element1, token6);
 
         assert.strictEqual(list.length, 6);
-        assert.strictEqual(list.entries[0].token, token2);
-        assert.strictEqual(list.entries[1].token, token3);
-        assert.strictEqual(list.entries[2].token, token4);
-        assert.strictEqual(list.entries[3].token, token5);
-        assert.strictEqual(list.entries[4].type, FormattingElementList.MARKER_ENTRY);
-        assert.strictEqual(list.entries[5].token, token6);
+        expect(list.entries[0]).toHaveProperty('token', token2);
+        expect(list.entries[1]).toHaveProperty('token', token3);
+        expect(list.entries[2]).toHaveProperty('token', token4);
+        expect(list.entries[3]).toHaveProperty('token', token5);
+        expect(list.entries[4]).toHaveProperty('type', FormattingElementList.MARKER_ENTRY);
+        expect(list.entries[5]).toHaveProperty('token', token6);
     };
 
     _test['Clear to the last marker'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token = 'token';
+        const token: any = 'token';
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -138,7 +138,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Remove entry'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token = 'token';
+        const token: any = 'token';
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -159,13 +159,13 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
         assert.strictEqual(list.length, 2);
 
         for (let i = list.length - 1; i >= 0; i--) {
-            assert.notStrictEqual(list.entries[i].element, element1);
+            expect(list.entries[i]).not.toHaveProperty('element', element1);
         }
     };
 
     _test['Get entry in scope with given tag name'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token = 'token';
+        const token: any = 'token';
         const element = treeAdapter.createElement($.DIV, NS.HTML, []);
 
         assert.ok(!list.getElementEntryInScopeWithTagName($.DIV));
@@ -183,7 +183,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Get element entry'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token = 'token';
+        const token: any = 'token';
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.A, NS.HTML, []);
 
@@ -192,7 +192,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
         list.pushElement(element2, token);
         list.insertMarker();
 
-        const entry = list.getElementEntry(element1);
+        const entry = list.getElementEntry(element1)!;
 
         assert.strictEqual(entry.type, FormattingElementList.ELEMENT_ENTRY);
         assert.strictEqual(entry.token, token);

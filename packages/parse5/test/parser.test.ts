@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 import * as parse5 from '../lib/index.js';
 import { Parser } from '../lib/parser/index.js';
 import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
@@ -6,7 +6,7 @@ import { treeAdapters } from '../../../test/utils/common.js';
 
 const origParseFragment = Parser.prototype.parseFragment;
 
-generateParsingTests('parser', 'Parser', { skipFragments: false }, (test, opts) => ({
+generateParsingTests('parser', 'Parser', { skipFragments: false } as any, (test: any, opts: any) => ({
     node: test.fragmentContext
         ? parse5.parseFragment(test.fragmentContext, test.input, opts)
         : parse5.parse(test.input, opts),
@@ -44,30 +44,32 @@ describe('parser', () => {
 
             assert.strictEqual(args.fragmentContext, fragmentContext);
             assert.strictEqual(args.html, html);
-            assert(args.options.sourceCodeLocationInfo);
+            assert.ok(args.options.sourceCodeLocationInfo);
 
             args = parse5.parseFragment(html, opts);
 
-            assert(!args.fragmentContext);
+            assert.ok(!args.fragmentContext);
             assert.strictEqual(args.html, html);
-            assert(args.options.sourceCodeLocationInfo);
+            assert.ok(args.options.sourceCodeLocationInfo);
 
             args = parse5.parseFragment(html);
 
-            assert(!args.fragmentContext);
+            assert.ok(!args.fragmentContext);
             assert.strictEqual(args.html, html);
-            assert(!args.options.sourceCodeLocationInfo);
+            assert.ok(!args.options.sourceCodeLocationInfo);
         });
     });
 
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
             /*eslint-disable no-extend-native*/
+            // @ts-expect-error
             Object.prototype.heyYo = 123;
             /*eslint-enable no-extend-native*/
         });
 
         afterEach(() => {
+            // @ts-expect-error
             delete Object.prototype.heyYo;
         });
 

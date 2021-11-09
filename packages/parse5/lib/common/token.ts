@@ -18,17 +18,19 @@ export interface DoctypeToken {
     systemId: string | null;
 }
 
+export interface Attribute {
+    name: string;
+    value: string;
+    prefix?: string;
+    namespace?: string;
+}
+
 export interface TagToken {
     type: TokenType.START_TAG | TokenType.END_TAG;
     tagName: string;
     selfClosing: boolean;
     ackSelfClosing: boolean;
-    attrs: {
-        name: string;
-        value: string;
-        prefix: string | null;
-        namespace: string | null;
-    }[];
+    attrs: Attribute[];
 }
 
 export interface CommentToken {

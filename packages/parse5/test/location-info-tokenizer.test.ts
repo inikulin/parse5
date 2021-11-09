@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 import { Tokenizer } from '../lib/tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from '../lib/extensions/location-info/tokenizer-mixin.js';
 import { Mixin } from '../lib/utils/mixin.js';
@@ -97,24 +97,24 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (let token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
+        for (let token = tokenizer.getNextToken()!, j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
             if (token.type === Tokenizer.HIBERNATION_TOKEN) {
                 continue;
             }
 
             //Offsets
-            let actual = html.substring(token.location.startOffset, token.location.endOffset);
+            let actual = html.substring((token as any).location.startOffset, (token as any).location.endOffset);
 
             assert.strictEqual(actual, testCase.htmlChunks[j]);
 
             //Line/col
-            actual = getSubstringByLineCol(lines, token.location);
+            actual = getSubstringByLineCol(lines, (token as any).location);
 
             const expected = normalizeNewLine(testCase.htmlChunks[j]);
 
             assert.strictEqual(actual, expected);
 
-            token = tokenizer.getNextToken();
+            token = tokenizer.getNextToken()!;
             j++;
         }
     }

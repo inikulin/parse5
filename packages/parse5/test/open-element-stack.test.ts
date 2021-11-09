@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 import * as HTML from '../lib/common/html.js';
 import { OpenElementStack } from '../lib/parser/open-element-stack.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
@@ -119,7 +119,7 @@ generateTestsForEachTreeAdapter('open-element-stack', (_test, treeAdapter) => {
     };
 
     _test['Pop elements until numbered header popped'] = function () {
-        const element1 = treeAdapter.createElement($.H3, '', []);
+        const element1 = treeAdapter.createElement($.H3, NS.HTML, []);
         const element2 = treeAdapter.createElement('#element2', '', []);
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 

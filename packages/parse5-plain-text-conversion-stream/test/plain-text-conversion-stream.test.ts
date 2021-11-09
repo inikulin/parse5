@@ -1,4 +1,4 @@
-import assert from 'node:assert';
+import * as assert from 'node:assert';
 import * as parse5 from 'parse5';
 import { PlainTextConversionStream } from '../lib/index.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';

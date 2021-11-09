@@ -1,8 +1,12 @@
 import { Readable } from 'node:stream';
-import { Serializer } from 'parse5/lib/serializer/index.js';
+import { Serializer, SerializerOptions } from 'parse5/lib/serializer/index.js';
+
+type Node = any;
 
 export class SerializerStream extends Readable {
-    constructor(node, options) {
+    private serializer: Serializer;
+
+    constructor(node: Node, options: SerializerOptions) {
         super({ encoding: 'utf8' });
 
         this.serializer = new Serializer(node, options);
@@ -18,7 +22,7 @@ export class SerializerStream extends Readable {
     }
 
     //Readable stream implementation
-    _read() {
+    override _read() {
         this.serializer.serialize();
         this.push(null);
     }

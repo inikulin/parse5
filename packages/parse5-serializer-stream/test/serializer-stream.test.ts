@@ -1,8 +1,8 @@
 import { SerializerStream } from '../lib/index.js';
-import { generateSeriliazerTests } from '../../../test/utils/generate-serializer-tests.js';
+import { generateSerializerTests } from '../../../test/utils/generate-serializer-tests.js';
 import { WritableStreamStub } from '../../../test/utils/common.js';
 
-generateSeriliazerTests('SerializerStream', 'SerializerStream', (document, opts) => {
+generateSerializerTests('SerializerStream', 'SerializerStream', (document: any, opts: any) => {
     const stream = new SerializerStream(document, opts);
     const writable = new WritableStreamStub();
 

@@ -1,6 +1,6 @@
 import { Tokenizer } from '../tokenizer/index.js';
 import * as HTML from './html.js';
-import { TagToken } from './token.js';
+import type { TagToken, Attribute } from './token.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -237,7 +237,7 @@ function isMathMLTextIntegrationPoint(tn: string, ns: string) {
     return ns === NS.MATHML && (tn === $.MI || tn === $.MO || tn === $.MN || tn === $.MS || tn === $.MTEXT);
 }
 
-function isHtmlIntegrationPoint(tn: string, ns: string, attrs: TagToken['attrs']) {
+function isHtmlIntegrationPoint(tn: string, ns: string, attrs: Attribute[]) {
     if (ns === NS.MATHML && tn === $.ANNOTATION_XML) {
         for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].name === ATTRS.ENCODING) {
@@ -251,7 +251,7 @@ function isHtmlIntegrationPoint(tn: string, ns: string, attrs: TagToken['attrs']
     return ns === NS.SVG && (tn === $.FOREIGN_OBJECT || tn === $.DESC || tn === $.TITLE);
 }
 
-export function isIntegrationPoint(tn: string, ns: string, attrs: TagToken['attrs'], foreignNS: string) {
+export function isIntegrationPoint(tn: string, ns: string, attrs: Attribute[], foreignNS?: string) {
     if ((!foreignNS || foreignNS === NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs)) {
         return true;
     }

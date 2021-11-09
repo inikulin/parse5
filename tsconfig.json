@@ -1,9 +1,8 @@
 {
     "compilerOptions": {
         "target": "es2020",
-        "module": "es2020",
+        "module": "esnext",
         "declaration": true,
-        "importHelpers": true,
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -13,6 +12,7 @@
         "noPropertyAccessFromIndexSignature": true,
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
         "allowJs": true
     }
 }

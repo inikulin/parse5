@@ -36,18 +36,19 @@ const VOID_ELEMENTS = new Set([
 ]);
 const UNESCAPED_TEXT = new Set([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT, $.NOSCRIPT]);
 
+type Node = any;
+
+export interface SerializerOptions {
+    treeAdapter?: any;
+}
+
 //Serializer
 export class Serializer {
-    constructor(node, options) {
-        this.options = {
-            treeAdapter: defaultTreeAdapter,
-            ...options,
-        };
+    html = '';
+    treeAdapter: any;
 
-        this.treeAdapter = this.options.treeAdapter;
-
-        this.html = '';
-        this.startNode = node;
+    constructor(private startNode: Node, { treeAdapter = defaultTreeAdapter }: SerializerOptions) {
+        this.treeAdapter = treeAdapter;
     }
 
     //API
@@ -58,7 +59,7 @@ export class Serializer {
     }
 
     //Internals
-    _serializeChildNodes(parentNode) {
+    _serializeChildNodes(parentNode: Node) {
         const childNodes = this.treeAdapter.getChildNodes(parentNode);
 
         if (childNodes) {
@@ -76,7 +77,7 @@ export class Serializer {
         }
     }
 
-    _serializeElement(node) {
+    _serializeElement(node: Node) {
         const tn = this.treeAdapter.getTagName(node);
         const ns = this.treeAdapter.getNamespaceURI(node);
 
@@ -93,7 +94,7 @@ export class Serializer {
         }
     }
 
-    _serializeAttributes(node) {
+    _serializeAttributes(node: Node) {
         for (const attr of this.treeAdapter.getAttrList(node)) {
             const value = escapeString(attr.value, true);
 
@@ -101,52 +102,49 @@ export class Serializer {
 
             if (!attr.namespace) {
                 this.html += attr.name;
-            } else {
-                switch (attr.namespace) {
-                    case NS.XML: {
-                        this.html += `xml:${attr.name}`;
-
-                        break;
-                    }
-                    case NS.XMLNS: {
-                        if (attr.name !== 'xmlns') {
-                            this.html += 'xmlns:';
-                        }
-
-                        this.html += attr.name;
-
-                        break;
-                    }
-                    case NS.XLINK: {
-                        this.html += `xlink:${attr.name}`;
-
-                        break;
-                    }
-                    default: {
-                        this.html += `${attr.prefix}:${attr.name}`;
-                    }
+            } else switch (attr.namespace) {
+ case NS.XML: {
+                this.html += `xml:${attr.name}`;
+            
+ break;
+ }
+ case NS.XMLNS: {
+                if (attr.name !== 'xmlns') {
+                    this.html += 'xmlns:';
                 }
+
+                this.html += attr.name;
+            
+ break;
+ }
+ case NS.XLINK: {
+                this.html += `xlink:${attr.name}`;
+            
+ break;
+ }
+ default: {
+                this.html += `${attr.prefix}:${attr.name}`;
             }
+ }
 
             this.html += `="${value}"`;
         }
     }
 
-    _serializeTextNode(node) {
+    _serializeTextNode(node: Node) {
         const content = this.treeAdapter.getTextNodeContent(node);
         const parent = this.treeAdapter.getParentNode(node);
 
-        this.html +=
-            parent && this.treeAdapter.isElementNode(parent) && UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent))
-                ? content
-                : escapeString(content, false);
+        this.html += parent &&
+            this.treeAdapter.isElementNode(parent) &&
+            UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent)) ? content : escapeString(content, false);
     }
 
-    _serializeCommentNode(node) {
+    _serializeCommentNode(node: Node) {
         this.html += `<!--${this.treeAdapter.getCommentNodeContent(node)}-->`;
     }
 
-    _serializeDocumentTypeNode(node) {
+    _serializeDocumentTypeNode(node: Node) {
         const name = this.treeAdapter.getDocumentTypeNodeName(node);
 
         this.html += `<${doctype.serializeContent(name, null, null)}>`;
@@ -154,7 +152,7 @@ export class Serializer {
 }
 
 // NOTE: used in tests and by rewriting stream
-export function escapeString(str, attrMode) {
+export function escapeString(str: string, attrMode: boolean) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     return attrMode

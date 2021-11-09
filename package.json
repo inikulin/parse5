@@ -3,6 +3,7 @@
     "private": true,
     "type": "module",
     "devDependencies": {
+        "@types/dedent": "^0.7.0",
         "@types/jest": "^27.0.2",
         "@typescript-eslint/eslint-plugin": "^5.9.0",
         "dedent": "^0.7.0",
@@ -47,8 +48,22 @@
         ]
     },
     "jest": {
-        "preset": "ts-jest",
+        "preset": "ts-jest/presets/js-with-ts-esm",
+        "extensionsToTreatAsEsm": [
+            ".ts"
+        ],
         "testEnvironment": "node",
-        "coverageProvider": "v8"
+        "coverageProvider": "v8",
+        "globals": {
+            "ts-jest": {
+                "useESM": true
+            }
+        },
+        "moduleNameMapper": {
+            "^((?:\\.{1,2}|parse5.*)/.*)\\.js$": "$1"
+        },
+        "transformIgnorePatterns": [
+            "node_modules/(?!parse5|parse5-parser-stream)"
+        ]
     }
 }

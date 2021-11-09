@@ -1,19 +1,39 @@
+import type { Attribute, Token } from '../common/token.js';
+
 //Const
 const NOAH_ARK_CAPACITY = 3;
 
+enum EntryType {
+    Marker = 'MARKER_ENTRY',
+    Element = 'ELEMENT_ENTRY',
+}
+
+interface MarkerEntry {
+    type: EntryType.Marker;
+}
+
+interface ElementEntry {
+    type: EntryType.Element;
+    element: any;
+    token: Token;
+}
+
+type Entry = MarkerEntry | ElementEntry;
+
+type Element = any;
+
 //List of formatting elements
 export class FormattingElementList {
-    constructor(treeAdapter) {
-        this.length = 0;
-        this.entries = [];
-        this.treeAdapter = treeAdapter;
-        this.bookmark = null;
-    }
+    length = 0;
+    entries: Entry[] = [];
+    bookmark: Element | null = null;
+
+    constructor(private treeAdapter: any) {}
 
     //Noah Ark's condition
     //OPTIMIZATION: at first we try to find possible candidates for exclusion using
     //lightweight heuristics without thorough attributes check.
-    _getNoahArkConditionCandidates(newElement, neAttrs) {
+    _getNoahArkConditionCandidates(newElement: any, neAttrs: Attribute[]) {
         const candidates = [];
 
         if (this.length >= NOAH_ARK_CAPACITY) {
@@ -24,7 +44,7 @@ export class FormattingElementList {
             for (let i = this.length - 1; i >= 0; i--) {
                 const entry = this.entries[i];
 
-                if (entry.type === FormattingElementList.MARKER_ENTRY) {
+                if (entry.type === EntryType.Marker) {
                     break;
                 }
 
@@ -45,16 +65,16 @@ export class FormattingElementList {
         return candidates;
     }
 
-    _ensureNoahArkCondition(newElement) {
+    _ensureNoahArkCondition(newElement: Element) {
         const neAttrs = this.treeAdapter.getAttrList(newElement);
         const candidates = this._getNoahArkConditionCandidates(newElement, neAttrs);
 
         if (candidates.length >= NOAH_ARK_CAPACITY) {
             //NOTE: build attrs map for the new element so we can perform fast lookups
-            const neAttrsMap = new Map(neAttrs.map((neAttr) => [neAttr.name, neAttr.value]));
+            const neAttrsMap = new Map(neAttrs.map((neAttr: Attribute) => [neAttr.name, neAttr.value]));
             const filteredCandidates = candidates.filter((candidate) =>
                 // We know that `candidate.attrs.length === neAttrs.length`
-                candidate.attrs.every((cAttr) => neAttrsMap.get(cAttr.name) === cAttr.value)
+                candidate.attrs.every((cAttr: Attribute) => neAttrsMap.get(cAttr.name) === cAttr.value)
             );
 
             //NOTE: remove bottommost candidates until Noah's Ark condition will not be met
@@ -67,15 +87,15 @@ export class FormattingElementList {
 
     //Mutations
     insertMarker() {
-        this.entries.push({ type: FormattingElementList.MARKER_ENTRY });
+        this.entries.push({ type: EntryType.Marker });
         this.length++;
     }
 
-    pushElement(element, token) {
+    pushElement(element: Element, token: Token) {
         this._ensureNoahArkCondition(element);
 
         this.entries.push({
-            type: FormattingElementList.ELEMENT_ENTRY,
+            type: EntryType.Element,
             element,
             token,
         });
@@ -83,11 +103,11 @@ export class FormattingElementList {
         this.length++;
     }
 
-    insertElementAfterBookmark(element, token) {
-        const bookmarkIdx = this.entries.lastIndexOf(this.bookmark);
+    insertElementAfterBookmark(element: Element, token: Token) {
+        const bookmarkIdx = this.entries.lastIndexOf(this.bookmark!);
 
         this.entries.splice(bookmarkIdx + 1, 0, {
-            type: FormattingElementList.ELEMENT_ENTRY,
+            type: EntryType.Element,
             element,
             token,
         });
@@ -95,7 +115,7 @@ export class FormattingElementList {
         this.length++;
     }
 
-    removeEntry(entry) {
+    removeEntry(entry: Entry) {
         const entryIndex = this.entries.lastIndexOf(entry);
 
         if (entryIndex >= 0) {
@@ -106,22 +126,22 @@ export class FormattingElementList {
 
     clearToLastMarker() {
         while (this.length) {
-            const entry = this.entries.pop();
+            const entry = this.entries.pop()!;
 
             this.length--;
 
-            if (entry.type === FormattingElementList.MARKER_ENTRY) {
+            if (entry.type === EntryType.Marker) {
                 break;
             }
         }
     }
 
     //Search
-    getElementEntryInScopeWithTagName(tagName) {
+    getElementEntryInScopeWithTagName(tagName: string) {
         for (let i = this.length - 1; i >= 0; i--) {
             const entry = this.entries[i];
 
-            if (entry.type === FormattingElementList.MARKER_ENTRY) {
+            if (entry.type === EntryType.Marker) {
                 return null;
             }
 
@@ -133,19 +153,19 @@ export class FormattingElementList {
         return null;
     }
 
-    getElementEntry(element) {
+    getElementEntry(element: Element): ElementEntry | null {
         for (let i = this.length - 1; i >= 0; i--) {
             const entry = this.entries[i];
 
-            if (entry.type === FormattingElementList.ELEMENT_ENTRY && entry.element === element) {
+            if (entry.type === EntryType.Element && entry.element === element) {
                 return entry;
             }
         }
 
         return null;
     }
-}
 
-//Entry types
-FormattingElementList.MARKER_ENTRY = 'MARKER_ENTRY';
-FormattingElementList.ELEMENT_ENTRY = 'ELEMENT_ENTRY';
+    //Entry types
+    static MARKER_ENTRY = EntryType.Marker as const;
+    static ELEMENT_ENTRY = EntryType.Element as const;
+}
