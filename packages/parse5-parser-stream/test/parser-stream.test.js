@@ -7,8 +7,8 @@ generateParsingTests('ParserStream', 'ParserStream', { skipFragments: true }, (t
     parseChunked(test.input, opts)
 );
 
-suite('ParserStream', () => {
-    test('Fix empty stream parsing with ParserStream (GH-196)', (done) => {
+describe('ParserStream', () => {
+    it('Fix empty stream parsing with ParserStream (GH-196)', (done) => {
         const parser = new ParserStream().once('finish', () => {
             assert(parser.document.childNodes.length > 0);
             done();
@@ -17,7 +17,7 @@ suite('ParserStream', () => {
         parser.end();
     });
 
-    test('Should not accept binary input (GH-269)', () => {
+    it('Should not accept binary input (GH-269)', () => {
         const stream = new ParserStream();
         const buf = Buffer.from('test');
 

@@ -4,7 +4,7 @@ import { LocationInfoTokenizerMixin } from '../lib/extensions/location-info/toke
 import { Mixin } from '../lib/utils/mixin.js';
 import { getSubstringByLineCol, normalizeNewLine } from '../../../test/utils/common.js';
 
-test('Location Info (Tokenizer)', () => {
+it('Location Info (Tokenizer)', () => {
     const testCases = [
         {
             initialMode: Tokenizer.MODE.DATA,

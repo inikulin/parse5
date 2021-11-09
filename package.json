@@ -26,7 +26,7 @@
         "lint": "npm run lint:es && npm run lint:prettier",
         "lint:es": "eslint .",
         "lint:prettier": "npm run prettier -- --check",
-        "unit-tests": "mocha --ui tdd --reporter progress --timeout 20000 packages/**/test/*.test.js",
+        "unit-tests": "mocha --reporter progress --timeout 20000 packages/**/test/*.test.js",
         "test": "npm run lint && npm run unit-tests",
         "generate-feedback-tests": "node scripts/generate-parser-feedback-test test/data/html5lib-tests/tree-construction/*.dat test/data/tree-construction-regression/*.dat",
         "generate-named-entity-data": "node scripts/generate-named-entity-data",

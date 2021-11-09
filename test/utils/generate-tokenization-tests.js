@@ -197,7 +197,7 @@ export function generateTokenizationTests(name, prefix, testSuite, createTokenSo
     for (const testData of loadTests(testSuite)) {
         const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${testData.initialState}`;
 
-        test(testName, () => {
+        it(testName, () => {
             const chunks = makeChunks(testData.input);
             const result = tokenize(createTokenSource, chunks, testData.initialState, testData.lastStartTag);
 

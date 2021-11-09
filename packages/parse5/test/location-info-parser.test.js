@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import dedent from 'dedent';
 import * as parse5 from '../lib/index.js';
 import { generateLocationInfoParserTests } from '../../../test/utils/generate-location-info-parser-tests.js';
 import { assertStartTagLocation, assertNodeLocation } from '../../../test/utils/generate-location-info-parser-tests.js';
@@ -81,13 +82,13 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
     };
 
     _test['Regression - location line incorrect when a character is unconsumed (GH-151)'] = function () {
-        const html = [
-            '<html><body><script>',
-            '  var x = window.scrollY <',
-            '      100;',
-            '</script>',
-            '</body></html>',
-        ].join('\n');
+        const html = dedent`
+          <html><body><script>
+            var x = window.scrollY <
+                100;
+          </script>
+          </body></html>
+        `;
 
         const opts = {
             treeAdapter,
@@ -123,8 +124,8 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
     };
 });
 
-suite('location-info-parser', () => {
-    test('Updating node source code location (GH-314)', () => {
+describe('location-info-parser', () => {
+    it('Updating node source code location (GH-314)', () => {
         const sourceCodeLocationSetter = {
             setNodeSourceCodeLocation(node, location) {
                 node.sourceCodeLocation =

@@ -21,8 +21,8 @@ generateTestsForEachTreeAdapter('plain-test-conversion-stream', (_test, treeAdap
     };
 });
 
-suite('plain-text-conversion-stream', () => {
-    test('Should not accept binary input (GH-269)', () => {
+describe('plain-text-conversion-stream', () => {
+    it('Should not accept binary input (GH-269)', () => {
         const stream = new PlainTextConversionStream();
         const buf = Buffer.from('test');
 

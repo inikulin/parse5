@@ -67,13 +67,13 @@ function createBasicTest(html, expected, options) {
 
 const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.meta.url);
 
-suite('SAX parser', () => {
+describe('SAX parser', () => {
     //Basic tests
     for (const [idx, data] of loadSAXParserTestData().entries()) {
-        test(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected, data.options));
+        it(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected, data.options));
     }
 
-    test('Piping and .stop()', (done) => {
+    it('Piping and .stop()', (done) => {
         const parser = new SAXParser();
         const writable = new WritableStreamStub();
         let handlerCallCount = 0;
@@ -103,7 +103,7 @@ suite('SAX parser', () => {
         });
     });
 
-    test('Parser silently exits on big files (GH-97)', (done) => {
+    it('Parser silently exits on big files (GH-97)', (done) => {
         const parser = new SAXParser();
 
         fs.createReadStream(hugePage, 'utf8').pipe(parser);
@@ -112,7 +112,7 @@ suite('SAX parser', () => {
         parser.once('finish', done);
     });
 
-    test('Last text chunk must be flushed (GH-271)', (done) => {
+    it('Last text chunk must be flushed (GH-271)', (done) => {
         const parser = new SAXParser();
         let foundText = false;
 
@@ -130,7 +130,7 @@ suite('SAX parser', () => {
         parser.end();
     });
 
-    test('Should not accept binary input (GH-269)', () => {
+    it('Should not accept binary input (GH-269)', () => {
         const stream = new SAXParser();
         const buf = Buffer.from('test');
 

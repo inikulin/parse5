@@ -34,10 +34,10 @@ function createRewriterTest({ src, expected, assignTokenHandlers = () => {} }) {
     };
 }
 
-suite('RewritingStream', () => {
+describe('RewritingStream', () => {
     // Raw data tests
     for (const [idx, data] of loadSAXParserTestData().entries()) {
-        test(
+        it(
             `Raw token serialization - ${idx + 1}.${data.name}`,
             createRewriterTest({
                 src: data.src,
@@ -46,7 +46,7 @@ suite('RewritingStream', () => {
         );
     }
 
-    test(
+    it(
         'rewrite start tags',
         createRewriterTest({
             src: srcHtml,
@@ -76,7 +76,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test(
+    it(
         'rewrite end tags',
         createRewriterTest({
             src: srcHtml,
@@ -102,7 +102,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test(
+    it(
         'rewrite text',
         createRewriterTest({
             src: srcHtml,
@@ -130,7 +130,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test(
+    it(
         'rewrite comment',
         createRewriterTest({
             src: srcHtml,
@@ -156,7 +156,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test(
+    it(
         'rewrite doctype',
         createRewriterTest({
             src: srcHtml,
@@ -183,7 +183,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test(
+    it(
         'emit multiple',
         createRewriterTest({
             src: srcHtml,
@@ -209,7 +209,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test(
+    it(
         'rewrite raw',
         createRewriterTest({
             src: srcHtml,
@@ -239,7 +239,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test(
+    it(
         'Should escape entities in attributes and text',
         createRewriterTest({
             src: dedent`
@@ -269,7 +269,7 @@ suite('RewritingStream', () => {
         })
     );
 
-    test('Last text chunk must be flushed (GH-271)', (done) => {
+    it('Last text chunk must be flushed (GH-271)', (done) => {
         const parser = new RewritingStream();
         let foundText = false;
 
@@ -287,7 +287,7 @@ suite('RewritingStream', () => {
         parser.end();
     });
 
-    test('Should not accept binary input (GH-269)', () => {
+    it('Should not accept binary input (GH-269)', () => {
         const stream = new RewritingStream();
         const buf = Buffer.from('test');
 

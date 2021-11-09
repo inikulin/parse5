@@ -12,16 +12,16 @@ generateParsingTests('parser', 'Parser', { skipFragments: false }, (test, opts) 
         : parse5.parse(test.input, opts),
 }));
 
-suite('parser', () => {
-    test('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {
+describe('parser', () => {
+    it('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {
         const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
         const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
         assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
     });
 
-    suite('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
-        setup(() => {
+    describe('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
+        beforeEach(() => {
             Parser.prototype.parseFragment = function (html, fragmentContext) {
                 return {
                     html,
@@ -31,11 +31,11 @@ suite('parser', () => {
             };
         });
 
-        teardown(() => {
+        afterEach(() => {
             Parser.prototype.parseFragment = origParseFragment;
         });
 
-        test('parses correctly', () => {
+        it('parses correctly', () => {
             const fragmentContext = treeAdapters.default.createElement('div');
             const html = '<script></script>';
             const opts = { sourceCodeLocationInfo: true };
@@ -60,18 +60,18 @@ suite('parser', () => {
         });
     });
 
-    suite("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
-        setup(() => {
+    describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
+        beforeEach(() => {
             /*eslint-disable no-extend-native*/
             Object.prototype.heyYo = 123;
             /*eslint-enable no-extend-native*/
         });
 
-        teardown(() => {
+        afterEach(() => {
             delete Object.prototype.heyYo;
         });
 
-        test('parses correctly', () => {
+        it('parses correctly', () => {
             const fragment = parse5.parseFragment('<div id="123">', {
                 treeAdapter: treeAdapters.htmlparser2,
             });
@@ -80,7 +80,7 @@ suite('parser', () => {
         });
     });
 
-    test('Regression - DOCTYPE empty fields (GH-236)', () => {
+    it('Regression - DOCTYPE empty fields (GH-236)', () => {
         const document = parse5.parse('<!DOCTYPE>');
         const doctype = document.childNodes[0];
 
