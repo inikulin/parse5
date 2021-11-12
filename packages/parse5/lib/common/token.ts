@@ -10,8 +10,26 @@ export enum TokenType {
     HIBERNATION = 'HIBERNATION_TOKEN',
 }
 
-export interface DoctypeToken {
-    type: TokenType.DOCTYPE;
+export interface Location {
+    startLine: number;
+    startCol: number;
+    startOffset: number;
+    endLine: number;
+    endCol: number;
+    endOffset: number;
+}
+
+export interface LocationWithAttributes extends Location {
+    attrs: Record<string, Location>;
+}
+
+interface TokenBase {
+    readonly type: TokenType;
+    location?: Location;
+}
+
+export interface DoctypeToken extends TokenBase {
+    readonly type: TokenType.DOCTYPE;
     name: string | null;
     forceQuirks: boolean;
     publicId: string | null;
@@ -25,29 +43,30 @@ export interface Attribute {
     namespace?: string;
 }
 
-export interface TagToken {
-    type: TokenType.START_TAG | TokenType.END_TAG;
+export interface TagToken extends TokenBase {
+    readonly type: TokenType.START_TAG | TokenType.END_TAG;
     tagName: string;
     selfClosing: boolean;
     ackSelfClosing: boolean;
     attrs: Attribute[];
+    location?: LocationWithAttributes;
 }
 
-export interface CommentToken {
-    type: TokenType.COMMENT;
+export interface CommentToken extends TokenBase {
+    readonly type: TokenType.COMMENT;
     data: string;
 }
 
-interface EOFToken {
-    type: TokenType.EOF;
+interface EOFToken extends TokenBase {
+    readonly type: TokenType.EOF;
 }
 
-interface HibernationToken {
-    type: TokenType.HIBERNATION;
+interface HibernationToken extends TokenBase {
+    readonly type: TokenType.HIBERNATION;
 }
 
-export interface CharacterToken {
-    type: TokenType.CHARACTER | TokenType.NULL_CHARACTER | TokenType.WHITESPACE_CHARACTER;
+export interface CharacterToken extends TokenBase {
+    readonly type: TokenType.CHARACTER | TokenType.NULL_CHARACTER | TokenType.WHITESPACE_CHARACTER;
     chars: string;
 }
 

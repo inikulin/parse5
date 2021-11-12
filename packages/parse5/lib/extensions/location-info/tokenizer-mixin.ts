@@ -1,18 +1,20 @@
 import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
 import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
+import { Location, LocationWithAttributes } from '../../common/token.js';
 
-export class LocationInfoTokenizerMixin extends Mixin {
-    constructor(tokenizer) {
+export class LocationInfoTokenizerMixin extends Mixin<Tokenizer> {
+    posTracker: PositionTrackingPreprocessorMixin;
+    currentAttrLocation: Location | null = null;
+    ctLoc: Location | null = null;
+
+    constructor(private tokenizer: Tokenizer) {
         super(tokenizer);
 
-        this.tokenizer = tokenizer;
         this.posTracker = Mixin.install(tokenizer.preprocessor, PositionTrackingPreprocessorMixin);
-        this.currentAttrLocation = null;
-        this.ctLoc = null;
     }
 
-    _getCurrentLocation() {
+    _getCurrentLocation(): Location {
         return {
             startLine: this.posTracker.line,
             startCol: this.posTracker.col,
@@ -24,52 +26,50 @@ export class LocationInfoTokenizerMixin extends Mixin {
     }
 
     _attachCurrentAttrLocationInfo() {
-        this.currentAttrLocation.endLine = this.posTracker.line;
-        this.currentAttrLocation.endCol = this.posTracker.col;
-        this.currentAttrLocation.endOffset = this.posTracker.offset;
+        this.currentAttrLocation!.endLine = this.posTracker.line;
+        this.currentAttrLocation!.endCol = this.posTracker.col;
+        this.currentAttrLocation!.endOffset = this.posTracker.offset;
 
         const { currentToken, currentAttr } = this.tokenizer;
+        const loc = currentToken!.location as LocationWithAttributes;
 
-        if (!currentToken.location.attrs) {
-            currentToken.location.attrs = Object.create(null);
-        }
-
-        currentToken.location.attrs[currentAttr.name] = this.currentAttrLocation;
+        loc.attrs ??= Object.create(null);
+        loc.attrs[currentAttr.name] = this.currentAttrLocation!;
     }
 
-    _getOverriddenMethods(mxn, orig) {
-        const methods = {
-            _createStartTagToken() {
+    _getOverriddenMethods(mxn: LocationInfoTokenizerMixin, orig: Tokenizer): Partial<Tokenizer> {
+        const methods: Partial<Tokenizer> = {
+            _createStartTagToken(this: Tokenizer) {
                 orig._createStartTagToken.call(this);
-                this.currentToken.location = mxn.ctLoc;
+                this.currentToken!.location = mxn.ctLoc!;
             },
 
-            _createEndTagToken() {
+            _createEndTagToken(this: Tokenizer) {
                 orig._createEndTagToken.call(this);
-                this.currentToken.location = mxn.ctLoc;
+                this.currentToken!.location = mxn.ctLoc!;
             },
 
-            _createCommentToken() {
+            _createCommentToken(this: Tokenizer) {
                 orig._createCommentToken.call(this);
-                this.currentToken.location = mxn.ctLoc;
+                this.currentToken!.location = mxn.ctLoc!;
             },
 
-            _createDoctypeToken(initialName) {
+            _createDoctypeToken(this: Tokenizer, initialName: string) {
                 orig._createDoctypeToken.call(this, initialName);
-                this.currentToken.location = mxn.ctLoc;
+                this.currentToken!.location = mxn.ctLoc!;
             },
 
-            _createCharacterToken(type, ch) {
+            _createCharacterToken(this: Tokenizer, type, ch) {
                 orig._createCharacterToken.call(this, type, ch);
-                this.currentCharacterToken.location = mxn.ctLoc;
+                this.currentCharacterToken!.location = mxn.ctLoc!;
             },
 
-            _createEOFToken() {
+            _createEOFToken(this: Tokenizer) {
                 orig._createEOFToken.call(this);
-                this.currentToken.location = mxn._getCurrentLocation();
+                this.currentToken!.location = mxn._getCurrentLocation();
             },
 
-            _createAttr(attrNameFirstCh) {
+            _createAttr(attrNameFirstCh: string) {
                 orig._createAttr.call(this, attrNameFirstCh);
                 mxn.currentAttrLocation = mxn._getCurrentLocation();
             },
@@ -84,18 +84,20 @@ export class LocationInfoTokenizerMixin extends Mixin {
                 mxn._attachCurrentAttrLocationInfo();
             },
 
-            _emitCurrentToken() {
-                const ctLoc = this.currentToken.location;
+            _emitCurrentToken(this: Tokenizer) {
+                const ctLoc = this.currentToken!.location!;
+
+                const { currentCharacterToken } = this;
 
                 //NOTE: if we have pending character token make it's end location equal to the
                 //current token's start location.
-                if (this.currentCharacterToken) {
-                    this.currentCharacterToken.location.endLine = ctLoc.startLine;
-                    this.currentCharacterToken.location.endCol = ctLoc.startCol;
-                    this.currentCharacterToken.location.endOffset = ctLoc.startOffset;
+                if (currentCharacterToken) {
+                    currentCharacterToken.location!.endLine = ctLoc.startLine;
+                    currentCharacterToken.location!.endCol = ctLoc.startCol;
+                    currentCharacterToken.location!.endOffset = ctLoc.startOffset;
                 }
 
-                if (this.currentToken.type === Tokenizer.EOF_TOKEN) {
+                if (this.currentToken!.type === Tokenizer.EOF_TOKEN) {
                     ctLoc.endLine = ctLoc.startLine;
                     ctLoc.endCol = ctLoc.startCol;
                     ctLoc.endOffset = ctLoc.startOffset;
@@ -108,15 +110,15 @@ export class LocationInfoTokenizerMixin extends Mixin {
                 orig._emitCurrentToken.call(this);
             },
 
-            _emitCurrentCharacterToken() {
-                const ctLoc = this.currentCharacterToken && this.currentCharacterToken.location;
+            _emitCurrentCharacterToken(this: Tokenizer) {
+                const ctLoc = this.currentCharacterToken?.location;
 
                 //NOTE: if we have character token and it's location wasn't set in the _emitCurrentToken(),
                 //then set it's location at the current preprocessor position.
                 //We don't need to increment preprocessor position, since character token
                 //emission is always forced by the start of the next character token here.
                 //So, we already have advanced position.
-                if (ctLoc && ctLoc.endOffset === -1) {
+                if (ctLoc?.endOffset === -1) {
                     ctLoc.endLine = mxn.posTracker.line;
                     ctLoc.endCol = mxn.posTracker.col;
                     ctLoc.endOffset = mxn.posTracker.offset;
@@ -127,7 +129,13 @@ export class LocationInfoTokenizerMixin extends Mixin {
         };
 
         //NOTE: patch initial states for each mode to obtain token start position
-        for (const state of ['_stateData', '_stateRcdata', '_stateRawtext', '_stateScriptData', '_statePlaintext']) {
+        for (const state of [
+            '_stateData',
+            '_stateRcdata',
+            '_stateRawtext',
+            '_stateScriptData',
+            '_statePlaintext',
+        ] as const) {
             methods[state] = function (cp) {
                 mxn.ctLoc = mxn._getCurrentLocation();
                 orig[state].call(this, cp);

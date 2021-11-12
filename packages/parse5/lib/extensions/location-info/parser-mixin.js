@@ -11,8 +11,7 @@ export class LocationInfoParserMixin extends Mixin {
     constructor(parser) {
         super(parser);
 
-        this.parser = parser;
-        this.treeAdapter = this.parser.treeAdapter;
+        this.treeAdapter = parser.treeAdapter;
         this.posTracker = null;
         this.lastStartTagToken = null;
         this.lastFosterParentingLocation = null;

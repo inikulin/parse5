@@ -1,7 +1,7 @@
 import type { Preprocessor } from './../../tokenizer/preprocessor.js';
-import { Mixin, MappedMethods } from '../../utils/mixin.js';
+import { Mixin } from '../../utils/mixin.js';
 
-export class PositionTrackingPreprocessorMixin extends Mixin<typeof Preprocessor> {
+export class PositionTrackingPreprocessorMixin extends Mixin<Preprocessor> {
     isEol = false;
     lineStartPos = 0;
     droppedBufferSize = 0;
@@ -9,10 +9,7 @@ export class PositionTrackingPreprocessorMixin extends Mixin<typeof Preprocessor
     col = 0;
     line = 1;
 
-    override _getOverriddenMethods(
-        mxn: PositionTrackingPreprocessorMixin,
-        orig: MappedMethods<typeof Preprocessor>
-    ): MappedMethods<typeof Preprocessor> {
+    override _getOverriddenMethods(mxn: PositionTrackingPreprocessorMixin, orig: Preprocessor): Partial<Preprocessor> {
         return {
             advance(this: Preprocessor) {
                 const pos = this.pos + 1;
