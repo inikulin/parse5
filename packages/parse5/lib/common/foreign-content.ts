@@ -133,7 +133,7 @@ export const SVG_TAG_NAMES_ADJUSTMENT_MAP = new Map([
 ]);
 
 //Tags that causes exit from foreign content
-const EXITS_FOREIGN_CONTENT = new Set([
+const EXITS_FOREIGN_CONTENT = new Set<string>([
     $.B,
     $.BIG,
     $.BLOCKQUOTE,
