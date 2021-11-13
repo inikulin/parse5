@@ -99,7 +99,7 @@ export function isConforming(token: DoctypeToken): boolean {
     );
 }
 
-export function getDocumentMode(token: DoctypeToken): string | null {
+export function getDocumentMode(token: DoctypeToken): DOCUMENT_MODE {
     if (token.name !== VALID_DOCTYPE_NAME) {
         return DOCUMENT_MODE.QUIRKS;
     }

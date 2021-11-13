@@ -61,7 +61,7 @@ export interface CommentToken extends TokenBase {
     data: string;
 }
 
-interface EOFToken extends TokenBase {
+export interface EOFToken extends TokenBase {
     readonly type: TokenType.EOF;
 }
 

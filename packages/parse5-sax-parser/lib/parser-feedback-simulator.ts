@@ -22,7 +22,7 @@ export class ParserFeedbackSimulator {
     }
 
     getNextToken(): Token {
-        const token = this.tokenizer.getNextToken()!;
+        const token = this.tokenizer.getNextToken();
 
         if (token.type === Tokenizer.START_TAG_TOKEN) {
             this._handleStartTagToken(token);

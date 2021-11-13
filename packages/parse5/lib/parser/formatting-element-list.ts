@@ -1,4 +1,4 @@
-import type { Attribute, Token } from '../common/token.js';
+import type { Attribute, TagToken } from '../common/token.js';
 import type { TreeAdapterTypeMap } from './../tree-adapters/interface';
 
 //Const
@@ -13,13 +13,13 @@ interface MarkerEntry {
     type: EntryType.Marker;
 }
 
-interface ElementEntry<T extends TreeAdapterTypeMap> {
+export interface ElementEntry<T extends TreeAdapterTypeMap> {
     type: EntryType.Element;
     element: T['element'];
-    token: Token;
+    token: TagToken;
 }
 
-type Entry<T extends TreeAdapterTypeMap> = MarkerEntry | ElementEntry<T>;
+export type Entry<T extends TreeAdapterTypeMap> = MarkerEntry | ElementEntry<T>;
 
 //List of formatting elements
 export class FormattingElementList<T extends TreeAdapterTypeMap> {
@@ -90,7 +90,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         this.length++;
     }
 
-    pushElement(element: T['element'], token: Token) {
+    pushElement(element: T['element'], token: TagToken) {
         this._ensureNoahArkCondition(element);
 
         this.entries.push({
@@ -102,7 +102,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         this.length++;
     }
 
-    insertElementAfterBookmark(element: T['element'], token: Token) {
+    insertElementAfterBookmark(element: T['element'], token: TagToken) {
         const bookmarkIdx = this.entries.lastIndexOf(this.bookmark!);
 
         this.entries.splice(bookmarkIdx + 1, 0, {

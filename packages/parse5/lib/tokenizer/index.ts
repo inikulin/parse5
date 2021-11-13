@@ -244,7 +244,7 @@ export class Tokenizer {
             }
         }
 
-        return this.tokenQueue.shift();
+        return this.tokenQueue.shift()!;
     }
 
     write(chunk: string, isLastChunk: boolean) {

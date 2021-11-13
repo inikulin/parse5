@@ -97,7 +97,7 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (let token = tokenizer.getNextToken()!, j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
+        for (let token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
             if (token.type === Tokenizer.HIBERNATION_TOKEN) {
                 continue;
             }
@@ -114,7 +114,7 @@ it('Location Info (Tokenizer)', () => {
 
             assert.strictEqual(actual, expected);
 
-            token = tokenizer.getNextToken()!;
+            token = tokenizer.getNextToken();
             j++;
         }
     }

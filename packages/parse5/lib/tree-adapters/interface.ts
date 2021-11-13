@@ -143,7 +143,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param element - Element.
      */
-    getNamespaceURI(element: T['element']): string;
+    getNamespaceURI(element: T['element']): NAMESPACES;
 
     /**
      * Returns the given node's source code location information.

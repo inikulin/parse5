@@ -40,7 +40,7 @@ export class ErrorReportingParserMixin extends ErrorReportingMixinBase {
             },
 
             _err(code, options) {
-                mxn.locBeforeToken = options && options.beforeToken;
+                mxn.locBeforeToken = options?.beforeToken;
                 mxn._reportError(code);
             },
         };

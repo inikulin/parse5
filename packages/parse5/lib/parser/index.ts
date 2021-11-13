@@ -1,6 +1,6 @@
 import { Tokenizer } from '../tokenizer/index.js';
 import { OpenElementStack } from './open-element-stack.js';
-import { FormattingElementList } from './formatting-element-list.js';
+import { FormattingElementList, ElementEntry } from './formatting-element-list.js';
 import { LocationInfoParserMixin } from '../extensions/location-info/parser-mixin.js';
 import { ErrorReportingParserMixin } from '../extensions/error-reporting/parser-mixin.js';
 import { Mixin } from '../utils/mixin.js';
@@ -10,6 +10,9 @@ import * as foreignContent from '../common/foreign-content.js';
 import { ERR } from '../common/error-codes.js';
 import * as unicode from '../common/unicode.js';
 import * as HTML from '../common/html.js';
+import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
+import type { ParserError } from './../extensions/error-reporting/mixin-base';
+import { Token, CommentToken, CharacterToken, TagToken, DoctypeToken, EOFToken } from './../common/token';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -24,60 +27,74 @@ const AA_OUTER_LOOP_ITER = 8;
 const AA_INNER_LOOP_ITER = 3;
 
 //Insertion modes
-const INITIAL_MODE = 'INITIAL_MODE';
-const BEFORE_HTML_MODE = 'BEFORE_HTML_MODE';
-const BEFORE_HEAD_MODE = 'BEFORE_HEAD_MODE';
-const IN_HEAD_MODE = 'IN_HEAD_MODE';
-const IN_HEAD_NO_SCRIPT_MODE = 'IN_HEAD_NO_SCRIPT_MODE';
-const AFTER_HEAD_MODE = 'AFTER_HEAD_MODE';
-const IN_BODY_MODE = 'IN_BODY_MODE';
-const TEXT_MODE = 'TEXT_MODE';
-const IN_TABLE_MODE = 'IN_TABLE_MODE';
-const IN_TABLE_TEXT_MODE = 'IN_TABLE_TEXT_MODE';
-const IN_CAPTION_MODE = 'IN_CAPTION_MODE';
-const IN_COLUMN_GROUP_MODE = 'IN_COLUMN_GROUP_MODE';
-const IN_TABLE_BODY_MODE = 'IN_TABLE_BODY_MODE';
-const IN_ROW_MODE = 'IN_ROW_MODE';
-const IN_CELL_MODE = 'IN_CELL_MODE';
-const IN_SELECT_MODE = 'IN_SELECT_MODE';
-const IN_SELECT_IN_TABLE_MODE = 'IN_SELECT_IN_TABLE_MODE';
-const IN_TEMPLATE_MODE = 'IN_TEMPLATE_MODE';
-const AFTER_BODY_MODE = 'AFTER_BODY_MODE';
-const IN_FRAMESET_MODE = 'IN_FRAMESET_MODE';
-const AFTER_FRAMESET_MODE = 'AFTER_FRAMESET_MODE';
-const AFTER_AFTER_BODY_MODE = 'AFTER_AFTER_BODY_MODE';
-const AFTER_AFTER_FRAMESET_MODE = 'AFTER_AFTER_FRAMESET_MODE';
+enum InsertionMode {
+    INITIAL = 'INITIAL_MODE',
+    BEFORE_HTML = 'BEFORE_HTML_MODE',
+    BEFORE_HEAD = 'BEFORE_HEAD_MODE',
+    IN_HEAD = 'IN_HEAD_MODE',
+    IN_HEAD_NO_SCRIPT = 'IN_HEAD_NO_SCRIPT_MODE',
+    AFTER_HEAD = 'AFTER_HEAD_MODE',
+    IN_BODY = 'IN_BODY_MODE',
+    TEXT = 'TEXT_MODE',
+    IN_TABLE = 'IN_TABLE_MODE',
+    IN_TABLE_TEXT = 'IN_TABLE_TEXT_MODE',
+    IN_CAPTION = 'IN_CAPTION_MODE',
+    IN_COLUMN_GROUP = 'IN_COLUMN_GROUP_MODE',
+    IN_TABLE_BODY = 'IN_TABLE_BODY_MODE',
+    IN_ROW = 'IN_ROW_MODE',
+    IN_CELL = 'IN_CELL_MODE',
+    IN_SELECT = 'IN_SELECT_MODE',
+    IN_SELECT_IN_TABLE = 'IN_SELECT_IN_TABLE_MODE',
+    IN_TEMPLATE = 'IN_TEMPLATE_MODE',
+    AFTER_BODY = 'AFTER_BODY_MODE',
+    IN_FRAMESET = 'IN_FRAMESET_MODE',
+    AFTER_FRAMESET = 'AFTER_FRAMESET_MODE',
+    AFTER_AFTER_BODY = 'AFTER_AFTER_BODY_MODE',
+    AFTER_AFTER_FRAMESET = 'AFTER_AFTER_FRAMESET_MODE',
+}
 
 //Insertion mode reset map
 const INSERTION_MODE_RESET_MAP = new Map([
-    [$.TR, IN_ROW_MODE],
-    [$.TBODY, IN_TABLE_BODY_MODE],
-    [$.THEAD, IN_TABLE_BODY_MODE],
-    [$.TFOOT, IN_TABLE_BODY_MODE],
-    [$.CAPTION, IN_CAPTION_MODE],
-    [$.COLGROUP, IN_COLUMN_GROUP_MODE],
-    [$.TABLE, IN_TABLE_MODE],
-    [$.BODY, IN_BODY_MODE],
-    [$.FRAMESET, IN_FRAMESET_MODE],
+    [$.TR, InsertionMode.IN_ROW],
+    [$.TBODY, InsertionMode.IN_TABLE_BODY],
+    [$.THEAD, InsertionMode.IN_TABLE_BODY],
+    [$.TFOOT, InsertionMode.IN_TABLE_BODY],
+    [$.CAPTION, InsertionMode.IN_CAPTION],
+    [$.COLGROUP, InsertionMode.IN_COLUMN_GROUP],
+    [$.TABLE, InsertionMode.IN_TABLE],
+    [$.BODY, InsertionMode.IN_BODY],
+    [$.FRAMESET, InsertionMode.IN_FRAMESET],
 ]);
 
 //Template insertion mode switch map
-const TEMPLATE_INSERTION_MODE_SWITCH_MAP = new Map([
-    [$.CAPTION, IN_TABLE_MODE],
-    [$.COLGROUP, IN_TABLE_MODE],
-    [$.TBODY, IN_TABLE_MODE],
-    [$.TFOOT, IN_TABLE_MODE],
-    [$.THEAD, IN_TABLE_MODE],
-    [$.COL, IN_COLUMN_GROUP_MODE],
-    [$.TR, IN_TABLE_BODY_MODE],
-    [$.TD, IN_ROW_MODE],
-    [$.TH, IN_ROW_MODE],
+const TEMPLATE_INSERTION_MODE_SWITCH_MAP = new Map<string, InsertionMode>([
+    [$.CAPTION, InsertionMode.IN_TABLE],
+    [$.COLGROUP, InsertionMode.IN_TABLE],
+    [$.TBODY, InsertionMode.IN_TABLE],
+    [$.TFOOT, InsertionMode.IN_TABLE],
+    [$.THEAD, InsertionMode.IN_TABLE],
+    [$.COL, InsertionMode.IN_COLUMN_GROUP],
+    [$.TR, InsertionMode.IN_TABLE_BODY],
+    [$.TD, InsertionMode.IN_ROW],
+    [$.TH, InsertionMode.IN_ROW],
 ]);
 
 //Token handlers map for insertion modes
-const TOKEN_HANDLERS = new Map([
+const TOKEN_HANDLERS = new Map<
+    InsertionMode,
+    {
+        [Tokenizer.CHARACTER_TOKEN]: (p: Parser<any>, token: CharacterToken) => void;
+        [Tokenizer.NULL_CHARACTER_TOKEN]: (p: Parser<any>, token: CharacterToken) => void;
+        [Tokenizer.WHITESPACE_CHARACTER_TOKEN]: (p: Parser<any>, token: CharacterToken) => void;
+        [Tokenizer.COMMENT_TOKEN]: (p: Parser<any>, token: CommentToken) => void;
+        [Tokenizer.DOCTYPE_TOKEN]: (p: Parser<any>, token: DoctypeToken) => void;
+        [Tokenizer.START_TAG_TOKEN]: (p: Parser<any>, token: TagToken) => void;
+        [Tokenizer.END_TAG_TOKEN]: (p: Parser<any>, token: TagToken) => void;
+        [Tokenizer.EOF_TOKEN]: (p: Parser<any>, token: EOFToken) => void;
+    }
+>([
     [
-        INITIAL_MODE,
+        InsertionMode.INITIAL,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenInInitialMode,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenInInitialMode,
@@ -90,7 +107,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        BEFORE_HTML_MODE,
+        InsertionMode.BEFORE_HTML,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenBeforeHtml,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenBeforeHtml,
@@ -103,7 +120,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        BEFORE_HEAD_MODE,
+        InsertionMode.BEFORE_HEAD,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenBeforeHead,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenBeforeHead,
@@ -116,7 +133,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_HEAD_MODE,
+        InsertionMode.IN_HEAD,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenInHead,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenInHead,
@@ -129,7 +146,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_HEAD_NO_SCRIPT_MODE,
+        InsertionMode.IN_HEAD_NO_SCRIPT,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenInHeadNoScript,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenInHeadNoScript,
@@ -142,7 +159,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        AFTER_HEAD_MODE,
+        InsertionMode.AFTER_HEAD,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenAfterHead,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenAfterHead,
@@ -155,7 +172,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_BODY_MODE,
+        InsertionMode.IN_BODY,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInBody,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -168,7 +185,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        TEXT_MODE,
+        InsertionMode.TEXT,
         {
             [Tokenizer.CHARACTER_TOKEN]: insertCharacters,
             [Tokenizer.NULL_CHARACTER_TOKEN]: insertCharacters,
@@ -181,7 +198,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_TABLE_MODE,
+        InsertionMode.IN_TABLE,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInTable,
             [Tokenizer.NULL_CHARACTER_TOKEN]: characterInTable,
@@ -194,7 +211,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_TABLE_TEXT_MODE,
+        InsertionMode.IN_TABLE_TEXT,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInTableText,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -207,7 +224,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_CAPTION_MODE,
+        InsertionMode.IN_CAPTION,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInBody,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -220,7 +237,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_COLUMN_GROUP_MODE,
+        InsertionMode.IN_COLUMN_GROUP,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenInColumnGroup,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenInColumnGroup,
@@ -233,7 +250,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_TABLE_BODY_MODE,
+        InsertionMode.IN_TABLE_BODY,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInTable,
             [Tokenizer.NULL_CHARACTER_TOKEN]: characterInTable,
@@ -246,7 +263,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_ROW_MODE,
+        InsertionMode.IN_ROW,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInTable,
             [Tokenizer.NULL_CHARACTER_TOKEN]: characterInTable,
@@ -259,7 +276,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_CELL_MODE,
+        InsertionMode.IN_CELL,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInBody,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -272,7 +289,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_SELECT_MODE,
+        InsertionMode.IN_SELECT,
         {
             [Tokenizer.CHARACTER_TOKEN]: insertCharacters,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -285,7 +302,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_SELECT_IN_TABLE_MODE,
+        InsertionMode.IN_SELECT_IN_TABLE,
         {
             [Tokenizer.CHARACTER_TOKEN]: insertCharacters,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -298,7 +315,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_TEMPLATE_MODE,
+        InsertionMode.IN_TEMPLATE,
         {
             [Tokenizer.CHARACTER_TOKEN]: characterInBody,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -311,7 +328,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        AFTER_BODY_MODE,
+        InsertionMode.AFTER_BODY,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenAfterBody,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenAfterBody,
@@ -324,7 +341,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        IN_FRAMESET_MODE,
+        InsertionMode.IN_FRAMESET,
         {
             [Tokenizer.CHARACTER_TOKEN]: ignoreToken,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -337,7 +354,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        AFTER_FRAMESET_MODE,
+        InsertionMode.AFTER_FRAMESET,
         {
             [Tokenizer.CHARACTER_TOKEN]: ignoreToken,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -350,7 +367,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        AFTER_AFTER_BODY_MODE,
+        InsertionMode.AFTER_AFTER_BODY,
         {
             [Tokenizer.CHARACTER_TOKEN]: tokenAfterAfterBody,
             [Tokenizer.NULL_CHARACTER_TOKEN]: tokenAfterAfterBody,
@@ -363,7 +380,7 @@ const TOKEN_HANDLERS = new Map([
         },
     ],
     [
-        AFTER_AFTER_FRAMESET_MODE,
+        InsertionMode.AFTER_AFTER_FRAMESET,
         {
             [Tokenizer.CHARACTER_TOKEN]: ignoreToken,
             [Tokenizer.NULL_CHARACTER_TOKEN]: ignoreToken,
@@ -377,22 +394,61 @@ const TOKEN_HANDLERS = new Map([
     ],
 ]);
 
-const TOKEN_HANDLER_IN_BODY = TOKEN_HANDLERS.get(IN_BODY_MODE);
+const TOKEN_HANDLER_IN_BODY = TOKEN_HANDLERS.get(InsertionMode.IN_BODY);
 
-const TABLE_STRUCTURE_TAGS = new Set([$.TABLE, $.TBODY, $.TFOOT, $.THEAD, $.TR]);
+const TABLE_STRUCTURE_TAGS = new Set<string>([$.TABLE, $.TBODY, $.TFOOT, $.THEAD, $.TR]);
+
+export interface ParserOptions<T extends TreeAdapterTypeMap> {
+    /**
+     * The [scripting flag](https://html.spec.whatwg.org/multipage/parsing.html#scripting-flag). If set
+     * to `true`, `noscript` element content will be parsed as text.
+     *
+     *  **Default:** `true`
+     */
+    scriptingEnabled?: boolean | undefined;
+
+    /**
+     * Enables source code location information. When enabled, each node (except the root node)
+     * will have a `sourceCodeLocation` property. If the node is not an empty element, `sourceCodeLocation` will
+     * be a {@link ElementLocation} object, otherwise it will be {@link Location}.
+     * If the element was implicitly created by the parser (as part of
+     * [tree correction](https://html.spec.whatwg.org/multipage/syntax.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser)),
+     * its `sourceCodeLocation` property will be `undefined`.
+     *
+     * **Default:** `false`
+     */
+    sourceCodeLocationInfo?: boolean | undefined;
+
+    /**
+     * Specifies the resulting tree format.
+     *
+     * **Default:** `treeAdapters.default`
+     */
+    treeAdapter?: TreeAdapter<T> | undefined;
+}
+
+interface InternalParserOptions<T extends TreeAdapterTypeMap> extends ParserOptions<T> {
+    treeAdapter: TreeAdapter<T>;
+
+    onParseError: ((err: ParserError) => void) | null;
+}
 
 //Parser
-export class Parser {
-    constructor(options) {
+export class Parser<T extends TreeAdapterTypeMap> {
+    options: InternalParserOptions<T>;
+    treeAdapter: TreeAdapter<T>;
+    pendingScript: null | T['element'];
+
+    constructor(options?: ParserOptions<T>) {
         this.options = {
             scriptingEnabled: true,
             sourceCodeLocationInfo: false,
             onParseError: null,
-            treeAdapter: defaultTreeAdapter,
+            treeAdapter: defaultTreeAdapter as TreeAdapter<T>,
             ...options,
         };
 
-        this.treeAdapter = this.options.treeAdapter;
+        this.treeAdapter = this.options.treeAdapter!;
         this.pendingScript = null;
 
         if (this.options.sourceCodeLocationInfo) {
@@ -405,7 +461,7 @@ export class Parser {
     }
 
     // API
-    parse(html) {
+    parse(html: string) {
         const document = this.treeAdapter.createDocument();
 
         this._bootstrap(document, null);
@@ -415,7 +471,7 @@ export class Parser {
         return document;
     }
 
-    parseFragment(html, fragmentContext) {
+    parseFragment(html: string, fragmentContext?: T['element']) {
         //NOTE: use <template> element as a fragment context if context element was not provided,
         //so we will parse in "forgiving" manner
         if (!fragmentContext) {
@@ -430,7 +486,7 @@ export class Parser {
         this._bootstrap(documentMock, fragmentContext);
 
         if (this.treeAdapter.getTagName(fragmentContext) === $.TEMPLATE) {
-            this._pushTmplInsertionMode(IN_TEMPLATE_MODE);
+            this._pushTmplInsertionMode(InsertionMode.IN_TEMPLATE);
         }
 
         this._initTokenizerForFragmentParsing();
@@ -448,14 +504,39 @@ export class Parser {
         return fragment;
     }
 
+    tokenizer!: Tokenizer;
+    stopped = false;
+    insertionMode = InsertionMode.INITIAL;
+    originalInsertionMode: InsertionMode = '' as any;
+
+    document!: T['document'];
+    fragmentContext!: T['element'] | null;
+
+    headElement: null | T['element'] = null;
+    formElement: null | T['element'] = null;
+
+    openElements!: OpenElementStack<T>;
+    activeFormattingElements!: FormattingElementList<T>;
+
+    tmplInsertionModeStack: InsertionMode[] = [];
+    tmplInsertionModeStackTop = -1;
+    currentTmplInsertionMode: InsertionMode | null = null;
+
+    pendingCharacterTokens: CharacterToken[] = [];
+    hasNonWhitespacePendingCharacterToken = false;
+
+    framesetOk = true;
+    skipNextNewLine = false;
+    fosterParentingEnabled = false;
+
     //Bootstrap parser
-    _bootstrap(document, fragmentContext) {
-        this.tokenizer = new Tokenizer(this.options);
+    _bootstrap(document: T['document'], fragmentContext: T['element'] | null) {
+        this.tokenizer = new Tokenizer();
 
         this.stopped = false;
 
-        this.insertionMode = INITIAL_MODE;
-        this.originalInsertionMode = '';
+        this.insertionMode = InsertionMode.INITIAL;
+        this.originalInsertionMode = '' as any;
 
         this.document = document;
         this.fragmentContext = fragmentContext;
@@ -479,12 +560,12 @@ export class Parser {
     }
 
     //Errors
-    _err() {
+    _err(_err: ERR, _opts?: { beforeToken: boolean }) {
         // NOTE: err reporting is noop by default. Enabled by mixin.
     }
 
     //Parsing loop
-    _runParsingLoop(scriptHandler) {
+    _runParsingLoop(scriptHandler: null | ((scriptElement: T['element']) => void)) {
         while (!this.stopped) {
             this._setupTokenizerCDATAMode();
 
@@ -514,7 +595,10 @@ export class Parser {
         }
     }
 
-    runParsingLoopForCurrentChunk(writeCallback, scriptHandler) {
+    runParsingLoopForCurrentChunk(
+        writeCallback: null | (() => void),
+        scriptHandler: (scriptElement: T['element']) => void
+    ) {
         this._runParsingLoop(scriptHandler);
 
         if (scriptHandler && this.pendingScript) {
@@ -543,16 +627,19 @@ export class Parser {
             !this._isIntegrationPoint(current);
     }
 
-    _switchToTextParsing(currentToken, nextTokenizerState) {
+    _switchToTextParsing(
+        currentToken: TagToken,
+        nextTokenizerState: typeof Tokenizer.MODE[keyof typeof Tokenizer.MODE]
+    ) {
         this._insertElement(currentToken, NS.HTML);
         this.tokenizer.state = nextTokenizerState;
         this.originalInsertionMode = this.insertionMode;
-        this.insertionMode = TEXT_MODE;
+        this.insertionMode = InsertionMode.TEXT;
     }
 
     switchToPlaintextParsing() {
-        this.insertionMode = TEXT_MODE;
-        this.originalInsertionMode = IN_BODY_MODE;
+        this.insertionMode = InsertionMode.TEXT;
+        this.originalInsertionMode = InsertionMode.IN_BODY;
         this.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
     }
 
@@ -614,7 +701,7 @@ export class Parser {
     }
 
     //Tree mutation
-    _setDocumentType(token) {
+    _setDocumentType(token: DoctypeToken) {
         const name = token.name || '';
         const publicId = token.publicId || '';
         const systemId = token.systemId || '';
@@ -622,7 +709,7 @@ export class Parser {
         this.treeAdapter.setDocumentType(this.document, name, publicId, systemId);
     }
 
-    _attachElementToTree(element) {
+    _attachElementToTree(element: T['element']) {
         if (this._shouldFosterParentOnInsertion()) {
             this._fosterParentElement(element);
         } else {
@@ -632,27 +719,27 @@ export class Parser {
         }
     }
 
-    _appendElement(token, namespaceURI) {
+    _appendElement(token: TagToken, namespaceURI: HTML.NAMESPACES) {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
         this._attachElementToTree(element);
     }
 
-    _insertElement(token, namespaceURI) {
+    _insertElement(token: TagToken, namespaceURI: HTML.NAMESPACES) {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
         this._attachElementToTree(element);
         this.openElements.push(element);
     }
 
-    _insertFakeElement(tagName) {
+    _insertFakeElement(tagName: string) {
         const element = this.treeAdapter.createElement(tagName, NS.HTML, []);
 
         this._attachElementToTree(element);
         this.openElements.push(element);
     }
 
-    _insertTemplate(token) {
+    _insertTemplate(token: TagToken) {
         const tmpl = this.treeAdapter.createElement(token.tagName, NS.HTML, token.attrs);
         const content = this.treeAdapter.createDocumentFragment();
 
@@ -668,13 +755,13 @@ export class Parser {
         this.openElements.push(element);
     }
 
-    _appendCommentNode(token, parent) {
+    _appendCommentNode(token: CommentToken, parent: T['parentNode']) {
         const commentNode = this.treeAdapter.createCommentNode(token.data);
 
         this.treeAdapter.appendChild(parent, commentNode);
     }
 
-    _insertCharacters(token) {
+    _insertCharacters(token: CharacterToken) {
         if (this._shouldFosterParentOnInsertion()) {
             this._fosterParentText(token.chars);
         } else {
@@ -684,7 +771,7 @@ export class Parser {
         }
     }
 
-    _adoptNodes(donor, recipient) {
+    _adoptNodes(donor: T['parentNode'], recipient: T['parentNode']) {
         for (let child = this.treeAdapter.getFirstChild(donor); child; child = this.treeAdapter.getFirstChild(donor)) {
             this.treeAdapter.detachNode(child);
             this.treeAdapter.appendChild(recipient, child);
@@ -692,7 +779,7 @@ export class Parser {
     }
 
     //Token processing
-    _shouldProcessTokenInForeignContent(token) {
+    _shouldProcessTokenInForeignContent(token: Token) {
         const current = this._getAdjustedCurrentElement();
 
         if (!current || current === this.document) {
@@ -736,15 +823,15 @@ export class Parser {
         return token.type !== Tokenizer.EOF_TOKEN;
     }
 
-    _processToken(token) {
+    _processToken(token: Token) {
         TOKEN_HANDLERS.get(this.insertionMode)[token.type](this, token);
     }
 
-    _processTokenInBodyMode(token) {
+    _processTokenInBodyMode(token: Token) {
         TOKEN_HANDLER_IN_BODY[token.type](this, token);
     }
 
-    _processTokenInForeignContent(token) {
+    _processTokenInForeignContent(token: Token) {
         switch (token.type) {
             case Tokenizer.CHARACTER_TOKEN: {
                 characterInForeignContent(this, token);
@@ -781,7 +868,7 @@ export class Parser {
         }
     }
 
-    _processInputToken(token) {
+    _processInputToken(token: Token) {
         if (this._shouldProcessTokenInForeignContent(token)) {
             this._processTokenInForeignContent(token);
         } else {
@@ -794,7 +881,7 @@ export class Parser {
     }
 
     //Integration points
-    _isIntegrationPoint(element, foreignNS) {
+    _isIntegrationPoint(element: T['element'], foreignNS?: HTML.NAMESPACES): boolean {
         const tn = this.treeAdapter.getTagName(element);
         const ns = this.treeAdapter.getNamespaceURI(element);
         const attrs = this.treeAdapter.getAttrList(element);
@@ -833,7 +920,7 @@ export class Parser {
         this.openElements.generateImpliedEndTags();
         this.openElements.popUntilTableCellPopped();
         this.activeFormattingElements.clearToLastMarker();
-        this.insertionMode = IN_ROW_MODE;
+        this.insertionMode = InsertionMode.IN_ROW;
     }
 
     _closePElement() {
@@ -861,23 +948,22 @@ export class Parser {
                 this.insertionMode = newInsertionMode;
                 break;
             } else if (!last && (tn === $.TD || tn === $.TH)) {
-                this.insertionMode = IN_CELL_MODE;
+                this.insertionMode = InsertionMode.IN_CELL;
                 break;
             } else if (!last && tn === $.HEAD) {
-                this.insertionMode = IN_HEAD_MODE;
+                this.insertionMode = InsertionMode.IN_HEAD;
                 break;
-                // eslint-disable-next-line unicorn/prefer-switch
             } else if (tn === $.SELECT) {
                 this._resetInsertionModeForSelect(i);
                 break;
             } else if (tn === $.TEMPLATE) {
-                this.insertionMode = this.currentTmplInsertionMode;
+                this.insertionMode = this.currentTmplInsertionMode!;
                 break;
             } else if (tn === $.HTML) {
-                this.insertionMode = this.headElement ? AFTER_HEAD_MODE : BEFORE_HEAD_MODE;
+                this.insertionMode = this.headElement ? InsertionMode.AFTER_HEAD : InsertionMode.BEFORE_HEAD;
                 break;
             } else if (last) {
-                this.insertionMode = IN_BODY_MODE;
+                this.insertionMode = InsertionMode.IN_BODY;
                 break;
             }
         }
@@ -892,16 +978,16 @@ export class Parser {
                 if (tn === $.TEMPLATE) {
                     break;
                 } else if (tn === $.TABLE) {
-                    this.insertionMode = IN_SELECT_IN_TABLE_MODE;
+                    this.insertionMode = InsertionMode.IN_SELECT_IN_TABLE;
                     return;
                 }
             }
         }
 
-        this.insertionMode = IN_SELECT_MODE;
+        this.insertionMode = InsertionMode.IN_SELECT;
     }
 
-    _pushTmplInsertionMode(mode) {
+    _pushTmplInsertionMode(mode: InsertionMode) {
         this.tmplInsertionModeStack.push(mode);
         this.tmplInsertionModeStackTop++;
         this.currentTmplInsertionMode = mode;
@@ -914,7 +1000,7 @@ export class Parser {
     }
 
     //Foster parenting
-    _isElementCausesFosterParenting(element) {
+    _isElementCausesFosterParenting(element: T['element']): boolean {
         const tn = this.treeAdapter.getTagName(element);
 
         return TABLE_STRUCTURE_TAGS.has(tn);
@@ -925,7 +1011,7 @@ export class Parser {
     }
 
     _findFosterParentingLocation() {
-        const location = {
+        const location: { parent: null | T['parentNode']; beforeElement: null | T['node'] } = {
             parent: null,
             beforeElement: null,
         };
@@ -958,28 +1044,28 @@ export class Parser {
         return location;
     }
 
-    _fosterParentElement(element) {
+    _fosterParentElement(element: T['element']) {
         const location = this._findFosterParentingLocation();
 
         if (location.beforeElement) {
-            this.treeAdapter.insertBefore(location.parent, element, location.beforeElement);
+            this.treeAdapter.insertBefore(location.parent!, element, location.beforeElement);
         } else {
-            this.treeAdapter.appendChild(location.parent, element);
+            this.treeAdapter.appendChild(location.parent!, element);
         }
     }
 
-    _fosterParentText(chars) {
+    _fosterParentText(chars: string) {
         const location = this._findFosterParentingLocation();
 
         if (location.beforeElement) {
-            this.treeAdapter.insertTextBefore(location.parent, chars, location.beforeElement);
+            this.treeAdapter.insertTextBefore(location.parent!, chars, location.beforeElement);
         } else {
-            this.treeAdapter.insertText(location.parent, chars);
+            this.treeAdapter.insertText(location.parent!, chars);
         }
     }
 
     //Special elements
-    _isSpecialElement(element) {
+    _isSpecialElement(element: T['element']): boolean {
         const tn = this.treeAdapter.getTagName(element);
         const ns = this.treeAdapter.getNamespaceURI(element);
 
@@ -992,7 +1078,7 @@ export class Parser {
 //------------------------------------------------------------------
 
 //Steps 5-8 of the algorithm
-function aaObtainFormattingElementEntry(p, token) {
+function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     let formattingElementEntry = p.activeFormattingElements.getElementEntryInScopeWithTagName(token.tagName);
 
     if (formattingElementEntry) {
@@ -1010,7 +1096,7 @@ function aaObtainFormattingElementEntry(p, token) {
 }
 
 //Steps 9 and 10 of the algorithm
-function aaObtainFurthestBlock(p, formattingElementEntry) {
+function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(p: Parser<T>, formattingElementEntry: ElementEntry<T>) {
     let furthestBlock = null;
 
     for (let i = p.openElements.stackTop; i >= 0; i--) {
@@ -1034,7 +1120,7 @@ function aaObtainFurthestBlock(p, formattingElementEntry) {
 }
 
 //Step 13 of the algorithm
-function aaInnerLoop(p, furthestBlock, formattingElement) {
+function aaInnerLoop<T extends TreeAdapterTypeMap>(p: Parser<T>, furthestBlock, formattingElement) {
     let lastElement = furthestBlock;
     let nextElement = p.openElements.getCommonAncestor(furthestBlock);
 
@@ -1069,7 +1155,7 @@ function aaInnerLoop(p, furthestBlock, formattingElement) {
 }
 
 //Step 13.7 of the algorithm
-function aaRecreateElementFromEntry(p, elementEntry) {
+function aaRecreateElementFromEntry<T extends TreeAdapterTypeMap>(p: Parser<T>, elementEntry: ElementEntry<T>) {
     const ns = p.treeAdapter.getNamespaceURI(elementEntry.element);
     const newElement = p.treeAdapter.createElement(elementEntry.token.tagName, ns, elementEntry.token.attrs);
 
@@ -1080,7 +1166,11 @@ function aaRecreateElementFromEntry(p, elementEntry) {
 }
 
 //Step 14 of the algorithm
-function aaInsertLastNodeInCommonAncestor(p, commonAncestor, lastElement) {
+function aaInsertLastNodeInCommonAncestor<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    commonAncestor: T['parentNode'],
+    lastElement: T['element']
+) {
     if (p._isElementCausesFosterParenting(commonAncestor)) {
         p._fosterParentElement(lastElement);
     } else {
@@ -1096,7 +1186,11 @@ function aaInsertLastNodeInCommonAncestor(p, commonAncestor, lastElement) {
 }
 
 //Steps 15-19 of the algorithm
-function aaReplaceFormattingElement(p, furthestBlock, formattingElementEntry) {
+function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    furthestBlock: T['parentNode'],
+    formattingElementEntry: ElementEntry<T>
+) {
     const ns = p.treeAdapter.getNamespaceURI(formattingElementEntry.element);
     const { token } = formattingElementEntry;
     const newElement = p.treeAdapter.createElement(token.tagName, ns, token.attrs);
@@ -1112,7 +1206,7 @@ function aaReplaceFormattingElement(p, furthestBlock, formattingElementEntry) {
 }
 
 //Algorithm entry point
-function callAdoptionAgency(p, token) {
+function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     let formattingElementEntry;
 
     for (let i = 0; i < AA_OUTER_LOOP_ITER; i++) {
@@ -1145,33 +1239,33 @@ function ignoreToken() {
     //NOTE: do nothing =)
 }
 
-function misplacedDoctype(p) {
+function misplacedDoctype<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     p._err(ERR.misplacedDoctype);
 }
 
-function appendComment(p, token) {
+function appendComment<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken) {
     p._appendCommentNode(token, p.openElements.currentTmplContent || p.openElements.current);
 }
 
-function appendCommentToRootHtmlElement(p, token) {
+function appendCommentToRootHtmlElement<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken) {
     p._appendCommentNode(token, p.openElements.items[0]);
 }
 
-function appendCommentToDocument(p, token) {
+function appendCommentToDocument<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken) {
     p._appendCommentNode(token, p.document);
 }
 
-function insertCharacters(p, token) {
+function insertCharacters<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     p._insertCharacters(token);
 }
 
-function stopParsing(p) {
+function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     p.stopped = true;
 }
 
 // The "initial" insertion mode
 //------------------------------------------------------------------
-function doctypeInInitialMode(p, token) {
+function doctypeInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: DoctypeToken) {
     p._setDocumentType(token);
 
     const mode = token.forceQuirks ? HTML.DOCUMENT_MODE.QUIRKS : doctype.getDocumentMode(token);
@@ -1182,28 +1276,28 @@ function doctypeInInitialMode(p, token) {
 
     p.treeAdapter.setDocumentMode(p.document, mode);
 
-    p.insertionMode = BEFORE_HTML_MODE;
+    p.insertionMode = InsertionMode.BEFORE_HTML;
 }
 
-function tokenInInitialMode(p, token) {
+function tokenInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._err(ERR.missingDoctype, { beforeToken: true });
     p.treeAdapter.setDocumentMode(p.document, HTML.DOCUMENT_MODE.QUIRKS);
-    p.insertionMode = BEFORE_HTML_MODE;
+    p.insertionMode = InsertionMode.BEFORE_HTML;
     p._processToken(token);
 }
 
 // The "before html" insertion mode
 //------------------------------------------------------------------
-function startTagBeforeHtml(p, token) {
+function startTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.HTML) {
         p._insertElement(token, NS.HTML);
-        p.insertionMode = BEFORE_HEAD_MODE;
+        p.insertionMode = InsertionMode.BEFORE_HEAD;
     } else {
         tokenBeforeHtml(p, token);
     }
 }
 
-function endTagBeforeHtml(p, token) {
+function endTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.HTML || tn === $.HEAD || tn === $.BODY || tn === $.BR) {
@@ -1211,15 +1305,15 @@ function endTagBeforeHtml(p, token) {
     }
 }
 
-function tokenBeforeHtml(p, token) {
+function tokenBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._insertFakeRootElement();
-    p.insertionMode = BEFORE_HEAD_MODE;
+    p.insertionMode = InsertionMode.BEFORE_HEAD;
     p._processToken(token);
 }
 
 // The "before head" insertion mode
 //------------------------------------------------------------------
-function startTagBeforeHead(p, token) {
+function startTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.HTML) {
@@ -1227,13 +1321,13 @@ function startTagBeforeHead(p, token) {
     } else if (tn === $.HEAD) {
         p._insertElement(token, NS.HTML);
         p.headElement = p.openElements.current;
-        p.insertionMode = IN_HEAD_MODE;
+        p.insertionMode = InsertionMode.IN_HEAD;
     } else {
         tokenBeforeHead(p, token);
     }
 }
 
-function endTagBeforeHead(p, token) {
+function endTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.HEAD || tn === $.BODY || tn === $.HTML || tn === $.BR) {
@@ -1243,16 +1337,16 @@ function endTagBeforeHead(p, token) {
     }
 }
 
-function tokenBeforeHead(p, token) {
+function tokenBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._insertFakeElement($.HEAD);
     p.headElement = p.openElements.current;
-    p.insertionMode = IN_HEAD_MODE;
+    p.insertionMode = InsertionMode.IN_HEAD;
     p._processToken(token);
 }
 
 // The "in head" insertion mode
 //------------------------------------------------------------------
-function startTagInHead(p, token) {
+function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
@@ -1281,7 +1375,7 @@ function startTagInHead(p, token) {
                 p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
             } else {
                 p._insertElement(token, NS.HTML);
-                p.insertionMode = IN_HEAD_NO_SCRIPT_MODE;
+                p.insertionMode = InsertionMode.IN_HEAD_NO_SCRIPT;
             }
 
             break;
@@ -1298,11 +1392,11 @@ function startTagInHead(p, token) {
             break;
         }
         case $.TEMPLATE: {
-            p._insertTemplate(token, NS.HTML);
+            p._insertTemplate(token);
             p.activeFormattingElements.insertMarker();
             p.framesetOk = false;
-            p.insertionMode = IN_TEMPLATE_MODE;
-            p._pushTmplInsertionMode(IN_TEMPLATE_MODE);
+            p.insertionMode = InsertionMode.IN_TEMPLATE;
+            p._pushTmplInsertionMode(InsertionMode.IN_TEMPLATE);
 
             break;
         }
@@ -1317,13 +1411,13 @@ function startTagInHead(p, token) {
     }
 }
 
-function endTagInHead(p, token) {
+function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
         case $.HEAD: {
             p.openElements.pop();
-            p.insertionMode = AFTER_HEAD_MODE;
+            p.insertionMode = InsertionMode.AFTER_HEAD;
 
             break;
         }
@@ -1358,15 +1452,15 @@ function endTagInHead(p, token) {
     }
 }
 
-function tokenInHead(p, token) {
+function tokenInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p.openElements.pop();
-    p.insertionMode = AFTER_HEAD_MODE;
+    p.insertionMode = InsertionMode.AFTER_HEAD;
     p._processToken(token);
 }
 
 // The "in head no script" insertion mode
 //------------------------------------------------------------------
-function startTagInHeadNoScript(p, token) {
+function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
@@ -1397,12 +1491,12 @@ function startTagInHeadNoScript(p, token) {
     }
 }
 
-function endTagInHeadNoScript(p, token) {
+function endTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.NOSCRIPT) {
         p.openElements.pop();
-        p.insertionMode = IN_HEAD_MODE;
+        p.insertionMode = InsertionMode.IN_HEAD;
     } else if (tn === $.BR) {
         tokenInHeadNoScript(p, token);
     } else {
@@ -1410,19 +1504,19 @@ function endTagInHeadNoScript(p, token) {
     }
 }
 
-function tokenInHeadNoScript(p, token) {
+function tokenInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     const errCode =
         token.type === Tokenizer.EOF_TOKEN ? ERR.openElementsLeftAfterEof : ERR.disallowedContentInNoscriptInHead;
 
     p._err(errCode);
     p.openElements.pop();
-    p.insertionMode = IN_HEAD_MODE;
+    p.insertionMode = InsertionMode.IN_HEAD;
     p._processToken(token);
 }
 
 // The "after head" insertion mode
 //------------------------------------------------------------------
-const ABANDONED_HEAD_ELEMENT_CHILDS = new Set([
+const ABANDONED_HEAD_ELEMENT_CHILDS = new Set<string>([
     $.BASE,
     $.BASEFONT,
     $.BGSOUND,
@@ -1435,7 +1529,7 @@ const ABANDONED_HEAD_ELEMENT_CHILDS = new Set([
     $.TITLE,
 ]);
 
-function startTagAfterHead(p, token) {
+function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
@@ -1447,22 +1541,22 @@ function startTagAfterHead(p, token) {
         case $.BODY: {
             p._insertElement(token, NS.HTML);
             p.framesetOk = false;
-            p.insertionMode = IN_BODY_MODE;
+            p.insertionMode = InsertionMode.IN_BODY;
 
             break;
         }
         case $.FRAMESET: {
             p._insertElement(token, NS.HTML);
-            p.insertionMode = IN_FRAMESET_MODE;
+            p.insertionMode = InsertionMode.IN_FRAMESET;
 
             break;
         }
         default:
             if (ABANDONED_HEAD_ELEMENT_CHILDS.has(tn)) {
                 p._err(ERR.abandonedHeadElementChild);
-                p.openElements.push(p.headElement);
+                p.openElements.push(p.headElement!);
                 startTagInHead(p, token);
-                p.openElements.remove(p.headElement);
+                p.openElements.remove(p.headElement!);
             } else if (tn === $.HEAD) {
                 p._err(ERR.misplacedStartTagForHeadElement);
             } else {
@@ -1471,7 +1565,7 @@ function startTagAfterHead(p, token) {
     }
 }
 
-function endTagAfterHead(p, token) {
+function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.BODY || tn === $.HTML || tn === $.BR) {
@@ -1483,32 +1577,32 @@ function endTagAfterHead(p, token) {
     }
 }
 
-function tokenAfterHead(p, token) {
+function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._insertFakeElement($.BODY);
-    p.insertionMode = IN_BODY_MODE;
+    p.insertionMode = InsertionMode.IN_BODY;
     p._processToken(token);
 }
 
 // The "in body" insertion mode
 //------------------------------------------------------------------
-function whitespaceCharacterInBody(p, token) {
+function whitespaceCharacterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     p._reconstructActiveFormattingElements();
     p._insertCharacters(token);
 }
 
-function characterInBody(p, token) {
+function characterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     p._reconstructActiveFormattingElements();
     p._insertCharacters(token);
     p.framesetOk = false;
 }
 
-function htmlStartTagInBody(p, token) {
+function htmlStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.tmplCount === 0) {
         p.treeAdapter.adoptAttributes(p.openElements.items[0], token.attrs);
     }
 }
 
-function bodyStartTagInBody(p, token) {
+function bodyStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const bodyElement = p.openElements.tryPeekProperlyNestedBodyElement();
 
     if (bodyElement && p.openElements.tmplCount === 0) {
@@ -1517,18 +1611,18 @@ function bodyStartTagInBody(p, token) {
     }
 }
 
-function framesetStartTagInBody(p, token) {
+function framesetStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const bodyElement = p.openElements.tryPeekProperlyNestedBodyElement();
 
     if (p.framesetOk && bodyElement) {
         p.treeAdapter.detachNode(bodyElement);
         p.openElements.popAllUpToHtmlElement();
         p._insertElement(token, NS.HTML);
-        p.insertionMode = IN_FRAMESET_MODE;
+        p.insertionMode = InsertionMode.IN_FRAMESET;
     }
 }
 
-function addressStartTagInBody(p, token) {
+function addressStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1536,12 +1630,12 @@ function addressStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
-function numberedHeaderStartTagInBody(p, token) {
+function numberedHeaderStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
 
-    const tn = p.openElements.currentTagName;
+    const tn = p.openElements.currentTagName!;
 
     if (NUMBERED_HEADERS.has(tn)) {
         p.openElements.pop();
@@ -1550,7 +1644,7 @@ function numberedHeaderStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
-function preStartTagInBody(p, token) {
+function preStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1562,7 +1656,7 @@ function preStartTagInBody(p, token) {
     p.framesetOk = false;
 }
 
-function formStartTagInBody(p, token) {
+function formStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const inTemplate = p.openElements.tmplCount > 0;
 
     if (!p.formElement || inTemplate) {
@@ -1578,7 +1672,7 @@ function formStartTagInBody(p, token) {
     }
 }
 
-function listItemStartTagInBody(p, token) {
+function listItemStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p.framesetOk = false;
 
     const tn = token.tagName;
@@ -1612,7 +1706,7 @@ function listItemStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
-function plaintextStartTagInBody(p, token) {
+function plaintextStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1621,7 +1715,7 @@ function plaintextStartTagInBody(p, token) {
     p.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
 }
 
-function buttonStartTagInBody(p, token) {
+function buttonStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInScope($.BUTTON)) {
         p.openElements.generateImpliedEndTags();
         p.openElements.popUntilTagNamePopped($.BUTTON);
@@ -1632,7 +1726,7 @@ function buttonStartTagInBody(p, token) {
     p.framesetOk = false;
 }
 
-function aStartTagInBody(p, token) {
+function aStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const activeElementEntry = p.activeFormattingElements.getElementEntryInScopeWithTagName($.A);
 
     if (activeElementEntry) {
@@ -1646,13 +1740,13 @@ function aStartTagInBody(p, token) {
     p.activeFormattingElements.pushElement(p.openElements.current, token);
 }
 
-function bStartTagInBody(p, token) {
+function bStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
     p.activeFormattingElements.pushElement(p.openElements.current, token);
 }
 
-function nobrStartTagInBody(p, token) {
+function nobrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
 
     if (p.openElements.hasInScope($.NOBR)) {
@@ -1664,14 +1758,14 @@ function nobrStartTagInBody(p, token) {
     p.activeFormattingElements.pushElement(p.openElements.current, token);
 }
 
-function appletStartTagInBody(p, token) {
+function appletStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
     p.activeFormattingElements.insertMarker();
     p.framesetOk = false;
 }
 
-function tableStartTagInBody(p, token) {
+function tableStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (
         p.treeAdapter.getDocumentMode(p.document) !== HTML.DOCUMENT_MODE.QUIRKS &&
         p.openElements.hasInButtonScope($.P)
@@ -1681,17 +1775,17 @@ function tableStartTagInBody(p, token) {
 
     p._insertElement(token, NS.HTML);
     p.framesetOk = false;
-    p.insertionMode = IN_TABLE_MODE;
+    p.insertionMode = InsertionMode.IN_TABLE;
 }
 
-function areaStartTagInBody(p, token) {
+function areaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
     p._appendElement(token, NS.HTML);
     p.framesetOk = false;
     token.ackSelfClosing = true;
 }
 
-function inputStartTagInBody(p, token) {
+function inputStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
     p._appendElement(token, NS.HTML);
 
@@ -1704,12 +1798,12 @@ function inputStartTagInBody(p, token) {
     token.ackSelfClosing = true;
 }
 
-function paramStartTagInBody(p, token) {
+function paramStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._appendElement(token, NS.HTML);
     token.ackSelfClosing = true;
 }
 
-function hrStartTagInBody(p, token) {
+function hrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1719,12 +1813,12 @@ function hrStartTagInBody(p, token) {
     token.ackSelfClosing = true;
 }
 
-function imageStartTagInBody(p, token) {
+function imageStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     token.tagName = $.IMG;
     areaStartTagInBody(p, token);
 }
 
-function textareaStartTagInBody(p, token) {
+function textareaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._insertElement(token, NS.HTML);
     //NOTE: If the next token is a U+000A LINE FEED (LF) character token, then ignore that token and move
     //on to the next one. (Newlines at the start of textarea elements are ignored as an authoring convenience.)
@@ -1732,10 +1826,10 @@ function textareaStartTagInBody(p, token) {
     p.tokenizer.state = Tokenizer.MODE.RCDATA;
     p.originalInsertionMode = p.insertionMode;
     p.framesetOk = false;
-    p.insertionMode = TEXT_MODE;
+    p.insertionMode = InsertionMode.TEXT;
 }
 
-function xmpStartTagInBody(p, token) {
+function xmpStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1745,33 +1839,33 @@ function xmpStartTagInBody(p, token) {
     p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
 }
 
-function iframeStartTagInBody(p, token) {
+function iframeStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p.framesetOk = false;
     p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
 }
 
 //NOTE: here we assume that we always act as an user agent with enabled plugins, so we parse
 //<noembed> as a rawtext.
-function noembedStartTagInBody(p, token) {
+function noembedStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
 }
 
-function selectStartTagInBody(p, token) {
+function selectStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
     p.framesetOk = false;
 
     p.insertionMode =
-        p.insertionMode === IN_TABLE_MODE ||
-        p.insertionMode === IN_CAPTION_MODE ||
-        p.insertionMode === IN_TABLE_BODY_MODE ||
-        p.insertionMode === IN_ROW_MODE ||
-        p.insertionMode === IN_CELL_MODE
-            ? IN_SELECT_IN_TABLE_MODE
-            : IN_SELECT_MODE;
+        p.insertionMode === InsertionMode.IN_TABLE ||
+        p.insertionMode === InsertionMode.IN_CAPTION ||
+        p.insertionMode === InsertionMode.IN_TABLE_BODY ||
+        p.insertionMode === InsertionMode.IN_ROW ||
+        p.insertionMode === InsertionMode.IN_CELL
+            ? InsertionMode.IN_SELECT_IN_TABLE
+            : InsertionMode.IN_SELECT;
 }
 
-function optgroupStartTagInBody(p, token) {
+function optgroupStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.currentTagName === $.OPTION) {
         p.openElements.pop();
     }
@@ -1780,7 +1874,7 @@ function optgroupStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
-function rbStartTagInBody(p, token) {
+function rbStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInScope($.RUBY)) {
         p.openElements.generateImpliedEndTags();
     }
@@ -1788,7 +1882,7 @@ function rbStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
-function rtStartTagInBody(p, token) {
+function rtStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInScope($.RUBY)) {
         p.openElements.generateImpliedEndTagsWithExclusion($.RTC);
     }
@@ -1796,7 +1890,7 @@ function rtStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
 }
 
-function mathStartTagInBody(p, token) {
+function mathStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
 
     foreignContent.adjustTokenMathMLAttrs(token);
@@ -1811,7 +1905,7 @@ function mathStartTagInBody(p, token) {
     token.ackSelfClosing = true;
 }
 
-function svgStartTagInBody(p, token) {
+function svgStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
 
     foreignContent.adjustTokenSVGAttrs(token);
@@ -1826,16 +1920,16 @@ function svgStartTagInBody(p, token) {
     token.ackSelfClosing = true;
 }
 
-function genericStartTagInBody(p, token) {
+function genericStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
 }
 
-const NUMBERED_HEADERS = new Set([$.H1, $.H2, $.H3, $.H4, $.H5, $.H6]);
+const NUMBERED_HEADERS = new Set<string>([$.H1, $.H2, $.H3, $.H4, $.H5, $.H6]);
 
 //OPTIMIZATION: Integer comparisons are low-cost, so we can use very fast tag name length filters here.
 //It's faster than using dictionary.
-function startTagInBody(p, token) {
+function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn.length) {
@@ -1871,7 +1965,7 @@ function startTagInBody(p, token) {
                 addressStartTagInBody(p, token);
             } else if (NUMBERED_HEADERS.has(tn)) {
                 numberedHeaderStartTagInBody(p, token);
-            } else {
+            } else
                 switch (tn) {
                     case $.LI:
                     case $.DD:
@@ -1912,7 +2006,6 @@ function startTagInBody(p, token) {
                             genericStartTagInBody(p, token);
                         }
                 }
-            }
 
             break;
 
@@ -2252,20 +2345,20 @@ function startTagInBody(p, token) {
     }
 }
 
-function bodyEndTagInBody(p) {
+function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     if (p.openElements.hasInScope($.BODY)) {
-        p.insertionMode = AFTER_BODY_MODE;
+        p.insertionMode = InsertionMode.AFTER_BODY;
     }
 }
 
-function htmlEndTagInBody(p, token) {
+function htmlEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInScope($.BODY)) {
-        p.insertionMode = AFTER_BODY_MODE;
+        p.insertionMode = InsertionMode.AFTER_BODY;
         p._processToken(token);
     }
 }
 
-function addressEndTagInBody(p, token) {
+function addressEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (p.openElements.hasInScope(tn)) {
@@ -2274,7 +2367,7 @@ function addressEndTagInBody(p, token) {
     }
 }
 
-function formEndTagInBody(p) {
+function formEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     const inTemplate = p.openElements.tmplCount > 0;
     const { formElement } = p;
 
@@ -2288,12 +2381,12 @@ function formEndTagInBody(p) {
         if (inTemplate) {
             p.openElements.popUntilTagNamePopped($.FORM);
         } else {
-            p.openElements.remove(formElement);
+            p.openElements.remove(formElement!);
         }
     }
 }
 
-function pEndTagInBody(p) {
+function pEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     if (!p.openElements.hasInButtonScope($.P)) {
         p._insertFakeElement($.P);
     }
@@ -2301,14 +2394,14 @@ function pEndTagInBody(p) {
     p._closePElement();
 }
 
-function liEndTagInBody(p) {
+function liEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     if (p.openElements.hasInListItemScope($.LI)) {
         p.openElements.generateImpliedEndTagsWithExclusion($.LI);
         p.openElements.popUntilTagNamePopped($.LI);
     }
 }
 
-function ddEndTagInBody(p, token) {
+function ddEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (p.openElements.hasInScope(tn)) {
@@ -2317,14 +2410,14 @@ function ddEndTagInBody(p, token) {
     }
 }
 
-function numberedHeaderEndTagInBody(p) {
+function numberedHeaderEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     if (p.openElements.hasNumberedHeaderInScope()) {
         p.openElements.generateImpliedEndTags();
         p.openElements.popUntilNumberedHeaderPopped();
     }
 }
 
-function appletEndTagInBody(p, token) {
+function appletEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (p.openElements.hasInScope(tn)) {
@@ -2334,14 +2427,14 @@ function appletEndTagInBody(p, token) {
     }
 }
 
-function brEndTagInBody(p) {
+function brEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     p._reconstructActiveFormattingElements();
     p._insertFakeElement($.BR);
     p.openElements.pop();
     p.framesetOk = false;
 }
 
-function genericEndTagInBody(p, token) {
+function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     for (let i = p.openElements.stackTop; i > 0; i--) {
@@ -2361,7 +2454,7 @@ function genericEndTagInBody(p, token) {
 
 //OPTIMIZATION: Integer comparisons are low-cost, so we can use very fast tag name length filters here.
 //It's faster than using dictionary.
-function endTagInBody(p, token) {
+function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn.length) {
@@ -2369,7 +2462,7 @@ function endTagInBody(p, token) {
             if (tn === $.A || tn === $.B || tn === $.I || tn === $.S || tn === $.U) {
                 callAdoptionAgency(p, token);
             } else if (tn === $.P) {
-                pEndTagInBody(p, token);
+                pEndTagInBody(p);
             } else {
                 genericEndTagInBody(p, token);
             }
@@ -2386,7 +2479,7 @@ function endTagInBody(p, token) {
                     break;
                 }
                 case $.LI: {
-                    liEndTagInBody(p, token);
+                    liEndTagInBody(p);
 
                     break;
                 }
@@ -2398,9 +2491,9 @@ function endTagInBody(p, token) {
                 }
                 default:
                     if (NUMBERED_HEADERS.has(tn)) {
-                        numberedHeaderEndTagInBody(p, token);
+                        numberedHeaderEndTagInBody(p);
                     } else if (tn === $.BR) {
-                        brEndTagInBody(p, token);
+                        brEndTagInBody(p);
                     } else if (tn === $.EM || tn === $.TT) {
                         callAdoptionAgency(p, token);
                     } else {
@@ -2424,7 +2517,7 @@ function endTagInBody(p, token) {
         case 4:
             switch (tn) {
                 case $.BODY: {
-                    bodyEndTagInBody(p, token);
+                    bodyEndTagInBody(p);
 
                     break;
                 }
@@ -2434,7 +2527,7 @@ function endTagInBody(p, token) {
                     break;
                 }
                 case $.FORM: {
-                    formEndTagInBody(p, token);
+                    formEndTagInBody(p);
 
                     break;
                 }
@@ -2543,7 +2636,7 @@ function endTagInBody(p, token) {
     }
 }
 
-function eofInBody(p, token) {
+function eofInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     if (p.tmplInsertionModeStackTop > -1) {
         eofInTemplate(p, token);
     } else {
@@ -2553,7 +2646,7 @@ function eofInBody(p, token) {
 
 // The "text" insertion mode
 //------------------------------------------------------------------
-function endTagInText(p, token) {
+function endTagInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.SCRIPT) {
         p.pendingScript = p.openElements.current;
     }
@@ -2562,7 +2655,7 @@ function endTagInText(p, token) {
     p.insertionMode = p.originalInsertionMode;
 }
 
-function eofInText(p, token) {
+function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._err(ERR.eofInElementThatCanContainOnlyText);
     p.openElements.pop();
     p.insertionMode = p.originalInsertionMode;
@@ -2571,54 +2664,54 @@ function eofInText(p, token) {
 
 // The "in table" insertion mode
 //------------------------------------------------------------------
-function characterInTable(p, token) {
+function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     const curTn = p.openElements.currentTagName;
 
     if (curTn === $.TABLE || curTn === $.TBODY || curTn === $.TFOOT || curTn === $.THEAD || curTn === $.TR) {
         p.pendingCharacterTokens = [];
         p.hasNonWhitespacePendingCharacterToken = false;
         p.originalInsertionMode = p.insertionMode;
-        p.insertionMode = IN_TABLE_TEXT_MODE;
+        p.insertionMode = InsertionMode.IN_TABLE_TEXT;
         p._processToken(token);
     } else {
         tokenInTable(p, token);
     }
 }
 
-function captionStartTagInTable(p, token) {
+function captionStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p.openElements.clearBackToTableContext();
     p.activeFormattingElements.insertMarker();
     p._insertElement(token, NS.HTML);
-    p.insertionMode = IN_CAPTION_MODE;
+    p.insertionMode = InsertionMode.IN_CAPTION;
 }
 
-function colgroupStartTagInTable(p, token) {
+function colgroupStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p.openElements.clearBackToTableContext();
     p._insertElement(token, NS.HTML);
-    p.insertionMode = IN_COLUMN_GROUP_MODE;
+    p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
 }
 
-function colStartTagInTable(p, token) {
+function colStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p.openElements.clearBackToTableContext();
     p._insertFakeElement($.COLGROUP);
-    p.insertionMode = IN_COLUMN_GROUP_MODE;
+    p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
     p._processToken(token);
 }
 
-function tbodyStartTagInTable(p, token) {
+function tbodyStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p.openElements.clearBackToTableContext();
     p._insertElement(token, NS.HTML);
-    p.insertionMode = IN_TABLE_BODY_MODE;
+    p.insertionMode = InsertionMode.IN_TABLE_BODY;
 }
 
-function tdStartTagInTable(p, token) {
+function tdStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     p.openElements.clearBackToTableContext();
     p._insertFakeElement($.TBODY);
-    p.insertionMode = IN_TABLE_BODY_MODE;
+    p.insertionMode = InsertionMode.IN_TABLE_BODY;
     p._processToken(token);
 }
 
-function tableStartTagInTable(p, token) {
+function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInTableScope($.TABLE)) {
         p.openElements.popUntilTagNamePopped($.TABLE);
         p._resetInsertionMode();
@@ -2626,7 +2719,7 @@ function tableStartTagInTable(p, token) {
     }
 }
 
-function inputStartTagInTable(p, token) {
+function inputStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const inputType = Tokenizer.getTokenAttr(token, ATTRS.TYPE);
 
     if (inputType && inputType.toLowerCase() === HIDDEN_INPUT_TYPE) {
@@ -2638,7 +2731,7 @@ function inputStartTagInTable(p, token) {
     token.ackSelfClosing = true;
 }
 
-function formStartTagInTable(p, token) {
+function formStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (!p.formElement && p.openElements.tmplCount === 0) {
         p._insertElement(token, NS.HTML);
         p.formElement = p.openElements.current;
@@ -2646,7 +2739,7 @@ function formStartTagInTable(p, token) {
     }
 }
 
-function startTagInTable(p, token) {
+function startTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn.length) {
@@ -2742,7 +2835,7 @@ function startTagInTable(p, token) {
     }
 }
 
-function endTagInTable(p, token) {
+function endTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.TABLE) {
@@ -2769,7 +2862,7 @@ function endTagInTable(p, token) {
     }
 }
 
-function tokenInTable(p, token) {
+function tokenInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     const savedFosterParentingState = p.fosterParentingEnabled;
 
     p.fosterParentingEnabled = true;
@@ -2779,16 +2872,16 @@ function tokenInTable(p, token) {
 
 // The "in table text" insertion mode
 //------------------------------------------------------------------
-function whitespaceCharacterInTableText(p, token) {
+function whitespaceCharacterInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     p.pendingCharacterTokens.push(token);
 }
 
-function characterInTableText(p, token) {
+function characterInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     p.pendingCharacterTokens.push(token);
     p.hasNonWhitespacePendingCharacterToken = true;
 }
 
-function tokenInTableText(p, token) {
+function tokenInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     let i = 0;
 
     if (p.hasNonWhitespacePendingCharacterToken) {
@@ -2807,9 +2900,19 @@ function tokenInTableText(p, token) {
 
 // The "in caption" insertion mode
 //------------------------------------------------------------------
-const TABLE_VOID_ELEMENTS = new Set([$.CAPTION, $.COL, $.COLGROUP, $.TBODY, $.TD, $.TFOOT, $.TH, $.THEAD, $.TR]);
+const TABLE_VOID_ELEMENTS = new Set<string>([
+    $.CAPTION,
+    $.COL,
+    $.COLGROUP,
+    $.TBODY,
+    $.TD,
+    $.TFOOT,
+    $.TH,
+    $.THEAD,
+    $.TR,
+]);
 
-function startTagInCaption(p, token) {
+function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (TABLE_VOID_ELEMENTS.has(tn)) {
@@ -2817,7 +2920,7 @@ function startTagInCaption(p, token) {
             p.openElements.generateImpliedEndTags();
             p.openElements.popUntilTagNamePopped($.CAPTION);
             p.activeFormattingElements.clearToLastMarker();
-            p.insertionMode = IN_TABLE_MODE;
+            p.insertionMode = InsertionMode.IN_TABLE;
             p._processToken(token);
         }
     } else {
@@ -2825,7 +2928,7 @@ function startTagInCaption(p, token) {
     }
 }
 
-function endTagInCaption(p, token) {
+function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.CAPTION || tn === $.TABLE) {
@@ -2833,7 +2936,7 @@ function endTagInCaption(p, token) {
             p.openElements.generateImpliedEndTags();
             p.openElements.popUntilTagNamePopped($.CAPTION);
             p.activeFormattingElements.clearToLastMarker();
-            p.insertionMode = IN_TABLE_MODE;
+            p.insertionMode = InsertionMode.IN_TABLE;
 
             if (tn === $.TABLE) {
                 p._processToken(token);
@@ -2857,7 +2960,7 @@ function endTagInCaption(p, token) {
 
 // The "in column group" insertion mode
 //------------------------------------------------------------------
-function startTagInColumnGroup(p, token) {
+function startTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
@@ -2883,13 +2986,13 @@ function startTagInColumnGroup(p, token) {
     }
 }
 
-function endTagInColumnGroup(p, token) {
+function endTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.COLGROUP) {
         if (p.openElements.currentTagName === $.COLGROUP) {
             p.openElements.pop();
-            p.insertionMode = IN_TABLE_MODE;
+            p.insertionMode = InsertionMode.IN_TABLE;
         }
     } else if (tn === $.TEMPLATE) {
         endTagInHead(p, token);
@@ -2898,24 +3001,24 @@ function endTagInColumnGroup(p, token) {
     }
 }
 
-function tokenInColumnGroup(p, token) {
+function tokenInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     if (p.openElements.currentTagName === $.COLGROUP) {
         p.openElements.pop();
-        p.insertionMode = IN_TABLE_MODE;
+        p.insertionMode = InsertionMode.IN_TABLE;
         p._processToken(token);
     }
 }
 
 // The "in table body" insertion mode
 //------------------------------------------------------------------
-function startTagInTableBody(p, token) {
+function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
         case $.TR: {
             p.openElements.clearBackToTableBodyContext();
             p._insertElement(token, NS.HTML);
-            p.insertionMode = IN_ROW_MODE;
+            p.insertionMode = InsertionMode.IN_ROW;
 
             break;
         }
@@ -2923,7 +3026,7 @@ function startTagInTableBody(p, token) {
         case $.TD: {
             p.openElements.clearBackToTableBodyContext();
             p._insertFakeElement($.TR);
-            p.insertionMode = IN_ROW_MODE;
+            p.insertionMode = InsertionMode.IN_ROW;
             p._processToken(token);
 
             break;
@@ -2937,7 +3040,7 @@ function startTagInTableBody(p, token) {
             if (p.openElements.hasTableBodyContextInTableScope()) {
                 p.openElements.clearBackToTableBodyContext();
                 p.openElements.pop();
-                p.insertionMode = IN_TABLE_MODE;
+                p.insertionMode = InsertionMode.IN_TABLE;
                 p._processToken(token);
             }
 
@@ -2949,20 +3052,20 @@ function startTagInTableBody(p, token) {
     }
 }
 
-function endTagInTableBody(p, token) {
+function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD) {
         if (p.openElements.hasInTableScope(tn)) {
             p.openElements.clearBackToTableBodyContext();
             p.openElements.pop();
-            p.insertionMode = IN_TABLE_MODE;
+            p.insertionMode = InsertionMode.IN_TABLE;
         }
     } else if (tn === $.TABLE) {
         if (p.openElements.hasTableBodyContextInTableScope()) {
             p.openElements.clearBackToTableBodyContext();
             p.openElements.pop();
-            p.insertionMode = IN_TABLE_MODE;
+            p.insertionMode = InsertionMode.IN_TABLE;
             p._processToken(token);
         }
     } else if (
@@ -2975,13 +3078,13 @@ function endTagInTableBody(p, token) {
 
 // The "in row" insertion mode
 //------------------------------------------------------------------
-function startTagInRow(p, token) {
+function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.TH || tn === $.TD) {
         p.openElements.clearBackToTableRowContext();
         p._insertElement(token, NS.HTML);
-        p.insertionMode = IN_CELL_MODE;
+        p.insertionMode = InsertionMode.IN_CELL;
         p.activeFormattingElements.insertMarker();
     } else if (
         tn === $.CAPTION ||
@@ -2995,7 +3098,7 @@ function startTagInRow(p, token) {
         if (p.openElements.hasInTableScope($.TR)) {
             p.openElements.clearBackToTableRowContext();
             p.openElements.pop();
-            p.insertionMode = IN_TABLE_BODY_MODE;
+            p.insertionMode = InsertionMode.IN_TABLE_BODY;
             p._processToken(token);
         }
     } else {
@@ -3003,7 +3106,7 @@ function startTagInRow(p, token) {
     }
 }
 
-function endTagInRow(p, token) {
+function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
@@ -3011,7 +3114,7 @@ function endTagInRow(p, token) {
             if (p.openElements.hasInTableScope($.TR)) {
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
-                p.insertionMode = IN_TABLE_BODY_MODE;
+                p.insertionMode = InsertionMode.IN_TABLE_BODY;
             }
 
             break;
@@ -3020,7 +3123,7 @@ function endTagInRow(p, token) {
             if (p.openElements.hasInTableScope($.TR)) {
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
-                p.insertionMode = IN_TABLE_BODY_MODE;
+                p.insertionMode = InsertionMode.IN_TABLE_BODY;
                 p._processToken(token);
             }
 
@@ -3032,7 +3135,7 @@ function endTagInRow(p, token) {
             if (p.openElements.hasInTableScope(tn) || p.openElements.hasInTableScope($.TR)) {
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
-                p.insertionMode = IN_TABLE_BODY_MODE;
+                p.insertionMode = InsertionMode.IN_TABLE_BODY;
                 p._processToken(token);
             }
 
@@ -3055,7 +3158,7 @@ function endTagInRow(p, token) {
 
 // The "in cell" insertion mode
 //------------------------------------------------------------------
-function startTagInCell(p, token) {
+function startTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (TABLE_VOID_ELEMENTS.has(tn)) {
@@ -3068,7 +3171,7 @@ function startTagInCell(p, token) {
     }
 }
 
-function endTagInCell(p, token) {
+function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.TD || tn === $.TH) {
@@ -3076,7 +3179,7 @@ function endTagInCell(p, token) {
             p.openElements.generateImpliedEndTags();
             p.openElements.popUntilTagNamePopped(tn);
             p.activeFormattingElements.clearToLastMarker();
-            p.insertionMode = IN_ROW_MODE;
+            p.insertionMode = InsertionMode.IN_ROW;
         }
     } else if (TABLE_STRUCTURE_TAGS.has(tn)) {
         if (p.openElements.hasInTableScope(tn)) {
@@ -3090,7 +3193,7 @@ function endTagInCell(p, token) {
 
 // The "in select" insertion mode
 //------------------------------------------------------------------
-function startTagInSelect(p, token) {
+function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
@@ -3147,7 +3250,7 @@ function startTagInSelect(p, token) {
     }
 }
 
-function endTagInSelect(p, token) {
+function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.OPTGROUP) {
@@ -3175,7 +3278,7 @@ function endTagInSelect(p, token) {
 
 //12.2.5.4.17 The "in select in table" insertion mode
 //------------------------------------------------------------------
-function startTagInSelectInTable(p, token) {
+function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (
@@ -3196,7 +3299,7 @@ function startTagInSelectInTable(p, token) {
     }
 }
 
-function endTagInSelectInTable(p, token) {
+function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (
@@ -3221,7 +3324,7 @@ function endTagInSelectInTable(p, token) {
 
 // The "in template" insertion mode
 //------------------------------------------------------------------
-const TEMPLATE_START_TAGS = new Set([
+const TEMPLATE_START_TAGS = new Set<string>([
     $.BASE,
     $.BASEFONT,
     $.BGSOUND,
@@ -3234,13 +3337,13 @@ const TEMPLATE_START_TAGS = new Set([
     $.TITLE,
 ]);
 
-function startTagInTemplate(p, token) {
+function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (TEMPLATE_START_TAGS.has(tn)) {
         startTagInHead(p, token);
     } else {
-        const newInsertionMode = TEMPLATE_INSERTION_MODE_SWITCH_MAP.get(tn) ?? IN_BODY_MODE;
+        const newInsertionMode = TEMPLATE_INSERTION_MODE_SWITCH_MAP.get(tn) ?? InsertionMode.IN_BODY;
 
         p._popTmplInsertionMode();
         p._pushTmplInsertionMode(newInsertionMode);
@@ -3249,13 +3352,13 @@ function startTagInTemplate(p, token) {
     }
 }
 
-function endTagInTemplate(p, token) {
+function endTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.TEMPLATE) {
         endTagInHead(p, token);
     }
 }
 
-function eofInTemplate(p, token) {
+function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     if (p.openElements.tmplCount > 0) {
         p.openElements.popUntilTagNamePopped($.TEMPLATE);
         p.activeFormattingElements.clearToLastMarker();
@@ -3269,7 +3372,7 @@ function eofInTemplate(p, token) {
 
 // The "after body" insertion mode
 //------------------------------------------------------------------
-function startTagAfterBody(p, token) {
+function startTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.HTML) {
         startTagInBody(p, token);
     } else {
@@ -3277,24 +3380,24 @@ function startTagAfterBody(p, token) {
     }
 }
 
-function endTagAfterBody(p, token) {
+function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.HTML) {
         if (!p.fragmentContext) {
-            p.insertionMode = AFTER_AFTER_BODY_MODE;
+            p.insertionMode = InsertionMode.AFTER_AFTER_BODY;
         }
     } else {
         tokenAfterBody(p, token);
     }
 }
 
-function tokenAfterBody(p, token) {
-    p.insertionMode = IN_BODY_MODE;
+function tokenAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+    p.insertionMode = InsertionMode.IN_BODY;
     p._processToken(token);
 }
 
 // The "in frameset" insertion mode
 //------------------------------------------------------------------
-function startTagInFrameset(p, token) {
+function startTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     switch (tn) {
@@ -3324,19 +3427,19 @@ function startTagInFrameset(p, token) {
     }
 }
 
-function endTagInFrameset(p, token) {
+function endTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.FRAMESET && !p.openElements.isRootHtmlElementCurrent()) {
         p.openElements.pop();
 
         if (!p.fragmentContext && p.openElements.currentTagName !== $.FRAMESET) {
-            p.insertionMode = AFTER_FRAMESET_MODE;
+            p.insertionMode = InsertionMode.AFTER_FRAMESET;
         }
     }
 }
 
 // The "after frameset" insertion mode
 //------------------------------------------------------------------
-function startTagAfterFrameset(p, token) {
+function startTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.HTML) {
@@ -3346,15 +3449,15 @@ function startTagAfterFrameset(p, token) {
     }
 }
 
-function endTagAfterFrameset(p, token) {
+function endTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.HTML) {
-        p.insertionMode = AFTER_AFTER_FRAMESET_MODE;
+        p.insertionMode = InsertionMode.AFTER_AFTER_FRAMESET;
     }
 }
 
 // The "after after body" insertion mode
 //------------------------------------------------------------------
-function startTagAfterAfterBody(p, token) {
+function startTagAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (token.tagName === $.HTML) {
         startTagInBody(p, token);
     } else {
@@ -3362,14 +3465,14 @@ function startTagAfterAfterBody(p, token) {
     }
 }
 
-function tokenAfterAfterBody(p, token) {
-    p.insertionMode = IN_BODY_MODE;
+function tokenAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+    p.insertionMode = InsertionMode.IN_BODY;
     p._processToken(token);
 }
 
 // The "after after frameset" insertion mode
 //------------------------------------------------------------------
-function startTagAfterAfterFrameset(p, token) {
+function startTagAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagName;
 
     if (tn === $.HTML) {
@@ -3381,17 +3484,17 @@ function startTagAfterAfterFrameset(p, token) {
 
 // The rules for parsing tokens in foreign content
 //------------------------------------------------------------------
-function nullCharacterInForeignContent(p, token) {
+function nullCharacterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     token.chars = unicode.REPLACEMENT_CHARACTER;
     p._insertCharacters(token);
 }
 
-function characterInForeignContent(p, token) {
+function characterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
     p._insertCharacters(token);
     p.framesetOk = false;
 }
 
-function startTagInForeignContent(p, token) {
+function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (foreignContent.causesExit(token) && !p.fragmentContext) {
         while (
             p.treeAdapter.getNamespaceURI(p.openElements.current) !== NS.HTML &&
@@ -3424,7 +3527,7 @@ function startTagInForeignContent(p, token) {
     }
 }
 
-function endTagInForeignContent(p, token) {
+function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     for (let i = p.openElements.stackTop; i > 0; i--) {
         const element = p.openElements.items[i];
 

@@ -7,7 +7,7 @@ export class ParserStream<T extends TreeAdapterTypeMap> extends Writable {
     writeCallback: null | (() => void) = null;
     pausedByScript = false;
 
-    parser: Parser;
+    parser: Parser<T>;
     pendingHtmlInsertions: string[] = [];
     document: T['document'];
 
@@ -70,7 +70,7 @@ export class ParserStream<T extends TreeAdapterTypeMap> extends Writable {
         }
     }
 
-    _scriptHandler(scriptElement: any) {
+    _scriptHandler(scriptElement: T['element']) {
         if (this.listenerCount('script') > 0) {
             this.pausedByScript = true;
             this.emit('script', scriptElement, this._documentWrite, this._resume);
