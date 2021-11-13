@@ -4,14 +4,17 @@ import { Tokenizer } from '../lib/tokenizer/index.js';
 import { Mixin } from '../lib/utils/mixin.js';
 import { ErrorReportingTokenizerMixin } from '../lib/extensions/error-reporting/tokenizer-mixin.js';
 import { generateTokenizationTests } from '../../../test/utils/generate-tokenization-tests.js';
+import type { ParserError } from './../lib/extensions/error-reporting/mixin-base';
 
 const dataPath = new URL('../../../test/data/html5lib-tests/tokenizer', import.meta.url);
 
-generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors }: any) => {
+type Results = { errors: { code: string; line: number; col: number }[] };
+
+generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors }: Results) => {
     const tokenizer = new Tokenizer();
 
     Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
-        onParseError(err: any) {
+        onParseError(err: ParserError) {
             errors.push({
                 code: err.code,
                 line: err.startLine,

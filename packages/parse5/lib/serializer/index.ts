@@ -1,6 +1,7 @@
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import * as HTML from '../common/html.js';
+import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -14,7 +15,7 @@ const LT_REGEX = /</g;
 const GT_REGEX = />/g;
 
 // Sets
-const VOID_ELEMENTS = new Set([
+const VOID_ELEMENTS = new Set<string>([
     $.AREA,
     $.BASE,
     $.BASEFONT,
@@ -34,20 +35,30 @@ const VOID_ELEMENTS = new Set([
     $.TRACK,
     $.WBR,
 ]);
-const UNESCAPED_TEXT = new Set([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT, $.NOSCRIPT]);
+const UNESCAPED_TEXT = new Set<string>([
+    $.STYLE,
+    $.SCRIPT,
+    $.XMP,
+    $.IFRAME,
+    $.NOEMBED,
+    $.NOFRAMES,
+    $.PLAINTEXT,
+    $.NOSCRIPT,
+]);
 
-type Node = any;
-
-export interface SerializerOptions {
-    treeAdapter?: any;
+export interface SerializerOptions<T extends TreeAdapterTypeMap> {
+    treeAdapter?: TreeAdapter<T>;
 }
 
 //Serializer
-export class Serializer {
+export class Serializer<T extends TreeAdapterTypeMap> {
     html = '';
-    treeAdapter: any;
+    treeAdapter: TreeAdapter;
 
-    constructor(private startNode: Node, { treeAdapter = defaultTreeAdapter }: SerializerOptions) {
+    constructor(
+        private startNode: T['parentNode'],
+        { treeAdapter = defaultTreeAdapter as TreeAdapter<T> }: SerializerOptions<T>
+    ) {
         this.treeAdapter = treeAdapter;
     }
 
@@ -59,7 +70,7 @@ export class Serializer {
     }
 
     //Internals
-    _serializeChildNodes(parentNode: Node) {
+    _serializeChildNodes(parentNode: T['parentNode']) {
         const childNodes = this.treeAdapter.getChildNodes(parentNode);
 
         if (childNodes) {
@@ -77,7 +88,7 @@ export class Serializer {
         }
     }
 
-    _serializeElement(node: Node) {
+    _serializeElement(node: T['element']) {
         const tn = this.treeAdapter.getTagName(node);
         const ns = this.treeAdapter.getNamespaceURI(node);
 
@@ -94,7 +105,7 @@ export class Serializer {
         }
     }
 
-    _serializeAttributes(node: Node) {
+    _serializeAttributes(node: T['element']) {
         for (const attr of this.treeAdapter.getAttrList(node)) {
             const value = escapeString(attr.value, true);
 
@@ -131,7 +142,7 @@ export class Serializer {
         }
     }
 
-    _serializeTextNode(node: Node) {
+    _serializeTextNode(node: T['textNode']) {
         const content = this.treeAdapter.getTextNodeContent(node);
         const parent = this.treeAdapter.getParentNode(node);
 
@@ -140,11 +151,11 @@ export class Serializer {
             UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent)) ? content : escapeString(content, false);
     }
 
-    _serializeCommentNode(node: Node) {
+    _serializeCommentNode(node: T['commentNode']) {
         this.html += `<!--${this.treeAdapter.getCommentNodeContent(node)}-->`;
     }
 
-    _serializeDocumentTypeNode(node: Node) {
+    _serializeDocumentTypeNode(node: T['documentType']) {
         const name = this.treeAdapter.getDocumentTypeNodeName(node);
 
         this.html += `<${doctype.serializeContent(name, null, null)}>`;

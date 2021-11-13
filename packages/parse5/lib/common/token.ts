@@ -37,10 +37,14 @@ export interface DoctypeToken extends TokenBase {
 }
 
 export interface Attribute {
+    /** The name of the attribute. */
     name: string;
-    value: string;
-    prefix?: string;
+    /** The namespace of the attribute. */
     namespace?: string;
+    /** The namespace-related prefix of the attribute. */
+    prefix?: string;
+    /** The value of the attribute. */
+    value: string;
 }
 
 export interface TagToken extends TokenBase {
@@ -66,7 +70,7 @@ interface HibernationToken extends TokenBase {
 }
 
 export interface CharacterToken extends TokenBase {
-    readonly type: TokenType.CHARACTER | TokenType.NULL_CHARACTER | TokenType.WHITESPACE_CHARACTER;
+    type: TokenType.CHARACTER | TokenType.NULL_CHARACTER | TokenType.WHITESPACE_CHARACTER;
     chars: string;
 }
 

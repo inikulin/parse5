@@ -1,7 +1,25 @@
 import { Writable } from 'node:stream';
 import * as assert from 'node:assert';
+import type { TreeAdapter, TreeAdapterTypeMap } from './../../packages/parse5/lib/tree-adapters/interface';
 import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
 import * as htmlTreeAdapter from '../../packages/parse5-htmlparser2-tree-adapter/lib/index.js';
+import type { Location } from './../../packages/parse5/lib/common/token';
+
+// Ensure the default tree adapter matches the expected type.
+defaultTreeAdapter as TreeAdapter<
+    TreeAdapterTypeMap<
+        defaultTreeAdapter.Node,
+        defaultTreeAdapter.NodeWithChildren,
+        defaultTreeAdapter.NodeWithParent,
+        defaultTreeAdapter.Document,
+        defaultTreeAdapter.DocumentFragment,
+        defaultTreeAdapter.Element,
+        defaultTreeAdapter.CommentNode,
+        defaultTreeAdapter.TextNode,
+        defaultTreeAdapter.Template,
+        defaultTreeAdapter.DocumentType
+    >
+>;
 
 export const treeAdapters = {
     default: defaultTreeAdapter,
@@ -120,7 +138,7 @@ export function getStringDiffMsg(actual: string, expected: string) {
     return '';
 }
 
-export function getSubstringByLineCol(lines: string[], loc: any) {
+export function getSubstringByLineCol(lines: string[], loc: Location) {
     lines = lines.slice(loc.startLine - 1, loc.endLine);
 
     const last = lines.length - 1;

@@ -1,12 +1,24 @@
 import * as HTML from '../common/html.js';
+import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 
 //Element utils
-const IMPLICIT_END_TAG_REQUIRED = new Set([$.DD, $.DT, $.LI, $.OPTGROUP, $.OPTION, $.P, $.RB, $.RP, $.RT, $.RTC]);
-const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set([
+const IMPLICIT_END_TAG_REQUIRED = new Set<string>([
+    $.DD,
+    $.DT,
+    $.LI,
+    $.OPTGROUP,
+    $.OPTION,
+    $.P,
+    $.RB,
+    $.RP,
+    $.RT,
+    $.RTC,
+]);
+const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set<string>([
     ...IMPLICIT_END_TAG_REQUIRED,
     $.CAPTION,
     $.COLGROUP,
@@ -17,7 +29,7 @@ const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set([
     $.THEAD,
     $.TR,
 ]);
-const SCOPING_ELEMENT_NS = new Map([
+const SCOPING_ELEMENT_NS = new Map<string, HTML.NAMESPACES>([
     [$.APPLET, NS.HTML],
     [$.CAPTION, NS.HTML],
     [$.HTML, NS.HTML],
@@ -39,19 +51,20 @@ const SCOPING_ELEMENT_NS = new Map([
 ]);
 
 //Stack of open elements
-export class OpenElementStack {
-    constructor(document, treeAdapter) {
-        this.stackTop = -1;
-        this.items = [];
+export class OpenElementStack<T extends TreeAdapterTypeMap> {
+    stackTop = -1;
+    items: T['parentNode'][] = [];
+    current: T['node'];
+    currentTagName: string | null = null;
+    currentTmplContent: T['documentFragment'] | null = null;
+    tmplCount = 0;
+
+    constructor(document: T['document'], private treeAdapter: TreeAdapter<T>) {
         this.current = document;
-        this.currentTagName = null;
-        this.currentTmplContent = null;
-        this.tmplCount = 0;
-        this.treeAdapter = treeAdapter;
     }
 
     //Index of element
-    _indexOf(element) {
+    _indexOf(element: T['element']) {
         let idx = -1;
 
         for (let i = this.stackTop; i >= 0; i--) {
@@ -76,7 +89,7 @@ export class OpenElementStack {
     }
 
     //Mutations
-    push(element) {
+    push(element: T['element']) {
         this.items[++this.stackTop] = element;
         this._updateCurrentElement();
 
@@ -95,7 +108,7 @@ export class OpenElementStack {
         this._updateCurrentElement();
     }
 
-    replace(oldElement, newElement) {
+    replace(oldElement: T['element'], newElement: T['element']) {
         const idx = this._indexOf(oldElement);
 
         this.items[idx] = newElement;
@@ -105,7 +118,7 @@ export class OpenElementStack {
         }
     }
 
-    insertAfter(referenceElement, newElement) {
+    insertAfter(referenceElement: T['element'], newElement: T['element']) {
         const insertionIdx = this._indexOf(referenceElement) + 1;
 
         this.items.splice(insertionIdx, 0, newElement);
@@ -115,7 +128,7 @@ export class OpenElementStack {
         }
     }
 
-    popUntilTagNamePopped(tagName) {
+    popUntilTagNamePopped(tagName: string) {
         while (this.stackTop > -1) {
             const tn = this.currentTagName;
             const ns = this.treeAdapter.getNamespaceURI(this.current);
@@ -128,7 +141,7 @@ export class OpenElementStack {
         }
     }
 
-    popUntilElementPopped(element) {
+    popUntilElementPopped(element: T['element']) {
         while (this.stackTop > -1) {
             const poppedElement = this.current;
 
@@ -207,7 +220,7 @@ export class OpenElementStack {
         }
     }
 
-    remove(element) {
+    remove(element: T['element']) {
         for (let i = this.stackTop; i >= 0; i--) {
             if (this.items[i] === element) {
                 this.items.splice(i, 1);
@@ -226,11 +239,11 @@ export class OpenElementStack {
         return element && this.treeAdapter.getTagName(element) === $.BODY ? element : null;
     }
 
-    contains(element) {
+    contains(element: T['element']) {
         return this._indexOf(element) > -1;
     }
 
-    getCommonAncestor(element) {
+    getCommonAncestor(element: T['element']) {
         let elementIdx = this._indexOf(element);
 
         return --elementIdx >= 0 ? this.items[elementIdx] : null;
@@ -241,7 +254,7 @@ export class OpenElementStack {
     }
 
     //Element in scope
-    hasInScope(tagName) {
+    hasInScope(tagName: string) {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.treeAdapter.getTagName(this.items[i]);
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
@@ -278,7 +291,7 @@ export class OpenElementStack {
         return true;
     }
 
-    hasInListItemScope(tagName) {
+    hasInListItemScope(tagName: string) {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.treeAdapter.getTagName(this.items[i]);
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
@@ -295,7 +308,7 @@ export class OpenElementStack {
         return true;
     }
 
-    hasInButtonScope(tagName) {
+    hasInButtonScope(tagName: string) {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.treeAdapter.getTagName(this.items[i]);
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
@@ -312,7 +325,7 @@ export class OpenElementStack {
         return true;
     }
 
-    hasInTableScope(tagName) {
+    hasInTableScope(tagName: string) {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.treeAdapter.getTagName(this.items[i]);
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
@@ -354,7 +367,7 @@ export class OpenElementStack {
         return true;
     }
 
-    hasInSelectScope(tagName) {
+    hasInSelectScope(tagName: string) {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.treeAdapter.getTagName(this.items[i]);
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
@@ -377,19 +390,23 @@ export class OpenElementStack {
 
     //Implied end tags
     generateImpliedEndTags() {
-        while (IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName)) {
+        while (this.currentTagName && IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName)) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsThoroughly() {
-        while (IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagName)) {
+        while (this.currentTagName && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagName)) {
             this.pop();
         }
     }
 
-    generateImpliedEndTagsWithExclusion(exclusionTagName) {
-        while (IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName) && this.currentTagName !== exclusionTagName) {
+    generateImpliedEndTagsWithExclusion(exclusionTagName: string) {
+        while (
+            this.currentTagName &&
+            IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName) &&
+            this.currentTagName !== exclusionTagName
+        ) {
             this.pop();
         }
     }

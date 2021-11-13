@@ -1,12 +1,11 @@
 import { Readable } from 'node:stream';
 import { Serializer, SerializerOptions } from 'parse5/lib/serializer/index.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
 
-type Node = any;
+export class SerializerStream<T extends TreeAdapterTypeMap> extends Readable {
+    private serializer: Serializer<T>;
 
-export class SerializerStream extends Readable {
-    private serializer: Serializer;
-
-    constructor(node: Node, options: SerializerOptions) {
+    constructor(node: T['parentNode'], options: SerializerOptions<T>) {
         super({ encoding: 'utf8' });
 
         this.serializer = new Serializer(node, options);
@@ -17,7 +16,7 @@ export class SerializerStream extends Readable {
             get() {
                 return '';
             },
-            set: this.push.bind(this),
+            set: (data: string) => this.push(data),
         });
     }
 

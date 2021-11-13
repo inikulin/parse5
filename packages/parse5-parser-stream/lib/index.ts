@@ -1,14 +1,15 @@
 import { Writable } from 'node:stream';
 import { Parser } from 'parse5/lib/parser/index.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
 
-export class ParserStream extends Writable {
+export class ParserStream<T extends TreeAdapterTypeMap> extends Writable {
     lastChunkWritten = false;
     writeCallback: null | (() => void) = null;
     pausedByScript = false;
 
     parser: Parser;
     pendingHtmlInsertions: string[] = [];
-    document: any;
+    document: T['document'];
 
     constructor(options?: any) {
         super({ decodeStrings: false });

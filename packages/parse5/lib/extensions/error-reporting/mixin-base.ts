@@ -1,6 +1,6 @@
 import { Mixin } from '../../utils/mixin.js';
 
-interface ParserError {
+export interface ParserError {
     code: string;
     startLine: number;
     startCol: number;

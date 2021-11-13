@@ -3,8 +3,12 @@ import * as fs from 'node:fs';
 import * as parse5 from '../../packages/parse5/lib/index.js';
 import { generateTestsForEachTreeAdapter, getStringDiffMsg } from './common.js';
 
-export function generateSerializerTests(name: string, prefix: string, serialize: any) {
-    const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url));
+export function generateSerializerTests(
+    name: string,
+    prefix: string,
+    serialize: (document: any, opts: any) => Promise<string> | string
+) {
+    const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url)).toString('utf-8');
     const tests = JSON.parse(data) as {
         name: string;
         input: string;

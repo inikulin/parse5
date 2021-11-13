@@ -1,7 +1,8 @@
 import { ParserStream } from 'parse5-parser-stream/lib/index.js';
 import { TAG_NAMES as $ } from 'parse5/lib/common/html.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
 
-export class PlainTextConversionStream extends ParserStream {
+export class PlainTextConversionStream<T extends TreeAdapterTypeMap> extends ParserStream<T> {
     constructor(options?: any) {
         super(options);
 

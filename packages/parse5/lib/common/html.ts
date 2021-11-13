@@ -20,6 +20,11 @@ export enum ATTRS {
     SIZE = 'size',
 }
 
+/**
+ * The mode of the document.
+ *
+ * @see {@link https://dom.spec.whatwg.org/#concept-document-limited-quirks}
+ */
 export enum DOCUMENT_MODE {
     NO_QUIRKS = 'no-quirks',
     QUIRKS = 'quirks',

@@ -1,4 +1,5 @@
 import type { Attribute, Token } from '../common/token.js';
+import type { TreeAdapterTypeMap } from './../tree-adapters/interface';
 
 //Const
 const NOAH_ARK_CAPACITY = 3;
@@ -12,28 +13,26 @@ interface MarkerEntry {
     type: EntryType.Marker;
 }
 
-interface ElementEntry {
+interface ElementEntry<T extends TreeAdapterTypeMap> {
     type: EntryType.Element;
-    element: any;
+    element: T['element'];
     token: Token;
 }
 
-type Entry = MarkerEntry | ElementEntry;
-
-type Element = any;
+type Entry<T extends TreeAdapterTypeMap> = MarkerEntry | ElementEntry<T>;
 
 //List of formatting elements
-export class FormattingElementList {
+export class FormattingElementList<T extends TreeAdapterTypeMap> {
     length = 0;
-    entries: Entry[] = [];
-    bookmark: Element | null = null;
+    entries: Entry<T>[] = [];
+    bookmark: Entry<T> | null = null;
 
     constructor(private treeAdapter: any) {}
 
     //Noah Ark's condition
     //OPTIMIZATION: at first we try to find possible candidates for exclusion using
     //lightweight heuristics without thorough attributes check.
-    _getNoahArkConditionCandidates(newElement: any, neAttrs: Attribute[]) {
+    _getNoahArkConditionCandidates(newElement: T['element'], neAttrs: Attribute[]) {
         const candidates = [];
 
         if (this.length >= NOAH_ARK_CAPACITY) {
@@ -65,7 +64,7 @@ export class FormattingElementList {
         return candidates;
     }
 
-    _ensureNoahArkCondition(newElement: Element) {
+    _ensureNoahArkCondition(newElement: T['element']) {
         const neAttrs = this.treeAdapter.getAttrList(newElement);
         const candidates = this._getNoahArkConditionCandidates(newElement, neAttrs);
 
@@ -91,7 +90,7 @@ export class FormattingElementList {
         this.length++;
     }
 
-    pushElement(element: Element, token: Token) {
+    pushElement(element: T['element'], token: Token) {
         this._ensureNoahArkCondition(element);
 
         this.entries.push({
@@ -103,7 +102,7 @@ export class FormattingElementList {
         this.length++;
     }
 
-    insertElementAfterBookmark(element: Element, token: Token) {
+    insertElementAfterBookmark(element: T['element'], token: Token) {
         const bookmarkIdx = this.entries.lastIndexOf(this.bookmark!);
 
         this.entries.splice(bookmarkIdx + 1, 0, {
@@ -115,7 +114,7 @@ export class FormattingElementList {
         this.length++;
     }
 
-    removeEntry(entry: Entry) {
+    removeEntry(entry: Entry<T>) {
         const entryIndex = this.entries.lastIndexOf(entry);
 
         if (entryIndex >= 0) {
@@ -153,7 +152,7 @@ export class FormattingElementList {
         return null;
     }
 
-    getElementEntry(element: Element): ElementEntry | null {
+    getElementEntry(element: T['element']): ElementEntry<T> | null {
         for (let i = this.length - 1; i >= 0; i--) {
             const entry = this.entries[i];
 

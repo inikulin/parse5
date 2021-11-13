@@ -97,12 +97,12 @@ export function generateParsingTests(
     parse
 ) {
     generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
-        for (const test of loadTreeConstructionTestData(testSuite, treeAdapter)) {
-            if (!(test.fragmentContext && skipFragments)) {
-                const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`;
+        for (const test of loadTreeConstructionTestData(testSuite, treeAdapter).filter(
+            (test) => !skipFragments || !test.fragmentContext
+        )) {
+            const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`;
 
-                _test[testName] = createParsingTest(test, treeAdapter, parse, { withoutErrors });
-            }
+            _test[testName] = createParsingTest(test, treeAdapter, parse, { withoutErrors });
         }
     });
 }
