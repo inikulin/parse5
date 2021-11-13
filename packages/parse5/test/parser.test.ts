@@ -15,7 +15,7 @@ generateParsingTests('parser', 'Parser', { skipFragments: false } as any, (test:
 describe('parser', () => {
     it('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {
         const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
-        const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
+        const document: any = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
         assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
     });
@@ -40,22 +40,22 @@ describe('parser', () => {
             const html = '<script></script>';
             const opts = { sourceCodeLocationInfo: true };
 
-            let args = parse5.parseFragment(fragmentContext, html, opts);
+            let args: any = parse5.parseFragment(fragmentContext, html, opts);
 
-            assert.strictEqual(args.fragmentContext, fragmentContext);
-            assert.strictEqual(args.html, html);
+            expect(args).toHaveProperty('fragmentContext', fragmentContext);
+            expect(args).toHaveProperty('html', html);
             assert.ok(args.options.sourceCodeLocationInfo);
 
             args = parse5.parseFragment(html, opts);
 
             assert.ok(!args.fragmentContext);
-            assert.strictEqual(args.html, html);
+            expect(args).toHaveProperty('html', html);
             assert.ok(args.options.sourceCodeLocationInfo);
 
             args = parse5.parseFragment(html);
 
             assert.ok(!args.fragmentContext);
-            assert.strictEqual(args.html, html);
+            expect(args).toHaveProperty('html', html);
             assert.ok(!args.options.sourceCodeLocationInfo);
         });
     });
@@ -76,14 +76,14 @@ describe('parser', () => {
         it('parses correctly', () => {
             const fragment = parse5.parseFragment('<div id="123">', {
                 treeAdapter: treeAdapters.htmlparser2,
-            });
+            }) as any;
 
             assert.strictEqual(treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
         });
     });
 
     it('Regression - DOCTYPE empty fields (GH-236)', () => {
-        const document = parse5.parse('<!DOCTYPE>');
+        const document = parse5.parse('<!DOCTYPE>') as any;
         const doctype = document.childNodes[0];
 
         assert.strictEqual(doctype.name, '');

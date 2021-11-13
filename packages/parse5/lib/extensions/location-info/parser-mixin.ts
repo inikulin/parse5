@@ -2,12 +2,15 @@ import { CommentToken, DoctypeToken, CharacterToken } from './../../common/token
 import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
-import { LocationInfoOpenElementStackMixin } from './open-element-stack-mixin.js';
+import {
+    LocationInfoOpenElementStackMixin,
+    LocationInfoOpenElementStackMixinOptions,
+} from './open-element-stack-mixin.js';
 import * as HTML from '../../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from './../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
 import type { PositionTrackingPreprocessorMixin } from './../position-tracking/preprocessor-mixin';
-import type { Token, Location, TagToken } from '../../common/token.js';
+import type { Token, TagToken } from '../../common/token.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -32,13 +35,13 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
             loc = {
                 ...this.lastStartTagToken.location,
                 startTag: this.lastStartTagToken.location,
-            };
+            } as any;
         }
 
-        this.treeAdapter.setNodeSourceCodeLocation(element, loc);
+        this.treeAdapter.setNodeSourceCodeLocation(element, loc!);
     }
 
-    _setEndLocation(element: T['element'], closingToken: TagToken) {
+    _setEndLocation(element: T['element'], closingToken: Token) {
         const loc = this.treeAdapter.getNodeSourceCodeLocation(element);
 
         if (loc && closingToken.location) {
@@ -48,7 +51,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
             // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
             // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
             const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
-            const endLoc: Location = {};
+            const endLoc: any = {};
             if (isClosingEndTag) {
                 endLoc.endTag = { ...ctLoc };
                 endLoc.endLine = ctLoc.endLine;
@@ -66,7 +69,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
 
     override _getOverriddenMethods(mxn: LocationInfoParserMixin<T>, orig: Parser<T>) {
         return {
-            _bootstrap(this: Parser<T>, document, fragmentContext) {
+            _bootstrap(this: Parser<T>, document: T['document'], fragmentContext: T['element'] | null) {
                 orig._bootstrap.call(this, document, fragmentContext);
 
                 mxn.lastStartTagToken = null;
@@ -78,19 +81,19 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 mxn.posTracker = tokenizerMixin.posTracker;
 
                 Mixin.install(this.openElements, LocationInfoOpenElementStackMixin, {
-                    onItemPop(element) {
-                        mxn._setEndLocation(element, mxn.currentToken);
+                    onItemPop(element: T['element']) {
+                        mxn._setEndLocation(element, mxn.currentToken!);
                     },
-                });
+                } as LocationInfoOpenElementStackMixinOptions<T>);
             },
 
-            _runParsingLoop(this: Parser<T>, scriptHandler) {
+            _runParsingLoop(this: Parser<T>, scriptHandler: null | ((scriptElement: T['element']) => void)) {
                 orig._runParsingLoop.call(this, scriptHandler);
 
                 // NOTE: generate location info for elements
                 // that remains on open element stack
                 for (let i = this.openElements.stackTop; i >= 0; i--) {
-                    mxn._setEndLocation(this.openElements.items[i], mxn.currentToken);
+                    mxn._setEndLocation(this.openElements.items[i], mxn.currentToken!);
                 }
             },
 
@@ -130,7 +133,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 const docTypeNode = documentChildren.find((node) => this.treeAdapter.isDocumentTypeNode(node));
 
                 if (docTypeNode) {
-                    this.treeAdapter.setNodeSourceCodeLocation(docTypeNode, token.location);
+                    this.treeAdapter.setNodeSourceCodeLocation(docTypeNode, token.location!);
                 }
             },
 
@@ -159,12 +162,12 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
 
                 const tmplContent = this.treeAdapter.getTemplateContent(this.openElements.current);
 
-                this.treeAdapter.setNodeSourceCodeLocation(tmplContent, null);
+                this.treeAdapter.setNodeSourceCodeLocation(tmplContent, null!);
             },
 
             _insertFakeRootElement(this: Parser<T>) {
                 orig._insertFakeRootElement.call(this);
-                this.treeAdapter.setNodeSourceCodeLocation(this.openElements.current, null);
+                this.treeAdapter.setNodeSourceCodeLocation(this.openElements.current, null!);
             },
 
             //Comments
@@ -174,7 +177,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 const children = this.treeAdapter.getChildNodes(parent);
                 const commentNode = children[children.length - 1];
 
-                this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location);
+                this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location!);
             },
 
             //Text
@@ -192,15 +195,15 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 const hasFosterParent = this._shouldFosterParentOnInsertion();
 
                 const parent =
-                    (hasFosterParent && mxn.lastFosterParentingLocation.parent) ||
+                    (hasFosterParent && mxn.lastFosterParentingLocation!.parent) ||
                     this.openElements.currentTmplContent ||
                     this.openElements.current;
 
                 const siblings = this.treeAdapter.getChildNodes(parent);
 
                 const textNodeIdx =
-                    hasFosterParent && mxn.lastFosterParentingLocation.beforeElement
-                        ? siblings.indexOf(mxn.lastFosterParentingLocation.beforeElement) - 1
+                    hasFosterParent && mxn.lastFosterParentingLocation!.beforeElement
+                        ? siblings.indexOf(mxn.lastFosterParentingLocation!.beforeElement) - 1
                         : siblings.length - 1;
 
                 const textNode = siblings[textNodeIdx];
@@ -209,10 +212,10 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
                 if (tnLoc) {
-                    const { endLine, endCol, endOffset } = token.location;
-                    this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
+                    const { endLine, endCol, endOffset } = token.location as any;
+                    this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset } as any);
                 } else {
-                    this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
+                    this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location!);
                 }
             },
         };

@@ -1,4 +1,5 @@
 import { Mixin } from '../../utils/mixin.js';
+import type { ERR } from '../../common/error-codes.js';
 
 export interface ParserError {
     code: string;
@@ -9,6 +10,15 @@ export interface ParserError {
     startOffset: number;
     endOffset: number;
 }
+
+export const BASE_ERROR = {
+    startLine: -1,
+    startCol: -1,
+    startOffset: -1,
+    endLine: -1,
+    endCol: -1,
+    endOffset: -1,
+};
 
 interface ClassWithErrorReporting {
     _err(code: string): void;
@@ -34,24 +44,16 @@ export abstract class ErrorReportingMixinBase<Host extends ClassWithErrorReporti
         err.startOffset = err.endOffset = this.posTracker.offset;
     }
 
-    _reportError(code: string) {
-        const err = {
-            code,
-            startLine: -1,
-            startCol: -1,
-            startOffset: -1,
-            endLine: -1,
-            endCol: -1,
-            endOffset: -1,
-        };
+    _reportError(code: ERR) {
+        const err = { ...BASE_ERROR, code };
 
         this._setErrorLocation(err);
         this.onParseError(err);
     }
 
-    override _getOverriddenMethods(mxn: ErrorReportingMixinBase<Host>): Partial<Host> {
+    override _getOverriddenMethods(mxn: ErrorReportingMixinBase<Host>, _originalMethods: Host): Partial<Host> {
         return {
-            _err(code: string) {
+            _err(code: ERR) {
                 mxn._reportError(code);
             },
         } as Partial<Host>;

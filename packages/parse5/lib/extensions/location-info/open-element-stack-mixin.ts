@@ -2,7 +2,7 @@ import { Mixin } from '../../utils/mixin.js';
 import type { OpenElementStack } from './../../parser/open-element-stack';
 import type { TreeAdapterTypeMap } from './../../tree-adapters/interface';
 
-interface LocationInfoOpenElementStackMixinOptions<T extends TreeAdapterTypeMap> {
+export interface LocationInfoOpenElementStackMixinOptions<T extends TreeAdapterTypeMap> {
     onItemPop: (item: T['parentNode']) => void;
 }
 

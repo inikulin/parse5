@@ -153,7 +153,7 @@ describe('location-info-parser', () => {
             },
         };
         const treeAdapter = { ...treeAdapters.default, ...sourceCodeLocationSetter };
-        const document = parse5.parse('<!doctype><body>Testing location</body>', {
+        const document: any = parse5.parse('<!doctype><body>Testing location</body>', {
             treeAdapter,
             sourceCodeLocationInfo: true,
         });

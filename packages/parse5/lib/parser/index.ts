@@ -54,7 +54,7 @@ enum InsertionMode {
 }
 
 //Insertion mode reset map
-const INSERTION_MODE_RESET_MAP = new Map([
+const INSERTION_MODE_RESET_MAP = new Map<string, InsertionMode>([
     [$.TR, InsertionMode.IN_ROW],
     [$.TBODY, InsertionMode.IN_TABLE_BODY],
     [$.THEAD, InsertionMode.IN_TABLE_BODY],
@@ -452,11 +452,11 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.pendingScript = null;
 
         if (this.options.sourceCodeLocationInfo) {
-            Mixin.install(this, LocationInfoParserMixin);
+            Mixin.install(this, LocationInfoParserMixin as any);
         }
 
         if (this.options.onParseError) {
-            Mixin.install(this, ErrorReportingParserMixin, { onParseError: this.options.onParseError });
+            Mixin.install(this, ErrorReportingParserMixin as any, { onParseError: this.options.onParseError });
         }
     }
 
@@ -496,7 +496,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.tokenizer.write(html, true);
         this._runParsingLoop(null);
 
-        const rootElement = this.treeAdapter.getFirstChild(documentMock);
+        const rootElement = this.treeAdapter.getFirstChild(documentMock) as T['parentNode'];
         const fragment = this.treeAdapter.createDocumentFragment();
 
         this._adoptNodes(rootElement, fragment);
@@ -651,7 +651,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _findFormInFragmentContext() {
-        let node = this.fragmentContext;
+        let node = this.fragmentContext!;
 
         do {
             if (this.treeAdapter.getTagName(node) === $.FORM) {
@@ -659,13 +659,13 @@ export class Parser<T extends TreeAdapterTypeMap> {
                 break;
             }
 
-            node = this.treeAdapter.getParentNode(node);
+            node = this.treeAdapter.getParentNode(node)!;
         } while (node);
     }
 
     _initTokenizerForFragmentParsing() {
-        if (this.treeAdapter.getNamespaceURI(this.fragmentContext) === NS.HTML) {
-            const tn = this.treeAdapter.getTagName(this.fragmentContext);
+        if (this.treeAdapter.getNamespaceURI(this.fragmentContext!) === NS.HTML) {
+            const tn = this.treeAdapter.getTagName(this.fragmentContext!);
 
             switch (tn) {
                 case $.TITLE:
@@ -824,11 +824,11 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _processToken(token: Token) {
-        TOKEN_HANDLERS.get(this.insertionMode)[token.type](this, token);
+        (TOKEN_HANDLERS.get(this.insertionMode) as any)[token.type](this, token);
     }
 
     _processTokenInBodyMode(token: Token) {
-        TOKEN_HANDLER_IN_BODY[token.type](this, token);
+        (TOKEN_HANDLER_IN_BODY as any)[token.type](this, token);
     }
 
     _processTokenInForeignContent(token: Token) {
@@ -908,7 +908,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             } while (unopenIdx > 0);
 
             for (let i = unopenIdx; i < listLength; i++) {
-                entry = this.activeFormattingElements.entries[i];
+                entry = this.activeFormattingElements.entries[i] as ElementEntry<T>;
                 this._insertElement(entry.token, this.treeAdapter.getNamespaceURI(entry.element));
                 entry.element = this.openElements.current;
             }
@@ -969,7 +969,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _resetInsertionModeForSelect(selectIdx) {
+    _resetInsertionModeForSelect(selectIdx: number) {
         if (selectIdx > 0) {
             for (let i = selectIdx - 1; i > 0; i--) {
                 const ancestor = this.openElements.items[i];
@@ -1069,6 +1069,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const tn = this.treeAdapter.getTagName(element);
         const ns = this.treeAdapter.getNamespaceURI(element);
 
+        // @ts-ignore
         return HTML.SPECIAL_ELEMENTS[ns].has(tn);
     }
 }
@@ -1120,13 +1121,17 @@ function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(p: Parser<T>, forma
 }
 
 //Step 13 of the algorithm
-function aaInnerLoop<T extends TreeAdapterTypeMap>(p: Parser<T>, furthestBlock, formattingElement) {
+function aaInnerLoop<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    furthestBlock: T['element'],
+    formattingElement: T['element']
+) {
     let lastElement = furthestBlock;
-    let nextElement = p.openElements.getCommonAncestor(furthestBlock);
+    let nextElement = p.openElements.getCommonAncestor(furthestBlock) as T['element'];
 
     for (let i = 0, element = nextElement; element !== formattingElement; i++, element = nextElement) {
         //NOTE: store next element for the next loop iteration (it may be deleted from the stack by step 9.5)
-        nextElement = p.openElements.getCommonAncestor(element);
+        nextElement = p.openElements.getCommonAncestor(element) as T['element'];
 
         const elementEntry = p.activeFormattingElements.getElementEntry(element);
         const counterOverflow = elementEntry && i >= AA_INNER_LOOP_ITER;
@@ -1206,11 +1211,9 @@ function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
 }
 
 //Algorithm entry point
-function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
-    let formattingElementEntry;
-
+function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     for (let i = 0; i < AA_OUTER_LOOP_ITER; i++) {
-        formattingElementEntry = aaObtainFormattingElementEntry(p, token, formattingElementEntry);
+        const formattingElementEntry = aaObtainFormattingElementEntry(p, token);
 
         if (!formattingElementEntry) {
             break;
@@ -1228,7 +1231,7 @@ function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
         const commonAncestor = p.openElements.getCommonAncestor(formattingElementEntry.element);
 
         p.treeAdapter.detachNode(lastElement);
-        aaInsertLastNodeInCommonAncestor(p, commonAncestor, lastElement);
+        if (commonAncestor) aaInsertLastNodeInCommonAncestor(p, commonAncestor, lastElement);
         aaReplaceFormattingElement(p, furthestBlock, formattingElementEntry);
     }
 }

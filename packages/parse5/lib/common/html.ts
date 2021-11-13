@@ -180,7 +180,7 @@ export enum TAG_NAMES {
 const $ = TAG_NAMES;
 
 export const SPECIAL_ELEMENTS = {
-    [NS.HTML]: new Set([
+    [NS.HTML]: new Set<string>([
         $.ADDRESS,
         $.APPLET,
         $.AREA,
@@ -263,6 +263,6 @@ export const SPECIAL_ELEMENTS = {
         $.WBR,
         $.XMP,
     ]),
-    [NS.MATHML]: new Set([$.MI, $.MO, $.MN, $.MS, $.MTEXT, $.ANNOTATION_XML]),
-    [NS.SVG]: new Set([$.TITLE, $.FOREIGN_OBJECT, $.DESC]),
+    [NS.MATHML]: new Set<string>([$.MI, $.MO, $.MN, $.MS, $.MTEXT, $.ANNOTATION_XML]),
+    [NS.SVG]: new Set<string>([$.TITLE, $.FOREIGN_OBJECT, $.DESC]),
 };

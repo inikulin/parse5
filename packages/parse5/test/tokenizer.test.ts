@@ -28,7 +28,7 @@ generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors
 
 describe('tokenizer', () => {
     it('Regression - `<<` in comment parses correctly (GH-325)', () => {
-        const document = parse5.parse('<!--<<-->');
+        const document: any = parse5.parse('<!--<<-->');
         assert.equal(document.childNodes[0].data, '<<');
     });
 });

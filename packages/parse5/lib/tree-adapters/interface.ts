@@ -265,6 +265,13 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
     setNodeSourceCodeLocation(node: T['node'], location: Location): void;
 
     /**
+     * Updates the source code location information of the node.
+     *
+     * @param node - Node.
+     */
+    updateNodeSourceCodeLocation(node: T['node'], location: Location): void;
+
+    /**
      * Sets the `<template>` element content element.
      *
      * @param templateElement - `<template>` element.
