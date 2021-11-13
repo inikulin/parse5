@@ -3069,8 +3069,14 @@ function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
             p._processToken(token);
         }
     } else if (
-        (tn !== $.BODY && tn !== $.CAPTION && tn !== $.COL && tn !== $.COLGROUP) ||
-        (tn !== $.HTML && tn !== $.TD && tn !== $.TH && tn !== $.TR)
+        tn !== $.BODY &&
+        tn !== $.CAPTION &&
+        tn !== $.COL &&
+        tn !== $.COLGROUP &&
+        tn !== $.HTML &&
+        tn !== $.TD &&
+        tn !== $.TH &&
+        tn !== $.TR
     ) {
         endTagInTable(p, token);
     }
