@@ -7,6 +7,7 @@ import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/def
 import { convertTokenToHtml5Lib } from '../../test/utils/generate-tokenization-tests.js';
 import { parseDatFile } from '../../test/utils/parse-dat-file.js';
 import { addSlashes } from '../../test/utils/common.js';
+import type { Token } from './../../packages/parse5/lib/common/token.js';
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -25,29 +26,26 @@ async function main() {
     await Promise.all(convertPromises);
 }
 
-function appendToken(dest, token) {
-    switch (token.type) {
-        case Tokenizer.EOF_TOKEN:
+function appendToken(dest: Token[], token: Token) {
+    if (token.type === Tokenizer.EOF_TOKEN) return;
+
+    if (token.type === Tokenizer.NULL_CHARACTER_TOKEN || token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN) {
+        token.type = Tokenizer.CHARACTER_TOKEN;
+    }
+
+    if (token.type === Tokenizer.CHARACTER_TOKEN) {
+        const lastToken = dest[dest.length - 1];
+        if (lastToken?.type === Tokenizer.CHARACTER_TOKEN) {
+            lastToken.chars += token.chars;
             return;
-
-        case Tokenizer.NULL_CHARACTER_TOKEN:
-        case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
-            token.type = Tokenizer.CHARACTER_TOKEN;
-        /* falls through */
-
-        case Tokenizer.CHARACTER_TOKEN:
-            if (dest.length > 0 && dest[dest.length - 1].type === Tokenizer.CHARACTER_TOKEN) {
-                dest[dest.length - 1].chars += token.chars;
-                return;
-            }
-            break;
+        }
     }
 
     dest.push(token);
 }
 
-function collectParserTokens(html) {
-    const tokens = [];
+function collectParserTokens(html: string) {
+    const tokens: Token[] = [];
     const parser = new Parser();
 
     parser._processInputToken = function (token) {
@@ -67,7 +65,7 @@ function collectParserTokens(html) {
     return tokens.map((token) => convertTokenToHtml5Lib(token));
 }
 
-function generateParserFeedbackTest(parserTestFile) {
+function generateParserFeedbackTest(parserTestFile: string) {
     const tests = parseDatFile(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {

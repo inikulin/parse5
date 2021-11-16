@@ -1,10 +1,13 @@
+import { Attribute, Token } from './../../packages/parse5/lib/common/token';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { Tokenizer } from '../../packages/parse5/lib/tokenizer/index.js';
 import { makeChunks } from './common.js';
 
-export function convertTokenToHtml5Lib(token) {
+type HtmlLibToken = [string, string | null, ...unknown[]];
+
+export function convertTokenToHtml5Lib(token: Token): HtmlLibToken {
     switch (token.type) {
         case Tokenizer.CHARACTER_TOKEN:
         case Tokenizer.NULL_CHARACTER_TOKEN:
@@ -12,13 +15,13 @@ export function convertTokenToHtml5Lib(token) {
             return ['Character', token.chars];
 
         case Tokenizer.START_TAG_TOKEN: {
-            const reformatedAttrs = {};
+            const reformatedAttrs: Record<string, string> = {};
 
             for (const attr of token.attrs) {
                 reformatedAttrs[attr.name] = attr.value;
             }
 
-            const startTagEntry = ['StartTag', token.tagName, reformatedAttrs];
+            const startTagEntry: HtmlLibToken = ['StartTag', token.tagName, reformatedAttrs];
 
             if (token.selfClosing) {
                 startTagEntry.push(true);
@@ -43,22 +46,22 @@ export function convertTokenToHtml5Lib(token) {
     }
 }
 
-function sortErrors(result) {
-    result.errors = result.errors.sort((err1, err2) => {
-        const lineDiff = err1.line - err2.line;
-
-        if (lineDiff !== 0) {
-            return lineDiff;
-        }
-
-        return err1.col - err2.col;
-    });
+function sortErrors(result: { errors: { line: number; col: number }[] }) {
+    result.errors.sort((err1, err2) => err1.line - err2.line || err1.col - err2.col);
 }
 
-function tokenize(createTokenSource, chunks, initialState, lastStartTag) {
+function tokenize(
+    createTokenSource: (data: { tokens: Token[]; errors: string[] }) => {
+        tokenizer: Tokenizer;
+        getNextToken: () => Token;
+    },
+    chunks: string | string[],
+    initialState: Tokenizer['state'],
+    lastStartTag: string | null
+) {
     const result = { tokens: [], errors: [] };
     const { tokenizer, getNextToken } = createTokenSource(result);
-    let token = { type: Tokenizer.HIBERNATION_TOKEN };
+    let token: Token = { type: Tokenizer.HIBERNATION_TOKEN };
     let chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes
@@ -90,36 +93,30 @@ function tokenize(createTokenSource, chunks, initialState, lastStartTag) {
     return result;
 }
 
-function unicodeUnescape(str) {
-    return str.replace(/\\u(\w{4})/gi, (match, chCodeStr) => String.fromCharCode(Number.parseInt(chCodeStr, 16)));
+function unicodeUnescape(str: string) {
+    return str.replace(/\\u(\w{4})/gi, (_match: string, chCodeStr: string) =>
+        String.fromCharCode(Number.parseInt(chCodeStr, 16))
+    );
 }
 
-function unescapeDescrIO(testDescr) {
+function unescapeDescrIO(testDescr: TestDescription) {
     testDescr.input = unicodeUnescape(testDescr.input);
 
     for (const tokenEntry of testDescr.output) {
         //NOTE: unescape token tagName (for StartTag and EndTag tokens), comment data (for Comment token),
         //character token data (for Character token).
-        tokenEntry[1] = unicodeUnescape(tokenEntry[1]);
-
-        //NOTE: unescape token attributes(if we have them).
-        if (tokenEntry.length > 2) {
-            for (const attrName of Object.keys(tokenEntry)) {
-                const attrVal = tokenEntry[attrName];
-
-                delete tokenEntry[attrName];
-                tokenEntry[unicodeUnescape(attrName)] = unicodeUnescape(attrVal);
-            }
+        if (tokenEntry[1]) {
+            tokenEntry[1] = unicodeUnescape(tokenEntry[1]);
         }
     }
 }
 
-function appendTokenEntry(result, tokenEntry) {
+function appendTokenEntry(result: HtmlLibToken[], tokenEntry: HtmlLibToken) {
     if (tokenEntry[0] === 'Character') {
         const lastEntry = result[result.length - 1];
 
         if (lastEntry && lastEntry[0] === 'Character') {
-            lastEntry[1] += tokenEntry[1];
+            lastEntry[1]! += tokenEntry[1];
             return;
         }
     }
@@ -127,8 +124,8 @@ function appendTokenEntry(result, tokenEntry) {
     result.push(tokenEntry);
 }
 
-function concatCharacterTokens(tokenEntries) {
-    const result = [];
+function concatCharacterTokens(tokenEntries: HtmlLibToken[]) {
+    const result: HtmlLibToken[] = [];
 
     for (const tokenEntry of tokenEntries) {
         appendTokenEntry(result, tokenEntry);
@@ -137,15 +134,37 @@ function concatCharacterTokens(tokenEntries) {
     return result;
 }
 
-function getTokenizerSuitableStateName(testDataStateName) {
-    const state = Tokenizer.MODE[testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase()];
+function getTokenizerSuitableStateName(testDataStateName: string) {
+    const state =
+        Tokenizer.MODE[testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase() as keyof typeof Tokenizer.MODE];
 
     return state;
 }
 
-function loadTests(dataDirPath) {
+interface TestDescription {
+    initialStates: string[];
+    doubleEscaped?: boolean;
+    output: HtmlLibToken[];
+    description: string;
+    input: string;
+    lastStartTag: string;
+    errors?: string[];
+}
+
+interface LoadedTest {
+    idx: number;
+    setName: string;
+    name: string;
+    input: string;
+    expected: HtmlLibToken[];
+    initialState: typeof Tokenizer.MODE[keyof typeof Tokenizer.MODE];
+    lastStartTag: string;
+    expectedErrors: string[];
+}
+
+function loadTests(dataDirPath: string): LoadedTest[] {
     const testSetFileNames = fs.readdirSync(dataDirPath);
-    const tests = [];
+    const tests: LoadedTest[] = [];
     let testIdx = 0;
 
     for (const fileName of testSetFileNames) {
@@ -173,7 +192,7 @@ function loadTests(dataDirPath) {
                 unescapeDescrIO(descr);
             }
 
-            const expected = descr.output.filter((tokenEntry) => tokenEntry !== 'ParseError');
+            const expected = descr.output.filter((tokenEntry: any) => tokenEntry !== 'ParseError');
 
             for (const initialState of descr.initialStates) {
                 tests.push({
@@ -193,13 +212,18 @@ function loadTests(dataDirPath) {
     return tests;
 }
 
-export function generateTokenizationTests(name, prefix, testSuite, createTokenSource) {
+export function generateTokenizationTests(_name: string, prefix: string, testSuite: string, createTokenSource: any) {
     for (const testData of loadTests(testSuite)) {
         const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${testData.initialState}`;
 
         it(testName, () => {
             const chunks = makeChunks(testData.input);
-            const result = tokenize(createTokenSource, chunks, testData.initialState, testData.lastStartTag);
+            const result = tokenize(
+                createTokenSource,
+                chunks,
+                testData.initialState as typeof Tokenizer.MODE[keyof typeof Tokenizer.MODE],
+                testData.lastStartTag
+            );
 
             assert.deepEqual(result.tokens, testData.expected, `Chunks: ${JSON.stringify(chunks)}`);
             assert.deepEqual(result.errors, testData.expectedErrors || []);

@@ -33,9 +33,9 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
 
         if (this.lastStartTagToken) {
             loc = {
-                ...this.lastStartTagToken.location,
+                ...this.lastStartTagToken.location!,
                 startTag: this.lastStartTagToken.location,
-            } as any;
+            };
         }
 
         this.treeAdapter.setNodeSourceCodeLocation(element, loc!);
@@ -212,8 +212,8 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
                 if (tnLoc) {
-                    const { endLine, endCol, endOffset } = token.location as any;
-                    this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset } as any);
+                    const { endLine, endCol, endOffset } = token.location!;
+                    this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
                 } else {
                     this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location!);
                 }

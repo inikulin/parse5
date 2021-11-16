@@ -20,7 +20,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
 
         const fragment = parse5.parseFragment(html, opts);
         const firstP = treeAdapter.getChildNodes(fragment)[0];
-        const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP);
+        const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP)!;
 
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     };
@@ -35,7 +35,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
 
         const fragment = parse5.parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
-        const location = treeAdapter.getNodeSourceCodeLocation(firstChild);
+        const location = treeAdapter.getNodeSourceCodeLocation(firstChild)!;
 
         assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<i>1</i>');
     };
@@ -78,7 +78,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const fragment = parse5.parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
 
-        assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild).attrs['test-attr']);
+        assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild)!.attrs!['test-attr']);
     };
 
     _test['Regression - location line incorrect when a character is unconsumed (GH-151)'] = function () {
@@ -99,7 +99,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const htmlEl = treeAdapter.getChildNodes(document)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
         const scriptEl = treeAdapter.getChildNodes(bodyEl)[0];
-        const scriptLocation = treeAdapter.getNodeSourceCodeLocation(scriptEl);
+        const scriptLocation: any = treeAdapter.getNodeSourceCodeLocation(scriptEl);
 
         assert.strictEqual(treeAdapter.getTagName(scriptEl), 'script');
         assert.equal(scriptLocation.endTag.startLine, 4);
@@ -115,7 +115,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
 
         const fragment = parse5.parseFragment(html, opts);
         const p = treeAdapter.getChildNodes(fragment)[0];
-        const location = treeAdapter.getNodeSourceCodeLocation(p);
+        const location: any = treeAdapter.getNodeSourceCodeLocation(p);
 
         assertNodeLocation(location, html, html, [html]);
         assertStartTagLocation(location, html, html, [html]);

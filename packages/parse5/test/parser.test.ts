@@ -6,7 +6,7 @@ import { treeAdapters } from '../../../test/utils/common.js';
 
 const origParseFragment = Parser.prototype.parseFragment;
 
-generateParsingTests('parser', 'Parser', { skipFragments: false } as any, (test: any, opts: any) => ({
+generateParsingTests('parser', 'Parser', { skipFragments: false }, (test, opts) => ({
     node: test.fragmentContext
         ? parse5.parseFragment(test.fragmentContext, test.input, opts)
         : parse5.parse(test.input, opts),
@@ -83,11 +83,11 @@ describe('parser', () => {
     });
 
     it('Regression - DOCTYPE empty fields (GH-236)', () => {
-        const document = parse5.parse('<!DOCTYPE>') as any;
+        const document: any = parse5.parse('<!DOCTYPE>');
         const doctype = document.childNodes[0];
 
-        assert.strictEqual(doctype.name, '');
-        assert.strictEqual(doctype.publicId, '');
-        assert.strictEqual(doctype.systemId, '');
+        expect(doctype).toHaveProperty('name', '');
+        expect(doctype).toHaveProperty('publicId', '');
+        expect(doctype).toHaveProperty('systemId', '');
     });
 });

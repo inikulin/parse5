@@ -10,14 +10,19 @@ export enum TokenType {
     HIBERNATION = 'HIBERNATION_TOKEN',
 }
 
-export interface Location {
+interface StartLocation {
     startLine: number;
     startCol: number;
     startOffset: number;
+}
+
+interface EndLocation {
     endLine: number;
     endCol: number;
     endOffset: number;
 }
+
+export interface Location extends StartLocation, EndLocation {}
 
 export interface LocationWithAttributes extends Location {
     attrs: Record<string, Location>;

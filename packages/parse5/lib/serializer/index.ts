@@ -163,7 +163,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
 }
 
 // NOTE: used in tests and by rewriting stream
-export function escapeString(str: string, attrMode: boolean) {
+export function escapeString(str: string, attrMode: boolean = false) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     return attrMode

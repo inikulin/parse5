@@ -1,10 +1,15 @@
+import { Attribute } from './../../packages/parse5/lib/common/token';
+import { TreeAdapter, TreeAdapterTypeMap } from './../../packages/parse5/lib/tree-adapters/interface';
 import * as HTML from '../../packages/parse5/lib/common/html.js';
 
-function getSerializedTreeIndent(indent) {
+function getSerializedTreeIndent(indent: number) {
     return '|'.padEnd(indent + 2, ' ');
 }
 
-function getElementSerializedNamespaceURI(element, treeAdapter) {
+function getElementSerializedNamespaceURI<T extends TreeAdapterTypeMap>(
+    element: any,
+    treeAdapter: TreeAdapter<T>
+): string {
     switch (treeAdapter.getNamespaceURI(element)) {
         case HTML.NAMESPACES.SVG:
             return 'svg ';
@@ -15,7 +20,11 @@ function getElementSerializedNamespaceURI(element, treeAdapter) {
     }
 }
 
-function serializeNodeList(nodes, indent, treeAdapter) {
+function serializeNodeList<T extends TreeAdapterTypeMap>(
+    nodes: T['node'][],
+    indent: number,
+    treeAdapter: TreeAdapter<T>
+): string {
     let str = '';
 
     for (let node of nodes) {
@@ -42,7 +51,7 @@ function serializeNodeList(nodes, indent, treeAdapter) {
             str += `<${getElementSerializedNamespaceURI(node, treeAdapter) + tn}>\n`;
 
             let childrenIndent = indent + 2;
-            const serializedAttrs = treeAdapter.getAttrList(node).map((attr) => {
+            const serializedAttrs = treeAdapter.getAttrList(node).map((attr: Attribute) => {
                 let attrStr = getSerializedTreeIndent(childrenIndent);
 
                 if (attr.prefix) {
@@ -69,6 +78,9 @@ function serializeNodeList(nodes, indent, treeAdapter) {
     return str;
 }
 
-export function serializeToDatFileFormat(rootNode, treeAdapter) {
+export function serializeToDatFileFormat<T extends TreeAdapterTypeMap>(
+    rootNode: T['parentNode'],
+    treeAdapter: TreeAdapter<T>
+) {
     return serializeNodeList(treeAdapter.getChildNodes(rootNode), 0, treeAdapter);
 }

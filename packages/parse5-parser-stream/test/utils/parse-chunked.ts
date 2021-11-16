@@ -1,7 +1,14 @@
+import type { ParserOptions } from 'parse5/lib/parser/index.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface.js';
 import { ParserStream } from '../../lib/index.js';
 import { makeChunks } from '../../../../test/utils/common.js';
 
-export function parseChunked(html, opts, minChunkSize, maxChunkSize) {
+export function parseChunked(
+    html: string,
+    opts: ParserOptions<TreeAdapterTypeMap>,
+    minChunkSize?: number,
+    maxChunkSize?: number
+) {
     const parserStream = new ParserStream(opts);
     const chunks = makeChunks(html, minChunkSize, maxChunkSize);
 

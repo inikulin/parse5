@@ -3,6 +3,7 @@ import * as parse5 from '../lib/index.js';
 import { generateSerializerTests } from '../../../test/utils/generate-serializer-tests.js';
 import { treeAdapters } from '../../../test/utils/common.js';
 import type { Element } from './../lib/tree-adapters/default';
+import type { TreeAdapter } from './../lib/tree-adapters/interface';
 
 generateSerializerTests('serializer', 'Serializer', parse5.serialize);
 
@@ -17,7 +18,7 @@ describe('serializer', () => {
 
                     return treeAdapters.default.getTagName(element);
                 },
-            };
+            } as TreeAdapter;
 
             parse5.serialize(document, { treeAdapter });
         });

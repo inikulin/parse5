@@ -21,14 +21,14 @@ generateParsingTests(
         const parser = new ParserStream(opts);
         const { document } = parser;
 
-        const completionPromise = new Promise((resolve, reject) => {
+        const completionPromise = new Promise<{ node: typeof document }>((resolve, reject) => {
             parser.once('finish', () => resolve({ node: document }));
 
             parser.on('script', async (scriptElement, documentWrite, resume) => {
                 const scriptTextNode = opts.treeAdapter.getChildNodes(scriptElement)[0];
                 const script = scriptTextNode && opts.treeAdapter.getTextNodeContent(scriptTextNode);
 
-                document.write = documentWrite;
+                (document as any).write = documentWrite;
 
                 //NOTE: emulate postponed script execution
                 await pause();
@@ -60,9 +60,7 @@ generateTestsForEachTreeAdapter('ParserStream', (_test, treeAdapter) => {
     _test['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function (done) {
         const parser = new ParserStream({ treeAdapter });
 
-        parser.on('script', (el, docWrite, resume) => {
-            resume();
-        });
+        parser.on('script', (_el, _docWrite, resume) => resume());
 
         parser.end('<!doctype html><script>abc</script>');
 
@@ -72,14 +70,10 @@ generateTestsForEachTreeAdapter('ParserStream', (_test, treeAdapter) => {
     _test['Regression - Parsing loop lock causes accidental hang ups (GH-101)'] = function (done) {
         const parser = new ParserStream({ treeAdapter });
 
-        parser.once('finish', () => {
-            done();
-        });
+        parser.once('finish', () => done());
 
-        parser.on('script', (scriptElement, documentWrite, resume) => {
-            process.nextTick(() => {
-                resume();
-            });
+        parser.on('script', (_scriptElement, _documentWrite, resume) => {
+            process.nextTick(() => resume());
         });
 
         parser.write('<script>yo</script>');

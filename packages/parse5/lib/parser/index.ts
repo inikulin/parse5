@@ -471,7 +471,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return document;
     }
 
-    parseFragment(html: string, fragmentContext?: T['element']) {
+    parseFragment(html: string, fragmentContext?: T['parentNode'] | null): T['documentFragment'] {
         //NOTE: use <template> element as a fragment context if context element was not provided,
         //so we will parse in "forgiving" manner
         if (!fragmentContext) {

@@ -1,12 +1,24 @@
+import { ParserOptions } from './../../packages/parse5/lib/parser/index';
+import { ParserError } from './../../packages/parse5/lib/extensions/error-reporting/mixin-base';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as assert from 'node:assert';
 import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
-import { parseDatFile } from '../../test/utils/parse-dat-file.js';
+import { parseDatFile, DatFile } from '../../test/utils/parse-dat-file.js';
+import type { TreeAdapter, TreeAdapterTypeMap } from './../../packages/parse5/lib/tree-adapters/interface';
 
-export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
-    const tests = [];
+export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile<T> {
+    idx: number;
+    setName: string;
+    dirName: string;
+}
+
+export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
+    dataDirs: (string | URL)[],
+    treeAdapter: TreeAdapter<T>
+) {
+    const tests: TreeConstructionTestData<T>[] = [];
 
     for (const dataDir of dataDirs) {
         const dataDirPath = typeof dataDir === 'string' ? dataDir : dataDir.pathname;
@@ -36,7 +48,7 @@ export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
     return tests;
 }
 
-function prettyPrintParserAssertionArgs(actual, expected, chunks) {
+function prettyPrintParserAssertionArgs(actual: string, expected: string, chunks?: string[]) {
     let msg = '\nExpected:\n';
 
     msg += '-----------------\n';
@@ -53,15 +65,29 @@ function prettyPrintParserAssertionArgs(actual, expected, chunks) {
     return msg;
 }
 
-function createParsingTest(test, treeAdapter, parse, { withoutErrors }) {
+interface ParseMethodOptions<T extends TreeAdapterTypeMap> extends ParserOptions<T> {
+    treeAdapter: TreeAdapter<T>;
+}
+
+type ParseMethod<T extends TreeAdapterTypeMap> = (
+    input: TreeConstructionTestData<T>,
+    options: ParseMethodOptions<T>
+) => { node: T['node']; chunks?: string[] } | Promise<{ node: T['node']; chunks?: string[] }>;
+
+function createParsingTest<T extends TreeAdapterTypeMap>(
+    test: TreeConstructionTestData<T>,
+    treeAdapter: TreeAdapter<T>,
+    parse: ParseMethod<T>,
+    { withoutErrors }: { withoutErrors?: boolean }
+) {
     return async () => {
-        const errs = [];
+        const errs: string[] = [];
 
         const opts = {
             scriptingEnabled: test.scriptingEnabled,
             treeAdapter,
 
-            onParseError: (err) => {
+            onParseError: (err: ParserError) => {
                 let errStr = `(${err.startLine}:${err.startCol}`;
 
                 // NOTE: use ranges for token errors
@@ -91,10 +117,14 @@ const treePath = new URL('../data/html5lib-tests/tree-construction', import.meta
 const treeRegressionPath = new URL('../data/tree-construction-regression', import.meta.url);
 
 export function generateParsingTests(
-    name,
-    prefix,
-    { skipFragments, withoutErrors, testSuite = [treePath.pathname, treeRegressionPath.pathname] },
-    parse
+    name: string,
+    prefix: string,
+    {
+        skipFragments,
+        withoutErrors,
+        testSuite = [treePath.pathname, treeRegressionPath.pathname],
+    }: { skipFragments?: boolean; withoutErrors?: boolean; testSuite?: string[] },
+    parse: ParseMethod<TreeAdapterTypeMap>
 ) {
     generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
         for (const test of loadTreeConstructionTestData(testSuite, treeAdapter).filter(
@@ -102,7 +132,7 @@ export function generateParsingTests(
         )) {
             const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`;
 
-            _test[testName] = createParsingTest(test, treeAdapter, parse, { withoutErrors });
+            _test[testName] = createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, { withoutErrors });
         }
     });
 }

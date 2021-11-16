@@ -1,5 +1,6 @@
 import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
-import type { Attribute, Location, LocationWithAttributes } from '../common/token.js';
+import type { Attribute } from '../common/token.js';
+import type { TreeAdapterTypeMap, TreeLocation } from './interface.js';
 
 export enum NodeType {
     Document = '#document',
@@ -13,7 +14,7 @@ export interface Node {
     /** The name of the node. */
     nodeName: NodeType | string;
     /** Comment source code location info. Available if location info is enabled. */
-    sourceCodeLocation?: Location;
+    sourceCodeLocation?: TreeLocation;
 }
 
 export interface NodeWithChildren extends Node {
@@ -48,7 +49,7 @@ export interface Element extends NodeWithChildren, NodeWithParent {
     /** Element namespace. */
     namespaceURI: NAMESPACES;
     /** Element source code location info, with attributes. Available if location info is enabled. */
-    sourceCodeLocation?: LocationWithAttributes;
+    sourceCodeLocation?: TreeLocation;
 }
 
 export interface CommentNode extends NodeWithParent {
@@ -275,14 +276,27 @@ export function isElementNode(node: Node): node is Element {
 }
 
 // Source code location
-export function setNodeSourceCodeLocation(node: Node, location: Location) {
+export function setNodeSourceCodeLocation(node: Node, location: TreeLocation) {
     node.sourceCodeLocation = location;
 }
 
-export function getNodeSourceCodeLocation(node: Node): Location | undefined {
+export function getNodeSourceCodeLocation(node: Node): TreeLocation | undefined {
     return node.sourceCodeLocation;
 }
 
-export function updateNodeSourceCodeLocation(node: Node, endLocation: Location) {
+export function updateNodeSourceCodeLocation(node: Node, endLocation: TreeLocation) {
     node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
 }
+
+export type DefaultTreeAdapterMap = TreeAdapterTypeMap<
+    Node,
+    NodeWithChildren,
+    NodeWithParent,
+    Document,
+    DocumentFragment,
+    Element,
+    CommentNode,
+    TextNode,
+    Template,
+    DocumentType
+>;

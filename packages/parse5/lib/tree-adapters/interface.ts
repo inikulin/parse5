@@ -24,6 +24,12 @@ export interface TreeAdapterTypeMap<
     documentType: DocumentType;
 }
 
+export interface TreeLocation extends Location {
+    attrs?: Record<string, Location>;
+    startTag?: Location;
+    endTag?: Location;
+}
+
 /**
  * Tree adapter is a set of utility functions that provides minimal required abstraction layer beetween parser and a specific AST format.
  * Note that `TreeAdapter` is not designed to be a general purpose AST manipulation library. You can build such library
@@ -136,7 +142,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    getFirstChild(node: T['parentNode']): T['node'] | undefined;
+    getFirstChild(node: T['parentNode']): T['node'] | null;
 
     /**
      * Returns the given element's namespace.
@@ -150,14 +156,14 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    getNodeSourceCodeLocation(node: T['node']): Location;
+    getNodeSourceCodeLocation(node: T['node']): TreeLocation | undefined;
 
     /**
      * Returns the given node's parent.
      *
      * @param node - Node.
      */
-    getParentNode(node: T['node']): T['parentNode'];
+    getParentNode(node: T['node']): T['parentNode'] | null;
 
     /**
      * Returns the given element's tag name.
@@ -262,14 +268,14 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    setNodeSourceCodeLocation(node: T['node'], location: Location): void;
+    setNodeSourceCodeLocation(node: T['node'], location: TreeLocation): void;
 
     /**
      * Updates the source code location information of the node.
      *
      * @param node - Node.
      */
-    updateNodeSourceCodeLocation(node: T['node'], location: Location): void;
+    updateNodeSourceCodeLocation(node: T['node'], location: Partial<TreeLocation>): void;
 
     /**
      * Sets the `<template>` element content element.

@@ -103,12 +103,12 @@ it('Location Info (Tokenizer)', () => {
             }
 
             //Offsets
-            let actual = html.substring((token as any).location.startOffset, (token as any).location.endOffset);
+            let actual = html.substring(token.location!.startOffset, token.location!.endOffset);
 
             assert.strictEqual(actual, testCase.htmlChunks[j]);
 
             //Line/col
-            actual = getSubstringByLineCol(lines, (token as any).location);
+            actual = getSubstringByLineCol(lines, token.location!);
 
             const expected = normalizeNewLine(testCase.htmlChunks[j]);
 

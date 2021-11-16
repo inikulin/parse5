@@ -1,29 +1,17 @@
 import { Writable } from 'node:stream';
 import * as assert from 'node:assert';
-import type { TreeAdapter, TreeAdapterTypeMap } from './../../packages/parse5/lib/tree-adapters/interface';
+import type { TreeAdapter } from './../../packages/parse5/lib/tree-adapters/interface';
 import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
 import * as htmlTreeAdapter from '../../packages/parse5-htmlparser2-tree-adapter/lib/index.js';
 import type { Location } from './../../packages/parse5/lib/common/token';
 
 // Ensure the default tree adapter matches the expected type.
-defaultTreeAdapter as TreeAdapter<
-    TreeAdapterTypeMap<
-        defaultTreeAdapter.Node,
-        defaultTreeAdapter.NodeWithChildren,
-        defaultTreeAdapter.NodeWithParent,
-        defaultTreeAdapter.Document,
-        defaultTreeAdapter.DocumentFragment,
-        defaultTreeAdapter.Element,
-        defaultTreeAdapter.CommentNode,
-        defaultTreeAdapter.TextNode,
-        defaultTreeAdapter.Template,
-        defaultTreeAdapter.DocumentType
-    >
->;
+defaultTreeAdapter as TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap>;
 
 export const treeAdapters = {
     default: defaultTreeAdapter,
-    htmlparser2: htmlTreeAdapter,
+    // TODO Enable when the tree adapter is ready.
+    htmlparser2: htmlTreeAdapter as any as TreeAdapter,
 } as const;
 
 export function addSlashes(str: string) {
@@ -100,12 +88,12 @@ export function writeChunkedToStream(str: string, stream: Writable) {
 
 export function generateTestsForEachTreeAdapter(
     name: string,
-    ctor: (tests: Record<string, () => void>, adapter: any) => void
+    ctor: (tests: Record<string, (cb: () => void) => void>, adapter: TreeAdapter) => void
 ) {
     describe(name, () => {
         for (const adapterName of Object.keys(treeAdapters)) {
             const tests = {};
-            const adapter = treeAdapters[adapterName as keyof typeof treeAdapters];
+            const adapter = treeAdapters[adapterName as keyof typeof treeAdapters] as TreeAdapter;
 
             ctor(tests, adapter);
 
