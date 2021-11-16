@@ -7,7 +7,7 @@ function getSerializedTreeIndent(indent: number) {
 }
 
 function getElementSerializedNamespaceURI<T extends TreeAdapterTypeMap>(
-    element: any,
+    element: T['element'],
     treeAdapter: TreeAdapter<T>
 ): string {
     switch (treeAdapter.getNamespaceURI(element)) {

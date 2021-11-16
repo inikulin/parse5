@@ -1,5 +1,5 @@
 import { Writable } from 'node:stream';
-import { Parser } from 'parse5/lib/parser/index.js';
+import { Parser, ParserOptions } from 'parse5/lib/parser/index.js';
 import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
 import type { DefaultTreeAdapterMap } from 'parse5/lib/tree-adapters/default';
 
@@ -12,7 +12,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     pendingHtmlInsertions: string[] = [];
     document: T['document'];
 
-    constructor(options?: any) {
+    constructor(options?: ParserOptions<T>) {
         super({ decodeStrings: false });
 
         this.parser = new Parser(options);

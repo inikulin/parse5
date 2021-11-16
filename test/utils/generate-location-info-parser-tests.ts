@@ -56,11 +56,11 @@ export function assertStartTagLocation(location: TreeLocation, serializedNode: s
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
-function assertEndTagLocation(location: any, serializedNode: string, html: string, lines: string[]) {
-    const length = location.endTag.endOffset - location.endTag.startOffset;
+function assertEndTagLocation(location: TreeLocation, serializedNode: string, html: string, lines: string[]) {
+    const length = location.endTag!.endOffset - location.endTag!.startOffset;
     const expected = serializedNode.slice(-length);
 
-    assertLocation(location.endTag, expected, html, lines);
+    assertLocation(location.endTag!, expected, html, lines);
 }
 
 function assertAttrsLocation(location: any, serializedNode: string, html: string, lines: string[]) {

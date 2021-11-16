@@ -1,5 +1,6 @@
 import * as assert from 'node:assert';
 import * as HTML from '../lib/common/html.js';
+import { TagToken, TokenType } from './../lib/common/token.js';
 import { FormattingElementList } from '../lib/parser/formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
 
@@ -8,6 +9,16 @@ const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 
 generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) => {
+    function createToken(name: string): TagToken {
+        return {
+            type: TokenType.START_TAG,
+            tagName: name,
+            ackSelfClosing: false,
+            selfClosing: false,
+            attrs: [],
+        };
+    }
+
     _test['Insert marker'] = function () {
         const list = new FormattingElementList(treeAdapter);
 
@@ -22,8 +33,8 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Push element'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const element1Token: any = 'token1';
-        const element2Token: any = 'token2';
+        const element1Token = createToken('token1');
+        const element2Token = createToken('token2');
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.P, NS.HTML, []);
 
@@ -42,7 +53,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Insert element after bookmark'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token: any = 'token1';
+        const token = createToken('token1');
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.P, NS.HTML, []);
         const element3 = treeAdapter.createElement($.SPAN, NS.HTML, []);
@@ -62,12 +73,12 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Push element - Noah Ark condition'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token1: any = 'token1';
-        const token2: any = 'token2';
-        const token3: any = 'token3';
-        const token4: any = 'token4';
-        const token5: any = 'token5';
-        const token6: any = 'token6';
+        const token1 = createToken('token1');
+        const token2 = createToken('token2');
+        const token3 = createToken('token3');
+        const token4 = createToken('token4');
+        const token5 = createToken('token5');
+        const token6 = createToken('token6');
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -112,7 +123,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Clear to the last marker'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token: any = 'token';
+        const token = createToken('token');
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -138,7 +149,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Remove entry'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token: any = 'token';
+        const token = createToken('token');
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -165,7 +176,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Get entry in scope with given tag name'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token: any = 'token';
+        const token = createToken('token');
         const element = treeAdapter.createElement($.DIV, NS.HTML, []);
 
         assert.ok(!list.getElementEntryInScopeWithTagName($.DIV));
@@ -183,7 +194,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
     _test['Get element entry'] = function () {
         const list = new FormattingElementList(treeAdapter);
-        const token: any = 'token';
+        const token = createToken('token');
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.A, NS.HTML, []);
 

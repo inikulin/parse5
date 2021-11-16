@@ -1,9 +1,10 @@
+import type { ParserOptions } from 'parse5/lib/parser/index.js';
 import { ParserStream } from 'parse5-parser-stream/lib/index.js';
 import { TAG_NAMES as $ } from 'parse5/lib/common/html.js';
 import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
 
 export class PlainTextConversionStream<T extends TreeAdapterTypeMap> extends ParserStream<T> {
-    constructor(options?: any) {
+    constructor(options?: ParserOptions<T>) {
         super(options);
 
         // NOTE: see https://html.spec.whatwg.org/#read-text

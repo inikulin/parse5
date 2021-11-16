@@ -1,12 +1,16 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as parse5 from '../../packages/parse5/lib/index.js';
+import type { TreeAdapterTypeMap } from '../../packages/parse5/lib/tree-adapters/interface.js';
 import { generateTestsForEachTreeAdapter, getStringDiffMsg } from './common.js';
 
 export function generateSerializerTests(
     name: string,
     prefix: string,
-    serialize: (document: any, opts: any) => Promise<string> | string
+    serialize: (
+        document: TreeAdapterTypeMap['document'],
+        opts: parse5.SerializerOptions<TreeAdapterTypeMap>
+    ) => Promise<string> | string
 ) {
     const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url)).toString('utf-8');
     const tests = JSON.parse(data) as {

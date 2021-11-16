@@ -83,7 +83,7 @@ describe('parser', () => {
     });
 
     it('Regression - DOCTYPE empty fields (GH-236)', () => {
-        const document: any = parse5.parse('<!DOCTYPE>');
+        const document = parse5.parse('<!DOCTYPE>');
         const doctype = document.childNodes[0];
 
         expect(doctype).toHaveProperty('name', '');

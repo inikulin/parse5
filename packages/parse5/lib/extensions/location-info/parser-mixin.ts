@@ -7,7 +7,7 @@ import {
     LocationInfoOpenElementStackMixinOptions,
 } from './open-element-stack-mixin.js';
 import * as HTML from '../../common/html.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from './../../tree-adapters/interface';
+import type { TreeAdapter, TreeAdapterTypeMap, TreeLocation } from './../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
 import type { PositionTrackingPreprocessorMixin } from './../position-tracking/preprocessor-mixin';
 import type { Token, TagToken } from '../../common/token.js';
@@ -51,7 +51,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
             // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
             // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
             const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
-            const endLoc: any = {};
+            const endLoc: Partial<TreeLocation> = {};
             if (isClosingEndTag) {
                 endLoc.endTag = { ...ctLoc };
                 endLoc.endLine = ctLoc.endLine;

@@ -3,6 +3,8 @@ import { Serializer, SerializerOptions } from './serializer/index.js';
 import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
+export { ParserOptions, SerializerOptions };
+
 // Shorthands
 export function parse<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(html: string, options?: ParserOptions<T>) {
     const parser = new Parser(options);

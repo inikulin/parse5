@@ -4,10 +4,15 @@ import * as parse5 from '../lib/index.js';
 import { generateLocationInfoParserTests } from '../../../test/utils/generate-location-info-parser-tests.js';
 import { assertStartTagLocation, assertNodeLocation } from '../../../test/utils/generate-location-info-parser-tests.js';
 import { generateTestsForEachTreeAdapter, treeAdapters } from '../../../test/utils/common.js';
+import { TreeAdapterTypeMap } from '../lib/tree-adapters/interface.js';
 
-generateLocationInfoParserTests('location-info-parser', 'Parser', (input: string, opts: any) => ({
-    node: parse5.parse(input, opts),
-}));
+generateLocationInfoParserTests(
+    'location-info-parser',
+    'Parser',
+    (input: string, opts: parse5.ParserOptions<TreeAdapterTypeMap>) => ({
+        node: parse5.parse(input, opts),
+    })
+);
 
 generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => {
     _test['Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)'] = function () {
@@ -99,10 +104,10 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const htmlEl = treeAdapter.getChildNodes(document)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
         const scriptEl = treeAdapter.getChildNodes(bodyEl)[0];
-        const scriptLocation: any = treeAdapter.getNodeSourceCodeLocation(scriptEl);
+        const scriptLocation = treeAdapter.getNodeSourceCodeLocation(scriptEl);
 
         assert.strictEqual(treeAdapter.getTagName(scriptEl), 'script');
-        assert.equal(scriptLocation.endTag.startLine, 4);
+        assert.equal(scriptLocation!.endTag!.startLine, 4);
     };
 
     _test['Regression - location.startTag should be available if end tag is missing (GH-181)'] = function () {
@@ -115,7 +120,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
 
         const fragment = parse5.parseFragment(html, opts);
         const p = treeAdapter.getChildNodes(fragment)[0];
-        const location: any = treeAdapter.getNodeSourceCodeLocation(p);
+        const location = treeAdapter.getNodeSourceCodeLocation(p)!;
 
         assertNodeLocation(location, html, html, [html]);
         assertStartTagLocation(location, html, html, [html]);

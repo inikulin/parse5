@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import { SAXParser } from '../lib/index.js';
+import { SAXParser, SAXParserOptions } from '../lib/index.js';
 import { loadSAXParserTestData } from '../../../test/utils/load-sax-parser-test-data.js';
 import {
     getStringDiffMsg,
@@ -13,7 +13,7 @@ function sanitizeForComparison(str: string) {
     return removeNewLines(str).replace(/\s/g, '').replace(/'/g, '"').toLowerCase();
 }
 
-function createBasicTest(html: string, expected: string, options?: any) {
+function createBasicTest(html: string, expected: string, options?: SAXParserOptions) {
     return function () {
         //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         let actual = '';
@@ -72,9 +72,8 @@ const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.m
 
 describe('SAX parser', () => {
     //Basic tests
-    for (const [idx, data] of loadSAXParserTestData().entries()) 
-        it(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected))
-    ;
+    for (const [idx, data] of loadSAXParserTestData().entries())
+        it(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected));
 
     it('Piping and .stop()', (done) => {
         const parser = new SAXParser();

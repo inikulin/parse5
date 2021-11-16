@@ -1,5 +1,5 @@
 import type { Attribute, TagToken } from '../common/token.js';
-import type { TreeAdapterTypeMap } from './../tree-adapters/interface';
+import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
 
 //Const
 const NOAH_ARK_CAPACITY = 3;
@@ -27,7 +27,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     entries: Entry<T>[] = [];
     bookmark: Entry<T> | null = null;
 
-    constructor(private treeAdapter: any) {}
+    constructor(private treeAdapter: TreeAdapter<T>) {}
 
     //Noah Ark's condition
     //OPTIMIZATION: at first we try to find possible candidates for exclusion using

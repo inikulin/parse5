@@ -1,4 +1,4 @@
-import { EndTag, StartTag, Doctype, Text, Comment } from './../../parse5-sax-parser/lib/index';
+import { EndTag, StartTag, Doctype, Text, Comment, SaxToken } from './../../parse5-sax-parser/lib/index';
 import type { Token, Location } from 'parse5/lib/common/token.js';
 import { SAXParser } from 'parse5-sax-parser/lib/index.js';
 import { escapeString } from 'parse5/lib/serializer/index.js';
@@ -41,8 +41,8 @@ export class RewritingStream extends SAXParser {
     }
 
     // Emitter API
-    override _emitToken(eventName: string, token: any) {
-        this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation));
+    override _emitToken(eventName: string, token: SaxToken) {
+        this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation!));
     }
 
     emitDoctype(token: Doctype) {
