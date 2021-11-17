@@ -807,10 +807,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _findFosterParentingLocation() {
-        const location: { parent: null | T['parentNode']; beforeElement: null | T['node'] } = {
-            parent: null,
-            beforeElement: null,
-        };
+        let parent: T['parentNode'] | undefined;
+        let beforeElement: null | T['element'] = null;
 
         for (let i = this.openElements.stackTop; i >= 0; i--) {
             const openElement = this.openElements.items[i];
@@ -818,35 +816,32 @@ export class Parser<T extends TreeAdapterTypeMap> {
             const ns = this.treeAdapter.getNamespaceURI(openElement);
 
             if (tn === $.TEMPLATE && ns === NS.HTML) {
-                location.parent = this.treeAdapter.getTemplateContent(openElement);
+                parent = this.treeAdapter.getTemplateContent(openElement);
                 break;
             } else if (tn === $.TABLE) {
-                location.parent = this.treeAdapter.getParentNode(openElement);
+                const parentNode = this.treeAdapter.getParentNode(openElement);
 
-                if (location.parent) {
-                    location.beforeElement = openElement;
+                if (parentNode) {
+                    parent = parentNode;
+                    beforeElement = openElement;
                 } else {
-                    location.parent = this.openElements.items[i - 1];
+                    parent = this.openElements.items[i - 1];
                 }
 
                 break;
             }
         }
 
-        if (!location.parent) {
-            location.parent = this.openElements.items[0];
-        }
-
-        return location;
+        return { parent: parent ?? this.openElements.items[0], beforeElement };
     }
 
     _fosterParentElement(element: T['element']) {
         const location = this._findFosterParentingLocation();
 
         if (location.beforeElement) {
-            this.treeAdapter.insertBefore(location.parent!, element, location.beforeElement);
+            this.treeAdapter.insertBefore(location.parent, element, location.beforeElement);
         } else {
-            this.treeAdapter.appendChild(location.parent!, element);
+            this.treeAdapter.appendChild(location.parent, element);
         }
     }
 
@@ -854,9 +849,9 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const location = this._findFosterParentingLocation();
 
         if (location.beforeElement) {
-            this.treeAdapter.insertTextBefore(location.parent!, chars, location.beforeElement);
+            this.treeAdapter.insertTextBefore(location.parent, chars, location.beforeElement);
         } else {
-            this.treeAdapter.insertText(location.parent!, chars);
+            this.treeAdapter.insertText(location.parent, chars);
         }
     }
 
