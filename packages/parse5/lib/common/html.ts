@@ -266,3 +266,7 @@ export const SPECIAL_ELEMENTS = {
     [NS.MATHML]: new Set<string>([$.MI, $.MO, $.MN, $.MS, $.MTEXT, $.ANNOTATION_XML]),
     [NS.SVG]: new Set<string>([$.TITLE, $.FOREIGN_OBJECT, $.DESC]),
 };
+
+export function isNumberedHeader(tn: string): boolean {
+    return tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6;
+}

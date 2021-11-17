@@ -2,10 +2,6 @@ import { CommentToken, DoctypeToken, CharacterToken } from './../../common/token
 import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
-import {
-    LocationInfoOpenElementStackMixin,
-    LocationInfoOpenElementStackMixinOptions,
-} from './open-element-stack-mixin.js';
 import * as HTML from '../../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap, TreeLocation } from './../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
@@ -79,12 +75,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 const tokenizerMixin = Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
 
                 mxn.posTracker = tokenizerMixin.posTracker;
-
-                Mixin.install(this.openElements, LocationInfoOpenElementStackMixin, {
-                    onItemPop(element: T['element']) {
-                        mxn._setEndLocation(element, mxn.currentToken!);
-                    },
-                } as LocationInfoOpenElementStackMixinOptions<T>);
+                this.openElements.onItemPop = (element) => mxn._setEndLocation(element, mxn.currentToken!);
             },
 
             _runParsingLoop(this: Parser<T>, scriptHandler: null | ((scriptElement: T['element']) => void)) {
