@@ -168,7 +168,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this._bootstrap(documentMock, fragmentContext);
 
         if (this.treeAdapter.getTagName(fragmentContext) === $.TEMPLATE) {
-            this._pushTmplInsertionMode(InsertionMode.IN_TEMPLATE);
+            this.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
         }
 
         this._initTokenizerForFragmentParsing();
@@ -200,9 +200,11 @@ export class Parser<T extends TreeAdapterTypeMap> {
     openElements!: OpenElementStack<T>;
     activeFormattingElements!: FormattingElementList<T>;
 
+    /**
+     * The template insertion mode stack is maintained from the left.
+     * Ie. the topmost element will always have index 0.
+     */
     tmplInsertionModeStack: InsertionMode[] = [];
-    tmplInsertionModeStackTop = -1;
-    currentTmplInsertionMode: InsertionMode | null = null;
 
     pendingCharacterTokens: CharacterToken[] = [];
     hasNonWhitespacePendingCharacterToken = false;
@@ -230,8 +232,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
         this.tmplInsertionModeStack = [];
-        this.tmplInsertionModeStackTop = -1;
-        this.currentTmplInsertionMode = null;
 
         this.pendingCharacterTokens = [];
         this.hasNonWhitespacePendingCharacterToken = false;
@@ -753,7 +753,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
                 this._resetInsertionModeForSelect(i);
                 break;
             } else if (tn === $.TEMPLATE) {
-                this.insertionMode = this.currentTmplInsertionMode!;
+                this.insertionMode = this.tmplInsertionModeStack[0]!;
                 break;
             } else if (tn === $.HTML) {
                 this.insertionMode = this.headElement ? InsertionMode.AFTER_HEAD : InsertionMode.BEFORE_HEAD;
@@ -781,18 +781,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
 
         this.insertionMode = InsertionMode.IN_SELECT;
-    }
-
-    _pushTmplInsertionMode(mode: InsertionMode) {
-        this.tmplInsertionModeStack.push(mode);
-        this.tmplInsertionModeStackTop++;
-        this.currentTmplInsertionMode = mode;
-    }
-
-    _popTmplInsertionMode() {
-        this.tmplInsertionModeStack.pop();
-        this.tmplInsertionModeStackTop--;
-        this.currentTmplInsertionMode = this.tmplInsertionModeStack[this.tmplInsertionModeStackTop];
     }
 
     //Foster parenting
@@ -1296,7 +1284,7 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             p.activeFormattingElements.insertMarker();
             p.framesetOk = false;
             p.insertionMode = InsertionMode.IN_TEMPLATE;
-            p._pushTmplInsertionMode(InsertionMode.IN_TEMPLATE);
+            p.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
 
             break;
         }
@@ -1338,7 +1326,7 @@ function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
 
                 p.openElements.popUntilTagNamePopped($.TEMPLATE);
                 p.activeFormattingElements.clearToLastMarker();
-                p._popTmplInsertionMode();
+                p.tmplInsertionModeStack.shift();
                 p._resetInsertionMode();
             } else {
                 p._err(ERR.endTagWithoutMatchingOpenElement);
@@ -2650,7 +2638,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
 }
 
 function eofInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
-    if (p.tmplInsertionModeStackTop > -1) {
+    if (p.tmplInsertionModeStack.length > 0) {
         eofInTemplate(p, token);
     } else {
         p.stopped = true;
@@ -3716,8 +3704,7 @@ function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     } else {
         const newInsertionMode = TEMPLATE_INSERTION_MODE_SWITCH_MAP.get(tn) ?? InsertionMode.IN_BODY;
 
-        p._popTmplInsertionMode();
-        p._pushTmplInsertionMode(newInsertionMode);
+        p.tmplInsertionModeStack[0] = newInsertionMode;
         p.insertionMode = newInsertionMode;
         p._processToken(token);
     }
@@ -3733,7 +3720,7 @@ function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
     if (p.openElements.tmplCount > 0) {
         p.openElements.popUntilTagNamePopped($.TEMPLATE);
         p.activeFormattingElements.clearToLastMarker();
-        p._popTmplInsertionMode();
+        p.tmplInsertionModeStack.shift();
         p._resetInsertionMode();
         p._processToken(token);
     } else {
