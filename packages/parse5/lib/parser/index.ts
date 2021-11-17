@@ -2460,7 +2460,7 @@ function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 
         if (p.treeAdapter.getTagName(element) === tn) {
             p.openElements.generateImpliedEndTagsWithExclusion(tn);
-            if (p.openElements.items.length > i) p.openElements.shortenToLength(i);
+            if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
             break;
         }
 

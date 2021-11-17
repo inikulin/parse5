@@ -66,13 +66,10 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     current: T['parentNode'];
     currentTagName: string | null = null;
     currentTmplContent: T['documentFragment'] | null = null;
+    stackTop = -1;
     tmplCount = 0;
 
     public onItemPop: null | ((node: T['parentNode']) => void) = null;
-
-    get stackTop() {
-        return this.items.length - 1;
-    }
 
     constructor(document: T['document'], private treeAdapter: TreeAdapter<T>) {
         this.current = document;
@@ -80,7 +77,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     //Index of element
     _indexOf(element: T['element']) {
-        return this.items.lastIndexOf(element);
+        return this.items.lastIndexOf(element, this.stackTop);
     }
 
     //Update current element
@@ -97,7 +94,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     //Mutations
     push(element: T['element']) {
-        this.items.push(element);
+        this.items[++this.stackTop] = element;
         this._updateCurrentElement();
 
         if (this._isInTemplate()) {
@@ -107,7 +104,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     pop() {
         this.onItemPop?.(this.current);
-        this.items.length--;
+        this.stackTop--;
 
         if (this.tmplCount > 0 && this._isInTemplate()) {
             this.tmplCount--;
@@ -130,6 +127,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         const insertionIdx = this._indexOf(referenceElement) + 1;
 
         this.items.splice(insertionIdx, 0, newElement);
+        this.stackTop++;
 
         if (insertionIdx === this.stackTop) {
             this._updateCurrentElement();
@@ -163,7 +161,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             }
         }
 
-        this.items.length = idx;
+        this.stackTop = idx - 1;
         this._updateCurrentElement();
     }
 
@@ -225,9 +223,14 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         const idx = this._indexOf(element);
 
         if (idx >= 0) {
-            this.onItemPop?.(element);
-            this.items.splice(idx, 1);
-            this._updateCurrentElement();
+            if (idx === this.stackTop) {
+                this.pop();
+            } else {
+                this.onItemPop?.(element);
+                this.items.splice(idx, 1);
+                this.stackTop--;
+                this._updateCurrentElement();
+            }
         }
     }
 
@@ -387,40 +390,24 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     //Implied end tags
     generateImpliedEndTags() {
-        let targetIdx = this.stackTop;
-
-        for (; targetIdx > 0; targetIdx--) {
-            if (!IMPLICIT_END_TAG_REQUIRED.has(this.treeAdapter.getTagName(this.items[targetIdx]))) {
-                break;
-            }
+        while (this.currentTagName !== null && IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName)) {
+            this.pop();
         }
-
-        this.shortenToLength(targetIdx + 1);
     }
 
     generateImpliedEndTagsThoroughly() {
-        let targetIdx = this.stackTop;
-
-        for (; targetIdx > 0; targetIdx--) {
-            if (!IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.treeAdapter.getTagName(this.items[targetIdx]))) {
-                break;
-            }
+        while (this.currentTagName !== null && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagName)) {
+            this.pop();
         }
-
-        this.shortenToLength(targetIdx + 1);
     }
 
     generateImpliedEndTagsWithExclusion(exclusionTagName: string) {
-        let targetIdx = this.stackTop;
-
-        for (; targetIdx > 0; targetIdx--) {
-            const tn = this.treeAdapter.getTagName(this.items[targetIdx]);
-
-            if (tn === exclusionTagName || !IMPLICIT_END_TAG_REQUIRED.has(tn)) {
-                break;
-            }
+        while (
+            this.currentTagName !== null &&
+            this.currentTagName !== exclusionTagName &&
+            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagName)
+        ) {
+            this.pop();
         }
-
-        this.shortenToLength(targetIdx + 1);
     }
 }
