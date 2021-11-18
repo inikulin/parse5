@@ -1,14 +1,14 @@
 import * as assert from 'node:assert';
-import * as HTML from '../lib/common/html.js';
-import { OpenElementStack } from '../lib/parser/open-element-stack.js';
-import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
+import * as HTML from '../common/html.js';
+import { OpenElementStack } from './open-element-stack.js';
+import { generateTestsForEachTreeAdapter } from '../../../../test/utils/common.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
 
 generateTestsForEachTreeAdapter('open-element-stack', (_test, treeAdapter) => {
-    function createElement(tagName: string, namespaceURI: string = '') {
+    function createElement(tagName: string, namespaceURI = '') {
         return treeAdapter.createElement(tagName, namespaceURI as any, []);
     }
 

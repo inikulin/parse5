@@ -1,8 +1,8 @@
 import * as assert from 'node:assert';
-import { Tokenizer } from '../lib/tokenizer/index.js';
-import { LocationInfoTokenizerMixin } from '../lib/extensions/location-info/tokenizer-mixin.js';
-import { Mixin } from '../lib/utils/mixin.js';
-import { getSubstringByLineCol, normalizeNewLine } from '../../../test/utils/common.js';
+import { Tokenizer } from '../../tokenizer/index.js';
+import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
+import { Mixin } from '../../utils/mixin.js';
+import { getSubstringByLineCol, normalizeNewLine } from '../../../../../test/utils/common.js';
 
 it('Location Info (Tokenizer)', () => {
     const testCases = [

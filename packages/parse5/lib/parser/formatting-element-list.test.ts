@@ -1,24 +1,20 @@
 import * as assert from 'node:assert';
-import * as HTML from '../lib/common/html.js';
-import { TagToken, TokenType } from './../lib/common/token.js';
-import { FormattingElementList } from '../lib/parser/formatting-element-list.js';
-import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
+import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
+import { TagToken, TokenType } from './../common/token.js';
+import { FormattingElementList } from '../parser/formatting-element-list.js';
+import { generateTestsForEachTreeAdapter } from '../../../../test/utils/common.js';
 
-//Aliases
-const $ = HTML.TAG_NAMES;
-const NS = HTML.NAMESPACES;
+function createToken(name: string): TagToken {
+    return {
+        type: TokenType.START_TAG,
+        tagName: name,
+        ackSelfClosing: false,
+        selfClosing: false,
+        attrs: [],
+    };
+}
 
 generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) => {
-    function createToken(name: string): TagToken {
-        return {
-            type: TokenType.START_TAG,
-            tagName: name,
-            ackSelfClosing: false,
-            selfClosing: false,
-            attrs: [],
-        };
-    }
-
     _test['Insert marker'] = function () {
         const list = new FormattingElementList(treeAdapter);
 
