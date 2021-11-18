@@ -1,11 +1,11 @@
 {
-    "name": "parse5",
+    "name": "@parse5/parse5",
     "type": "module",
     "description": "HTML parser and serializer.",
     "version": "6.0.1",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
-    "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
-    "homepage": "https://github.com/inikulin/parse5",
+    "contributors": "https://github.com/parse5/parse5-fork/graphs/contributors",
+    "homepage": "https://github.com/parse5/parse5-fork",
     "keywords": [
         "html",
         "parser",
@@ -27,7 +27,7 @@
     "main": "./lib/index.js",
     "repository": {
         "type": "git",
-        "url": "git://github.com/inikulin/parse5.git"
+        "url": "git://github.com/parse5/parse5-fork.git"
     },
     "files": [
         "lib"

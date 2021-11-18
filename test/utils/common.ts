@@ -1,9 +1,9 @@
 import { Writable } from 'node:stream';
 import * as assert from 'node:assert';
-import type { TreeAdapter } from './../../packages/parse5/lib/tree-adapters/interface';
+import type { TreeAdapter } from '../../packages/parse5/lib/tree-adapters/interface';
 import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
-import * as htmlTreeAdapter from '../../packages/parse5-htmlparser2-tree-adapter/lib/index.js';
-import type { Location } from './../../packages/parse5/lib/common/token';
+import * as htmlTreeAdapter from '../../packages/htmlparser2-tree-adapter/lib/index.js';
+import type { Location } from '../../packages/parse5/lib/common/token';
 
 // Ensure the default tree adapter matches the expected type.
 defaultTreeAdapter as TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap>;

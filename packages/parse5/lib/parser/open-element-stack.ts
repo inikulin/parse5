@@ -1,5 +1,5 @@
 import { TAG_NAMES as $, NAMESPACES as NS, isNumberedHeader } from '../common/html.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
+import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 
 //Element utils
 const IMPLICIT_END_TAG_REQUIRED = new Set<string>([

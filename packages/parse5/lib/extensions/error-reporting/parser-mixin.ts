@@ -2,10 +2,10 @@ import { ErrorReportingMixinOptions, BASE_ERROR } from './mixin-base.js';
 import { ErrorReportingTokenizerMixin } from './tokenizer-mixin.js';
 import { LocationInfoTokenizerMixin } from '../location-info/tokenizer-mixin.js';
 import { Mixin } from '../../utils/mixin.js';
-import type { Location, Token } from './../../common/token.js';
+import type { Location, Token } from '../../common/token.js';
 import type { Parser } from '../../parser/index.js';
-import type { TreeAdapterTypeMap } from './../../tree-adapters/interface.js';
-import type { ERR } from './../../common/error-codes.js';
+import type { TreeAdapterTypeMap } from '../../tree-adapters/interface.js';
+import type { ERR } from '../../common/error-codes.js';
 
 export class ErrorReportingParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
     private onParseError: ErrorReportingMixinOptions['onParseError'];

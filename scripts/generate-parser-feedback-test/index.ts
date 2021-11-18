@@ -7,7 +7,7 @@ import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/def
 import { convertTokenToHtml5Lib } from '../../test/utils/generate-tokenization-tests.js';
 import { parseDatFile } from '../../test/utils/parse-dat-file.js';
 import { addSlashes } from '../../test/utils/common.js';
-import type { Token } from './../../packages/parse5/lib/common/token.js';
+import type { Token } from '../../packages/parse5/lib/common/token.js';
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);

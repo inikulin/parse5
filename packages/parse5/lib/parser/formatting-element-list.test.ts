@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
-import { TagToken, TokenType } from './../common/token.js';
-import { FormattingElementList } from '../parser/formatting-element-list.js';
+import { TagToken, TokenType } from '../common/token.js';
+import { FormattingElementList } from './formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '../../../../test/utils/common.js';
 
 function createToken(name: string): TagToken {

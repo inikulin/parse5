@@ -1,11 +1,11 @@
-import { CommentToken, DoctypeToken, CharacterToken } from './../../common/token';
+import { CommentToken, DoctypeToken, CharacterToken } from '../../common/token';
 import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../../common/html.js';
-import type { TreeAdapter, TreeAdapterTypeMap, TreeLocation } from './../../tree-adapters/interface';
+import type { TreeAdapter, TreeAdapterTypeMap, TreeLocation } from '../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
-import type { PositionTrackingPreprocessorMixin } from './../position-tracking/preprocessor-mixin';
+import type { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin';
 import type { Token, TagToken } from '../../common/token.js';
 
 export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {

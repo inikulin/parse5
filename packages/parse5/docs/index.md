@@ -1,4 +1,4 @@
-# parse5
+# @parse5/parse5
 
 > **NOTE:** By default all functions operate with [tree format](tree-adapter/default/interface-list.md) produced
 > by the default tree adapter. Tree format can be changed by providing custom [tree adapter](tree-adapter/interface.md) implementation.
@@ -20,7 +20,7 @@ Parses an HTML string.
 _**example**_:
 
 ```js
-const parse5 = require('parse5');
+const parse5 = require('@parse5/parse5');
 
 const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
 
@@ -51,7 +51,7 @@ Parses an HTML fragment.
 _**example**_:
 
 ```js
-const parse5 = require('parse5');
+const parse5 = require('@parse5/parse5');
 
 const documentFragment = parse5.parseFragment('<table></table>');
 
@@ -86,7 +86,7 @@ Serializes an AST node to an HTML string.
 _**example**_:
 
 ```js
-const parse5 = require('parse5');
+const parse5 = require('@parse5/parse5');
 
 const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
 

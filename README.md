@@ -1,6 +1,6 @@
 <p align="center">
-    <a href="https://github.com/inikulin/parse5">
-        <img src="https://raw.github.com/inikulin/parse5/master/media/logo.png" alt="parse5" />
+    <a href="https://github.com/parse5/parse5-fork">
+        <img src="https://raw.github.com/parse5/parse5-fork/master/media/logo.png" alt="parse5" />
     </a>
 </p>
 
@@ -16,10 +16,10 @@ This is a fork of the original parse5 package. We want this to become the next v
 ---
 
 <p align="center">
-  <a href="https://travis-ci.org/inikulin/parse5"><img alt="Build Status" src="https://api.travis-ci.org/inikulin/parse5.svg"></a>
-  <a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
-  <a href="https://npmjs.org/package/parse5"><img alt="Downloads" src="http://img.shields.io/npm/dm/parse5.svg"></a>
-  <a href="https://npmjs.org/package/parse5"><img alt="Downloads total" src="http://img.shields.io/npm/dt/parse5.svg"></a>
+  <a href="https://github.com/parse5/parse5-fork/actions/workflows/nodejs-test.yml"><img alt="Build Status" src="https://img.shields.io/github/workflow/status/parse5/parse5-fork/Node.js%20CI?label=tests&style=flat"></a>
+  <a href="https://www.npmjs.com/package/@parse5/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/@parse5/parse5.svg"></a>
+  <a href="https://npmjs.org/package/@parse5/parse5"><img alt="Downloads" src="http://img.shields.io/npm/dm/@parse5/parse5.svg"></a>
+  <a href="https://npmjs.org/package/@parse5/parse5"><img alt="Downloads total" src="http://img.shields.io/npm/dt/@parse5/parse5.svg"></a>
 </p>
 
 <p align="center">
@@ -31,7 +31,7 @@ as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.
 ---
 
 <p align="center">
-  <a href="https://github.com/inikulin/parse5/tree/master/docs/list-of-packages.md">List of parse5 toolset packages</a>
+  <a href="https://github.com/parse5/parse5-fork/tree/master/docs/list-of-packages.md">List of parse5 toolset packages</a>
 </p>
 
 <p align="center">
@@ -39,6 +39,6 @@ as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.
 </p>
 
 <p align="center">
-  <a href="https://github.com/inikulin/parse5/tree/master/docs/version-history.md">Version history</a>
+  <a href="https://github.com/parse5/parse5-fork/tree/master/docs/version-history.md">Version history</a>
 </p>
 </p>

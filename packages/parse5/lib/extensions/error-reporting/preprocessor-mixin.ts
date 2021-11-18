@@ -2,7 +2,7 @@ import { ErrorReportingMixinBase, ErrorReportingMixinOptions } from './mixin-bas
 import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
 import { Mixin } from '../../utils/mixin.js';
 import type { Preprocessor } from '../../tokenizer/preprocessor.js';
-import type { ERR } from './../../common/error-codes.js';
+import type { ERR } from '../../common/error-codes.js';
 
 export class ErrorReportingPreprocessorMixin extends ErrorReportingMixinBase<Preprocessor> {
     posTracker: PositionTrackingPreprocessorMixin;

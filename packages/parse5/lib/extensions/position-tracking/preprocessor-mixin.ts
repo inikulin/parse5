@@ -1,4 +1,4 @@
-import type { Preprocessor } from './../../tokenizer/preprocessor.js';
+import type { Preprocessor } from '../../tokenizer/preprocessor.js';
 import { Mixin } from '../../utils/mixin.js';
 
 export class PositionTrackingPreprocessorMixin extends Mixin<Preprocessor> {

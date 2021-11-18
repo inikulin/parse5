@@ -13,6 +13,13 @@
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
-        "allowJs": true
+        "allowJs": true,
+
+        "outDir": "build",
+
+        "baseUrl": ".",
+        "paths": {
+            "@parse5/*": ["./packages/*"]
+        }
     }
 }

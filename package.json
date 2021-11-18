@@ -1,5 +1,5 @@
 {
-    "name": "parse5-build-scripts",
+    "name": "@parse5/build-scripts",
     "private": true,
     "type": "module",
     "devDependencies": {
@@ -60,10 +60,8 @@
             }
         },
         "moduleNameMapper": {
-            "^((?:\\.{1,2}|parse5.*)/.*)\\.js$": "$1"
-        },
-        "transformIgnorePatterns": [
-            "node_modules/(?!parse5|parse5-parser-stream)"
-        ]
+            "^@parse5/(.*)/lib/(.*)(?:\\.js)$": "<rootDir>/packages/$1/lib/$2",
+            "^(\\.{1,2}/.*)\\.js$": "$1"
+        }
     }
 }

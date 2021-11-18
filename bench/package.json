@@ -1,5 +1,6 @@
 {
-    "name": "parse5-benchmarks",
+    "name": "@parse5/benchmarks",
+    "private": "true",
     "type": "module",
     "version": "1.0.0",
     "description": "parse5 regression benchmarks",

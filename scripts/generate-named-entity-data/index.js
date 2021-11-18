@@ -17,7 +17,7 @@ async function main() {
 
     const data =
         `//NOTE: this file contains auto-generated array mapped radix tree that is used for the named entity references consumption\n` +
-        `//(details: https://github.com/inikulin/parse5/tree/master/scripts/generate-named-entity-data/README.md)\n` +
+        `//(details: https://github.com/parse5/parse5-fork/tree/master/scripts/generate-named-entity-data/README.md)\n` +
         `export const namedEntityData = new Uint16Array(${JSON.stringify(arr)});`;
 
     await writeFileAsync('packages/parse5/lib/tokenizer/named-entity-data.js', data);
