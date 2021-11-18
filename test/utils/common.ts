@@ -6,12 +6,9 @@ import * as htmlTreeAdapter from '../../packages/htmlparser2-tree-adapter/lib/in
 import type { Location } from '../../packages/parse5/lib/common/token';
 
 // Ensure the default tree adapter matches the expected type.
-defaultTreeAdapter as TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap>;
-
 export const treeAdapters = {
-    default: defaultTreeAdapter,
-    // TODO Enable when the tree adapter is ready.
-    htmlparser2: htmlTreeAdapter as any as TreeAdapter,
+    default: defaultTreeAdapter as TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap>,
+    htmlparser2: htmlTreeAdapter as TreeAdapter<htmlTreeAdapter.Htmlparser2TreeAdapterMap>,
 } as const;
 
 export function addSlashes(str: string) {

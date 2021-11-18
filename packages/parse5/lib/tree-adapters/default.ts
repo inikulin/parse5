@@ -14,7 +14,7 @@ export interface Node {
     /** The name of the node. */
     nodeName: NodeType | string;
     /** Comment source code location info. Available if location info is enabled. */
-    sourceCodeLocation?: TreeLocation;
+    sourceCodeLocation?: TreeLocation | null;
 }
 
 export interface NodeWithChildren extends Node {
@@ -96,7 +96,7 @@ export function createDocumentFragment(): DocumentFragment {
     };
 }
 
-export function createElement(tagName: string, namespaceURI = NAMESPACES.HTML, attrs: Attribute[] = []): Element {
+export function createElement(tagName: string, namespaceURI: NAMESPACES, attrs: Attribute[]): Element {
     return {
         nodeName: tagName,
         tagName,
@@ -276,11 +276,11 @@ export function isElementNode(node: Node): node is Element {
 }
 
 // Source code location
-export function setNodeSourceCodeLocation(node: Node, location: TreeLocation) {
+export function setNodeSourceCodeLocation(node: Node, location: TreeLocation | null) {
     node.sourceCodeLocation = location;
 }
 
-export function getNodeSourceCodeLocation(node: Node): TreeLocation | undefined {
+export function getNodeSourceCodeLocation(node: Node): TreeLocation | undefined | null {
     return node.sourceCodeLocation;
 }
 

@@ -3,6 +3,7 @@ import * as parse5 from '../index.js';
 import { Parser } from './index.js';
 import { generateParsingTests } from '../../../../test/utils/generate-parsing-tests.js';
 import { treeAdapters } from '../../../../test/utils/common.js';
+import { NAMESPACES as NS } from '../common/html.js';
 
 const origParseFragment = Parser.prototype.parseFragment;
 
@@ -36,7 +37,7 @@ describe('parser', () => {
         });
 
         it('parses correctly', () => {
-            const fragmentContext = treeAdapters.default.createElement('div');
+            const fragmentContext = treeAdapters.default.createElement('div', NS.HTML, []);
             const html = '<script></script>';
             const opts = { sourceCodeLocationInfo: true };
 

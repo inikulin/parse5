@@ -31,7 +31,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
             };
         }
 
-        this.treeAdapter.setNodeSourceCodeLocation(element, loc!);
+        this.treeAdapter.setNodeSourceCodeLocation(element, loc);
     }
 
     _setEndLocation(element: T['element'], closingToken: Token) {
@@ -150,12 +150,12 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
 
                 const tmplContent = this.treeAdapter.getTemplateContent(this.openElements.current);
 
-                this.treeAdapter.setNodeSourceCodeLocation(tmplContent, null!);
+                this.treeAdapter.setNodeSourceCodeLocation(tmplContent, null);
             },
 
             _insertFakeRootElement(this: Parser<T>) {
                 orig._insertFakeRootElement.call(this);
-                this.treeAdapter.setNodeSourceCodeLocation(this.openElements.current, null!);
+                this.treeAdapter.setNodeSourceCodeLocation(this.openElements.current, null);
             },
 
             //Comments

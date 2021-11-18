@@ -268,7 +268,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    setNodeSourceCodeLocation(node: T['node'], location: TreeLocation): void;
+    setNodeSourceCodeLocation(node: T['node'], location: TreeLocation | null): void;
 
     /**
      * Updates the source code location information of the node.

@@ -136,7 +136,7 @@ export function getDocumentMode(token: DoctypeToken): DOCUMENT_MODE {
     return DOCUMENT_MODE.NO_QUIRKS;
 }
 
-export function serializeContent(name: string, publicId: string | null, systemId: string | null): string {
+export function serializeContent(name: string | null, publicId: string | null, systemId: string | null): string {
     let str = '!DOCTYPE ';
 
     if (name) {
