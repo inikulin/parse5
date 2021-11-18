@@ -97,14 +97,12 @@ export function generateLocationInfoParserTests(
     _prefix: string,
     parse: (html: string, opts: ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] }
 ) {
-    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
+    generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadParserLocationInfoTestData()) {
-            const testName = `Location info (Parser) - ${test.name}`;
-
             //NOTE: How it works: we parse document with the location info.
             //Then for each node in the tree we run serializer and compare results with the substring
             //obtained via location info from the expected serialization results.
-            _test[testName] = async function () {
+            it(`Location info (Parser) - ${test.name}`, async () => {
                 const serializerOpts = { treeAdapter };
                 const html = escapeString(test.data);
                 const lines = html.split(/\r?\n/g);
@@ -142,7 +140,7 @@ export function generateLocationInfoParserTests(
                         }
                     }
                 });
-            };
+            });
         }
     });
 }

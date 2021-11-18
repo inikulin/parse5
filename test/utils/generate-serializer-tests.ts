@@ -19,16 +19,16 @@ export function generateSerializerTests(
         expected: string;
     }[];
 
-    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
+    generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const [idx, test] of tests.entries()) {
-            _test[`${prefix} - ${idx}.${test.name}`] = async () => {
+            it(`${prefix} - ${idx}.${test.name}`, async () => {
                 const opts = { treeAdapter };
                 const document = parse5.parse(test.input, opts);
                 const serializedResult = await serialize(document, opts);
 
                 //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
                 assert.ok(serializedResult === test.expected, getStringDiffMsg(serializedResult, test.expected));
-            };
+            });
         }
     });
 }

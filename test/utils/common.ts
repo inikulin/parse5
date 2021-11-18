@@ -83,20 +83,14 @@ export function writeChunkedToStream(str: string, stream: Writable) {
     }
 }
 
-export function generateTestsForEachTreeAdapter(
-    name: string,
-    ctor: (tests: Record<string, (cb: () => void) => void>, adapter: TreeAdapter) => void
-) {
+export function generateTestsForEachTreeAdapter(name: string, ctor: (adapter: TreeAdapter) => void) {
     describe(name, () => {
         for (const adapterName of Object.keys(treeAdapters)) {
-            const tests = {};
             const adapter = treeAdapters[adapterName as keyof typeof treeAdapters] as TreeAdapter;
 
-            ctor(tests, adapter);
-
-            for (const testName of Object.keys(tests)) {
-                it(`Tree adapter: ${adapterName} - ${testName}`, tests[testName as keyof typeof tests]);
-            }
+            describe(`Tree adapter: ${adapterName}`, () => {
+                ctor(adapter);
+            });
         }
     });
 }

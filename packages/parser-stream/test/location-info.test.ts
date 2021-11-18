@@ -8,8 +8,8 @@ generateLocationInfoParserTests('location-info', 'ParserStream', (input, opts) =
     parseChunked(input, opts, 100, 400)
 );
 
-generateTestsForEachTreeAdapter('location-info', (_test, treeAdapter) => {
-    _test['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
+generateTestsForEachTreeAdapter('location-info', (treeAdapter) => {
+    test('Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)', function () {
         const html = '</head><div class="test"></div></body></html>';
 
         const opts = {
@@ -25,5 +25,5 @@ generateTestsForEachTreeAdapter('location-info', (_test, treeAdapter) => {
         assert.strictEqual(treeAdapter.getNodeSourceCodeLocation(htmlEl), null);
         assert.strictEqual(treeAdapter.getNodeSourceCodeLocation(headEl), null);
         assert.strictEqual(treeAdapter.getNodeSourceCodeLocation(bodyEl), null);
-    };
+    });
 });

@@ -126,13 +126,14 @@ export function generateParsingTests(
     }: { skipFragments?: boolean; withoutErrors?: boolean; testSuite?: string[] },
     parse: ParseMethod<TreeAdapterTypeMap>
 ) {
-    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
+    generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadTreeConstructionTestData(testSuite, treeAdapter).filter(
             (test) => !skipFragments || !test.fragmentContext
         )) {
-            const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`;
-
-            _test[testName] = createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, { withoutErrors });
+            it(
+                `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`,
+                createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, { withoutErrors })
+            );
         }
     });
 }
