@@ -1,11 +1,6 @@
 import { Tokenizer } from '../tokenizer/index.js';
-import * as HTML from './html.js';
+import { TAG_NAMES as $, NAMESPACES as NS, ATTRS } from './html.js';
 import type { TagToken, Attribute } from './token.js';
-
-//Aliases
-const $ = HTML.TAG_NAMES;
-const NS = HTML.NAMESPACES;
-const { ATTRS } = HTML;
 
 //MIME types
 const MIME_TYPES = {

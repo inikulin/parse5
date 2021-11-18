@@ -1,9 +1,5 @@
-import * as HTML from '../common/html.js';
+import { TAG_NAMES as $, NAMESPACES as NS, isNumberedHeader } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
-
-//Aliases
-const $ = HTML.TAG_NAMES;
-const NS = HTML.NAMESPACES;
 
 //Element utils
 const IMPLICIT_END_TAG_REQUIRED = new Set<string>([
@@ -29,7 +25,7 @@ const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set<string>([
     $.THEAD,
     $.TR,
 ]);
-const SCOPING_ELEMENT_NS = new Map<string, HTML.NAMESPACES>([
+const SCOPING_ELEMENT_NS = new Map<string, NS>([
     [$.APPLET, NS.HTML],
     [$.CAPTION, NS.HTML],
     [$.HTML, NS.HTML],
@@ -50,7 +46,7 @@ const SCOPING_ELEMENT_NS = new Map<string, HTML.NAMESPACES>([
     [$.TITLE, NS.SVG],
 ]);
 
-function isTemplate(tagName: string, namespace: HTML.NAMESPACES): boolean {
+function isTemplate(tagName: string, namespace: NS): boolean {
     return tagName === $.TEMPLATE && namespace === NS.HTML;
 }
 
@@ -170,7 +166,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(idx < 0 ? 0 : idx);
     }
 
-    protected popUntilPopped(tagNames: string[], targetNS: HTML.NAMESPACES) {
+    protected popUntilPopped(tagNames: string[], targetNS: NS) {
         const idx = this._indexOfTagNames(tagNames, targetNS);
         this.shortenToLength(idx < 0 ? 0 : idx);
     }
@@ -190,7 +186,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(1);
     }
 
-    private _indexOfTagNames(tagNames: string[], namespace: HTML.NAMESPACES) {
+    private _indexOfTagNames(tagNames: string[], namespace: NS) {
         for (let i = this.stackTop; i >= 0; i--) {
             if (
                 tagNames.includes(this.treeAdapter.getTagName(this.items[i])) &&
@@ -202,7 +198,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return -1;
     }
 
-    private clearBackTo(tagNames: string[], targetNS: HTML.NAMESPACES) {
+    private clearBackTo(tagNames: string[], targetNS: NS) {
         const idx = this._indexOfTagNames(tagNames, targetNS);
         this.shortenToLength(idx + 1);
     }
@@ -279,7 +275,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             const tn = this.treeAdapter.getTagName(this.items[i]);
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
-            if (HTML.isNumberedHeader(tn) && ns === NS.HTML) {
+            if (isNumberedHeader(tn) && ns === NS.HTML) {
                 return true;
             }
 

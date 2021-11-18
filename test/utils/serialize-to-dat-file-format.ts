@@ -1,6 +1,6 @@
 import { Attribute } from './../../packages/parse5/lib/common/token';
 import { TreeAdapter, TreeAdapterTypeMap } from './../../packages/parse5/lib/tree-adapters/interface';
-import * as HTML from '../../packages/parse5/lib/common/html.js';
+import { TAG_NAMES as $, NAMESPACES as NS } from '../../packages/parse5/lib/common/html.js';
 
 function getSerializedTreeIndent(indent: number) {
     return '|'.padEnd(indent + 2, ' ');
@@ -11,9 +11,9 @@ function getElementSerializedNamespaceURI<T extends TreeAdapterTypeMap>(
     treeAdapter: TreeAdapter<T>
 ): string {
     switch (treeAdapter.getNamespaceURI(element)) {
-        case HTML.NAMESPACES.SVG:
+        case NS.SVG:
             return 'svg ';
-        case HTML.NAMESPACES.MATHML:
+        case NS.MATHML:
             return 'math ';
         default:
             return '';
@@ -65,7 +65,7 @@ function serializeNodeList<T extends TreeAdapterTypeMap>(
 
             str += serializedAttrs.sort().join('');
 
-            if (tn === HTML.TAG_NAMES.TEMPLATE && treeAdapter.getNamespaceURI(node) === HTML.NAMESPACES.HTML) {
+            if (tn === $.TEMPLATE && treeAdapter.getNamespaceURI(node) === NS.HTML) {
                 str += `${getSerializedTreeIndent(childrenIndent)}content\n`;
                 childrenIndent += 2;
                 node = treeAdapter.getTemplateContent(node);

@@ -2,14 +2,11 @@ import { CommentToken, DoctypeToken, CharacterToken } from './../../common/token
 import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
-import * as HTML from '../../common/html.js';
+import { TAG_NAMES as $, NAMESPACES as NS } from '../../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap, TreeLocation } from './../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
 import type { PositionTrackingPreprocessorMixin } from './../position-tracking/preprocessor-mixin';
 import type { Token, TagToken } from '../../common/token.js';
-
-//Aliases
-const $ = HTML.TAG_NAMES;
 
 export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
     treeAdapter: TreeAdapter<T>;
@@ -137,12 +134,12 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 orig._attachElementToTree.call(this, element);
             },
 
-            _appendElement(this: Parser<T>, token: TagToken, namespaceURI: HTML.NAMESPACES) {
+            _appendElement(this: Parser<T>, token: TagToken, namespaceURI: NS) {
                 mxn.lastStartTagToken = token;
                 orig._appendElement.call(this, token, namespaceURI);
             },
 
-            _insertElement(this: Parser<T>, token: TagToken, namespaceURI: HTML.NAMESPACES) {
+            _insertElement(this: Parser<T>, token: TagToken, namespaceURI: NS) {
                 mxn.lastStartTagToken = token;
                 orig._insertElement.call(this, token, namespaceURI);
             },

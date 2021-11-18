@@ -1,11 +1,7 @@
 import * as assert from 'node:assert';
-import * as HTML from '../common/html.js';
+import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import { OpenElementStack } from './open-element-stack.js';
 import { generateTestsForEachTreeAdapter } from '../../../../test/utils/common.js';
-
-//Aliases
-const $ = HTML.TAG_NAMES;
-const NS = HTML.NAMESPACES;
 
 generateTestsForEachTreeAdapter('open-element-stack', (_test, treeAdapter) => {
     function createElement(tagName: string, namespaceURI = '') {

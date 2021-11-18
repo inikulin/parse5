@@ -2,11 +2,7 @@ import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
 import type { Token, TagToken } from 'parse5/lib/common/token.js';
 import * as foreignContent from 'parse5/lib/common/foreign-content.js';
 import * as unicode from 'parse5/lib/common/unicode.js';
-import * as HTML from 'parse5/lib/common/html.js';
-
-//Aliases
-const $ = HTML.TAG_NAMES;
-const NS = HTML.NAMESPACES;
+import { TAG_NAMES as $, NAMESPACES as NS } from 'parse5/lib/common/html.js';
 
 //ParserFeedbackSimulator
 //Simulates adjustment of the Tokenizer which performed by standard parser during tree construction.

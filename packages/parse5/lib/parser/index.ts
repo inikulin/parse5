@@ -9,13 +9,17 @@ import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
 import { ERR } from '../common/error-codes.js';
 import * as unicode from '../common/unicode.js';
-import * as HTML from '../common/html.js';
+import {
+    TAG_NAMES as $,
+    NAMESPACES as NS,
+    ATTRS,
+    SPECIAL_ELEMENTS,
+    DOCUMENT_MODE,
+    isNumberedHeader,
+} from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
 import type { ParserError } from './../extensions/error-reporting/mixin-base';
 import { Token, CommentToken, CharacterToken, TagToken, DoctypeToken } from './../common/token';
-
-//Aliases
-const { TAG_NAMES: $, NAMESPACES: NS, ATTRS } = HTML;
 
 //Misc constants
 const HIDDEN_INPUT_TYPE = 'hidden';
@@ -401,13 +405,13 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _appendElement(token: TagToken, namespaceURI: HTML.NAMESPACES) {
+    _appendElement(token: TagToken, namespaceURI: NS) {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
         this._attachElementToTree(element);
     }
 
-    _insertElement(token: TagToken, namespaceURI: HTML.NAMESPACES) {
+    _insertElement(token: TagToken, namespaceURI: NS) {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
         this._attachElementToTree(element);
@@ -677,7 +681,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Integration points
-    _isIntegrationPoint(element: T['element'], foreignNS?: HTML.NAMESPACES): boolean {
+    _isIntegrationPoint(element: T['element'], foreignNS?: NS): boolean {
         const tn = this.treeAdapter.getTagName(element);
         const ns = this.treeAdapter.getNamespaceURI(element);
         const attrs = this.treeAdapter.getAttrList(element);
@@ -848,8 +852,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const tn = this.treeAdapter.getTagName(element);
         const ns = this.treeAdapter.getNamespaceURI(element);
 
-        // @ts-ignore
-        return HTML.SPECIAL_ELEMENTS[ns].has(tn);
+        return (SPECIAL_ELEMENTS as any)[ns].has(tn);
     }
 }
 
@@ -1054,7 +1057,7 @@ function modeInitial<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
 function doctypeInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: DoctypeToken) {
     p._setDocumentType(token);
 
-    const mode = token.forceQuirks ? HTML.DOCUMENT_MODE.QUIRKS : doctype.getDocumentMode(token);
+    const mode = token.forceQuirks ? DOCUMENT_MODE.QUIRKS : doctype.getDocumentMode(token);
 
     if (!doctype.isConforming(token)) {
         p._err(ERR.nonConformingDoctype);
@@ -1067,7 +1070,7 @@ function doctypeInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
 
 function tokenInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._err(ERR.missingDoctype, { beforeToken: true });
-    p.treeAdapter.setDocumentMode(p.document, HTML.DOCUMENT_MODE.QUIRKS);
+    p.treeAdapter.setDocumentMode(p.document, DOCUMENT_MODE.QUIRKS);
     p.insertionMode = InsertionMode.BEFORE_HTML;
     p._processToken(token);
 }
@@ -1640,7 +1643,7 @@ function numberedHeaderStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>
 
     const tn = p.openElements.currentTagName!;
 
-    if (HTML.isNumberedHeader(tn)) {
+    if (isNumberedHeader(tn)) {
         p.openElements.pop();
     }
 
@@ -1769,10 +1772,7 @@ function appletStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
 }
 
 function tableStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    if (
-        p.treeAdapter.getDocumentMode(p.document) !== HTML.DOCUMENT_MODE.QUIRKS &&
-        p.openElements.hasInButtonScope($.P)
-    ) {
+    if (p.treeAdapter.getDocumentMode(p.document) !== DOCUMENT_MODE.QUIRKS && p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
 
@@ -1964,7 +1964,7 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
         case 2:
             if (tn === $.DL || tn === $.OL || tn === $.UL) {
                 addressStartTagInBody(p, token);
-            } else if (HTML.isNumberedHeader(tn)) {
+            } else if (isNumberedHeader(tn)) {
                 numberedHeaderStartTagInBody(p, token);
             } else
                 switch (tn) {
@@ -2491,7 +2491,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
                     break;
                 }
                 default:
-                    if (HTML.isNumberedHeader(tn)) {
+                    if (isNumberedHeader(tn)) {
                         numberedHeaderEndTagInBody(p);
                     } else if (tn === $.BR) {
                         brEndTagInBody(p);

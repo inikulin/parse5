@@ -1,11 +1,7 @@
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
-import * as HTML from '../common/html.js';
+import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from './../tree-adapters/interface';
-
-//Aliases
-const $ = HTML.TAG_NAMES;
-const NS = HTML.NAMESPACES;
 
 //Escaping regexes
 const AMP_REGEX = /&/g;
