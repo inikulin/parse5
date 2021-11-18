@@ -174,12 +174,7 @@ export function getParentNode(node) {
 }
 
 export function getAttrList(element) {
-    return Object.keys(element.attribs).map((name) => ({
-        name,
-        value: element.attribs[name],
-        namespace: element['x-attribsNamespace'][name],
-        prefix: element['x-attribsPrefix'][name],
-    }));
+    return element.attributes;
 }
 
 //Node data
