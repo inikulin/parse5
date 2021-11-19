@@ -1,4 +1,5 @@
 packages/parse5/lib/tokenizer/named-entity-data.js
 test/benchmark/node_modules/**/*.js
 test/memory_benchmark/node_modules/**/*.js
+packages/*/dist/
 node_modules

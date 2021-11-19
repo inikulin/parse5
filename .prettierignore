@@ -1,2 +1,3 @@
 packages/parse5/lib/tokenizer/named-entity-data.js
+packages/*/dist/
 docs

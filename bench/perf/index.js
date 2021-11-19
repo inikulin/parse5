@@ -3,9 +3,9 @@ import Benchmark from 'benchmark';
 import { loadTreeConstructionTestData } from '../../test/utils/generate-parsing-tests.js';
 import { loadSAXParserTestData } from '../../test/utils/load-sax-parser-test-data.js';
 import { treeAdapters, WritableStreamStub } from '../../test/utils/common.js';
-import * as parse5 from '@parse5/parse5/lib/index.js';
+import * as parse5 from '../../packages/parse5/dist/index.js';
 import { ParserStream as parse5Stream } from '../../packages/parser-stream/lib/index.js';
-import * as parse5Upstream from '@parse5/parse5';
+import * as parse5Upstream from 'parse5';
 
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
 const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);
