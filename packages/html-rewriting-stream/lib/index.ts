@@ -4,9 +4,59 @@ import { SAXParser } from '@parse5/sax-parser/lib/index.js';
 import { escapeString } from '@parse5/parse5/lib/serializer/index.js';
 import type { PositionTrackingPreprocessorMixin } from '@parse5/parse5/lib/extensions/position-tracking/preprocessor-mixin';
 
+/**
+ * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
+ * A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform) (which means you can pipe _through_ it, see example).
+ *
+ * The rewriter uses the raw source representation of tokens if they are not modified by the user. Therefore, the resulting
+ * HTML is not affected by parser error-recovery mechanisms as in a classical parsing-serialization roundtrip.
+ *
+ * @example
+ *
+ * ```js
+ * const RewritingStream = require('@parse5/html-rewriting-stream');
+ * const http = require('http');
+ * const fs = require('fs');
+ *
+ * const file = fs.createWriteStream('/home/google.com.html');
+ * const rewriter = new RewritingStream();
+ *
+ * // Replace divs with spans
+ * rewriter.on('startTag', startTag => {
+ *     if (startTag.tagName === 'span') {
+ *         startTag.tagName = 'div';
+ *     }
+ *
+ *     rewriter.emitStartTag(startTag);
+ * });
+ *
+ * rewriter.on('endTag', endTag => {
+ *     if (endTag.tagName === 'span') {
+ *         endTag.tagName = 'div';
+ *     }
+ *
+ *     rewriter.emitEndTag(endTag);
+ * });
+ *
+ * // Wrap all text nodes with <i> tag
+ * rewriter.on('text', (_, raw) => {
+ *     // Use raw representation of text without HTML entities decoding
+ *     rewriter.emitRaw(`<i>${raw}</i>`);
+ * });
+ *
+ * http.get('http://google.com', res => {
+ *    // Assumes response is UTF-8.
+ *    res.setEncoding('utf8');
+ *    // RewritingStream is the Transform stream, which means you can pipe
+ *    // through it.
+ *    res.pipe(rewriter).pipe(file);
+ * });
+ * ```
+ */
 export class RewritingStream extends SAXParser {
     posTracker: PositionTrackingPreprocessorMixin;
 
+    /** Note: The `sourceCodeLocationInfo` is always enabled. */
     constructor() {
         super({ sourceCodeLocationInfo: true });
 
@@ -45,6 +95,7 @@ export class RewritingStream extends SAXParser {
         this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation!));
     }
 
+    /** Emits serialized document type token into the output stream. */
     emitDoctype(token: Doctype) {
         let res = `<!DOCTYPE ${token.name}`;
 
@@ -63,6 +114,7 @@ export class RewritingStream extends SAXParser {
         this.push(res);
     }
 
+    /** Emits serialized start tag token into the output stream. */
     emitStartTag(token: StartTag) {
         const res = token.attrs.reduce(
             (res, attr) => `${res} ${attr.name}="${escapeString(attr.value, true)}"`,
@@ -72,18 +124,22 @@ export class RewritingStream extends SAXParser {
         this.push(res + (token.selfClosing ? '/>' : '>'));
     }
 
+    /** Emits serialized end tag token into the output stream. */
     emitEndTag(token: EndTag) {
         this.push(`</${token.tagName}>`);
     }
 
+    /** Emits serialized text token into the output stream. */
     emitText({ text }: Text) {
         this.push(escapeString(text, false));
     }
 
+    /** Emits serialized comment token into the output stream. */
     emitComment(token: Comment) {
         this.push(`<!--${token.text}-->`);
     }
 
+    /** Emits raw HTML string into the output stream. */
     emitRaw(html: string) {
         this.push(html);
     }

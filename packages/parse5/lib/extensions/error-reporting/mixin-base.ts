@@ -1,14 +1,9 @@
+import { Location } from '../../common/token.js';
 import { Mixin } from '../../utils/mixin.js';
 import type { ERR } from '../../common/error-codes.js';
 
-export interface ParserError {
+export interface ParserError extends Location {
     code: string;
-    startLine: number;
-    startCol: number;
-    endLine: number;
-    endCol: number;
-    startOffset: number;
-    endOffset: number;
 }
 
 export const BASE_ERROR = {

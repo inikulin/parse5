@@ -24,9 +24,15 @@ export interface TreeAdapterTypeMap<
     documentType: DocumentType;
 }
 
-export interface TreeLocation extends Location {
+export interface ElementLocation extends Location {
+    /** Start tag attributes' location info. */
     attrs?: Record<string, Location>;
+    /** Element's start tag location info. */
     startTag?: Location;
+    /**
+     * Element's end tag location info.
+     * This property is undefined, if the element has no closing tag.
+     */
     endTag?: Location;
 }
 
@@ -156,7 +162,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    getNodeSourceCodeLocation(node: T['node']): TreeLocation | undefined;
+    getNodeSourceCodeLocation(node: T['node']): ElementLocation | undefined;
 
     /**
      * Returns the given node's parent.
@@ -268,14 +274,14 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    setNodeSourceCodeLocation(node: T['node'], location: TreeLocation | null): void;
+    setNodeSourceCodeLocation(node: T['node'], location: ElementLocation | null): void;
 
     /**
      * Updates the source code location information of the node.
      *
      * @param node - Node.
      */
-    updateNodeSourceCodeLocation(node: T['node'], location: Partial<TreeLocation>): void;
+    updateNodeSourceCodeLocation(node: T['node'], location: Partial<ElementLocation>): void;
 
     /**
      * Sets the `<template>` element content element.

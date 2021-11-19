@@ -1,4 +1,4 @@
-import { TreeLocation } from './../../parse5/lib/tree-adapters/interface';
+import { ElementLocation } from './../../parse5/lib/tree-adapters/interface';
 import * as doctype from '@parse5/parse5/lib/common/doctype.js';
 import { DOCUMENT_MODE, NAMESPACES as NS } from '@parse5/parse5/lib/common/html.js';
 import type { Attribute } from '@parse5/parse5/lib/common/token.js';
@@ -250,7 +250,7 @@ export function isDocumentTypeNode(node: Node): node is ProcessingInstruction {
 export const isElementNode = isTag;
 
 // Source code location
-export function setNodeSourceCodeLocation(node: Node, location: TreeLocation | null) {
+export function setNodeSourceCodeLocation(node: Node, location: ElementLocation | null) {
     if (location) {
         node.startIndex = location.startOffset;
         node.endIndex = location.endOffset;
@@ -260,10 +260,10 @@ export function setNodeSourceCodeLocation(node: Node, location: TreeLocation | n
 }
 
 export function getNodeSourceCodeLocation(node: Node) {
-    return (node as any).sourceCodeLocation as TreeLocation | null | undefined;
+    return (node as any).sourceCodeLocation as ElementLocation | null | undefined;
 }
 
-export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<TreeLocation>) {
+export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<ElementLocation>) {
     if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
 
     (node as any).sourceCodeLocation = {

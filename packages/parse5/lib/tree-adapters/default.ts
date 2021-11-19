@@ -1,6 +1,6 @@
 import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
-import type { Attribute } from '../common/token.js';
-import type { TreeAdapterTypeMap, TreeLocation } from './interface.js';
+import type { Attribute, Location } from '../common/token.js';
+import type { TreeAdapterTypeMap, ElementLocation } from './interface.js';
 
 export enum NodeType {
     Document = '#document',
@@ -14,7 +14,7 @@ export interface Node {
     /** The name of the node. */
     nodeName: NodeType | string;
     /** Comment source code location info. Available if location info is enabled. */
-    sourceCodeLocation?: TreeLocation | null;
+    sourceCodeLocation?: Location | null;
 }
 
 export interface NodeWithChildren extends Node {
@@ -49,7 +49,7 @@ export interface Element extends NodeWithChildren, NodeWithParent {
     /** Element namespace. */
     namespaceURI: NAMESPACES;
     /** Element source code location info, with attributes. Available if location info is enabled. */
-    sourceCodeLocation?: TreeLocation;
+    sourceCodeLocation?: ElementLocation | null;
 }
 
 export interface CommentNode extends NodeWithParent {
@@ -276,15 +276,15 @@ export function isElementNode(node: Node): node is Element {
 }
 
 // Source code location
-export function setNodeSourceCodeLocation(node: Node, location: TreeLocation | null) {
+export function setNodeSourceCodeLocation(node: Node, location: ElementLocation | null) {
     node.sourceCodeLocation = location;
 }
 
-export function getNodeSourceCodeLocation(node: Node): TreeLocation | undefined | null {
+export function getNodeSourceCodeLocation(node: Node): ElementLocation | undefined | null {
     return node.sourceCodeLocation;
 }
 
-export function updateNodeSourceCodeLocation(node: Node, endLocation: TreeLocation) {
+export function updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation) {
     node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
 }
 

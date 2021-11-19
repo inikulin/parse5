@@ -63,6 +63,34 @@ export class SAXParser extends Transform {
         callback(null, this._transformChunk(''));
     }
 
+    /**
+     * Stops parsing. Useful if you want the parser to stop consuming CPU time
+     * once you've obtained the desired info from the input stream. Doesn't
+     * prevent piping, so that data will flow through the parser as usual.
+     *
+     * @example
+     *
+     * ```js
+     * const SAXParser = require('@parse5/sax-parser');
+     * const http = require('http');
+     * const fs = require('fs');
+     *
+     * const file = fs.createWriteStream('google.com.html');
+     * const parser = new SAXParser();
+     *
+     * parser.on('doctype', ({ name, publicId, systemId }) => {
+     *     // Process doctype info and stop parsing
+     *     ...
+     *     parser.stop();
+     * });
+     *
+     * http.get('http://google.com', res => {
+     *     // Despite the fact that parser.stop() was called whole
+     *     // content of the page will be written to the file
+     *     res.pipe(parser).pipe(file);
+     * });
+     * ```
+     */
     stop() {
         this.stopped = true;
     }
@@ -162,6 +190,7 @@ export interface Text extends SaxToken {
 }
 
 export interface Comment extends SaxToken {
+    /** Comment text. */
     text: string;
 }
 

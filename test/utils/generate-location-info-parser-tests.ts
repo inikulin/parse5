@@ -1,6 +1,6 @@
 import { ParserOptions } from './../../packages/parse5/lib/parser/index';
 import { Location } from './../../packages/parse5/lib/common/token';
-import { TreeAdapter, TreeAdapterTypeMap, TreeLocation } from './../../packages/parse5/lib/tree-adapters/interface';
+import { TreeAdapter, TreeAdapterTypeMap, ElementLocation } from './../../packages/parse5/lib/tree-adapters/interface';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -48,7 +48,12 @@ function assertLocation(loc: Location, expected: string, html: string, lines: st
 }
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag
-export function assertStartTagLocation(location: TreeLocation, serializedNode: string, html: string, lines: string[]) {
+export function assertStartTagLocation(
+    location: ElementLocation,
+    serializedNode: string,
+    html: string,
+    lines: string[]
+) {
     const length = location.startTag!.endOffset - location.startTag!.startOffset;
     const expected = serializedNode.substring(0, length);
 
@@ -56,7 +61,7 @@ export function assertStartTagLocation(location: TreeLocation, serializedNode: s
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
-function assertEndTagLocation(location: TreeLocation, serializedNode: string, html: string, lines: string[]) {
+function assertEndTagLocation(location: ElementLocation, serializedNode: string, html: string, lines: string[]) {
     const length = location.endTag!.endOffset - location.endTag!.startOffset;
     const expected = serializedNode.slice(-length);
 

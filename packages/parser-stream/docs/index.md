@@ -1,45 +1,5 @@
 # Class: ParserStream
 
-Streaming HTML parser with scripting support. A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
-
-*__example__*:
-
-```js
-const ParserStream = require('@parse5/parser-stream');
-const http = require('http');
-
-// Fetch the page content and obtain it's <head> node
-http.get('http://inikulin.github.io/parse5/', res => {
-    const parser = new ParserStream();
-
-    parser.once('finish', () => {
-        console.log(parser.document.childNodes[1].childNodes[0].tagName); //> 'head'
-    });
-
-    res.pipe(parser);
-});
-```
-
-### Constructors
-
-* [constructor](#constructor)
-
-### Properties
-
-* [document](#document)
-
-### Methods
-
-See: [writable stream API](https://nodejs.org/api/stream.html#stream_class_stream_writable).
-
-### Events
-
-* [on("script")](#on_script)
-
-Also see: [writable stream API](https://nodejs.org/api/stream.html#stream_class_stream_writable).
-
----
-
 ## Constructors
 
 <a id="constructor"></a>
@@ -56,17 +16,6 @@ Also see: [writable stream API](https://nodejs.org/api/stream.html#stream_class_
 
 **Returns:** [ParserStream]()
 
-___
-
-## Properties
-
-<a id="document"></a>
-
-###  document
-
-**● document**: *Document*
-
-The resulting document node.
 ___
 
 ## Events

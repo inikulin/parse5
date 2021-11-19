@@ -43,6 +43,11 @@ const UNESCAPED_TEXT = new Set<string>([
 ]);
 
 export interface SerializerOptions<T extends TreeAdapterTypeMap> {
+    /**
+     * Specifies input tree format.
+     *
+     * @default `treeAdapters.default`
+     */
     treeAdapter?: TreeAdapter<T>;
 }
 
@@ -66,7 +71,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
     }
 
     //Internals
-    _serializeChildNodes(parentNode: T['parentNode']) {
+    private _serializeChildNodes(parentNode: T['parentNode']) {
         const childNodes = this.treeAdapter.getChildNodes(parentNode);
 
         if (childNodes) {
@@ -84,7 +89,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _serializeElement(node: T['element']) {
+    private _serializeElement(node: T['element']) {
         const tn = this.treeAdapter.getTagName(node);
         const ns = this.treeAdapter.getNamespaceURI(node);
 
@@ -101,7 +106,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _serializeAttributes(node: T['element']) {
+    private _serializeAttributes(node: T['element']) {
         for (const attr of this.treeAdapter.getAttrList(node)) {
             const value = escapeString(attr.value, true);
 
@@ -138,7 +143,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _serializeTextNode(node: T['textNode']) {
+    private _serializeTextNode(node: T['textNode']) {
         const content = this.treeAdapter.getTextNodeContent(node);
         const parent = this.treeAdapter.getParentNode(node);
 
@@ -147,11 +152,11 @@ export class Serializer<T extends TreeAdapterTypeMap> {
             UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent)) ? content : escapeString(content, false);
     }
 
-    _serializeCommentNode(node: T['commentNode']) {
+    private _serializeCommentNode(node: T['commentNode']) {
         this.html += `<!--${this.treeAdapter.getCommentNodeContent(node)}-->`;
     }
 
-    _serializeDocumentTypeNode(node: T['documentType']) {
+    private _serializeDocumentTypeNode(node: T['documentType']) {
         const name = this.treeAdapter.getDocumentTypeNodeName(node);
 
         this.html += `<${doctype.serializeContent(name, null, null)}>`;
