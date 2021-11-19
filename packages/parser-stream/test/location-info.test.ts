@@ -9,7 +9,7 @@ generateLocationInfoParserTests('location-info', 'ParserStream', (input, opts) =
 );
 
 generateTestsForEachTreeAdapter('location-info', (treeAdapter) => {
-    test('Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)', function () {
+    test('Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)', () => {
         const html = '</head><div class="test"></div></body></html>';
 
         const opts = {

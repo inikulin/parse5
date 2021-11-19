@@ -4,7 +4,7 @@ import { PlainTextConversionStream } from '../lib/index.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
 
 generateTestsForEachTreeAdapter('plain-test-conversion-stream', (treeAdapter) => {
-    it('Plain text conversion stream', function () {
+    it('Plain text conversion stream', () => {
         const converter = new PlainTextConversionStream({ treeAdapter });
 
         converter.write('Hey');

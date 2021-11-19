@@ -2,6 +2,7 @@ import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
 import type { Attribute, Location } from '../common/token.js';
 
 export interface TreeAdapterTypeMap<
+    // eslint-disable-next-line @typescript-eslint/ban-types
     Node = {},
     NodeWithChildren extends Node = Node,
     NodeWithParent extends Node = Node,

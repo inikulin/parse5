@@ -64,13 +64,13 @@ describe('parser', () => {
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
             /*eslint-disable no-extend-native*/
-            // @ts-expect-error
+            // @ts-expect-error Adding unknown prototype method
             Object.prototype.heyYo = 123;
             /*eslint-enable no-extend-native*/
         });
 
         afterEach(() => {
-            // @ts-expect-error
+            // @ts-expect-error Deleting unknown prototype property
             delete Object.prototype.heyYo;
         });
 
