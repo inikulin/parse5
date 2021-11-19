@@ -23,7 +23,6 @@ export type Entry<T extends TreeAdapterTypeMap> = MarkerEntry | ElementEntry<T>;
 
 //List of formatting elements
 export class FormattingElementList<T extends TreeAdapterTypeMap> {
-    length = 0;
     entries: Entry<T>[] = [];
     bookmark: Entry<T> | null = null;
 
@@ -32,30 +31,29 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     //Noah Ark's condition
     //OPTIMIZATION: at first we try to find possible candidates for exclusion using
     //lightweight heuristics without thorough attributes check.
-    _getNoahArkConditionCandidates(newElement: T['element'], neAttrs: Attribute[]) {
+    private _getNoahArkConditionCandidates(newElement: T['element'], neAttrs: Attribute[]) {
         const candidates = [];
 
-        if (this.length >= NOAH_ARK_CAPACITY) {
-            const neAttrsLength = neAttrs.length;
-            const neTagName = this.treeAdapter.getTagName(newElement);
-            const neNamespaceURI = this.treeAdapter.getNamespaceURI(newElement);
+        const neAttrsLength = neAttrs.length;
+        const neTagName = this.treeAdapter.getTagName(newElement);
+        const neNamespaceURI = this.treeAdapter.getNamespaceURI(newElement);
 
-            for (let i = this.length - 1; i >= 0; i--) {
-                const entry = this.entries[i];
+        for (let i = 0; i < this.entries.length; i++) {
+            const entry = this.entries[i];
 
-                if (entry.type === EntryType.Marker) {
-                    break;
-                }
+            if (entry.type === EntryType.Marker) {
+                break;
+            }
 
-                const { element } = entry;
+            const { element } = entry;
+
+            if (
+                this.treeAdapter.getTagName(element) === neTagName &&
+                this.treeAdapter.getNamespaceURI(element) === neNamespaceURI
+            ) {
                 const elementAttrs = this.treeAdapter.getAttrList(element);
 
-                const isCandidate =
-                    this.treeAdapter.getTagName(element) === neTagName &&
-                    this.treeAdapter.getNamespaceURI(element) === neNamespaceURI &&
-                    elementAttrs.length === neAttrsLength;
-
-                if (isCandidate) {
+                if (elementAttrs.length === neAttrsLength) {
                     candidates.push({ idx: i, attrs: elementAttrs });
                 }
             }
@@ -64,104 +62,84 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         return candidates;
     }
 
-    _ensureNoahArkCondition(newElement: T['element']) {
+    private _ensureNoahArkCondition(newElement: T['element']) {
+        if (this.entries.length < NOAH_ARK_CAPACITY) return;
+
         const neAttrs = this.treeAdapter.getAttrList(newElement);
         const candidates = this._getNoahArkConditionCandidates(newElement, neAttrs);
 
-        if (candidates.length >= NOAH_ARK_CAPACITY) {
-            //NOTE: build attrs map for the new element so we can perform fast lookups
-            const neAttrsMap = new Map(neAttrs.map((neAttr: Attribute) => [neAttr.name, neAttr.value]));
-            const filteredCandidates = candidates.filter((candidate) =>
-                // We know that `candidate.attrs.length === neAttrs.length`
-                candidate.attrs.every((cAttr: Attribute) => neAttrsMap.get(cAttr.name) === cAttr.value)
-            );
+        if (candidates.length < NOAH_ARK_CAPACITY) return;
 
-            //NOTE: remove bottommost candidates until Noah's Ark condition will not be met
-            for (let i = filteredCandidates.length - 1; i >= NOAH_ARK_CAPACITY - 1; i--) {
-                this.entries.splice(filteredCandidates[i].idx, 1);
-                this.length--;
-            }
+        //NOTE: build attrs map for the new element so we can perform fast lookups
+        const neAttrsMap = new Map(neAttrs.map((neAttr: Attribute) => [neAttr.name, neAttr.value]));
+
+        const filteredCandidates = candidates.filter((candidate) =>
+            // We know that `candidate.attrs.length === neAttrs.length`
+            candidate.attrs.every((cAttr) => neAttrsMap.get(cAttr.name) === cAttr.value)
+        );
+
+        //NOTE: remove bottommost candidates until Noah's Ark condition will not be met
+        for (let i = NOAH_ARK_CAPACITY - 1; i < filteredCandidates.length; i++) {
+            this.entries.splice(filteredCandidates[i].idx, 1);
         }
     }
 
     //Mutations
     insertMarker() {
-        this.entries.push({ type: EntryType.Marker });
-        this.length++;
+        this.entries.unshift({ type: EntryType.Marker });
     }
 
     pushElement(element: T['element'], token: TagToken) {
         this._ensureNoahArkCondition(element);
 
-        this.entries.push({
+        this.entries.unshift({
             type: EntryType.Element,
             element,
             token,
         });
-
-        this.length++;
     }
 
     insertElementAfterBookmark(element: T['element'], token: TagToken) {
-        const bookmarkIdx = this.entries.lastIndexOf(this.bookmark!);
+        const bookmarkIdx = this.entries.indexOf(this.bookmark!);
 
-        this.entries.splice(bookmarkIdx + 1, 0, {
+        this.entries.splice(bookmarkIdx, 0, {
             type: EntryType.Element,
             element,
             token,
         });
-
-        this.length++;
     }
 
     removeEntry(entry: Entry<T>) {
-        const entryIndex = this.entries.lastIndexOf(entry);
+        const entryIndex = this.entries.indexOf(entry);
 
         if (entryIndex >= 0) {
             this.entries.splice(entryIndex, 1);
-            this.length--;
         }
     }
 
     clearToLastMarker() {
-        while (this.length) {
-            const entry = this.entries.pop()!;
+        const markerIdx = this.entries.findIndex((entry) => entry.type === EntryType.Marker);
 
-            this.length--;
-
-            if (entry.type === EntryType.Marker) {
-                break;
-            }
+        if (markerIdx >= 0) {
+            this.entries.splice(0, markerIdx + 1);
+        } else {
+            this.entries.length = 0;
         }
     }
 
     //Search
     getElementEntryInScopeWithTagName(tagName: string) {
-        for (let i = this.length - 1; i >= 0; i--) {
-            const entry = this.entries[i];
+        const entry = this.entries.find(
+            (entry) => entry.type === EntryType.Marker || this.treeAdapter.getTagName(entry.element) === tagName
+        );
 
-            if (entry.type === EntryType.Marker) {
-                return null;
-            }
-
-            if (this.treeAdapter.getTagName(entry.element) === tagName) {
-                return entry;
-            }
-        }
-
-        return null;
+        return entry && entry.type === EntryType.Element ? entry : null;
     }
 
     getElementEntry(element: T['element']): ElementEntry<T> | null {
-        for (let i = this.length - 1; i >= 0; i--) {
-            const entry = this.entries[i];
-
-            if (entry.type === EntryType.Element && entry.element === element) {
-                return entry;
-            }
-        }
-
-        return null;
+        return this.entries.find(
+            (entry) => entry.type === EntryType.Element && entry.element === element
+        ) as ElementEntry<T> | null;
     }
 
     //Entry types

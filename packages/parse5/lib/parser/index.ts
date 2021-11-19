@@ -691,24 +691,18 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     //Active formatting elements reconstruction
     _reconstructActiveFormattingElements() {
-        const listLength = this.activeFormattingElements.length;
+        const listLength = this.activeFormattingElements.entries.length;
 
         if (listLength) {
-            let unopenIdx = listLength;
-            let entry = null;
+            const endIndex = this.activeFormattingElements.entries.findIndex(
+                (entry) =>
+                    entry.type === FormattingElementList.MARKER_ENTRY || this.openElements.contains(entry.element)
+            );
 
-            do {
-                unopenIdx--;
-                entry = this.activeFormattingElements.entries[unopenIdx];
+            const unopenIdx = endIndex < 0 ? listLength - 1 : endIndex - 1;
 
-                if (entry.type === FormattingElementList.MARKER_ENTRY || this.openElements.contains(entry.element)) {
-                    unopenIdx++;
-                    break;
-                }
-            } while (unopenIdx > 0);
-
-            for (let i = unopenIdx; i < listLength; i++) {
-                entry = this.activeFormattingElements.entries[i] as ElementEntry<T>;
+            for (let i = unopenIdx; i >= 0; i--) {
+                const entry = this.activeFormattingElements.entries[i] as ElementEntry<T>;
                 this._insertElement(entry.token, this.treeAdapter.getNamespaceURI(entry.element));
                 entry.element = this.openElements.current;
             }

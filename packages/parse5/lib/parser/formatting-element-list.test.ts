@@ -19,12 +19,12 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         const list = new FormattingElementList(treeAdapter);
 
         list.insertMarker();
-        assert.strictEqual(list.length, 1);
+        assert.strictEqual(list.entries.length, 1);
         assert.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
 
         list.insertMarker();
-        assert.strictEqual(list.length, 2);
-        assert.strictEqual(list.entries[1].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.entries.length, 2);
+        assert.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
     });
 
     test('Push element', () => {
@@ -35,16 +35,16 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         const element2 = treeAdapter.createElement($.P, NS.HTML, []);
 
         list.pushElement(element1, element1Token);
-        assert.strictEqual(list.length, 1);
+        assert.strictEqual(list.entries.length, 1);
         assert.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
         assert.strictEqual(list.entries[0].element, element1);
         assert.strictEqual(list.entries[0].token, element1Token);
 
         list.pushElement(element2, element2Token);
-        assert.strictEqual(list.length, 2);
-        assert.strictEqual(list.entries[1].type, FormattingElementList.ELEMENT_ENTRY);
-        assert.strictEqual(list.entries[1].element, element2);
-        assert.strictEqual(list.entries[1].token, element2Token);
+        assert.strictEqual(list.entries.length, 2);
+        assert.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(list.entries[0].element, element2);
+        assert.strictEqual(list.entries[0].token, element2Token);
     });
 
     test('Insert element after bookmark', () => {
@@ -63,8 +63,8 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
         list.insertElementAfterBookmark(element4, token);
 
-        assert.strictEqual(list.length, 4);
-        expect(list.entries[1]).toHaveProperty('element', element4);
+        assert.strictEqual(list.entries.length, 4);
+        expect(list.entries[2]).toHaveProperty('element', element4);
     });
 
     test('Push element - Noah Ark condition', () => {
@@ -91,30 +91,30 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.pushElement(element2, token3);
         list.pushElement(element1, token4);
 
-        assert.strictEqual(list.length, 4);
-        expect(list.entries[0]).toHaveProperty('token', token1);
-        expect(list.entries[1]).toHaveProperty('token', token2);
-        expect(list.entries[2]).toHaveProperty('token', token3);
-        expect(list.entries[3]).toHaveProperty('token', token4);
+        assert.strictEqual(list.entries.length, 4);
+        expect(list.entries[3]).toHaveProperty('token', token1);
+        expect(list.entries[2]).toHaveProperty('token', token2);
+        expect(list.entries[1]).toHaveProperty('token', token3);
+        expect(list.entries[0]).toHaveProperty('token', token4);
 
         list.pushElement(element1, token5);
 
-        assert.strictEqual(list.length, 4);
-        expect(list.entries[0]).toHaveProperty('token', token2);
-        expect(list.entries[1]).toHaveProperty('token', token3);
-        expect(list.entries[2]).toHaveProperty('token', token4);
-        expect(list.entries[3]).toHaveProperty('token', token5);
+        assert.strictEqual(list.entries.length, 4);
+        expect(list.entries[3]).toHaveProperty('token', token2);
+        expect(list.entries[2]).toHaveProperty('token', token3);
+        expect(list.entries[1]).toHaveProperty('token', token4);
+        expect(list.entries[0]).toHaveProperty('token', token5);
 
         list.insertMarker();
         list.pushElement(element1, token6);
 
-        assert.strictEqual(list.length, 6);
-        expect(list.entries[0]).toHaveProperty('token', token2);
-        expect(list.entries[1]).toHaveProperty('token', token3);
-        expect(list.entries[2]).toHaveProperty('token', token4);
-        expect(list.entries[3]).toHaveProperty('token', token5);
-        expect(list.entries[4]).toHaveProperty('type', FormattingElementList.MARKER_ENTRY);
-        expect(list.entries[5]).toHaveProperty('token', token6);
+        assert.strictEqual(list.entries.length, 6);
+        expect(list.entries[5]).toHaveProperty('token', token2);
+        expect(list.entries[4]).toHaveProperty('token', token3);
+        expect(list.entries[3]).toHaveProperty('token', token4);
+        expect(list.entries[2]).toHaveProperty('token', token5);
+        expect(list.entries[1]).toHaveProperty('type', FormattingElementList.MARKER_ENTRY);
+        expect(list.entries[0]).toHaveProperty('token', token6);
     });
 
     test('Clear to the last marker', () => {
@@ -140,7 +140,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
         list.clearToLastMarker();
 
-        assert.strictEqual(list.length, 2);
+        assert.strictEqual(list.entries.length, 2);
     });
 
     test('Remove entry', () => {
@@ -161,11 +161,11 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.pushElement(element2, token);
         list.pushElement(element2, token);
 
-        list.removeEntry(list.entries[0]);
+        list.removeEntry(list.entries[2]);
 
-        assert.strictEqual(list.length, 2);
+        assert.strictEqual(list.entries.length, 2);
 
-        for (let i = list.length - 1; i >= 0; i--) {
+        for (let i = 0; i < list.entries.length; i++) {
             expect(list.entries[i]).not.toHaveProperty('element', element1);
         }
     });
@@ -179,13 +179,13 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
         list.pushElement(element, token);
         list.pushElement(element, token);
-        assert.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[1]);
+        assert.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[0]);
 
         list.insertMarker();
         assert.ok(!list.getElementEntryInScopeWithTagName($.DIV));
 
         list.pushElement(element, token);
-        assert.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[3]);
+        assert.strictEqual(list.getElementEntryInScopeWithTagName($.DIV), list.entries[0]);
     });
 
     test('Get element entry', () => {
