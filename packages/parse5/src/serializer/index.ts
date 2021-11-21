@@ -25,9 +25,9 @@ const GT_REGEX = />/g;
 
 //Serializer
 export class Serializer<T extends TreeAdapterTypeMap> {
+    public html: string;
     protected _options: SerializerOptions<T>;
     protected _treeAdapter: TreeAdapter<T>;
-    protected _html: string;
     protected _startNode: T['node'];
 
     public constructor(node: T['node'], options?: Partial<SerializerOptions<T>>) {
@@ -37,7 +37,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         };
         this._treeAdapter = this._options.treeAdapter;
 
-        this._html = '';
+        this.html = '';
         this._startNode = node;
     }
 
@@ -45,7 +45,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
     public serialize(): string {
         this._serializeChildNodes(this._startNode);
 
-        return this._html;
+        return this.html;
     }
 
     //Internals
@@ -73,9 +73,9 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         const tn = this._treeAdapter.getTagName(node);
         const ns = this._treeAdapter.getNamespaceURI(node);
 
-        this._html += '<' + tn;
+        this.html += '<' + tn;
         this._serializeAttributes(node);
-        this._html += '>';
+        this.html += '>';
 
         if (
             tn !== $.AREA &&
@@ -101,7 +101,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
                 tn === $.TEMPLATE && ns === NS.HTML ? this._treeAdapter.getTemplateContent(node) : node;
 
             this._serializeChildNodes(childNodesHolder);
-            this._html += '</' + tn + '>';
+            this.html += '</' + tn + '>';
         }
     }
 
@@ -117,25 +117,25 @@ export class Serializer<T extends TreeAdapterTypeMap> {
 
             const value = escapeString(attr.value, true);
 
-            this._html += ' ';
+            this.html += ' ';
 
             if (!attr.namespace) {
-                this._html += attr.name;
+                this.html += attr.name;
             } else if (attr.namespace === NS.XML) {
-                this._html += 'xml:' + attr.name;
+                this.html += 'xml:' + attr.name;
             } else if (attr.namespace === NS.XMLNS) {
                 if (attr.name !== 'xmlns') {
-                    this._html += 'xmlns:';
+                    this.html += 'xmlns:';
                 }
 
-                this._html += attr.name;
+                this.html += attr.name;
             } else if (attr.namespace === NS.XLINK) {
-                this._html += 'xlink:' + attr.name;
+                this.html += 'xlink:' + attr.name;
             } else {
-                this._html += (attr.prefix ?? '') + ':' + attr.name;
+                this.html += (attr.prefix ?? '') + ':' + attr.name;
             }
 
-            this._html += '="' + value + '"';
+            this.html += '="' + value + '"';
         }
     }
 
@@ -158,20 +158,20 @@ export class Serializer<T extends TreeAdapterTypeMap> {
             parentTn === $.PLAINTEXT ||
             parentTn === $.NOSCRIPT
         ) {
-            this._html += content;
+            this.html += content;
         } else {
-            this._html += escapeString(content, false);
+            this.html += escapeString(content, false);
         }
     }
 
     protected _serializeCommentNode(node: T['commentNode']): void {
-        this._html += '<!--' + this._treeAdapter.getCommentNodeContent(node) + '-->';
+        this.html += '<!--' + this._treeAdapter.getCommentNodeContent(node) + '-->';
     }
 
     protected _serializeDocumentTypeNode(node: T['documentType']): void {
         const name = this._treeAdapter.getDocumentTypeNodeName(node);
 
-        this._html += '<' + doctype.serializeContent(name) + '>';
+        this.html += '<' + doctype.serializeContent(name) + '>';
     }
 }
 

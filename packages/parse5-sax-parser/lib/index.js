@@ -1,8 +1,18 @@
 import { Transform } from 'stream';
-import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
+import {
+    Tokenizer,
+    CHARACTER_TOKEN,
+    DOCTYPE_TOKEN,
+    COMMENT_TOKEN,
+    END_TAG_TOKEN,
+    START_TAG_TOKEN,
+    HIBERNATION_TOKEN,
+    WHITESPACE_CHARACTER_TOKEN,
+    NULL_CHARACTER_TOKEN,
+    EOF_TOKEN,
+} from 'parse5/lib/tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from 'parse5/lib/extensions/location-info/tokenizer-mixin.js';
-import { Mixin } from 'parse5/lib/utils/mixin.js';
-import { mergeOptions } from 'parse5/lib/utils/merge-options.js';
+import { Mixin, install as installMixin } from 'parse5/lib/utils/mixin.js';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
@@ -14,13 +24,16 @@ export class SAXParser extends Transform {
     constructor(options) {
         super({ encoding: 'utf8', decodeStrings: false });
 
-        this.options = mergeOptions(DEFAULT_OPTIONS, options);
+        this.options = {
+            ...DEFAULT_OPTIONS,
+            ...options,
+        };
 
         this.tokenizer = new Tokenizer(options);
         this.locInfoMixin = null;
 
         if (this.options.sourceCodeLocationInfo) {
-            this.locInfoMixin = Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
+            this.locInfoMixin = installMixin(this.tokenizer, LocationInfoTokenizerMixin);
         }
 
         this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.tokenizer);
@@ -69,17 +82,17 @@ export class SAXParser extends Transform {
         do {
             token = this.parserFeedbackSimulator.getNextToken();
 
-            if (token.type === Tokenizer.HIBERNATION_TOKEN) {
+            if (token.type === HIBERNATION_TOKEN) {
                 break;
             }
 
             if (
-                token.type === Tokenizer.CHARACTER_TOKEN ||
-                token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN ||
-                token.type === Tokenizer.NULL_CHARACTER_TOKEN
+                token.type === CHARACTER_TOKEN ||
+                token.type === WHITESPACE_CHARACTER_TOKEN ||
+                token.type === NULL_CHARACTER_TOKEN
             ) {
                 if (this.pendingText === null) {
-                    token.type = Tokenizer.CHARACTER_TOKEN;
+                    token.type = CHARACTER_TOKEN;
                     this.pendingText = token;
                 } else {
                     this.pendingText.chars += token.chars;
@@ -98,11 +111,11 @@ export class SAXParser extends Transform {
                 this._emitPendingText();
                 this._handleToken(token);
             }
-        } while (!this.stopped && token.type !== Tokenizer.EOF_TOKEN);
+        } while (!this.stopped && token.type !== EOF_TOKEN);
     }
 
     _handleToken(token) {
-        if (token.type === Tokenizer.EOF_TOKEN) {
+        if (token.type === EOF_TOKEN) {
             return true;
         }
 
@@ -130,7 +143,7 @@ export class SAXParser extends Transform {
 }
 
 const TOKEN_EMISSION_HELPERS = {
-    [Tokenizer.START_TAG_TOKEN]: {
+    [START_TAG_TOKEN]: {
         eventName: 'startTag',
         reshapeToken: (origToken) => ({
             tagName: origToken.tagName,
@@ -139,15 +152,15 @@ const TOKEN_EMISSION_HELPERS = {
             sourceCodeLocation: origToken.location,
         }),
     },
-    [Tokenizer.END_TAG_TOKEN]: {
+    [END_TAG_TOKEN]: {
         eventName: 'endTag',
         reshapeToken: (origToken) => ({ tagName: origToken.tagName, sourceCodeLocation: origToken.location }),
     },
-    [Tokenizer.COMMENT_TOKEN]: {
+    [COMMENT_TOKEN]: {
         eventName: 'comment',
         reshapeToken: (origToken) => ({ text: origToken.data, sourceCodeLocation: origToken.location }),
     },
-    [Tokenizer.DOCTYPE_TOKEN]: {
+    [DOCTYPE_TOKEN]: {
         eventName: 'doctype',
         reshapeToken: (origToken) => ({
             name: origToken.name,
@@ -156,7 +169,7 @@ const TOKEN_EMISSION_HELPERS = {
             sourceCodeLocation: origToken.location,
         }),
     },
-    [Tokenizer.CHARACTER_TOKEN]: {
+    [CHARACTER_TOKEN]: {
         eventName: 'text',
         reshapeToken: (origToken) => ({ text: origToken.chars, sourceCodeLocation: origToken.location }),
     },

@@ -1,4 +1,13 @@
-import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
+import {
+    Tokenizer,
+    MODE,
+    START_TAG_TOKEN,
+    END_TAG_TOKEN,
+    NULL_CHARACTER_TOKEN,
+    CHARACTER_TOKEN,
+    HIBERNATION_TOKEN,
+    WHITESPACE_CHARACTER_TOKEN,
+} from 'parse5/lib/tokenizer/index.js';
 import * as foreignContent from 'parse5/lib/common/foreign-content.js';
 import * as unicode from 'parse5/lib/common/unicode.js';
 import * as HTML from 'parse5/lib/common/html.js';
@@ -21,19 +30,19 @@ export class ParserFeedbackSimulator {
     getNextToken() {
         const token = this.tokenizer.getNextToken();
 
-        if (token.type === Tokenizer.START_TAG_TOKEN) {
+        if (token.type === START_TAG_TOKEN) {
             this._handleStartTagToken(token);
-        } else if (token.type === Tokenizer.END_TAG_TOKEN) {
+        } else if (token.type === END_TAG_TOKEN) {
             this._handleEndTagToken(token);
-        } else if (token.type === Tokenizer.NULL_CHARACTER_TOKEN && this.inForeignContent) {
-            token.type = Tokenizer.CHARACTER_TOKEN;
+        } else if (token.type === NULL_CHARACTER_TOKEN && this.inForeignContent) {
+            token.type = CHARACTER_TOKEN;
             token.chars = unicode.REPLACEMENT_CHARACTER;
         } else if (this.skipNextNewLine) {
-            if (token.type !== Tokenizer.HIBERNATION_TOKEN) {
+            if (token.type !== HIBERNATION_TOKEN) {
                 this.skipNextNewLine = false;
             }
 
-            if (token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN && token.chars[0] === '\n') {
+            if (token.type === WHITESPACE_CHARACTER_TOKEN && token.chars[0] === '\n') {
                 if (token.chars.length === 1) {
                     return this.getNextToken();
                 }
@@ -67,11 +76,11 @@ export class ParserFeedbackSimulator {
     //Token handlers
     _ensureTokenizerMode(tn) {
         if (tn === $.TEXTAREA || tn === $.TITLE) {
-            this.tokenizer.state = Tokenizer.MODE.RCDATA;
+            this.tokenizer.state = MODE.RCDATA;
         } else if (tn === $.PLAINTEXT) {
-            this.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
+            this.tokenizer.state = MODE.PLAINTEXT;
         } else if (tn === $.SCRIPT) {
-            this.tokenizer.state = Tokenizer.MODE.SCRIPT_DATA;
+            this.tokenizer.state = MODE.SCRIPT_DATA;
         } else if (
             tn === $.STYLE ||
             tn === $.IFRAME ||
@@ -80,7 +89,7 @@ export class ParserFeedbackSimulator {
             tn === $.NOFRAMES ||
             tn === $.NOSCRIPT
         ) {
-            this.tokenizer.state = Tokenizer.MODE.RAWTEXT;
+            this.tokenizer.state = MODE.RAWTEXT;
         }
     }
 

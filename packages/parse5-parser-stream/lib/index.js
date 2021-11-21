@@ -19,7 +19,7 @@ export class ParserStream extends Writable {
         this._documentWrite = this._documentWrite.bind(this);
         this._scriptHandler = this._scriptHandler.bind(this);
 
-        this.parser._bootstrap(this.document, null);
+        this.parser.bootstrap(this.document, null);
     }
 
     //WritableStream implementation
