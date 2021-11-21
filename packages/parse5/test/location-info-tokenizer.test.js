@@ -1,13 +1,13 @@
 import assert from 'assert';
-import { Tokenizer } from '../lib/tokenizer/index.js';
+import { Tokenizer, EOF_TOKEN, HIBERNATION_TOKEN, MODE } from '../lib/tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from '../lib/extensions/location-info/tokenizer-mixin.js';
-import { Mixin } from '../lib/utils/mixin.js';
+import { Mixin, install as installMixin } from '../lib/utils/Mixin.js';
 import { getSubstringByLineCol, normalizeNewLine } from '../../../test/utils/common.js';
 
 test('Location Info (Tokenizer)', () => {
     const testCases = [
         {
-            initialMode: Tokenizer.MODE.DATA,
+            initialMode: MODE.DATA,
             lastStartTagName: '',
             htmlChunks: [
                 '\r\n',
@@ -59,22 +59,22 @@ test('Location Info (Tokenizer)', () => {
             ],
         },
         {
-            initialMode: Tokenizer.MODE.RCDATA,
+            initialMode: MODE.RCDATA,
             lastStartTagName: 'title',
             htmlChunks: ['<div>Test', ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->'],
         },
         {
-            initialMode: Tokenizer.MODE.RAWTEXT,
+            initialMode: MODE.RAWTEXT,
             lastStartTagName: 'style',
             htmlChunks: ['.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text'],
         },
         {
-            initialMode: Tokenizer.MODE.SCRIPT_DATA,
+            initialMode: MODE.SCRIPT_DATA,
             lastStartTagName: 'script',
             htmlChunks: ['var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>'],
         },
         {
-            initialMode: Tokenizer.MODE.PLAINTEXT,
+            initialMode: MODE.PLAINTEXT,
             lastStartTagName: 'plaintext',
             htmlChunks: ['Text', ' \n', 'Test</plaintext><div>'],
         },
@@ -86,7 +86,7 @@ test('Location Info (Tokenizer)', () => {
         const tokenizer = new Tokenizer();
         const lastChunkIdx = testCase.htmlChunks.length - 1;
 
-        Mixin.install(tokenizer, LocationInfoTokenizerMixin);
+        installMixin(tokenizer, LocationInfoTokenizerMixin);
 
         for (let i = 0; i < testCase.htmlChunks.length; i++) {
             tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);
@@ -97,8 +97,8 @@ test('Location Info (Tokenizer)', () => {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (let token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
-            if (token.type === Tokenizer.HIBERNATION_TOKEN) {
+        for (let token = tokenizer.getNextToken(), j = 0; token.type !== EOF_TOKEN; ) {
+            if (token.type === HIBERNATION_TOKEN) {
                 continue;
             }
 

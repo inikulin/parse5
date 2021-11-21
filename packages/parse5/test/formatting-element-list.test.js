@@ -1,6 +1,6 @@
 import assert from 'assert';
 import * as HTML from '../lib/common/html.js';
-import { FormattingElementList } from '../lib/parser/formatting-element-list.js';
+import { FormattingElementList, ELEMENT_ENTRY, MARKER_ENTRY } from '../lib/parser/formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
 
 //Aliases
@@ -13,11 +13,11 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
         list.insertMarker();
         assert.strictEqual(list.length, 1);
-        assert.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.entries[0].type, MARKER_ENTRY);
 
         list.insertMarker();
         assert.strictEqual(list.length, 2);
-        assert.strictEqual(list.entries[1].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.entries[1].type, MARKER_ENTRY);
     };
 
     _test['Push element'] = function () {
@@ -29,13 +29,13 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
         list.pushElement(element1, element1Token);
         assert.strictEqual(list.length, 1);
-        assert.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(list.entries[0].type, ELEMENT_ENTRY);
         assert.strictEqual(list.entries[0].element, element1);
         assert.strictEqual(list.entries[0].token, element1Token);
 
         list.pushElement(element2, element2Token);
         assert.strictEqual(list.length, 2);
-        assert.strictEqual(list.entries[1].type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(list.entries[1].type, ELEMENT_ENTRY);
         assert.strictEqual(list.entries[1].element, element2);
         assert.strictEqual(list.entries[1].token, element2Token);
     };
@@ -106,7 +106,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
         assert.strictEqual(list.entries[1].token, token3);
         assert.strictEqual(list.entries[2].token, token4);
         assert.strictEqual(list.entries[3].token, token5);
-        assert.strictEqual(list.entries[4].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.entries[4].type, MARKER_ENTRY);
         assert.strictEqual(list.entries[5].token, token6);
     };
 
@@ -194,7 +194,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (_test, treeAdapter) =>
 
         const entry = list.getElementEntry(element1);
 
-        assert.strictEqual(entry.type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(entry.type, ELEMENT_ENTRY);
         assert.strictEqual(entry.token, token);
         assert.strictEqual(entry.element, element1);
     };

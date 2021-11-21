@@ -1,6 +1,6 @@
 import { Writable } from 'stream';
 import assert from 'assert';
-import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
+import { defaultTreeAdapter } from '../../packages/parse5/lib/tree-adapters/default.js';
 import * as htmlTreeAdapter from '../../packages/parse5-htmlparser2-tree-adapter/lib/index.js';
 
 export const treeAdapters = {

@@ -1,7 +1,7 @@
 import assert from 'assert';
 import * as parse5 from '../lib/index.js';
 import { Tokenizer } from '../lib/tokenizer/index.js';
-import { Mixin } from '../lib/utils/mixin.js';
+import { Mixin, install as installMixin } from '../lib/utils/mixin.js';
 import { ErrorReportingTokenizerMixin } from '../lib/extensions/error-reporting/tokenizer-mixin.js';
 import { generateTokenizationTests } from '../../../test/utils/generate-tokenization-tests.js';
 
@@ -10,7 +10,7 @@ const dataPath = new URL('../../../test/data/html5lib-tests/tokenizer', import.m
 generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors }) => {
     const tokenizer = new Tokenizer();
 
-    Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
+    installMixin(tokenizer, ErrorReportingTokenizerMixin, {
         onParseError(err) {
             errors.push({
                 code: err.code,

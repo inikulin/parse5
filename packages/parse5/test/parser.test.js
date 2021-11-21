@@ -8,7 +8,7 @@ const origParseFragment = Parser.prototype.parseFragment;
 
 generateParsingTests('parser', 'Parser', { skipFragments: false }, (test, opts) => ({
     node: test.fragmentContext
-        ? parse5.parseFragment(test.fragmentContext, test.input, opts)
+        ? parse5.parseFragment(test.input, opts, test.fragmentContext)
         : parse5.parse(test.input, opts),
 }));
 
@@ -18,46 +18,6 @@ suite('parser', () => {
         const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
         assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
-    });
-
-    suite('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
-        setup(() => {
-            Parser.prototype.parseFragment = function (html, fragmentContext) {
-                return {
-                    html: html,
-                    fragmentContext: fragmentContext,
-                    options: this.options,
-                };
-            };
-        });
-
-        teardown(() => {
-            Parser.prototype.parseFragment = origParseFragment;
-        });
-
-        test('parses correctly', () => {
-            const fragmentContext = treeAdapters.default.createElement('div');
-            const html = '<script></script>';
-            const opts = { sourceCodeLocationInfo: true };
-
-            let args = parse5.parseFragment(fragmentContext, html, opts);
-
-            assert.strictEqual(args.fragmentContext, fragmentContext);
-            assert.strictEqual(args.html, html);
-            assert(args.options.sourceCodeLocationInfo);
-
-            args = parse5.parseFragment(html, opts);
-
-            assert(!args.fragmentContext);
-            assert.strictEqual(args.html, html);
-            assert(args.options.sourceCodeLocationInfo);
-
-            args = parse5.parseFragment(html);
-
-            assert(!args.fragmentContext);
-            assert.strictEqual(args.html, html);
-            assert(!args.options.sourceCodeLocationInfo);
-        });
     });
 
     suite("Regression - Don't inherit from Object when creating collections (GH-119)", () => {

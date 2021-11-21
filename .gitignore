@@ -9,3 +9,5 @@ bench/package-lock.json
 .DS_Store
 .nyc_output
 packages/*/coverage
+packages/parse5/lib
+*.swp

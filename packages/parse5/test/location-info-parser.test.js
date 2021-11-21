@@ -124,40 +124,52 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
 });
 
 suite('location-info-parser', () => {
-    test('Updating node source code location (GH-314)', () => {
-        const sourceCodeLocationSetter = {
-            setNodeSourceCodeLocation(node, location) {
-                if (location === null) {
-                    node.sourceCodeLocation = null;
-                } else {
-                    node.sourceCodeLocation = {
-                        start: {
-                            line: location.startLine,
-                            column: location.startCol,
-                            offset: location.startOffset,
-                        },
-                        end: {
-                            line: location.endLine,
-                            column: location.endCol,
-                            offset: location.endOffset,
-                        },
-                    };
-                }
-            },
-            updateNodeSourceCodeLocation(node, endLocation) {
+    let originalSetter;
+    let originalUpdater;
+
+    setup(() => {
+        originalSetter = treeAdapters.default.setNodeSourceCodeLocation;
+        originalUpdater = treeAdapters.default.updateNodeSourceCodeLocation;
+
+        treeAdapters.default.setNodeSourceCodeLocation = (node, location) => {
+            if (location === null) {
+                node.sourceCodeLocation = null;
+            } else {
                 node.sourceCodeLocation = {
-                    start: node.sourceCodeLocation.start,
+                    start: {
+                        line: location.startLine,
+                        column: location.startCol,
+                        offset: location.startOffset,
+                    },
                     end: {
-                        line: endLocation.endLine,
-                        column: endLocation.endCol,
-                        offset: endLocation.endOffset,
+                        line: location.endLine,
+                        column: location.endCol,
+                        offset: location.endOffset,
                     },
                 };
-            },
+            }
         };
-        const treeAdapter = { ...treeAdapters.default, ...sourceCodeLocationSetter };
+
+        treeAdapters.default.updateNodeSourceCodeLocation = (node, endLocation) => {
+            node.sourceCodeLocation = {
+                start: node.sourceCodeLocation.start,
+                end: {
+                    line: endLocation.endLine,
+                    column: endLocation.endCol,
+                    offset: endLocation.endOffset,
+                },
+            };
+        };
+    });
+
+    teardown(() => {
+        treeAdapters.default.updateNodeSourceCodeLocation = originalUpdater;
+        treeAdapters.default.setNodeSourceCodeLocation = originalSetter;
+    });
+
+    test('Updating node source code location (GH-314)', () => {
         const document = parse5.parse('<!doctype><body>Testing location</body>', {
-            treeAdapter,
+            treeAdapter: treeAdapters.default,
             sourceCodeLocationInfo: true,
         });
         const [doctype, html] = document.childNodes;

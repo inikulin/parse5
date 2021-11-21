@@ -1,0 +1,21 @@
+{
+    "plugins": ["prettier", "@typescript-eslint"],
+    "extends": [
+        "eslint:recommended",
+        "prettier",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "plugins": ["prettier"],
+    "rules": {
+        "prettier/prettier": "error",
+        "no-console": "error",
+        "curly": ["error", "all"],
+        "prefer-arrow-callback": "error",
+        "one-var": ["error", "never"],
+        "no-var": "error",
+        "prefer-const": "error",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-unused-vars": "off"
+    }
+}

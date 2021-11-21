@@ -1,17 +1,27 @@
 import assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Tokenizer } from '../../packages/parse5/lib/tokenizer/index.js';
+import {
+    CHARACTER_TOKEN,
+    NULL_CHARACTER_TOKEN,
+    WHITESPACE_CHARACTER_TOKEN,
+    START_TAG_TOKEN,
+    HIBERNATION_TOKEN,
+    DOCTYPE_TOKEN,
+    EOF_TOKEN,
+    END_TAG_TOKEN,
+    COMMENT_TOKEN,
+} from '../../packages/parse5/lib/tokenizer/index.js';
 import { makeChunks } from './common.js';
 
 export function convertTokenToHtml5Lib(token) {
     switch (token.type) {
-        case Tokenizer.CHARACTER_TOKEN:
-        case Tokenizer.NULL_CHARACTER_TOKEN:
-        case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
+        case CHARACTER_TOKEN:
+        case NULL_CHARACTER_TOKEN:
+        case WHITESPACE_CHARACTER_TOKEN:
             return ['Character', token.chars];
 
-        case Tokenizer.START_TAG_TOKEN: {
+        case START_TAG_TOKEN: {
             const reformatedAttrs = {};
 
             token.attrs.forEach((attr) => {
@@ -27,15 +37,15 @@ export function convertTokenToHtml5Lib(token) {
             return startTagEntry;
         }
 
-        case Tokenizer.END_TAG_TOKEN:
+        case END_TAG_TOKEN:
             // NOTE: parser feedback simulator can produce adjusted SVG
             // tag names for end tag tokens so we need to lower case it
             return ['EndTag', token.tagName.toLowerCase()];
 
-        case Tokenizer.COMMENT_TOKEN:
+        case COMMENT_TOKEN:
             return ['Comment', token.data];
 
-        case Tokenizer.DOCTYPE_TOKEN:
+        case DOCTYPE_TOKEN:
             return ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks];
 
         default:
@@ -58,7 +68,7 @@ function sortErrors(result) {
 function tokenize(createTokenSource, chunks, initialState, lastStartTag) {
     const result = { tokens: [], errors: [] };
     const { tokenizer, getNextToken } = createTokenSource(result);
-    let token = { type: Tokenizer.HIBERNATION_TOKEN };
+    let token = { type: HIBERNATION_TOKEN };
     let chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes
@@ -76,14 +86,14 @@ function tokenize(createTokenSource, chunks, initialState, lastStartTag) {
     }
 
     do {
-        if (token.type === Tokenizer.HIBERNATION_TOKEN) {
+        if (token.type === HIBERNATION_TOKEN) {
             writeChunk();
         } else {
             appendTokenEntry(result.tokens, convertTokenToHtml5Lib(token));
         }
 
         token = getNextToken();
-    } while (token.type !== Tokenizer.EOF_TOKEN);
+    } while (token.type !== EOF_TOKEN);
 
     sortErrors(result);
 
