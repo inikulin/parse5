@@ -1,12 +1,11 @@
 import { CommentToken, DoctypeToken, CharacterToken } from '../../common/token';
 import { Mixin } from '../../utils/mixin.js';
-import { Tokenizer } from '../../tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap, ElementLocation } from '../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
 import type { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin';
-import type { Token, TagToken } from '../../common/token.js';
+import { TokenType, Token, TagToken } from '../../common/token.js';
 
 export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
     treeAdapter: TreeAdapter<T>;
@@ -43,7 +42,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
 
             // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
             // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
-            const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
+            const isClosingEndTag = closingToken.type === TokenType.END_TAG && tn === closingToken.tagName;
             const endLoc: Partial<ElementLocation> = {};
             if (isClosingEndTag) {
                 endLoc.endTag = { ...ctLoc };
@@ -98,7 +97,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 //NOTE: <body> and <html> are never popped from the stack, so we need to updated
                 //their end location explicitly.
                 const requireExplicitUpdate =
-                    token.type === Tokenizer.END_TAG_TOKEN &&
+                    token.type === TokenType.END_TAG &&
                     (token.tagName === $.HTML || (token.tagName === $.BODY && this.openElements.hasInScope($.BODY)));
 
                 if (requireExplicitUpdate) {

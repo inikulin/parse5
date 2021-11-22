@@ -1,7 +1,7 @@
 import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
 import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
-import { Location, LocationWithAttributes } from '../../common/token.js';
+import { TokenType, Location, LocationWithAttributes } from '../../common/token.js';
 
 export class LocationInfoTokenizerMixin extends Mixin<Tokenizer> {
     posTracker: PositionTrackingPreprocessorMixin;
@@ -97,7 +97,7 @@ export class LocationInfoTokenizerMixin extends Mixin<Tokenizer> {
                     currentCharacterToken.location!.endOffset = ctLoc.startOffset;
                 }
 
-                if (this.currentToken!.type === Tokenizer.EOF_TOKEN) {
+                if (this.currentToken!.type === TokenType.EOF) {
                     ctLoc.endLine = ctLoc.startLine;
                     ctLoc.endCol = ctLoc.startCol;
                     ctLoc.endOffset = ctLoc.startOffset;

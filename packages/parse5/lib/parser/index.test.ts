@@ -7,7 +7,7 @@ import { NAMESPACES as NS } from '../common/html.js';
 
 const origParseFragment = Parser.prototype.parseFragment;
 
-generateParsingTests('parser', 'Parser', { skipFragments: false }, (test, opts) => ({
+generateParsingTests('parser', 'Parser', {}, (test, opts) => ({
     node: test.fragmentContext
         ? parse5.parseFragment(test.fragmentContext, test.input, opts)
         : parse5.parse(test.input, opts),

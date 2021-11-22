@@ -11,7 +11,7 @@ export abstract class Mixin<Host> {
         }
     }
 
-    abstract _getOverriddenMethods(mixin: Mixin<Host>, originalMethods: Host): Partial<Host>;
+    protected abstract _getOverriddenMethods(mixin: Mixin<Host>, originalMethods: Host): Partial<Host>;
 
     static install<T, Args extends any[] = [], Mix extends Mixin<T> = Mixin<T>>(
         host: T,

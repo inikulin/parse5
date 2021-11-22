@@ -1,4 +1,3 @@
-import { Tokenizer } from '../tokenizer/index.js';
 import { TAG_NAMES as $, NAMESPACES as NS, ATTRS } from './html.js';
 import type { TagToken, Attribute } from './token.js';
 
@@ -180,9 +179,7 @@ export function causesExit(startTagToken: TagToken) {
     const tn = startTagToken.tagName;
     const isFontWithAttrs =
         tn === $.FONT &&
-        (Tokenizer.getTokenAttr(startTagToken, ATTRS.COLOR) !== null ||
-            Tokenizer.getTokenAttr(startTagToken, ATTRS.SIZE) !== null ||
-            Tokenizer.getTokenAttr(startTagToken, ATTRS.FACE) !== null);
+        startTagToken.attrs.some(({ name }) => name === ATTRS.COLOR || name === ATTRS.SIZE || name === ATTRS.FACE);
 
     return isFontWithAttrs || EXITS_FOREIGN_CONTENT.has(tn);
 }

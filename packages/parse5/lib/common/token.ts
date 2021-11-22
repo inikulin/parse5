@@ -62,6 +62,16 @@ export interface TagToken extends TokenBase {
     location?: LocationWithAttributes;
 }
 
+export function getTokenAttr(token: TagToken, attrName: string) {
+    for (let i = token.attrs.length - 1; i >= 0; i--) {
+        if (token.attrs[i].name === attrName) {
+            return token.attrs[i].value;
+        }
+    }
+
+    return null;
+}
+
 export interface CommentToken extends TokenBase {
     readonly type: TokenType.COMMENT;
     data: string;

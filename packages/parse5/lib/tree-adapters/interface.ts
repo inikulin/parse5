@@ -163,7 +163,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    getNodeSourceCodeLocation(node: T['node']): ElementLocation | undefined;
+    getNodeSourceCodeLocation(node: T['node']): ElementLocation | undefined | null;
 
     /**
      * Returns the given node's parent.

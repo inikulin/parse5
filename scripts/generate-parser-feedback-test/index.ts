@@ -2,12 +2,11 @@ import { readFile, writeFile } from 'node:fs';
 import { promisify } from 'node:util';
 import { basename } from 'node:path';
 import { Parser } from '../../packages/parse5/lib/parser/index.js';
-import { Tokenizer } from '../../packages/parse5/lib/tokenizer/index.js';
 import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
 import { convertTokenToHtml5Lib } from '../../test/utils/generate-tokenization-tests.js';
 import { parseDatFile } from '../../test/utils/parse-dat-file.js';
 import { addSlashes } from '../../test/utils/common.js';
-import type { Token } from '../../packages/parse5/lib/common/token.js';
+import { TokenType, Token } from '../../packages/parse5/lib/common/token.js';
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -27,15 +26,15 @@ async function main() {
 }
 
 function appendToken(dest: Token[], token: Token) {
-    if (token.type === Tokenizer.EOF_TOKEN) return;
+    if (token.type === TokenType.EOF) return;
 
-    if (token.type === Tokenizer.NULL_CHARACTER_TOKEN || token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN) {
-        token.type = Tokenizer.CHARACTER_TOKEN;
+    if (token.type === TokenType.NULL_CHARACTER || token.type === TokenType.WHITESPACE_CHARACTER) {
+        token.type = TokenType.CHARACTER;
     }
 
-    if (token.type === Tokenizer.CHARACTER_TOKEN) {
+    if (token.type === TokenType.CHARACTER) {
         const lastToken = dest[dest.length - 1];
-        if (lastToken?.type === Tokenizer.CHARACTER_TOKEN) {
+        if (lastToken?.type === TokenType.CHARACTER) {
             lastToken.chars += token.chars;
             return;
         }
@@ -53,7 +52,7 @@ function collectParserTokens(html: string) {
 
         // NOTE: Needed to split attributes of duplicate <html> and <body>
         // which are otherwise merged as per tree constructor spec
-        if (token.type === Tokenizer.START_TAG_TOKEN) {
+        if (token.type === TokenType.START_TAG) {
             token.attrs = [...token.attrs];
         }
 

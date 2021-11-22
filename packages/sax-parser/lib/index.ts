@@ -2,7 +2,8 @@ import { Transform } from 'node:stream';
 import { Tokenizer } from '@parse5/parse5/lib/tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from '@parse5/parse5/lib/extensions/location-info/tokenizer-mixin.js';
 import { Mixin } from '@parse5/parse5/lib/utils/mixin.js';
-import type {
+import {
+    TokenType,
     Token,
     CharacterToken,
     TagToken,
@@ -110,17 +111,17 @@ export class SAXParser extends Transform {
         do {
             token = this.parserFeedbackSimulator.getNextToken();
 
-            if (token.type === Tokenizer.HIBERNATION_TOKEN) {
+            if (token.type === TokenType.HIBERNATION) {
                 break;
             }
 
             if (
-                token.type === Tokenizer.CHARACTER_TOKEN ||
-                token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN ||
-                token.type === Tokenizer.NULL_CHARACTER_TOKEN
+                token.type === TokenType.CHARACTER ||
+                token.type === TokenType.WHITESPACE_CHARACTER ||
+                token.type === TokenType.NULL_CHARACTER
             ) {
                 if (this.pendingText === null) {
-                    token.type = Tokenizer.CHARACTER_TOKEN;
+                    token.type = TokenType.CHARACTER;
                     this.pendingText = token;
                 } else {
                     this.pendingText.chars += token.chars;
@@ -139,11 +140,11 @@ export class SAXParser extends Transform {
                 this._emitPendingText();
                 this._handleToken(token);
             }
-        } while (!this.stopped && token.type !== Tokenizer.EOF_TOKEN);
+        } while (!this.stopped && token.type !== TokenType.EOF);
     }
 
     _handleToken(token: Token) {
-        if (token.type === Tokenizer.EOF_TOKEN) {
+        if (token.type === TokenType.EOF) {
             return true;
         }
 
@@ -209,7 +210,7 @@ const TEXT_EMISSION_HELPER = {
 };
 
 const TOKEN_EMISSION_HELPERS = {
-    [Tokenizer.START_TAG_TOKEN]: {
+    [TokenType.START_TAG]: {
         eventName: 'startTag',
         reshapeToken: (origToken: TagToken): StartTag => ({
             tagName: origToken.tagName,
@@ -218,18 +219,18 @@ const TOKEN_EMISSION_HELPERS = {
             sourceCodeLocation: origToken.location,
         }),
     },
-    [Tokenizer.END_TAG_TOKEN]: {
+    [TokenType.END_TAG]: {
         eventName: 'endTag',
         reshapeToken: (origToken: TagToken): EndTag => ({
             tagName: origToken.tagName,
             sourceCodeLocation: origToken.location,
         }),
     },
-    [Tokenizer.COMMENT_TOKEN]: {
+    [TokenType.COMMENT]: {
         eventName: 'comment',
         reshapeToken: (origToken: CommentToken) => ({ text: origToken.data, sourceCodeLocation: origToken.location }),
     },
-    [Tokenizer.DOCTYPE_TOKEN]: {
+    [TokenType.DOCTYPE]: {
         eventName: 'doctype',
         reshapeToken: (origToken: DoctypeToken): Doctype => ({
             name: origToken.name,
@@ -238,10 +239,10 @@ const TOKEN_EMISSION_HELPERS = {
             sourceCodeLocation: origToken.location,
         }),
     },
-    [Tokenizer.CHARACTER_TOKEN]: TEXT_EMISSION_HELPER,
-    [Tokenizer.NULL_CHARACTER_TOKEN]: TEXT_EMISSION_HELPER,
-    [Tokenizer.WHITESPACE_CHARACTER_TOKEN]: TEXT_EMISSION_HELPER,
-    [Tokenizer.HIBERNATION_TOKEN]: {
+    [TokenType.CHARACTER]: TEXT_EMISSION_HELPER,
+    [TokenType.NULL_CHARACTER]: TEXT_EMISSION_HELPER,
+    [TokenType.WHITESPACE_CHARACTER]: TEXT_EMISSION_HELPER,
+    [TokenType.HIBERNATION]: {
         eventName: 'hibernation',
         reshapeToken: () => ({}),
     },

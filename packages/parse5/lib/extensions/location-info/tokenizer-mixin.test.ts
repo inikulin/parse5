@@ -1,13 +1,14 @@
 import * as assert from 'node:assert';
-import { Tokenizer } from '../../tokenizer/index.js';
+import { Tokenizer, TokenizerMode } from '../../tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
 import { Mixin } from '../../utils/mixin.js';
+import { TokenType } from './../../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from '../../../../../test/utils/common.js';
 
 it('Location Info (Tokenizer)', () => {
     const testCases = [
         {
-            initialMode: Tokenizer.MODE.DATA,
+            initialMode: TokenizerMode.DATA,
             lastStartTagName: '',
             htmlChunks: [
                 '\r\n',
@@ -59,22 +60,22 @@ it('Location Info (Tokenizer)', () => {
             ],
         },
         {
-            initialMode: Tokenizer.MODE.RCDATA,
+            initialMode: TokenizerMode.RCDATA,
             lastStartTagName: 'title',
             htmlChunks: ['<div>Test', ' \n   ', 'hey', ' ', 'ya!', '</title>', '<!--Yo-->'],
         },
         {
-            initialMode: Tokenizer.MODE.RAWTEXT,
+            initialMode: TokenizerMode.RAWTEXT,
             lastStartTagName: 'style',
             htmlChunks: ['.header{', ' \n   ', 'color:red;', '\n', '}', '</style>', 'Some', ' ', 'text'],
         },
         {
-            initialMode: Tokenizer.MODE.SCRIPT_DATA,
+            initialMode: TokenizerMode.SCRIPT_DATA,
             lastStartTagName: 'script',
             htmlChunks: ['var', ' ', 'a=c', ' ', '-', ' ', 'd;', '\n', 'a<--d;', '</script>', '<div>'],
         },
         {
-            initialMode: Tokenizer.MODE.PLAINTEXT,
+            initialMode: TokenizerMode.PLAINTEXT,
             lastStartTagName: 'plaintext',
             htmlChunks: ['Text', ' \n', 'Test</plaintext><div>'],
         },
@@ -97,8 +98,8 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (let token = tokenizer.getNextToken(), j = 0; token.type !== Tokenizer.EOF_TOKEN; ) {
-            if (token.type === Tokenizer.HIBERNATION_TOKEN) {
+        for (let token = tokenizer.getNextToken(), j = 0; token.type !== TokenType.EOF; ) {
+            if (token.type === TokenType.HIBERNATION) {
                 continue;
             }
 

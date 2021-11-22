@@ -1,5 +1,5 @@
-import { Tokenizer } from '@parse5/parse5/lib/tokenizer/index.js';
-import type { Token, TagToken } from '@parse5/parse5/lib/common/token.js';
+import { Tokenizer, TokenizerMode } from '@parse5/parse5/lib/tokenizer/index.js';
+import { TokenType, Token, TagToken } from '@parse5/parse5/lib/common/token.js';
 import * as foreignContent from '@parse5/parse5/lib/common/foreign-content.js';
 import * as unicode from '@parse5/parse5/lib/common/unicode.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '@parse5/parse5/lib/common/html.js';
@@ -20,19 +20,19 @@ export class ParserFeedbackSimulator {
     getNextToken(): Token {
         const token = this.tokenizer.getNextToken();
 
-        if (token.type === Tokenizer.START_TAG_TOKEN) {
+        if (token.type === TokenType.START_TAG) {
             this._handleStartTagToken(token);
-        } else if (token.type === Tokenizer.END_TAG_TOKEN) {
+        } else if (token.type === TokenType.END_TAG) {
             this._handleEndTagToken(token);
-        } else if (token.type === Tokenizer.NULL_CHARACTER_TOKEN && this.inForeignContent) {
-            token.type = Tokenizer.CHARACTER_TOKEN;
+        } else if (token.type === TokenType.NULL_CHARACTER && this.inForeignContent) {
+            token.type = TokenType.CHARACTER;
             token.chars = unicode.REPLACEMENT_CHARACTER;
         } else if (this.skipNextNewLine) {
-            if (token.type !== Tokenizer.HIBERNATION_TOKEN) {
+            if (token.type !== TokenType.HIBERNATION) {
                 this.skipNextNewLine = false;
             }
 
-            if (token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN && token.chars[0] === '\n') {
+            if (token.type === TokenType.WHITESPACE_CHARACTER && token.chars[0] === '\n') {
                 if (token.chars.length === 1) {
                     return this.getNextToken();
                 }
@@ -66,34 +66,34 @@ export class ParserFeedbackSimulator {
     //Token handlers
     _ensureTokenizerMode(tn: string) {
         switch (tn) {
-        case $.TEXTAREA: 
-        case $.TITLE: {
-            this.tokenizer.state = Tokenizer.MODE.RCDATA;
-        
-        break;
-        }
-        case $.PLAINTEXT: {
-            this.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
-        
-        break;
-        }
-        case $.SCRIPT: {
-            this.tokenizer.state = Tokenizer.MODE.SCRIPT_DATA;
-        
-        break;
-        }
-        case $.STYLE: 
-        case $.IFRAME: 
-        case $.XMP: 
-        case $.NOEMBED: 
-        case $.NOFRAMES: 
-        case $.NOSCRIPT: {
-            this.tokenizer.state = Tokenizer.MODE.RAWTEXT;
-        
-        break;
-        }
-        default:
-        // Do nothing
+            case $.TEXTAREA:
+            case $.TITLE: {
+                this.tokenizer.state = TokenizerMode.RCDATA;
+
+                break;
+            }
+            case $.PLAINTEXT: {
+                this.tokenizer.state = TokenizerMode.PLAINTEXT;
+
+                break;
+            }
+            case $.SCRIPT: {
+                this.tokenizer.state = TokenizerMode.SCRIPT_DATA;
+
+                break;
+            }
+            case $.STYLE:
+            case $.IFRAME:
+            case $.XMP:
+            case $.NOEMBED:
+            case $.NOFRAMES:
+            case $.NOSCRIPT: {
+                this.tokenizer.state = TokenizerMode.RAWTEXT;
+
+                break;
+            }
+            default:
+            // Do nothing
         }
     }
 

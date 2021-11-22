@@ -1,20 +1,20 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { Tokenizer } from '../../packages/parse5/lib/tokenizer/index.js';
+import { Tokenizer, TokenizerMode } from '../../packages/parse5/lib/tokenizer/index.js';
 import { makeChunks } from './common.js';
-import type { Attribute, Token } from './../../packages/parse5/lib/common/token';
+import { TokenType, Attribute, Token } from './../../packages/parse5/lib/common/token';
 
 type HtmlLibToken = [string, string | null, ...unknown[]];
 
 export function convertTokenToHtml5Lib(token: Token): HtmlLibToken {
     switch (token.type) {
-        case Tokenizer.CHARACTER_TOKEN:
-        case Tokenizer.NULL_CHARACTER_TOKEN:
-        case Tokenizer.WHITESPACE_CHARACTER_TOKEN:
+        case TokenType.CHARACTER:
+        case TokenType.NULL_CHARACTER:
+        case TokenType.WHITESPACE_CHARACTER:
             return ['Character', token.chars];
 
-        case Tokenizer.START_TAG_TOKEN: {
+        case TokenType.START_TAG: {
             const reformatedAttrs: Record<string, string> = {};
 
             for (const attr of token.attrs) {
@@ -30,15 +30,15 @@ export function convertTokenToHtml5Lib(token: Token): HtmlLibToken {
             return startTagEntry;
         }
 
-        case Tokenizer.END_TAG_TOKEN:
+        case TokenType.END_TAG:
             // NOTE: parser feedback simulator can produce adjusted SVG
             // tag names for end tag tokens so we need to lower case it
             return ['EndTag', token.tagName.toLowerCase()];
 
-        case Tokenizer.COMMENT_TOKEN:
+        case TokenType.COMMENT:
             return ['Comment', token.data];
 
-        case Tokenizer.DOCTYPE_TOKEN:
+        case TokenType.DOCTYPE:
             return ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks];
 
         default:
@@ -63,7 +63,7 @@ function tokenize(
 ) {
     const result = { tokens: [], errors: [] };
     const { tokenizer, getNextToken } = createTokenSource(result);
-    let token: Token = { type: Tokenizer.HIBERNATION_TOKEN };
+    let token: Token = { type: TokenType.HIBERNATION };
     let chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes
@@ -81,14 +81,14 @@ function tokenize(
     }
 
     do {
-        if (token.type === Tokenizer.HIBERNATION_TOKEN) {
+        if (token.type === TokenType.HIBERNATION) {
             writeChunk();
         } else {
             appendTokenEntry(result.tokens, convertTokenToHtml5Lib(token));
         }
 
         token = getNextToken();
-    } while (token.type !== Tokenizer.EOF_TOKEN);
+    } while (token.type !== TokenType.EOF);
 
     sortErrors(result);
 
@@ -138,7 +138,7 @@ function concatCharacterTokens(tokenEntries: HtmlLibToken[]) {
 
 function getTokenizerSuitableStateName(testDataStateName: string) {
     const state =
-        Tokenizer.MODE[testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase() as keyof typeof Tokenizer.MODE];
+        TokenizerMode[testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase() as keyof typeof TokenizerMode];
 
     return state;
 }
@@ -159,7 +159,7 @@ interface LoadedTest {
     name: string;
     input: string;
     expected: HtmlLibToken[];
-    initialState: typeof Tokenizer.MODE[keyof typeof Tokenizer.MODE];
+    initialState: Tokenizer['state'];
     lastStartTag: string;
     expectedErrors: string[];
 }
@@ -228,7 +228,7 @@ export function generateTokenizationTests(
             const result = tokenize(
                 createTokenSource,
                 chunks,
-                testData.initialState as typeof Tokenizer.MODE[keyof typeof Tokenizer.MODE],
+                testData.initialState as Tokenizer['state'],
                 testData.lastStartTag
             );
 
