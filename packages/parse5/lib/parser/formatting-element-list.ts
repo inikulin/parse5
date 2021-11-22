@@ -4,9 +4,9 @@ import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface
 //Const
 const NOAH_ARK_CAPACITY = 3;
 
-enum EntryType {
-    Marker = 'MARKER_ENTRY',
-    Element = 'ELEMENT_ENTRY',
+export enum EntryType {
+    Marker,
+    Element,
 }
 
 interface MarkerEntry {
@@ -141,8 +141,4 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
             (entry) => entry.type === EntryType.Element && entry.element === element
         ) as ElementEntry<T> | null;
     }
-
-    //Entry types
-    static MARKER_ENTRY = EntryType.Marker as const;
-    static ELEMENT_ENTRY = EntryType.Element as const;
 }

@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import { TagToken, TokenType } from '../common/token.js';
-import { FormattingElementList } from './formatting-element-list.js';
+import { FormattingElementList, EntryType } from './formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '../../../../test/utils/common.js';
 
 function createToken(name: string): TagToken {
@@ -20,11 +20,11 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
         list.insertMarker();
         assert.strictEqual(list.entries.length, 1);
-        assert.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.entries[0].type, EntryType.Marker);
 
         list.insertMarker();
         assert.strictEqual(list.entries.length, 2);
-        assert.strictEqual(list.entries[0].type, FormattingElementList.MARKER_ENTRY);
+        assert.strictEqual(list.entries[0].type, EntryType.Marker);
     });
 
     test('Push element', () => {
@@ -36,13 +36,13 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
         list.pushElement(element1, element1Token);
         assert.strictEqual(list.entries.length, 1);
-        assert.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(list.entries[0].type, EntryType.Element as const);
         assert.strictEqual(list.entries[0].element, element1);
         assert.strictEqual(list.entries[0].token, element1Token);
 
         list.pushElement(element2, element2Token);
         assert.strictEqual(list.entries.length, 2);
-        assert.strictEqual(list.entries[0].type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(list.entries[0].type, EntryType.Element);
         assert.strictEqual(list.entries[0].element, element2);
         assert.strictEqual(list.entries[0].token, element2Token);
     });
@@ -113,7 +113,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         expect(list.entries[4]).toHaveProperty('token', token3);
         expect(list.entries[3]).toHaveProperty('token', token4);
         expect(list.entries[2]).toHaveProperty('token', token5);
-        expect(list.entries[1]).toHaveProperty('type', FormattingElementList.MARKER_ENTRY);
+        expect(list.entries[1]).toHaveProperty('type', EntryType.Marker);
         expect(list.entries[0]).toHaveProperty('token', token6);
     });
 
@@ -201,7 +201,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
         const entry = list.getElementEntry(element1)!;
 
-        assert.strictEqual(entry.type, FormattingElementList.ELEMENT_ENTRY);
+        assert.strictEqual(entry.type, EntryType.Element);
         assert.strictEqual(entry.token, token);
         assert.strictEqual(entry.element, element1);
     });

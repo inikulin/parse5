@@ -1,6 +1,6 @@
 import { Tokenizer, TokenizerMode } from '../tokenizer/index.js';
 import { OpenElementStack } from './open-element-stack.js';
-import { FormattingElementList, ElementEntry } from './formatting-element-list.js';
+import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
 import { LocationInfoParserMixin } from '../extensions/location-info/parser-mixin.js';
 import { ErrorReportingParserMixin } from '../extensions/error-reporting/parser-mixin.js';
 import { Mixin } from '../utils/mixin.js';
@@ -689,8 +689,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         if (listLength) {
             const endIndex = this.activeFormattingElements.entries.findIndex(
-                (entry) =>
-                    entry.type === FormattingElementList.MARKER_ENTRY || this.openElements.contains(entry.element)
+                (entry) => entry.type === EntryType.Marker || this.openElements.contains(entry.element)
             );
 
             const unopenIdx = endIndex < 0 ? listLength - 1 : endIndex - 1;
