@@ -11,10 +11,9 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 //NOTE: HTML input preprocessing
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream)
 export class Preprocessor {
-    html: string | null = null;
+    html = '';
     private pos = -1;
     private lastGapPos = -1;
-    private lastCharPos = -1;
     private gapStack: number[] = [];
     private skipNextNewLine = false;
     private lastChunkWritten = false;
@@ -22,10 +21,14 @@ export class Preprocessor {
     bufferWaterline = DEFAULT_BUFFER_WATERLINE;
 
     private isEol = false;
-    lineStartPos = 0;
+    private lineStartPos = 0;
     droppedBufferSize = 0;
-    col = 0;
     line = 1;
+
+    /** The column on the current line. If we just saw a gap (eg. a surrogate pair), return the index before. */
+    get col(): number {
+        return this.pos - this.lineStartPos + Number(this.lastGapPos !== this.pos);
+    }
 
     get offset(): number {
         return this.droppedBufferSize + this.pos;
@@ -42,8 +45,8 @@ export class Preprocessor {
 
     private _processSurrogate(cp: number) {
         //NOTE: try to peek a surrogate pair
-        if (this.pos !== this.lastCharPos) {
-            const nextCp = this.html!.charCodeAt(this.pos + 1);
+        if (this.pos !== this.html.length - 1) {
+            const nextCp = this.html.charCodeAt(this.pos + 1);
 
             if (unicode.isSurrogatePair(nextCp)) {
                 //NOTE: we have a surrogate pair. Peek pair character and recalculate code point.
@@ -69,39 +72,30 @@ export class Preprocessor {
     }
 
     dropParsedChunk() {
-        const prevPos = this.pos;
-
         if (this.pos > this.bufferWaterline) {
-            this.lastCharPos -= this.pos;
-            this.html = this.html!.substring(this.pos);
+            this.html = this.html.substring(this.pos);
+            this.lineStartPos -= this.pos;
+            this.droppedBufferSize += this.pos;
             this.pos = 0;
             this.lastGapPos = -1;
-            this.gapStack = [];
+            this.gapStack.length = 0;
         }
-
-        const reduction = prevPos - this.pos;
-
-        this.lineStartPos -= reduction;
-        this.droppedBufferSize += reduction;
     }
 
     write(chunk: string, isLastChunk: boolean) {
-        if (this.html) {
+        if (this.html.length !== 0) {
             this.html += chunk;
         } else {
             this.html = chunk;
         }
 
-        this.lastCharPos = this.html.length - 1;
         this.endOfChunkHit = false;
         this.lastChunkWritten = isLastChunk;
     }
 
     insertHtmlAtCurrentPos(chunk: string) {
-        this.html =
-            this.html!.substring(0, this.pos + 1) + chunk + this.html!.substring(this.pos + 1, this.html!.length);
+        this.html = this.html.substring(0, this.pos + 1) + chunk + this.html.substring(this.pos + 1);
 
-        this.lastCharPos = this.html.length - 1;
         this.endOfChunkHit = false;
     }
 
@@ -115,31 +109,32 @@ export class Preprocessor {
             this.lineStartPos = this.pos;
         }
 
-        this.col = this.pos - this.lineStartPos + 1;
-
-        if (this.pos > this.lastCharPos) {
+        if (this.pos >= this.html.length) {
             this.endOfChunkHit = !this.lastChunkWritten;
             return $.EOF;
         }
 
-        let cp = this.html!.charCodeAt(this.pos);
+        let cp = this.html.charCodeAt(this.pos);
 
-        if (cp === $.LINE_FEED || (cp === $.CARRIAGE_RETURN && this.html!.charCodeAt(this.pos + 1) !== $.LINE_FEED)) {
+        //NOTE: all U+000D CARRIAGE RETURN (CR) characters must be converted to U+000A LINE FEED (LF) characters
+        if (cp === $.CARRIAGE_RETURN) {
             this.isEol = true;
+            this.skipNextNewLine = true;
+            return $.LINE_FEED;
         }
 
         //NOTE: any U+000A LINE FEED (LF) characters that immediately follow a U+000D CARRIAGE RETURN (CR) character
         //must be ignored.
-        if (this.skipNextNewLine && cp === $.LINE_FEED) {
-            this.skipNextNewLine = false;
-            this._addGap();
-            return this.advance();
-        }
+        if (cp === $.LINE_FEED) {
+            this.isEol = true;
 
-        //NOTE: all U+000D CARRIAGE RETURN (CR) characters must be converted to U+000A LINE FEED (LF) characters
-        if (cp === $.CARRIAGE_RETURN) {
-            this.skipNextNewLine = true;
-            return $.LINE_FEED;
+            if (this.skipNextNewLine) {
+                // `line` will be bumped again in the recursive call.
+                this.line--;
+                this.skipNextNewLine = false;
+                this._addGap();
+                return this.advance();
+            }
         }
 
         this.skipNextNewLine = false;
@@ -178,6 +173,5 @@ export class Preprocessor {
         this.pos--;
 
         this.isEol = false;
-        this.col = this.pos - this.lineStartPos + 1;
     }
 }
