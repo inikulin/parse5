@@ -1,20 +1,17 @@
 import { CommentToken, DoctypeToken, CharacterToken } from '../../common/token';
 import { Mixin } from '../../utils/mixin.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../../common/html.js';
-import type { TreeAdapter, TreeAdapterTypeMap, ElementLocation } from '../../tree-adapters/interface';
+import type { TreeAdapterTypeMap, ElementLocation } from '../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
 import { TokenType, Token, TagToken } from '../../common/token.js';
 
 export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
-    treeAdapter: TreeAdapter<T>;
     lastStartTagToken: null | TagToken = null;
     lastFosterParentingLocation: null | ReturnType<Parser<T>['_findFosterParentingLocation']> = null;
     currentToken: Token | null = null;
 
-    constructor(parser: Parser<T>) {
+    constructor(private parser: Parser<T>) {
         super(parser);
-
-        this.treeAdapter = parser.treeAdapter;
     }
 
     _setStartLocation(element: T['element']) {
@@ -27,15 +24,15 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
             };
         }
 
-        this.treeAdapter.setNodeSourceCodeLocation(element, loc);
+        this.parser.treeAdapter.setNodeSourceCodeLocation(element, loc);
     }
 
     _setEndLocation(element: T['element'], closingToken: Token) {
-        const loc = this.treeAdapter.getNodeSourceCodeLocation(element);
+        const loc = this.parser.treeAdapter.getNodeSourceCodeLocation(element);
 
         if (loc && closingToken.location) {
             const ctLoc = closingToken.location;
-            const tn = this.treeAdapter.getTagName(element);
+            const tn = this.parser.treeAdapter.getTagName(element);
 
             // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
             // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
@@ -52,7 +49,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 endLoc.endOffset = ctLoc.startOffset;
             }
 
-            this.treeAdapter.updateNodeSourceCodeLocation(element, endLoc);
+            this.parser.treeAdapter.updateNodeSourceCodeLocation(element, endLoc);
         }
     }
 
