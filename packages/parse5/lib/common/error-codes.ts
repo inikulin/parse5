@@ -1,3 +1,11 @@
+import { Location } from './token.js';
+
+export interface ParserError extends Location {
+    code: ERR;
+}
+
+export type ParserErrorHandler = (error: ParserError) => void;
+
 export enum ERR {
     controlCharacterInInputStream = 'control-character-in-input-stream',
     noncharacterInInputStream = 'noncharacter-in-input-stream',

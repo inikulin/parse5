@@ -1,5 +1,5 @@
 import * as unicode from '../common/unicode.js';
-import { ERR } from '../common/error-codes.js';
+import { ERR, ParserError, ParserErrorHandler } from '../common/error-codes.js';
 
 //Aliases
 const $ = unicode.CODE_POINTS;
@@ -25,6 +25,12 @@ export class Preprocessor {
     droppedBufferSize = 0;
     line = 1;
 
+    onParseError: ParserErrorHandler | null;
+
+    constructor(options: { onParseError?: ParserErrorHandler | null }) {
+        this.onParseError = options.onParseError ?? null;
+    }
+
     /** The column on the current line. If we just saw a gap (eg. a surrogate pair), return the index before. */
     get col(): number {
         return this.pos - this.lineStartPos + Number(this.lastGapPos !== this.pos);
@@ -34,8 +40,27 @@ export class Preprocessor {
         return this.droppedBufferSize + this.pos;
     }
 
-    _err(_err: string) {
-        // NOTE: err reporting is noop by default. Enabled by mixin.
+    public getError(code: ERR): ParserError {
+        const { line, col, offset } = this;
+
+        return {
+            code,
+            startLine: line,
+            endLine: line,
+            startCol: col,
+            endCol: col,
+            startOffset: offset,
+            endOffset: offset,
+        };
+    }
+
+    //NOTE: avoid reporting error twice on advance/retreat
+    private lastErrOffset = -1;
+    private _err(code: ERR) {
+        if (this.onParseError && this.lastErrOffset !== this.offset) {
+            this.lastErrOffset = this.offset;
+            this.onParseError(this.getError(code));
+        }
     }
 
     private _addGap() {
@@ -83,7 +108,7 @@ export class Preprocessor {
     }
 
     write(chunk: string, isLastChunk: boolean) {
-        if (this.html.length !== 0) {
+        if (this.html.length > 0) {
             this.html += chunk;
         } else {
             this.html = chunk;
@@ -147,7 +172,8 @@ export class Preprocessor {
         //range (ASCII alphanumeric, whitespaces, big chunk of BMP)
         //before going into detailed performance cost validation.
         const isCommonValidRange =
-            (cp > 0x1f && cp < 0x7f) || cp === $.LINE_FEED || cp === $.CARRIAGE_RETURN || (cp > 0x9f && cp < 0xfd_d0);
+            this.onParseError !== null &&
+            ((cp > 0x1f && cp < 0x7f) || cp === $.LINE_FEED || cp === $.CARRIAGE_RETURN || (cp > 0x9f && cp < 0xfd_d0));
 
         if (!isCommonValidRange) {
             this._checkForProblematicCharacters(cp);

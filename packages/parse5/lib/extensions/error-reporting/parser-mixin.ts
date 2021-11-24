@@ -1,23 +1,21 @@
-import { ErrorReportingMixinOptions, BASE_ERROR } from './mixin-base.js';
-import { ErrorReportingTokenizerMixin } from './tokenizer-mixin.js';
 import { Mixin } from '../../utils/mixin.js';
 import type { Location, Token } from '../../common/token.js';
 import type { Parser } from '../../parser/index.js';
 import type { TreeAdapterTypeMap } from '../../tree-adapters/interface.js';
-import type { ERR } from '../../common/error-codes.js';
+import type { ERR, ParserErrorHandler } from '../../common/error-codes.js';
 
 export class ErrorReportingParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
-    private onParseError: ErrorReportingMixinOptions['onParseError'];
+    private onParseError: ParserErrorHandler;
     ctLoc: null | Location = null;
     locBeforeToken = false;
 
-    constructor(parser: Parser<T>, private opts: ErrorReportingMixinOptions) {
+    constructor(private parser: Parser<T>, opts: { onParseError: ParserErrorHandler }) {
         super(parser);
         this.onParseError = opts.onParseError;
     }
 
     _reportError(code: ERR) {
-        const err = { ...BASE_ERROR, code };
+        const err = this.parser.tokenizer!.preprocessor.getError(code);
 
         if (this.ctLoc) {
             err.startLine = this.ctLoc.startLine;
@@ -36,8 +34,6 @@ export class ErrorReportingParserMixin<T extends TreeAdapterTypeMap> extends Mix
         return {
             _bootstrap(this: Parser<T>, document: T['document'], fragmentContext: T['element'] | null) {
                 orig._bootstrap.call(this, document, fragmentContext);
-
-                Mixin.install(this.tokenizer, ErrorReportingTokenizerMixin, mxn.opts);
             },
 
             _processInputToken(token: Token) {

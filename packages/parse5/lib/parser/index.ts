@@ -17,9 +17,17 @@ import {
     DOCUMENT_MODE,
     isNumberedHeader,
 } from '../common/html.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
-import type { ParserError } from '../extensions/error-reporting/mixin-base';
-import { TokenType, getTokenAttr, Token, CommentToken, CharacterToken, TagToken, DoctypeToken } from '../common/token';
+import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
+import type { ParserError } from '../common/error-codes.js';
+import {
+    TokenType,
+    getTokenAttr,
+    Token,
+    CommentToken,
+    CharacterToken,
+    TagToken,
+    DoctypeToken,
+} from '../common/token.js';
 
 //Misc constants
 const HIDDEN_INPUT_TYPE = 'hidden';

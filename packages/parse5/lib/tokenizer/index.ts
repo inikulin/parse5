@@ -19,7 +19,7 @@ import {
     Location,
 } from '../common/token.js';
 import { namedEntityData as neTree } from './named-entity-data.js';
-import { ERR } from '../common/error-codes.js';
+import { ERR, ParserErrorHandler } from '../common/error-codes.js';
 
 //C1 Unicode control character reference replacements
 const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
@@ -224,7 +224,7 @@ function findNamedEntityTreeBranch(nodeIx: number, cp: number): number {
 
 //Tokenizer
 export class Tokenizer {
-    preprocessor = new Preprocessor();
+    preprocessor: Preprocessor;
 
     tokenQueue: Token[] = [];
 
@@ -245,19 +245,22 @@ export class Tokenizer {
     currentAttr: Attribute = { name: '', value: '' };
 
     private addLocationInfo;
+    private onParseError;
 
-    constructor(options: { sourceCodeLocationInfo?: boolean }) {
+    constructor(options: { sourceCodeLocationInfo?: boolean; onParseError?: ParserErrorHandler | null }) {
         this.addLocationInfo = !!options.sourceCodeLocationInfo;
+        this.onParseError = options.onParseError ?? null;
+        this.preprocessor = new Preprocessor(options);
     }
 
     //Errors
-    _err(_err: string) {
-        // NOTE: err reporting is noop by default. Enabled by mixin.
+    private _err(code: ERR) {
+        this.onParseError?.(this.preprocessor.getError(code));
     }
 
-    private _errOnNextCodePoint(err: string) {
+    private _errOnNextCodePoint(code: ERR) {
         this._consume();
-        this._err(err);
+        this._err(code);
         this._unconsume();
     }
 
