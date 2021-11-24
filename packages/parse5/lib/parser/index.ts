@@ -1125,7 +1125,7 @@ function tokenInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     p._err(token, ERR.missingDoctype, true);
     p.treeAdapter.setDocumentMode(p.document, DOCUMENT_MODE.QUIRKS);
     p.insertionMode = InsertionMode.BEFORE_HTML;
-    p._processToken(token);
+    modeBeforeHtml(p, token);
 }
 
 // The "before html" insertion mode
@@ -1179,7 +1179,7 @@ function endTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 function tokenBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._insertFakeRootElement();
     p.insertionMode = InsertionMode.BEFORE_HEAD;
-    p._processToken(token);
+    modeBeforeHead(p, token);
 }
 
 // The "before head" insertion mode
@@ -1246,7 +1246,7 @@ function tokenBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
     p._insertFakeElement($.HEAD);
     p.headElement = p.openElements.current;
     p.insertionMode = InsertionMode.IN_HEAD;
-    p._processToken(token);
+    modeInHead(p, token);
 }
 
 // The "in head" insertion mode
@@ -1399,7 +1399,7 @@ function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
 function tokenInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p.openElements.pop();
     p.insertionMode = InsertionMode.AFTER_HEAD;
-    p._processToken(token);
+    modeAfterHead(p, token);
 }
 
 // The "in head no script" insertion mode
@@ -1493,7 +1493,7 @@ function tokenInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     p._err(token, errCode);
     p.openElements.pop();
     p.insertionMode = InsertionMode.IN_HEAD;
-    p._processToken(token);
+    modeInHead(p, token);
 }
 
 // The "after head" insertion mode
@@ -1601,7 +1601,7 @@ function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p._insertFakeElement($.BODY);
     p.insertionMode = InsertionMode.IN_BODY;
-    p._processToken(token);
+    modeInBody(p, token);
 }
 
 // The "in body" insertion mode
@@ -2411,7 +2411,7 @@ function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
 function htmlEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     if (p.openElements.hasInScope($.BODY)) {
         p.insertionMode = InsertionMode.AFTER_BODY;
-        p._processToken(token);
+        modeAfterBody(p, token);
     }
 }
 
@@ -2787,7 +2787,7 @@ function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Cha
         p.hasNonWhitespacePendingCharacterToken = false;
         p.originalInsertionMode = p.insertionMode;
         p.insertionMode = InsertionMode.IN_TABLE_TEXT;
-        p._processToken(token);
+        modeInTableText(p, token);
     } else {
         tokenInTable(p, token);
     }
@@ -2810,7 +2810,7 @@ function colStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     p.openElements.clearBackToTableContext();
     p._insertFakeElement($.COLGROUP);
     p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
-    p._processToken(token);
+    modeInColumnGroup(p, token);
 }
 
 function tbodyStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
@@ -2823,7 +2823,7 @@ function tdStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     p.openElements.clearBackToTableContext();
     p._insertFakeElement($.TBODY);
     p.insertionMode = InsertionMode.IN_TABLE_BODY;
-    p._processToken(token);
+    modeInTableBody(p, token);
 }
 
 function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
@@ -3082,7 +3082,7 @@ function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
             p.openElements.popUntilTagNamePopped($.CAPTION);
             p.activeFormattingElements.clearToLastMarker();
             p.insertionMode = InsertionMode.IN_TABLE;
-            p._processToken(token);
+            modeInTable(p, token);
         }
     } else {
         startTagInBody(p, token);
@@ -3100,7 +3100,7 @@ function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
             p.insertionMode = InsertionMode.IN_TABLE;
 
             if (tn === $.TABLE) {
-                p._processToken(token);
+                modeInTable(p, token);
             }
         }
     } else if (
@@ -3204,7 +3204,7 @@ function tokenInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     if (p.openElements.currentTagName === $.COLGROUP) {
         p.openElements.pop();
         p.insertionMode = InsertionMode.IN_TABLE;
-        p._processToken(token);
+        modeInTable(p, token);
     }
 }
 
@@ -3260,7 +3260,7 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
             p.openElements.clearBackToTableBodyContext();
             p._insertFakeElement($.TR);
             p.insertionMode = InsertionMode.IN_ROW;
-            p._processToken(token);
+            modeInRow(p, token);
 
             break;
         }
@@ -3274,7 +3274,7 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
                 p.openElements.clearBackToTableBodyContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE;
-                p._processToken(token);
+                modeInTable(p, token);
             }
 
             break;
@@ -3299,7 +3299,7 @@ function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
             p.openElements.clearBackToTableBodyContext();
             p.openElements.pop();
             p.insertionMode = InsertionMode.IN_TABLE;
-            p._processToken(token);
+            modeInTable(p, token);
         }
     } else if (
         tn !== $.BODY &&
@@ -3372,7 +3372,7 @@ function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTok
             p.openElements.clearBackToTableRowContext();
             p.openElements.pop();
             p.insertionMode = InsertionMode.IN_TABLE_BODY;
-            p._processToken(token);
+            modeInTableBody(p, token);
         }
     } else {
         startTagInTable(p, token);
@@ -3397,7 +3397,7 @@ function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
-                p._processToken(token);
+                modeInTableBody(p, token);
             }
 
             break;
@@ -3409,7 +3409,7 @@ function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
-                p._processToken(token);
+                modeInTableBody(p, token);
             }
 
             break;
@@ -3842,7 +3842,7 @@ function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 
 function tokenAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p.insertionMode = InsertionMode.IN_BODY;
-    p._processToken(token);
+    modeInBody(p, token);
 }
 
 // The "in frameset" insertion mode
@@ -4015,7 +4015,7 @@ function startTagAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
 
 function tokenAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     p.insertionMode = InsertionMode.IN_BODY;
-    p._processToken(token);
+    modeInBody(p, token);
 }
 
 // The "after after frameset" insertion mode

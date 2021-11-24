@@ -181,7 +181,7 @@ export function detachNode(node: NodeWithParent) {
 }
 
 export function insertText(parentNode: NodeWithChildren, text: string) {
-    if (parentNode.childNodes.length) {
+    if (parentNode.childNodes.length > 0) {
         const prevNode = parentNode.childNodes[parentNode.childNodes.length - 1];
 
         if (isTextNode(prevNode)) {
