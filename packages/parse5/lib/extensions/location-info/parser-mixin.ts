@@ -3,13 +3,13 @@ import { Mixin } from '../../utils/mixin.js';
 import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap, ElementLocation } from '../../tree-adapters/interface';
+import type { Preprocessor } from './../../tokenizer/preprocessor.js';
 import type { Parser } from '../../parser/index.js';
-import type { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin';
 import { TokenType, Token, TagToken } from '../../common/token.js';
 
 export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
     treeAdapter: TreeAdapter<T>;
-    posTracker: PositionTrackingPreprocessorMixin | null = null;
+    posTracker: Preprocessor | null = null;
     lastStartTagToken: null | TagToken = null;
     lastFosterParentingLocation: null | ReturnType<Parser<T>['_findFosterParentingLocation']> = null;
     currentToken: Token | null = null;

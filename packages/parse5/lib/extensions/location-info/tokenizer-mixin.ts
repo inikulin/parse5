@@ -1,17 +1,17 @@
 import { Mixin } from '../../utils/mixin.js';
 import { Tokenizer } from '../../tokenizer/index.js';
-import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
+import type { Preprocessor } from './../../tokenizer/preprocessor.js';
 import { TokenType, Location, LocationWithAttributes } from '../../common/token.js';
 
 export class LocationInfoTokenizerMixin extends Mixin<Tokenizer> {
-    posTracker: PositionTrackingPreprocessorMixin;
+    posTracker: Preprocessor;
     currentAttrLocation: Location | null = null;
     ctLoc: Location | null = null;
 
     constructor(private tokenizer: Tokenizer) {
         super(tokenizer);
 
-        this.posTracker = Mixin.install(tokenizer.preprocessor, PositionTrackingPreprocessorMixin);
+        this.posTracker = tokenizer.preprocessor;
     }
 
     _getCurrentLocation(): Location {

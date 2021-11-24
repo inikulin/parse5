@@ -2,7 +2,7 @@ import { EndTag, StartTag, Doctype, Text, Comment, SaxToken } from '../../sax-pa
 import type { Token, Location } from '@parse5/parse5/lib/common/token.js';
 import { SAXParser } from '@parse5/sax-parser/lib/index.js';
 import { escapeString } from '@parse5/parse5/lib/serializer/index.js';
-import type { PositionTrackingPreprocessorMixin } from '@parse5/parse5/lib/extensions/position-tracking/preprocessor-mixin';
+import type { Preprocessor } from '@parse5/parse5/lib/tokenizer/preprocessor.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
@@ -54,7 +54,7 @@ import type { PositionTrackingPreprocessorMixin } from '@parse5/parse5/lib/exten
  * ```
  */
 export class RewritingStream extends SAXParser {
-    posTracker: PositionTrackingPreprocessorMixin;
+    posTracker: Preprocessor;
 
     /** Note: The `sourceCodeLocationInfo` is always enabled. */
     constructor() {

@@ -12,14 +12,24 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream)
 export class Preprocessor {
     html: string | null = null;
-    pos = -1;
-    lastGapPos = -1;
-    lastCharPos = -1;
-    gapStack: number[] = [];
-    skipNextNewLine = false;
-    lastChunkWritten = false;
+    private pos = -1;
+    private lastGapPos = -1;
+    private lastCharPos = -1;
+    private gapStack: number[] = [];
+    private skipNextNewLine = false;
+    private lastChunkWritten = false;
     endOfChunkHit = false;
     bufferWaterline = DEFAULT_BUFFER_WATERLINE;
+
+    private isEol = false;
+    lineStartPos = 0;
+    droppedBufferSize = 0;
+    col = 0;
+    line = 1;
+
+    get offset(): number {
+        return this.droppedBufferSize + this.pos;
+    }
 
     _err(_err: string) {
         // NOTE: err reporting is noop by default. Enabled by mixin.
@@ -59,6 +69,8 @@ export class Preprocessor {
     }
 
     dropParsedChunk() {
+        const prevPos = this.pos;
+
         if (this.pos > this.bufferWaterline) {
             this.lastCharPos -= this.pos;
             this.html = this.html!.substring(this.pos);
@@ -66,6 +78,11 @@ export class Preprocessor {
             this.lastGapPos = -1;
             this.gapStack = [];
         }
+
+        const reduction = prevPos - this.pos;
+
+        this.lineStartPos -= reduction;
+        this.droppedBufferSize += reduction;
     }
 
     write(chunk: string, isLastChunk: boolean) {
@@ -91,12 +108,25 @@ export class Preprocessor {
     advance(): number {
         this.pos++;
 
+        //NOTE: LF should be in the last column of the line
+        if (this.isEol) {
+            this.isEol = false;
+            this.line++;
+            this.lineStartPos = this.pos;
+        }
+
+        this.col = this.pos - this.lineStartPos + 1;
+
         if (this.pos > this.lastCharPos) {
             this.endOfChunkHit = !this.lastChunkWritten;
             return $.EOF;
         }
 
         let cp = this.html!.charCodeAt(this.pos);
+
+        if (cp === $.LINE_FEED || (cp === $.CARRIAGE_RETURN && this.html!.charCodeAt(this.pos + 1) !== $.LINE_FEED)) {
+            this.isEol = true;
+        }
 
         //NOTE: any U+000A LINE FEED (LF) characters that immediately follow a U+000D CARRIAGE RETURN (CR) character
         //must be ignored.
@@ -146,5 +176,8 @@ export class Preprocessor {
         }
 
         this.pos--;
+
+        this.isEol = false;
+        this.col = this.pos - this.lineStartPos + 1;
     }
 }

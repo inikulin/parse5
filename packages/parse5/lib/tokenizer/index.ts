@@ -460,7 +460,7 @@ export class Tokenizer {
     //1)TokenType.NULL_CHARACTER - \u0000-character sequences (e.g. '\u0000\u0000\u0000')
     //2)TokenType.WHITESPACE_CHARACTER - any whitespace/new-line character sequences (e.g. '\n  \r\t   \f')
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
-    _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string) {
+    private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string) {
         if (this.currentCharacterToken && this.currentCharacterToken.type !== type) {
             this._emitCurrentCharacterToken();
         }
@@ -472,7 +472,7 @@ export class Tokenizer {
         }
     }
 
-    _emitCodePoint(cp: number) {
+    private _emitCodePoint(cp: number) {
         let type = TokenType.CHARACTER;
 
         if (isWhitespace(cp)) {

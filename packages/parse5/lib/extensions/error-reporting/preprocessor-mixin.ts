@@ -1,17 +1,15 @@
 import { ErrorReportingMixinBase, ErrorReportingMixinOptions } from './mixin-base.js';
-import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
-import { Mixin } from '../../utils/mixin.js';
 import type { Preprocessor } from '../../tokenizer/preprocessor.js';
 import type { ERR } from '../../common/error-codes.js';
 
 export class ErrorReportingPreprocessorMixin extends ErrorReportingMixinBase<Preprocessor> {
-    posTracker: PositionTrackingPreprocessorMixin;
+    posTracker: Preprocessor;
     lastErrOffset = -1;
 
     constructor(preprocessor: Preprocessor, opts: ErrorReportingMixinOptions) {
         super(preprocessor, opts);
 
-        this.posTracker = Mixin.install(preprocessor, PositionTrackingPreprocessorMixin);
+        this.posTracker = preprocessor;
     }
 
     override _reportError(code: ERR) {
