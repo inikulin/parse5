@@ -172,8 +172,11 @@ export class Preprocessor {
         //range (ASCII alphanumeric, whitespaces, big chunk of BMP)
         //before going into detailed performance cost validation.
         const isCommonValidRange =
-            this.onParseError !== null &&
-            ((cp > 0x1f && cp < 0x7f) || cp === $.LINE_FEED || cp === $.CARRIAGE_RETURN || (cp > 0x9f && cp < 0xfd_d0));
+            this.onParseError === null ||
+            (cp > 0x1f && cp < 0x7f) ||
+            cp === $.LINE_FEED ||
+            cp === $.CARRIAGE_RETURN ||
+            (cp > 0x9f && cp < 0xfd_d0);
 
         if (!isCommonValidRange) {
             this._checkForProblematicCharacters(cp);

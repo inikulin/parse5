@@ -69,10 +69,15 @@ interface ParseMethodOptions<T extends TreeAdapterTypeMap> extends ParserOptions
     treeAdapter: TreeAdapter<T>;
 }
 
+interface ParseResult<T extends TreeAdapterTypeMap> {
+    node: T['node'];
+    chunks?: string[];
+}
+
 type ParseMethod<T extends TreeAdapterTypeMap> = (
     input: TreeConstructionTestData<T>,
     options: ParseMethodOptions<T>
-) => { node: T['node']; chunks?: string[] } | Promise<{ node: T['node']; chunks?: string[] }>;
+) => ParseResult<T> | Promise<ParseResult<T>>;
 
 function createParsingTest<T extends TreeAdapterTypeMap>(
     test: TreeConstructionTestData<T>,

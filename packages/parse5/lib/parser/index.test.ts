@@ -77,8 +77,9 @@ describe('parser', () => {
         it('parses correctly', () => {
             const fragment = parse5.parseFragment('<div id="123">', {
                 treeAdapter: treeAdapters.htmlparser2,
-            }) as any;
+            });
 
+            assert.ok(treeAdapters.htmlparser2.isElementNode(fragment.childNodes[0]));
             assert.strictEqual(treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
         });
     });
