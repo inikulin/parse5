@@ -152,13 +152,14 @@ export function setDocumentType(document: Document, name: string, publicId: stri
         doctypeNode.publicId = publicId;
         doctypeNode.systemId = systemId;
     } else {
-        appendChild(document, {
+        const node: DocumentType = {
             nodeName: NodeType.DocumentType,
             name,
             publicId,
             systemId,
             parentNode: null,
-        } as DocumentType);
+        };
+        appendChild(document, node);
     }
 }
 

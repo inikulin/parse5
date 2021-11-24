@@ -25,6 +25,7 @@ import {
     CharacterToken,
     TagToken,
     DoctypeToken,
+    LocationWithAttributes,
 } from '../common/token.js';
 
 //Misc constants
@@ -421,9 +422,25 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const systemId = token.systemId || '';
 
         this.treeAdapter.setDocumentType(this.document, name, publicId, systemId);
+
+        if (token.location) {
+            const documentChildren = this.treeAdapter.getChildNodes(this.document);
+            const docTypeNode = documentChildren.find((node) => this.treeAdapter.isDocumentTypeNode(node));
+
+            if (docTypeNode) {
+                this.treeAdapter.setNodeSourceCodeLocation(docTypeNode, token.location);
+            }
+        }
     }
 
-    _attachElementToTree(element: T['element']) {
+    _attachElementToTree(element: T['element'], location: LocationWithAttributes | null) {
+        const loc = location && {
+            ...location,
+            startTag: location,
+        };
+
+        this.treeAdapter.setNodeSourceCodeLocation(element, loc);
+
         if (this._shouldFosterParentOnInsertion()) {
             this._fosterParentElement(element);
         } else {
@@ -436,20 +453,20 @@ export class Parser<T extends TreeAdapterTypeMap> {
     _appendElement(token: TagToken, namespaceURI: NS) {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
-        this._attachElementToTree(element);
+        this._attachElementToTree(element, token.location);
     }
 
     _insertElement(token: TagToken, namespaceURI: NS) {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
-        this._attachElementToTree(element);
+        this._attachElementToTree(element, token.location);
         this.openElements.push(element);
     }
 
     _insertFakeElement(tagName: string) {
         const element = this.treeAdapter.createElement(tagName, NS.HTML, []);
 
-        this._attachElementToTree(element);
+        this._attachElementToTree(element, null);
         this.openElements.push(element);
     }
 
@@ -458,12 +475,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const content = this.treeAdapter.createDocumentFragment();
 
         this.treeAdapter.setTemplateContent(tmpl, content);
-        this._attachElementToTree(tmpl);
+        this._attachElementToTree(tmpl, token.location);
         this.openElements.push(tmpl);
+        this.treeAdapter.setNodeSourceCodeLocation(content, null);
     }
 
     _insertFakeRootElement() {
         const element = this.treeAdapter.createElement($.HTML, NS.HTML, []);
+        this.treeAdapter.setNodeSourceCodeLocation(element, null);
 
         this.treeAdapter.appendChild(this.openElements.current, element);
         this.openElements.push(element);
@@ -473,15 +492,41 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const commentNode = this.treeAdapter.createCommentNode(token.data);
 
         this.treeAdapter.appendChild(parent, commentNode);
+        this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location);
     }
 
     _insertCharacters(token: CharacterToken) {
+        let parent;
+        let beforeElement;
+
         if (this._shouldFosterParentOnInsertion()) {
-            this._fosterParentText(token.chars);
+            ({ parent, beforeElement } = this._findFosterParentingLocation());
+
+            if (beforeElement) {
+                this.treeAdapter.insertTextBefore(parent, token.chars, beforeElement);
+            } else {
+                this.treeAdapter.insertText(parent, token.chars);
+            }
         } else {
-            const parent = this.openElements.currentTmplContent || this.openElements.current;
+            parent = this.openElements.currentTmplContent || this.openElements.current;
 
             this.treeAdapter.insertText(parent, token.chars);
+        }
+
+        if (!token.location) return;
+
+        const siblings = this.treeAdapter.getChildNodes(parent);
+        const textNodeIdx = beforeElement ? siblings.lastIndexOf(beforeElement) : siblings.length;
+        const textNode = siblings[textNodeIdx - 1];
+
+        //NOTE: if we have location assigned by another token, then just update end position
+        const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
+
+        if (tnLoc) {
+            const { endLine, endCol, endOffset } = token.location;
+            this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
+        } else {
+            this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
         }
     }
 
@@ -852,16 +897,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
             this.treeAdapter.insertBefore(location.parent, element, location.beforeElement);
         } else {
             this.treeAdapter.appendChild(location.parent, element);
-        }
-    }
-
-    _fosterParentText(chars: string) {
-        const location = this._findFosterParentingLocation();
-
-        if (location.beforeElement) {
-            this.treeAdapter.insertTextBefore(location.parent, chars, location.beforeElement);
-        } else {
-            this.treeAdapter.insertText(location.parent, chars);
         }
     }
 

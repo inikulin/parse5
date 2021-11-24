@@ -1,30 +1,15 @@
-import { CommentToken, DoctypeToken, CharacterToken } from '../../common/token';
 import { Mixin } from '../../utils/mixin.js';
-import { TAG_NAMES as $, NAMESPACES as NS } from '../../common/html.js';
+import { TAG_NAMES as $ } from '../../common/html.js';
 import type { TreeAdapterTypeMap, ElementLocation } from '../../tree-adapters/interface';
 import type { Parser } from '../../parser/index.js';
-import { TokenType, Token, TagToken } from '../../common/token.js';
+import { TokenType, Token } from '../../common/token.js';
 
 export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
-    lastStartTagToken: null | TagToken = null;
     lastFosterParentingLocation: null | ReturnType<Parser<T>['_findFosterParentingLocation']> = null;
     currentToken: Token | null = null;
 
     constructor(private parser: Parser<T>) {
         super(parser);
-    }
-
-    _setStartLocation(element: T['element']) {
-        let loc = null;
-
-        if (this.lastStartTagToken) {
-            loc = {
-                ...this.lastStartTagToken.location!,
-                startTag: this.lastStartTagToken.location!,
-            };
-        }
-
-        this.parser.treeAdapter.setNodeSourceCodeLocation(element, loc);
     }
 
     _setEndLocation(element: T['element'], closingToken: Token) {
@@ -58,7 +43,6 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
             _bootstrap(this: Parser<T>, document: T['document'], fragmentContext: T['element'] | null) {
                 orig._bootstrap.call(this, document, fragmentContext);
 
-                mxn.lastStartTagToken = null;
                 mxn.lastFosterParentingLocation = null;
                 mxn.currentToken = null;
 
@@ -99,100 +83,6 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                             break;
                         }
                     }
-                }
-            },
-
-            //Doctype
-            _setDocumentType(this: Parser<T>, token: DoctypeToken) {
-                orig._setDocumentType.call(this, token);
-
-                const documentChildren = this.treeAdapter.getChildNodes(this.document);
-                const docTypeNode = documentChildren.find((node) => this.treeAdapter.isDocumentTypeNode(node));
-
-                if (docTypeNode) {
-                    this.treeAdapter.setNodeSourceCodeLocation(docTypeNode, token.location!);
-                }
-            },
-
-            //Elements
-            _attachElementToTree(this: Parser<T>, element: T['element']) {
-                //NOTE: _attachElementToTree is called from _appendElement, _insertElement and _insertTemplate methods.
-                //So we will use token location stored in this methods for the element.
-                mxn._setStartLocation(element);
-                mxn.lastStartTagToken = null;
-                orig._attachElementToTree.call(this, element);
-            },
-
-            _appendElement(this: Parser<T>, token: TagToken, namespaceURI: NS) {
-                mxn.lastStartTagToken = token;
-                orig._appendElement.call(this, token, namespaceURI);
-            },
-
-            _insertElement(this: Parser<T>, token: TagToken, namespaceURI: NS) {
-                mxn.lastStartTagToken = token;
-                orig._insertElement.call(this, token, namespaceURI);
-            },
-
-            _insertTemplate(this: Parser<T>, token: TagToken) {
-                mxn.lastStartTagToken = token;
-                orig._insertTemplate.call(this, token);
-
-                const tmplContent = this.treeAdapter.getTemplateContent(this.openElements.current);
-
-                this.treeAdapter.setNodeSourceCodeLocation(tmplContent, null);
-            },
-
-            _insertFakeRootElement(this: Parser<T>) {
-                orig._insertFakeRootElement.call(this);
-                this.treeAdapter.setNodeSourceCodeLocation(this.openElements.current, null);
-            },
-
-            //Comments
-            _appendCommentNode(this: Parser<T>, token: CommentToken, parent: T['parentNode']) {
-                orig._appendCommentNode.call(this, token, parent);
-
-                const children = this.treeAdapter.getChildNodes(parent);
-                const commentNode = children[children.length - 1];
-
-                this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location!);
-            },
-
-            //Text
-            _findFosterParentingLocation(this: Parser<T>) {
-                //NOTE: store last foster parenting location, so we will be able to find inserted text
-                //in case of foster parenting
-                mxn.lastFosterParentingLocation = orig._findFosterParentingLocation.call(this);
-
-                return mxn.lastFosterParentingLocation;
-            },
-
-            _insertCharacters(this: Parser<T>, token: CharacterToken) {
-                orig._insertCharacters.call(this, token);
-
-                const hasFosterParent = this._shouldFosterParentOnInsertion();
-
-                const parent =
-                    (hasFosterParent && mxn.lastFosterParentingLocation!.parent) ||
-                    this.openElements.currentTmplContent ||
-                    this.openElements.current;
-
-                const siblings = this.treeAdapter.getChildNodes(parent);
-
-                const textNodeIdx =
-                    hasFosterParent && mxn.lastFosterParentingLocation!.beforeElement
-                        ? siblings.indexOf(mxn.lastFosterParentingLocation!.beforeElement) - 1
-                        : siblings.length - 1;
-
-                const textNode = siblings[textNodeIdx];
-
-                //NOTE: if we have location assigned by another token, then just update end position
-                const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
-
-                if (tnLoc) {
-                    const { endLine, endCol, endOffset } = token.location!;
-                    this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
-                } else {
-                    this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location!);
                 }
             },
         };
