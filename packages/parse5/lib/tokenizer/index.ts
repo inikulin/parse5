@@ -635,7 +635,7 @@ export class Tokenizer {
             this._emitSeveralCodePoints(this.tempBuff);
         }
 
-        this.tempBuff = [];
+        this.tempBuff.length = 0;
     }
 
     // Calling states this way turns out to be much faster than any other approach.
@@ -1272,7 +1272,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRcdataLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
-            this.tempBuff = [];
+            this.tempBuff.length = 0;
             this.state = State.RCDATA_END_TAG_OPEN;
         } else {
             this._emitChars('<');
@@ -1336,7 +1336,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRawtextLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
-            this.tempBuff = [];
+            this.tempBuff.length = 0;
             this.state = State.RAWTEXT_END_TAG_OPEN;
         } else {
             this._emitChars('<');
@@ -1400,7 +1400,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
-            this.tempBuff = [];
+            this.tempBuff.length = 0;
             this.state = State.SCRIPT_DATA_END_TAG_OPEN;
         } else if (cp === $.EXCLAMATION_MARK) {
             this.state = State.SCRIPT_DATA_ESCAPE_START;
@@ -1595,10 +1595,10 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataEscapedLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
-            this.tempBuff = [];
+            this.tempBuff.length = 0;
             this.state = State.SCRIPT_DATA_ESCAPED_END_TAG_OPEN;
         } else if (isAsciiLetter(cp)) {
-            this.tempBuff = [];
+            this.tempBuff.length = 0;
             this._emitChars('<');
             this.state = State.SCRIPT_DATA_DOUBLE_ESCAPE_START;
             this._stateScriptDataDoubleEscapeStart(cp);
@@ -1795,7 +1795,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapedLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
-            this.tempBuff = [];
+            this.tempBuff.length = 0;
             this.state = State.SCRIPT_DATA_DOUBLE_ESCAPE_END;
             this._emitChars('/');
         } else {
