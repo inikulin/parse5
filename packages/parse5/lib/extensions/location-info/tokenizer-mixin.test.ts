@@ -1,7 +1,5 @@
 import * as assert from 'node:assert';
 import { Tokenizer, TokenizerMode } from '../../tokenizer/index.js';
-import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
-import { Mixin } from '../../utils/mixin.js';
 import { TokenType } from './../../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from '../../../../../test/utils/common.js';
 
@@ -84,10 +82,8 @@ it('Location Info (Tokenizer)', () => {
     for (const testCase of testCases) {
         const html = testCase.htmlChunks.join('');
         const lines = html.split(/\r?\n/g);
-        const tokenizer = new Tokenizer();
+        const tokenizer = new Tokenizer({ sourceCodeLocationInfo: true });
         const lastChunkIdx = testCase.htmlChunks.length - 1;
-
-        Mixin.install(tokenizer, LocationInfoTokenizerMixin);
 
         for (let i = 0; i < testCase.htmlChunks.length; i++) {
             tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);

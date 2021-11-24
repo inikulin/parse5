@@ -1,7 +1,5 @@
 import { Transform } from 'node:stream';
 import { Tokenizer } from '@parse5/parse5/lib/tokenizer/index.js';
-import { LocationInfoTokenizerMixin } from '@parse5/parse5/lib/extensions/location-info/tokenizer-mixin.js';
-import { Mixin } from '@parse5/parse5/lib/utils/mixin.js';
 import {
     TokenType,
     Token,
@@ -25,12 +23,11 @@ export interface SAXParserOptions {
 
 export class SAXParser extends Transform {
     options: SAXParserOptions;
-    tokenizer = new Tokenizer();
-    parserFeedbackSimulator = new ParserFeedbackSimulator(this.tokenizer);
+    tokenizer: Tokenizer;
+    parserFeedbackSimulator: ParserFeedbackSimulator;
     pendingText: CharacterToken | null = null;
     lastChunkWritten = false;
     stopped = false;
-    protected locInfoMixin: LocationInfoTokenizerMixin | null = null;
 
     constructor(options: SAXParserOptions = {}) {
         super({ encoding: 'utf8', decodeStrings: false });
@@ -40,9 +37,8 @@ export class SAXParser extends Transform {
             ...options,
         };
 
-        if (this.options.sourceCodeLocationInfo) {
-            this.locInfoMixin = Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
-        }
+        this.tokenizer = new Tokenizer(this.options);
+        this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.tokenizer);
 
         // NOTE: always pipe stream to the /dev/null stream to avoid
         // `highWaterMark` hit even if we don't have consumers.
@@ -173,7 +169,7 @@ export class SAXParser extends Transform {
 
 export interface SaxToken {
     /** Source code location info. Available if location info is enabled via {@link SAXParserOptions}. */
-    sourceCodeLocation?: Location | undefined;
+    sourceCodeLocation?: Location | null;
 }
 
 export interface StartTag extends SaxToken {

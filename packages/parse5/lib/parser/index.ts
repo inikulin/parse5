@@ -137,12 +137,13 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.treeAdapter = this.options.treeAdapter!;
         this.pendingScript = null;
 
-        if (this.options.sourceCodeLocationInfo) {
-            Mixin.install(this, LocationInfoParserMixin as any);
-        }
-
         if (this.options.onParseError) {
             Mixin.install(this, ErrorReportingParserMixin as any, { onParseError: this.options.onParseError });
+            this.options.sourceCodeLocationInfo = true;
+        }
+
+        if (this.options.sourceCodeLocationInfo) {
+            Mixin.install(this, LocationInfoParserMixin as any);
         }
     }
 
@@ -219,7 +220,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     //Bootstrap parser
     _bootstrap(document: T['document'], fragmentContext: T['element'] | null) {
-        this.tokenizer = new Tokenizer();
+        this.tokenizer = new Tokenizer(this.options);
 
         this.stopped = false;
 

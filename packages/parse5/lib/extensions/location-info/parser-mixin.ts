@@ -1,15 +1,12 @@
 import { CommentToken, DoctypeToken, CharacterToken } from '../../common/token';
 import { Mixin } from '../../utils/mixin.js';
-import { LocationInfoTokenizerMixin } from './tokenizer-mixin.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap, ElementLocation } from '../../tree-adapters/interface';
-import type { Preprocessor } from './../../tokenizer/preprocessor.js';
 import type { Parser } from '../../parser/index.js';
 import { TokenType, Token, TagToken } from '../../common/token.js';
 
 export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin<Parser<T>> {
     treeAdapter: TreeAdapter<T>;
-    posTracker: Preprocessor | null = null;
     lastStartTagToken: null | TagToken = null;
     lastFosterParentingLocation: null | ReturnType<Parser<T>['_findFosterParentingLocation']> = null;
     currentToken: Token | null = null;
@@ -26,7 +23,7 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
         if (this.lastStartTagToken) {
             loc = {
                 ...this.lastStartTagToken.location!,
-                startTag: this.lastStartTagToken.location,
+                startTag: this.lastStartTagToken.location!,
             };
         }
 
@@ -68,9 +65,6 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
                 mxn.lastFosterParentingLocation = null;
                 mxn.currentToken = null;
 
-                const tokenizerMixin = Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
-
-                mxn.posTracker = tokenizerMixin.posTracker;
                 this.openElements.onItemPop = (element) => mxn._setEndLocation(element, mxn.currentToken!);
             },
 
@@ -96,11 +90,10 @@ export class LocationInfoParserMixin<T extends TreeAdapterTypeMap> extends Mixin
 
                 //NOTE: <body> and <html> are never popped from the stack, so we need to updated
                 //their end location explicitly.
-                const requireExplicitUpdate =
+                if (
                     token.type === TokenType.END_TAG &&
-                    (token.tagName === $.HTML || (token.tagName === $.BODY && this.openElements.hasInScope($.BODY)));
-
-                if (requireExplicitUpdate) {
+                    (token.tagName === $.HTML || (token.tagName === $.BODY && this.openElements.hasInScope($.BODY)))
+                ) {
                     for (let i = this.openElements.stackTop; i >= 0; i--) {
                         const element = this.openElements.items[i];
 

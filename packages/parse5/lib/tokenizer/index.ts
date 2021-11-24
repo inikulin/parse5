@@ -16,6 +16,7 @@ import {
     getTokenAttr,
     CommentToken,
     Attribute,
+    Location,
 } from '../common/token.js';
 import { namedEntityData as neTree } from './named-entity-data.js';
 import { ERR } from '../common/error-codes.js';
@@ -243,19 +244,42 @@ export class Tokenizer {
     currentToken: Token | null = null;
     currentAttr: Attribute = { name: '', value: '' };
 
+    private addLocationInfo;
+
+    constructor(options: { sourceCodeLocationInfo?: boolean }) {
+        this.addLocationInfo = !!options.sourceCodeLocationInfo;
+    }
+
     //Errors
     _err(_err: string) {
         // NOTE: err reporting is noop by default. Enabled by mixin.
     }
 
-    _errOnNextCodePoint(err: string) {
+    private _errOnNextCodePoint(err: string) {
         this._consume();
         this._err(err);
         this._unconsume();
     }
 
+    currentAttrLocation: Location | null = null;
+    ctLoc: Location | null = null;
+    private _getCurrentLocation(): Location | null {
+        if (!this.addLocationInfo) {
+            return null;
+        }
+
+        return {
+            startLine: this.preprocessor.line,
+            startCol: this.preprocessor.col,
+            startOffset: this.preprocessor.offset,
+            endLine: -1,
+            endCol: -1,
+            endOffset: -1,
+        };
+    }
+
     //API
-    getNextToken() {
+    public getNextToken(): Token {
         while (this.tokenQueue.length === 0 && this.active) {
             this.consumedAfterSnapshot = 0;
 
@@ -269,25 +293,25 @@ export class Tokenizer {
         return this.tokenQueue.shift()!;
     }
 
-    write(chunk: string, isLastChunk: boolean) {
+    public write(chunk: string, isLastChunk: boolean) {
         this.active = true;
         this.preprocessor.write(chunk, isLastChunk);
     }
 
-    insertHtmlAtCurrentPos(chunk: string) {
+    public insertHtmlAtCurrentPos(chunk: string) {
         this.active = true;
         this.preprocessor.insertHtmlAtCurrentPos(chunk);
     }
 
     //Hibernation
-    _ensureHibernation() {
+    private _ensureHibernation() {
         if (this.preprocessor.endOfChunkHit) {
             for (; this.consumedAfterSnapshot > 0; this.consumedAfterSnapshot--) {
                 this.preprocessor.retreat();
             }
 
             this.active = false;
-            this.tokenQueue.push({ type: TokenType.HIBERNATION });
+            this.tokenQueue.push({ type: TokenType.HIBERNATION, location: null });
 
             return true;
         }
@@ -296,22 +320,22 @@ export class Tokenizer {
     }
 
     //Consumption
-    _consume() {
+    private _consume() {
         this.consumedAfterSnapshot++;
         return this.preprocessor.advance();
     }
 
-    _unconsume() {
+    private _unconsume() {
         this.consumedAfterSnapshot--;
         this.preprocessor.retreat();
     }
 
-    _reconsumeInState(state: State) {
+    private _reconsumeInState(state: State) {
         this.state = state;
         this._unconsume();
     }
 
-    _consumeSequenceIfMatch(pattern: Uint16Array, startCp: number, caseSensitive: boolean) {
+    private _consumeSequenceIfMatch(pattern: Uint16Array, startCp: number, caseSensitive: boolean) {
         let consumedCount = 0;
         let cp = startCp;
 
@@ -334,7 +358,7 @@ export class Tokenizer {
     }
 
     //Temp buffer
-    _isTempBufferEqualToScriptString() {
+    private _isTempBufferEqualToScriptString() {
         return (
             this.tempBuff.length === $$.SCRIPT_STRING.length &&
             this.tempBuff.every((value, index) => value === $$.SCRIPT_STRING[index])
@@ -342,67 +366,89 @@ export class Tokenizer {
     }
 
     //Token creation
-    _createStartTagToken() {
+    private _createStartTagToken() {
         this.currentToken = {
             type: TokenType.START_TAG,
             tagName: '',
             selfClosing: false,
             ackSelfClosing: false,
             attrs: [],
+            location: this.ctLoc,
         };
     }
 
-    _createEndTagToken() {
+    private _createEndTagToken() {
         this.currentToken = {
             type: TokenType.END_TAG,
             tagName: '',
             selfClosing: false,
             ackSelfClosing: false,
             attrs: [],
+            location: this.ctLoc,
         };
     }
 
-    _createCommentToken() {
+    private _createCommentToken() {
         this.currentToken = {
             type: TokenType.COMMENT,
             data: '',
+            location: this.ctLoc,
         };
     }
 
-    _createDoctypeToken(initialName: string | null) {
+    private _createDoctypeToken(initialName: string | null) {
         this.currentToken = {
             type: TokenType.DOCTYPE,
             name: initialName,
             forceQuirks: false,
             publicId: null,
             systemId: null,
+            location: this.ctLoc,
         };
     }
 
-    _createCharacterToken(type: CharacterToken['type'], ch: string) {
+    private _createCharacterToken(type: CharacterToken['type'], chars: string) {
         this.currentCharacterToken = {
             type,
-            chars: ch,
+            chars,
+            location: this.ctLoc,
         };
     }
 
-    _createEOFToken() {
-        this.currentToken = { type: TokenType.EOF };
+    private _createEOFToken() {
+        const ctLoc = this._getCurrentLocation();
+
+        if (ctLoc) {
+            ctLoc.endLine = ctLoc.startLine;
+            ctLoc.endCol = ctLoc.startCol;
+            ctLoc.endOffset = ctLoc.startOffset;
+        }
+
+        this.currentToken = { type: TokenType.EOF, location: ctLoc };
     }
 
     //Tag attributes
-    _createAttr(attrNameFirstCh: string) {
+    private _createAttr(attrNameFirstCh: string) {
         this.currentAttr = {
             name: attrNameFirstCh,
             value: '',
         };
+        this.currentAttrLocation = this._getCurrentLocation();
     }
 
-    _leaveAttrName(toState: State) {
+    private _leaveAttrName(toState: State) {
         const token = this.currentToken as TagToken;
 
         if (getTokenAttr(token, this.currentAttr.name) === null) {
             token.attrs.push(this.currentAttr);
+
+            if (token.location) {
+                const attrLocations = (token.location.attrs ??= Object.create(null));
+                attrLocations[this.currentAttr.name] = this.currentAttrLocation!;
+
+                // Set end location
+                this._leaveAttrValue(toState);
+            }
         } else {
             this._err(ERR.duplicateAttribute);
         }
@@ -410,12 +456,18 @@ export class Tokenizer {
         this.state = toState;
     }
 
-    _leaveAttrValue(toState: State) {
+    private _leaveAttrValue(toState: State) {
+        if (this.currentAttrLocation) {
+            this.currentAttrLocation.endLine = this.preprocessor.line;
+            this.currentAttrLocation.endCol = this.preprocessor.col;
+            this.currentAttrLocation.endOffset = this.preprocessor.offset;
+        }
+
         this.state = toState;
     }
 
     //Token emission
-    _emitCurrentToken() {
+    private _emitCurrentToken() {
         this._emitCurrentCharacterToken();
 
         const ct = this.currentToken!;
@@ -435,17 +487,31 @@ export class Tokenizer {
             }
         }
 
+        if (ct.location && ct.type !== TokenType.EOF) {
+            ct.location.endLine = this.preprocessor.line;
+            ct.location.endCol = this.preprocessor.col + 1;
+            ct.location.endOffset = this.preprocessor.offset + 1;
+        }
+
         this.tokenQueue.push(ct);
     }
 
-    _emitCurrentCharacterToken() {
+    private _emitCurrentCharacterToken() {
         if (this.currentCharacterToken) {
+            //NOTE: if we have pending character token make it's end location equal to the
+            //current token's start location.
+            if (this.ctLoc && this.currentCharacterToken.location) {
+                this.currentCharacterToken.location.endLine = this.ctLoc.startLine;
+                this.currentCharacterToken.location.endCol = this.ctLoc.startCol;
+                this.currentCharacterToken.location.endOffset = this.ctLoc.startOffset;
+            }
+
             this.tokenQueue.push(this.currentCharacterToken);
             this.currentCharacterToken = null;
         }
     }
 
-    _emitEOFToken() {
+    private _emitEOFToken() {
         this._createEOFToken();
         this._emitCurrentToken();
     }
@@ -484,7 +550,7 @@ export class Tokenizer {
         this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
     }
 
-    _emitSeveralCodePoints(codePoints: number[]) {
+    private _emitSeveralCodePoints(codePoints: number[]) {
         for (let i = 0; i < codePoints.length; i++) {
             this._emitCodePoint(codePoints[i]);
         }
@@ -492,12 +558,12 @@ export class Tokenizer {
 
     //NOTE: used then we emit character explicitly. This is always a non-whitespace and a non-null character.
     //So we can avoid additional checks here.
-    _emitChars(ch: string) {
+    private _emitChars(ch: string) {
         this._appendCharToCurrentCharacterToken(TokenType.CHARACTER, ch);
     }
 
     // Character reference helpers
-    _matchNamedCharacterReference(startCp: number): number[] | null {
+    private _matchNamedCharacterReference(startCp: number): number[] | null {
         let result = null;
         let excess = 1;
         let i = findNamedEntityTreeBranch(0, startCp);
@@ -539,7 +605,7 @@ export class Tokenizer {
         return result;
     }
 
-    _isCharacterReferenceInAttribute() {
+    private _isCharacterReferenceInAttribute() {
         return (
             this.returnState === State.ATTRIBUTE_VALUE_DOUBLE_QUOTED ||
             this.returnState === State.ATTRIBUTE_VALUE_SINGLE_QUOTED ||
@@ -547,7 +613,7 @@ export class Tokenizer {
         );
     }
 
-    _isCharacterReferenceAttributeQuirk(withSemicolon: boolean) {
+    private _isCharacterReferenceAttributeQuirk(withSemicolon: boolean) {
         if (!withSemicolon && this._isCharacterReferenceInAttribute()) {
             const nextCp = this._consume();
 
@@ -559,7 +625,7 @@ export class Tokenizer {
         return false;
     }
 
-    _flushCodePointsConsumedAsCharacterReference() {
+    private _flushCodePointsConsumedAsCharacterReference() {
         if (this._isCharacterReferenceInAttribute()) {
             this.currentAttr.value += String.fromCodePoint(...this.tempBuff);
         } else {
@@ -570,7 +636,7 @@ export class Tokenizer {
     }
 
     // Calling states this way turns out to be much faster than any other approach.
-    _callState(cp: number) {
+    private _callState(cp: number) {
         switch (this.state) {
             case State.DATA: {
                 this._stateData(cp);
@@ -982,8 +1048,9 @@ export class Tokenizer {
 
     // Data state
     //------------------------------------------------------------------
-    _stateData(cp: number) {
+    private _stateData(cp: number) {
         this.preprocessor.dropParsedChunk();
+        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -1016,8 +1083,9 @@ export class Tokenizer {
 
     //  RCDATA state
     //------------------------------------------------------------------
-    _stateRcdata(cp: number) {
+    private _stateRcdata(cp: number) {
         this.preprocessor.dropParsedChunk();
+        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.AMPERSAND: {
@@ -1050,8 +1118,9 @@ export class Tokenizer {
 
     // RAWTEXT state
     //------------------------------------------------------------------
-    _stateRawtext(cp: number) {
+    private _stateRawtext(cp: number) {
         this.preprocessor.dropParsedChunk();
+        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -1078,8 +1147,9 @@ export class Tokenizer {
 
     // Script data state
     //------------------------------------------------------------------
-    _stateScriptData(cp: number) {
+    private _stateScriptData(cp: number) {
         this.preprocessor.dropParsedChunk();
+        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -1106,8 +1176,9 @@ export class Tokenizer {
 
     // PLAINTEXT state
     //------------------------------------------------------------------
-    _statePlaintext(cp: number) {
+    private _statePlaintext(cp: number) {
         this.preprocessor.dropParsedChunk();
+        this.ctLoc = this._getCurrentLocation();
 
         if (cp === $.NULL) {
             this._err(ERR.unexpectedNullCharacter);
@@ -1121,7 +1192,7 @@ export class Tokenizer {
 
     // Tag open state
     //------------------------------------------------------------------
-    _stateTagOpen(cp: number) {
+    private _stateTagOpen(cp: number) {
         if (cp === $.EXCLAMATION_MARK) {
             this.state = State.MARKUP_DECLARATION_OPEN;
         } else if (cp === $.SOLIDUS) {
@@ -1146,7 +1217,7 @@ export class Tokenizer {
 
     // End tag open state
     //------------------------------------------------------------------
-    _stateEndTagOpen(cp: number) {
+    private _stateEndTagOpen(cp: number) {
         if (isAsciiLetter(cp)) {
             this._createEndTagToken();
             this._reconsumeInState(State.TAG_NAME);
@@ -1166,7 +1237,7 @@ export class Tokenizer {
 
     // Tag name state
     //------------------------------------------------------------------
-    _stateTagName(cp: number) {
+    private _stateTagName(cp: number) {
         const token = this.currentToken as TagToken;
 
         if (isWhitespace(cp)) {
@@ -1191,7 +1262,7 @@ export class Tokenizer {
 
     // RCDATA less-than sign state
     //------------------------------------------------------------------
-    _stateRcdataLessThanSign(cp: number) {
+    private _stateRcdataLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
             this.tempBuff = [];
             this.state = State.RCDATA_END_TAG_OPEN;
@@ -1203,7 +1274,7 @@ export class Tokenizer {
 
     // RCDATA end tag open state
     //------------------------------------------------------------------
-    _stateRcdataEndTagOpen(cp: number) {
+    private _stateRcdataEndTagOpen(cp: number) {
         if (isAsciiLetter(cp)) {
             this._createEndTagToken();
             this._reconsumeInState(State.RCDATA_END_TAG_NAME);
@@ -1215,7 +1286,7 @@ export class Tokenizer {
 
     // RCDATA end tag name state
     //------------------------------------------------------------------
-    _stateRcdataEndTagName(cp: number) {
+    private _stateRcdataEndTagName(cp: number) {
         const token = this.currentToken as TagToken;
 
         if (isAsciiUpper(cp)) {
@@ -1251,7 +1322,7 @@ export class Tokenizer {
 
     // RAWTEXT less-than sign state
     //------------------------------------------------------------------
-    _stateRawtextLessThanSign(cp: number) {
+    private _stateRawtextLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
             this.tempBuff = [];
             this.state = State.RAWTEXT_END_TAG_OPEN;
@@ -1263,7 +1334,7 @@ export class Tokenizer {
 
     // RAWTEXT end tag open state
     //------------------------------------------------------------------
-    _stateRawtextEndTagOpen(cp: number) {
+    private _stateRawtextEndTagOpen(cp: number) {
         if (isAsciiLetter(cp)) {
             this._createEndTagToken();
             this._reconsumeInState(State.RAWTEXT_END_TAG_NAME);
@@ -1275,7 +1346,7 @@ export class Tokenizer {
 
     // RAWTEXT end tag name state
     //------------------------------------------------------------------
-    _stateRawtextEndTagName(cp: number) {
+    private _stateRawtextEndTagName(cp: number) {
         const token = this.currentToken as TagToken;
 
         if (isAsciiUpper(cp)) {
@@ -1311,7 +1382,7 @@ export class Tokenizer {
 
     // Script data less-than sign state
     //------------------------------------------------------------------
-    _stateScriptDataLessThanSign(cp: number) {
+    private _stateScriptDataLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
             this.tempBuff = [];
             this.state = State.SCRIPT_DATA_END_TAG_OPEN;
@@ -1326,7 +1397,7 @@ export class Tokenizer {
 
     // Script data end tag open state
     //------------------------------------------------------------------
-    _stateScriptDataEndTagOpen(cp: number) {
+    private _stateScriptDataEndTagOpen(cp: number) {
         if (isAsciiLetter(cp)) {
             this._createEndTagToken();
             this._reconsumeInState(State.SCRIPT_DATA_END_TAG_NAME);
@@ -1338,7 +1409,7 @@ export class Tokenizer {
 
     // Script data end tag name state
     //------------------------------------------------------------------
-    _stateScriptDataEndTagName(cp: number) {
+    private _stateScriptDataEndTagName(cp: number) {
         const token = this.currentToken as TagToken;
 
         if (isAsciiUpper(cp)) {
@@ -1370,7 +1441,7 @@ export class Tokenizer {
 
     // Script data escape start state
     //------------------------------------------------------------------
-    _stateScriptDataEscapeStart(cp: number) {
+    private _stateScriptDataEscapeStart(cp: number) {
         if (cp === $.HYPHEN_MINUS) {
             this.state = State.SCRIPT_DATA_ESCAPE_START_DASH;
             this._emitChars('-');
@@ -1381,7 +1452,7 @@ export class Tokenizer {
 
     // Script data escape start dash state
     //------------------------------------------------------------------
-    _stateScriptDataEscapeStartDash(cp: number) {
+    private _stateScriptDataEscapeStartDash(cp: number) {
         if (cp === $.HYPHEN_MINUS) {
             this.state = State.SCRIPT_DATA_ESCAPED_DASH_DASH;
             this._emitChars('-');
@@ -1392,7 +1463,7 @@ export class Tokenizer {
 
     // Script data escaped state
     //------------------------------------------------------------------
-    _stateScriptDataEscaped(cp: number) {
+    private _stateScriptDataEscaped(cp: number) {
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this.state = State.SCRIPT_DATA_ESCAPED_DASH;
@@ -1425,7 +1496,7 @@ export class Tokenizer {
 
     // Script data escaped dash state
     //------------------------------------------------------------------
-    _stateScriptDataEscapedDash(cp: number) {
+    private _stateScriptDataEscapedDash(cp: number) {
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this.state = State.SCRIPT_DATA_ESCAPED_DASH_DASH;
@@ -1460,7 +1531,7 @@ export class Tokenizer {
 
     // Script data escaped dash dash state
     //------------------------------------------------------------------
-    _stateScriptDataEscapedDashDash(cp: number) {
+    private _stateScriptDataEscapedDashDash(cp: number) {
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this._emitChars('-');
@@ -1500,7 +1571,7 @@ export class Tokenizer {
 
     // Script data escaped less-than sign state
     //------------------------------------------------------------------
-    _stateScriptDataEscapedLessThanSign(cp: number) {
+    private _stateScriptDataEscapedLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
             this.tempBuff = [];
             this.state = State.SCRIPT_DATA_ESCAPED_END_TAG_OPEN;
@@ -1516,7 +1587,7 @@ export class Tokenizer {
 
     // Script data escaped end tag open state
     //------------------------------------------------------------------
-    _stateScriptDataEscapedEndTagOpen(cp: number) {
+    private _stateScriptDataEscapedEndTagOpen(cp: number) {
         if (isAsciiLetter(cp)) {
             this._createEndTagToken();
             this._reconsumeInState(State.SCRIPT_DATA_ESCAPED_END_TAG_NAME);
@@ -1528,7 +1599,7 @@ export class Tokenizer {
 
     // Script data escaped end tag name state
     //------------------------------------------------------------------
-    _stateScriptDataEscapedEndTagName(cp: number) {
+    private _stateScriptDataEscapedEndTagName(cp: number) {
         const token = this.currentToken as TagToken;
 
         if (isAsciiUpper(cp)) {
@@ -1564,7 +1635,7 @@ export class Tokenizer {
 
     // Script data double escape start state
     //------------------------------------------------------------------
-    _stateScriptDataDoubleEscapeStart(cp: number) {
+    private _stateScriptDataDoubleEscapeStart(cp: number) {
         if (isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN) {
             this.state = this._isTempBufferEqualToScriptString()
                 ? State.SCRIPT_DATA_DOUBLE_ESCAPED
@@ -1583,7 +1654,7 @@ export class Tokenizer {
 
     // Script data double escaped state
     //------------------------------------------------------------------
-    _stateScriptDataDoubleEscaped(cp: number) {
+    private _stateScriptDataDoubleEscaped(cp: number) {
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this.state = State.SCRIPT_DATA_DOUBLE_ESCAPED_DASH;
@@ -1617,7 +1688,7 @@ export class Tokenizer {
 
     // Script data double escaped dash state
     //------------------------------------------------------------------
-    _stateScriptDataDoubleEscapedDash(cp: number) {
+    private _stateScriptDataDoubleEscapedDash(cp: number) {
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this.state = State.SCRIPT_DATA_DOUBLE_ESCAPED_DASH_DASH;
@@ -1653,7 +1724,7 @@ export class Tokenizer {
 
     // Script data double escaped dash dash state
     //------------------------------------------------------------------
-    _stateScriptDataDoubleEscapedDashDash(cp: number) {
+    private _stateScriptDataDoubleEscapedDashDash(cp: number) {
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this._emitChars('-');
@@ -1694,7 +1765,7 @@ export class Tokenizer {
 
     // Script data double escaped less-than sign state
     //------------------------------------------------------------------
-    _stateScriptDataDoubleEscapedLessThanSign(cp: number) {
+    private _stateScriptDataDoubleEscapedLessThanSign(cp: number) {
         if (cp === $.SOLIDUS) {
             this.tempBuff = [];
             this.state = State.SCRIPT_DATA_DOUBLE_ESCAPE_END;
@@ -1706,7 +1777,7 @@ export class Tokenizer {
 
     // Script data double escape end state
     //------------------------------------------------------------------
-    _stateScriptDataDoubleEscapeEnd(cp: number) {
+    private _stateScriptDataDoubleEscapeEnd(cp: number) {
         if (isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN) {
             this.state = this._isTempBufferEqualToScriptString()
                 ? State.SCRIPT_DATA_ESCAPED
@@ -1726,7 +1797,7 @@ export class Tokenizer {
 
     // Before attribute name state
     //------------------------------------------------------------------
-    _stateBeforeAttributeName(cp: number) {
+    private _stateBeforeAttributeName(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -1745,7 +1816,7 @@ export class Tokenizer {
 
     // Attribute name state
     //------------------------------------------------------------------
-    _stateAttributeName(cp: number) {
+    private _stateAttributeName(cp: number) {
         if (isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN || cp === $.EOF) {
             this._leaveAttrName(State.AFTER_ATTRIBUTE_NAME);
             this._unconsume();
@@ -1766,7 +1837,7 @@ export class Tokenizer {
 
     // After attribute name state
     //------------------------------------------------------------------
-    _stateAfterAttributeName(cp: number) {
+    private _stateAfterAttributeName(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -1803,7 +1874,7 @@ export class Tokenizer {
 
     // Before attribute value state
     //------------------------------------------------------------------
-    _stateBeforeAttributeValue(cp: number) {
+    private _stateBeforeAttributeValue(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -1834,7 +1905,7 @@ export class Tokenizer {
 
     // Attribute value (double-quoted) state
     //------------------------------------------------------------------
-    _stateAttributeValueDoubleQuoted(cp: number) {
+    private _stateAttributeValueDoubleQuoted(cp: number) {
         switch (cp) {
             case $.QUOTATION_MARK: {
                 this.state = State.AFTER_ATTRIBUTE_VALUE_QUOTED;
@@ -1867,7 +1938,7 @@ export class Tokenizer {
 
     // Attribute value (single-quoted) state
     //------------------------------------------------------------------
-    _stateAttributeValueSingleQuoted(cp: number) {
+    private _stateAttributeValueSingleQuoted(cp: number) {
         switch (cp) {
             case $.APOSTROPHE: {
                 this.state = State.AFTER_ATTRIBUTE_VALUE_QUOTED;
@@ -1900,7 +1971,7 @@ export class Tokenizer {
 
     // Attribute value (unquoted) state
     //------------------------------------------------------------------
-    _stateAttributeValueUnquoted(cp: number) {
+    private _stateAttributeValueUnquoted(cp: number) {
         if (isWhitespace(cp)) {
             this._leaveAttrValue(State.BEFORE_ATTRIBUTE_NAME);
         } else
@@ -1947,7 +2018,7 @@ export class Tokenizer {
 
     // After attribute value (quoted) state
     //------------------------------------------------------------------
-    _stateAfterAttributeValueQuoted(cp: number) {
+    private _stateAfterAttributeValueQuoted(cp: number) {
         if (isWhitespace(cp)) {
             this._leaveAttrValue(State.BEFORE_ATTRIBUTE_NAME);
         } else
@@ -1978,7 +2049,7 @@ export class Tokenizer {
 
     // Self-closing start tag state
     //------------------------------------------------------------------
-    _stateSelfClosingStartTag(cp: number) {
+    private _stateSelfClosingStartTag(cp: number) {
         if (cp === $.GREATER_THAN_SIGN) {
             (this.currentToken as TagToken).selfClosing = true;
             this.state = State.DATA;
@@ -1994,7 +2065,7 @@ export class Tokenizer {
 
     // Bogus comment state
     //------------------------------------------------------------------
-    _stateBogusComment(cp: number) {
+    private _stateBogusComment(cp: number) {
         const token = this.currentToken as CommentToken;
 
         switch (cp) {
@@ -2024,7 +2095,7 @@ export class Tokenizer {
 
     // Markup declaration open state
     //------------------------------------------------------------------
-    _stateMarkupDeclarationOpen(cp: number) {
+    private _stateMarkupDeclarationOpen(cp: number) {
         if (this._consumeSequenceIfMatch($$.DASH_DASH_STRING, cp, true)) {
             this._createCommentToken();
             this.state = State.COMMENT_START;
@@ -2052,7 +2123,7 @@ export class Tokenizer {
 
     // Comment start state
     //------------------------------------------------------------------
-    _stateCommentStart(cp: number) {
+    private _stateCommentStart(cp: number) {
         if (cp === $.HYPHEN_MINUS) {
             this.state = State.COMMENT_START_DASH;
         } else if (cp === $.GREATER_THAN_SIGN) {
@@ -2066,7 +2137,7 @@ export class Tokenizer {
 
     // Comment start dash state
     //------------------------------------------------------------------
-    _stateCommentStartDash(cp: number) {
+    private _stateCommentStartDash(cp: number) {
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this.state = State.COMMENT_END;
@@ -2096,7 +2167,7 @@ export class Tokenizer {
 
     // Comment state
     //------------------------------------------------------------------
-    _stateComment(cp: number) {
+    private _stateComment(cp: number) {
         const token = this.currentToken as CommentToken;
 
         switch (cp) {
@@ -2132,7 +2203,7 @@ export class Tokenizer {
 
     // Comment less-than sign state
     //------------------------------------------------------------------
-    _stateCommentLessThanSign(cp: number) {
+    private _stateCommentLessThanSign(cp: number) {
         const token = this.currentToken as CommentToken;
 
         if (cp === $.EXCLAMATION_MARK) {
@@ -2147,7 +2218,7 @@ export class Tokenizer {
 
     // Comment less-than sign bang state
     //------------------------------------------------------------------
-    _stateCommentLessThanSignBang(cp: number) {
+    private _stateCommentLessThanSignBang(cp: number) {
         if (cp === $.HYPHEN_MINUS) {
             this.state = State.COMMENT_LESS_THAN_SIGN_BANG_DASH;
         } else {
@@ -2157,7 +2228,7 @@ export class Tokenizer {
 
     // Comment less-than sign bang dash state
     //------------------------------------------------------------------
-    _stateCommentLessThanSignBangDash(cp: number) {
+    private _stateCommentLessThanSignBangDash(cp: number) {
         if (cp === $.HYPHEN_MINUS) {
             this.state = State.COMMENT_LESS_THAN_SIGN_BANG_DASH_DASH;
         } else {
@@ -2167,7 +2238,7 @@ export class Tokenizer {
 
     // Comment less-than sign bang dash dash state
     //------------------------------------------------------------------
-    _stateCommentLessThanSignBangDashDash(cp: number) {
+    private _stateCommentLessThanSignBangDashDash(cp: number) {
         if (cp !== $.GREATER_THAN_SIGN && cp !== $.EOF) {
             this._err(ERR.nestedComment);
         }
@@ -2177,7 +2248,7 @@ export class Tokenizer {
 
     // Comment end dash state
     //------------------------------------------------------------------
-    _stateCommentEndDash(cp: number) {
+    private _stateCommentEndDash(cp: number) {
         if (cp === $.HYPHEN_MINUS) {
             this.state = State.COMMENT_END;
         } else if (cp === $.EOF) {
@@ -2192,7 +2263,7 @@ export class Tokenizer {
 
     // Comment end state
     //------------------------------------------------------------------
-    _stateCommentEnd(cp: number) {
+    private _stateCommentEnd(cp: number) {
         const token = this.currentToken as CommentToken;
 
         switch (cp) {
@@ -2228,7 +2299,7 @@ export class Tokenizer {
 
     // Comment end bang state
     //------------------------------------------------------------------
-    _stateCommentEndBang(cp: number) {
+    private _stateCommentEndBang(cp: number) {
         const token = this.currentToken as CommentToken;
 
         switch (cp) {
@@ -2261,7 +2332,7 @@ export class Tokenizer {
 
     // DOCTYPE state
     //------------------------------------------------------------------
-    _stateDoctype(cp: number) {
+    private _stateDoctype(cp: number) {
         if (isWhitespace(cp)) {
             this.state = State.BEFORE_DOCTYPE_NAME;
         } else if (cp === $.GREATER_THAN_SIGN) {
@@ -2280,7 +2351,7 @@ export class Tokenizer {
 
     // Before DOCTYPE name state
     //------------------------------------------------------------------
-    _stateBeforeDoctypeName(cp: number) {
+    private _stateBeforeDoctypeName(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -2324,7 +2395,7 @@ export class Tokenizer {
 
     // DOCTYPE name state
     //------------------------------------------------------------------
-    _stateDoctypeName(cp: number) {
+    private _stateDoctypeName(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         if (isWhitespace(cp)) {
@@ -2349,7 +2420,7 @@ export class Tokenizer {
 
     // After DOCTYPE name state
     //------------------------------------------------------------------
-    _stateAfterDoctypeName(cp: number) {
+    private _stateAfterDoctypeName(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -2380,7 +2451,7 @@ export class Tokenizer {
 
     // After DOCTYPE public keyword state
     //------------------------------------------------------------------
-    _stateAfterDoctypePublicKeyword(cp: number) {
+    private _stateAfterDoctypePublicKeyword(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         if (isWhitespace(cp)) {
@@ -2427,7 +2498,7 @@ export class Tokenizer {
 
     // Before DOCTYPE public identifier state
     //------------------------------------------------------------------
-    _stateBeforeDoctypePublicIdentifier(cp: number) {
+    private _stateBeforeDoctypePublicIdentifier(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -2473,7 +2544,7 @@ export class Tokenizer {
 
     // DOCTYPE public identifier (double-quoted) state
     //------------------------------------------------------------------
-    _stateDoctypePublicIdentifierDoubleQuoted(cp: number) {
+    private _stateDoctypePublicIdentifierDoubleQuoted(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         switch (cp) {
@@ -2512,7 +2583,7 @@ export class Tokenizer {
 
     // DOCTYPE public identifier (single-quoted) state
     //------------------------------------------------------------------
-    _stateDoctypePublicIdentifierSingleQuoted(cp: number) {
+    private _stateDoctypePublicIdentifierSingleQuoted(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         switch (cp) {
@@ -2551,7 +2622,7 @@ export class Tokenizer {
 
     // After DOCTYPE public identifier state
     //------------------------------------------------------------------
-    _stateAfterDoctypePublicIdentifier(cp: number) {
+    private _stateAfterDoctypePublicIdentifier(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         if (isWhitespace(cp)) {
@@ -2596,7 +2667,7 @@ export class Tokenizer {
 
     // Between DOCTYPE public and system identifiers state
     //------------------------------------------------------------------
-    _stateBetweenDoctypePublicAndSystemIdentifiers(cp: number) {
+    private _stateBetweenDoctypePublicAndSystemIdentifiers(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -2640,7 +2711,7 @@ export class Tokenizer {
 
     // After DOCTYPE system keyword state
     //------------------------------------------------------------------
-    _stateAfterDoctypeSystemKeyword(cp: number) {
+    private _stateAfterDoctypeSystemKeyword(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         if (isWhitespace(cp)) {
@@ -2687,7 +2758,7 @@ export class Tokenizer {
 
     // Before DOCTYPE system identifier state
     //------------------------------------------------------------------
-    _stateBeforeDoctypeSystemIdentifier(cp: number) {
+    private _stateBeforeDoctypeSystemIdentifier(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -2733,7 +2804,7 @@ export class Tokenizer {
 
     // DOCTYPE system identifier (double-quoted) state
     //------------------------------------------------------------------
-    _stateDoctypeSystemIdentifierDoubleQuoted(cp: number) {
+    private _stateDoctypeSystemIdentifierDoubleQuoted(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         switch (cp) {
@@ -2772,7 +2843,7 @@ export class Tokenizer {
 
     // DOCTYPE system identifier (single-quoted) state
     //------------------------------------------------------------------
-    _stateDoctypeSystemIdentifierSingleQuoted(cp: number) {
+    private _stateDoctypeSystemIdentifierSingleQuoted(cp: number) {
         const token = this.currentToken as DoctypeToken;
 
         switch (cp) {
@@ -2811,7 +2882,7 @@ export class Tokenizer {
 
     // After DOCTYPE system identifier state
     //------------------------------------------------------------------
-    _stateAfterDoctypeSystemIdentifier(cp: number) {
+    private _stateAfterDoctypeSystemIdentifier(cp: number) {
         if (isWhitespace(cp)) {
             return;
         }
@@ -2834,7 +2905,7 @@ export class Tokenizer {
 
     // Bogus DOCTYPE state
     //------------------------------------------------------------------
-    _stateBogusDoctype(cp: number) {
+    private _stateBogusDoctype(cp: number) {
         switch (cp) {
             case $.GREATER_THAN_SIGN: {
                 this._emitCurrentToken();
@@ -2860,7 +2931,7 @@ export class Tokenizer {
 
     // CDATA section state
     //------------------------------------------------------------------
-    _stateCdataSection(cp: number) {
+    private _stateCdataSection(cp: number) {
         if (cp === $.RIGHT_SQUARE_BRACKET) {
             this.state = State.CDATA_SECTION_BRACKET;
         } else if (cp === $.EOF) {
@@ -2873,7 +2944,7 @@ export class Tokenizer {
 
     // CDATA section bracket state
     //------------------------------------------------------------------
-    _stateCdataSectionBracket(cp: number) {
+    private _stateCdataSectionBracket(cp: number) {
         if (cp === $.RIGHT_SQUARE_BRACKET) {
             this.state = State.CDATA_SECTION_END;
         } else {
@@ -2884,7 +2955,7 @@ export class Tokenizer {
 
     // CDATA section end state
     //------------------------------------------------------------------
-    _stateCdataSectionEnd(cp: number) {
+    private _stateCdataSectionEnd(cp: number) {
         if (cp === $.GREATER_THAN_SIGN) {
             this.state = State.DATA;
         } else if (cp === $.RIGHT_SQUARE_BRACKET) {
@@ -2897,7 +2968,7 @@ export class Tokenizer {
 
     // Character reference state
     //------------------------------------------------------------------
-    _stateCharacterReference(cp: number) {
+    private _stateCharacterReference(cp: number) {
         this.tempBuff = [$.AMPERSAND];
 
         if (cp === $.NUMBER_SIGN) {
@@ -2913,7 +2984,7 @@ export class Tokenizer {
 
     // Named character reference state
     //------------------------------------------------------------------
-    _stateNamedCharacterReference(cp: number) {
+    private _stateNamedCharacterReference(cp: number) {
         const matchResult = this._matchNamedCharacterReference(cp);
 
         //NOTE: matching can be abrupted by hibernation. In that case match
@@ -2941,7 +3012,7 @@ export class Tokenizer {
 
     // Ambiguos ampersand state
     //------------------------------------------------------------------
-    _stateAmbiguousAmpersand(cp: number) {
+    private _stateAmbiguousAmpersand(cp: number) {
         if (isAsciiAlphaNumeric(cp)) {
             if (this._isCharacterReferenceInAttribute()) {
                 this.currentAttr.value += String.fromCodePoint(cp);
@@ -2959,7 +3030,7 @@ export class Tokenizer {
 
     // Numeric character reference state
     //------------------------------------------------------------------
-    _stateNumericCharacterReference(cp: number) {
+    private _stateNumericCharacterReference(cp: number) {
         this.charRefCode = 0;
 
         if (cp === $.LATIN_SMALL_X || cp === $.LATIN_CAPITAL_X) {
@@ -2972,7 +3043,7 @@ export class Tokenizer {
 
     // Hexademical character reference start state
     //------------------------------------------------------------------
-    _stateHexademicalCharacterReferenceStart(cp: number) {
+    private _stateHexademicalCharacterReferenceStart(cp: number) {
         if (isAsciiHexDigit(cp)) {
             this._reconsumeInState(State.HEXADEMICAL_CHARACTER_REFERENCE);
         } else {
@@ -2984,7 +3055,7 @@ export class Tokenizer {
 
     // Decimal character reference start state
     //------------------------------------------------------------------
-    _stateDecimalCharacterReferenceStart(cp: number) {
+    private _stateDecimalCharacterReferenceStart(cp: number) {
         if (isAsciiDigit(cp)) {
             this._reconsumeInState(State.DECIMAL_CHARACTER_REFERENCE);
         } else {
@@ -2996,7 +3067,7 @@ export class Tokenizer {
 
     // Hexademical character reference state
     //------------------------------------------------------------------
-    _stateHexademicalCharacterReference(cp: number) {
+    private _stateHexademicalCharacterReference(cp: number) {
         if (isAsciiUpperHexDigit(cp)) {
             this.charRefCode = this.charRefCode * 16 + cp - 0x37;
         } else if (isAsciiLowerHexDigit(cp)) {
@@ -3013,7 +3084,7 @@ export class Tokenizer {
 
     // Decimal character reference state
     //------------------------------------------------------------------
-    _stateDecimalCharacterReference(cp: number) {
+    private _stateDecimalCharacterReference(cp: number) {
         if (isAsciiDigit(cp)) {
             this.charRefCode = this.charRefCode * 10 + cp - 0x30;
         } else if (cp === $.SEMICOLON) {
@@ -3026,7 +3097,7 @@ export class Tokenizer {
 
     // Numeric character reference end state
     //------------------------------------------------------------------
-    _stateNumericCharacterReferenceEnd() {
+    private _stateNumericCharacterReferenceEnd() {
         if (this.charRefCode === $.NULL) {
             this._err(ERR.nullCharacterReference);
             this.charRefCode = $.REPLACEMENT_CHARACTER;

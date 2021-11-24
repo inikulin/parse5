@@ -63,7 +63,7 @@ function tokenize(
 ) {
     const result = { tokens: [], errors: [] };
     const { tokenizer, getNextToken } = createTokenSource(result);
-    let token: Token = { type: TokenType.HIBERNATION };
+    let token: Token = { type: TokenType.HIBERNATION, location: null };
     let chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes

@@ -11,6 +11,7 @@ function createToken(name: string): TagToken {
         ackSelfClosing: false,
         selfClosing: false,
         attrs: [],
+        location: null,
     };
 }
 

@@ -26,12 +26,12 @@ export interface Location {
 }
 
 export interface LocationWithAttributes extends Location {
-    attrs: Record<string, Location>;
+    attrs?: Record<string, Location>;
 }
 
 interface TokenBase {
     readonly type: TokenType;
-    location?: Location;
+    location: Location | null;
 }
 
 export interface DoctypeToken extends TokenBase {
@@ -59,7 +59,7 @@ export interface TagToken extends TokenBase {
     selfClosing: boolean;
     ackSelfClosing: boolean;
     attrs: Attribute[];
-    location?: LocationWithAttributes;
+    location: LocationWithAttributes | null;
 }
 
 export function getTokenAttr(token: TagToken, attrName: string) {

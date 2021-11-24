@@ -7,7 +7,7 @@ import { generateTokenizationTests } from '../../../../test/utils/generate-token
 const dataPath = new URL('../../../../test/data/html5lib-tests/tokenizer', import.meta.url);
 
 generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors }) => {
-    const tokenizer = new Tokenizer();
+    const tokenizer = new Tokenizer({ sourceCodeLocationInfo: true });
 
     Mixin.install(tokenizer, ErrorReportingTokenizerMixin, {
         onParseError(err) {

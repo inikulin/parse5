@@ -33,17 +33,18 @@ export abstract class ErrorReportingMixinBase<Host extends ClassWithErrorReporti
         this.onParseError = opts.onParseError;
     }
 
-    _setErrorLocation(err: ParserError) {
-        err.startLine = err.endLine = this.posTracker.line;
-        err.startCol = err.endCol = this.posTracker.col;
-        err.startOffset = err.endOffset = this.posTracker.offset;
-    }
-
     _reportError(code: ERR) {
-        const err = { ...BASE_ERROR, code };
+        const { line, col, offset } = this.posTracker;
 
-        this._setErrorLocation(err);
-        this.onParseError(err);
+        this.onParseError({
+            code,
+            startLine: line,
+            endLine: line,
+            startCol: col,
+            endCol: col,
+            startOffset: offset,
+            endOffset: offset,
+        });
     }
 
     override _getOverriddenMethods(mxn: ErrorReportingMixinBase<Host>, _originalMethods: Host): Partial<Host> {

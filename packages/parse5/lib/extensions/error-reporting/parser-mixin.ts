@@ -1,6 +1,5 @@
 import { ErrorReportingMixinOptions, BASE_ERROR } from './mixin-base.js';
 import { ErrorReportingTokenizerMixin } from './tokenizer-mixin.js';
-import { LocationInfoTokenizerMixin } from '../location-info/tokenizer-mixin.js';
 import { Mixin } from '../../utils/mixin.js';
 import type { Location, Token } from '../../common/token.js';
 import type { Parser } from '../../parser/index.js';
@@ -39,7 +38,6 @@ export class ErrorReportingParserMixin<T extends TreeAdapterTypeMap> extends Mix
                 orig._bootstrap.call(this, document, fragmentContext);
 
                 Mixin.install(this.tokenizer, ErrorReportingTokenizerMixin, mxn.opts);
-                Mixin.install(this.tokenizer, LocationInfoTokenizerMixin);
             },
 
             _processInputToken(token: Token) {

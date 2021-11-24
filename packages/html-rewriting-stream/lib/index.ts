@@ -2,7 +2,6 @@ import { EndTag, StartTag, Doctype, Text, Comment, SaxToken } from '../../sax-pa
 import type { Token, Location } from '@parse5/parse5/lib/common/token.js';
 import { SAXParser } from '@parse5/sax-parser/lib/index.js';
 import { escapeString } from '@parse5/parse5/lib/serializer/index.js';
-import type { Preprocessor } from '@parse5/parse5/lib/tokenizer/preprocessor.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
@@ -54,13 +53,9 @@ import type { Preprocessor } from '@parse5/parse5/lib/tokenizer/preprocessor.js'
  * ```
  */
 export class RewritingStream extends SAXParser {
-    posTracker: Preprocessor;
-
     /** Note: The `sourceCodeLocationInfo` is always enabled. */
     constructor() {
         super({ sourceCodeLocationInfo: true });
-
-        this.posTracker = this.locInfoMixin!.posTracker;
     }
 
     override _transformChunk(chunk: string) {
@@ -71,7 +66,7 @@ export class RewritingStream extends SAXParser {
     }
 
     _getRawHtml(location: Location) {
-        const { droppedBufferSize } = this.posTracker;
+        const { droppedBufferSize } = this.tokenizer!.preprocessor;
         const start = location.startOffset - droppedBufferSize;
         const end = location.endOffset - droppedBufferSize;
 
