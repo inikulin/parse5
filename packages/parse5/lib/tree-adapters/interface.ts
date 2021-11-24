@@ -1,5 +1,5 @@
 import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
-import type { Attribute, Location } from '../common/token.js';
+import type { Attribute, ElementLocation } from '../common/token.js';
 
 export interface TreeAdapterTypeMap<
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -23,18 +23,6 @@ export interface TreeAdapterTypeMap<
     textNode: TextNode;
     template: Template;
     documentType: DocumentType;
-}
-
-export interface ElementLocation extends Location {
-    /** Start tag attributes' location info. */
-    attrs?: Record<string, Location>;
-    /** Element's start tag location info. */
-    startTag?: Location;
-    /**
-     * Element's end tag location info.
-     * This property is undefined, if the element has no closing tag.
-     */
-    endTag?: Location;
 }
 
 /**

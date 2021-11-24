@@ -1,6 +1,6 @@
 import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
-import type { Attribute, Location } from '../common/token.js';
-import type { TreeAdapterTypeMap, ElementLocation } from './interface.js';
+import type { Attribute, Location, ElementLocation } from '../common/token.js';
+import type { TreeAdapterTypeMap } from './interface.js';
 
 export enum NodeType {
     Document = '#document',

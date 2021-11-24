@@ -29,6 +29,18 @@ export interface LocationWithAttributes extends Location {
     attrs?: Record<string, Location>;
 }
 
+export interface ElementLocation extends LocationWithAttributes {
+    /** Start tag attributes' location info. */
+    attrs?: Record<string, Location>;
+    /** Element's start tag location info. */
+    startTag?: Location;
+    /**
+     * Element's end tag location info.
+     * This property is undefined, if the element has no closing tag.
+     */
+    endTag?: Location;
+}
+
 interface TokenBase {
     readonly type: TokenType;
     location: Location | null;

@@ -1,8 +1,6 @@
 import { Tokenizer, TokenizerMode } from '../tokenizer/index.js';
 import { OpenElementStack } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
-import { LocationInfoParserMixin } from '../extensions/location-info/parser-mixin.js';
-import { Mixin } from '../utils/mixin.js';
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
@@ -26,6 +24,7 @@ import {
     TagToken,
     DoctypeToken,
     LocationWithAttributes,
+    ElementLocation,
 } from '../common/token.js';
 
 //Misc constants
@@ -141,6 +140,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     treeAdapter: TreeAdapter<T>;
     pendingScript: null | T['element'];
     private onParseError: ParserErrorHandler | null;
+    private currentToken: Token | null = null;
 
     constructor(options?: ParserOptions<T>) {
         this.options = {
@@ -158,10 +158,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         if (this.options.onParseError) {
             this.options.sourceCodeLocationInfo = true;
-        }
-
-        if (this.options.sourceCodeLocationInfo) {
-            Mixin.install(this, LocationInfoParserMixin as any);
         }
     }
 
@@ -250,8 +246,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         this.headElement = null;
         this.formElement = null;
+        this.currentToken = null;
 
         this.openElements = new OpenElementStack(this.document, this.treeAdapter);
+
+        if (this.options.sourceCodeLocationInfo) {
+            this.openElements.onItemPop = (element) => this._setEndLocation(element, this.currentToken!);
+        }
+
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
         this.tmplInsertionModeStack = [];
@@ -293,10 +295,15 @@ export class Parser<T extends TreeAdapterTypeMap> {
                 break;
             }
 
+            this.currentToken = token;
+
             if (this.skipNextNewLine) {
                 this.skipNextNewLine = false;
 
-                if (token.type === TokenType.WHITESPACE_CHARACTER && token.chars[0] === '\n') {
+                if (
+                    token.type === TokenType.WHITESPACE_CHARACTER &&
+                    token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED
+                ) {
                     if (token.chars.length === 1) {
                         continue;
                     }
@@ -309,6 +316,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
             if (scriptHandler && this.pendingScript) {
                 break;
+            }
+        }
+
+        if (this.options.sourceCodeLocationInfo) {
+            // NOTE: generate location info for elements
+            // that remains on open element stack
+            for (let i = this.openElements.stackTop; i >= 0; i--) {
+                this._setEndLocation(this.openElements.items[i], this.currentToken!);
             }
         }
     }
@@ -335,7 +350,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Text parsing
-    _setupTokenizerCDATAMode() {
+    private _setupTokenizerCDATAMode() {
         const current = this._getAdjustedCurrentElement();
 
         this.tokenizer.allowCDATA =
@@ -537,6 +552,32 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
+    private _setEndLocation(element: T['element'], closingToken: Token) {
+        const loc = this.treeAdapter.getNodeSourceCodeLocation(element);
+
+        if (loc && closingToken.location) {
+            const ctLoc = closingToken.location;
+            const tn = this.treeAdapter.getTagName(element);
+
+            // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
+            // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
+            const isClosingEndTag = closingToken.type === TokenType.END_TAG && tn === closingToken.tagName;
+            const endLoc: Partial<ElementLocation> = {};
+            if (isClosingEndTag) {
+                endLoc.endTag = { ...ctLoc };
+                endLoc.endLine = ctLoc.endLine;
+                endLoc.endCol = ctLoc.endCol;
+                endLoc.endOffset = ctLoc.endOffset;
+            } else {
+                endLoc.endLine = ctLoc.startLine;
+                endLoc.endCol = ctLoc.startCol;
+                endLoc.endOffset = ctLoc.startOffset;
+            }
+
+            this.treeAdapter.updateNodeSourceCodeLocation(element, endLoc);
+        }
+    }
+
     //Token processing
     _shouldProcessTokenInForeignContent(token: Token) {
         const current = this._getAdjustedCurrentElement();
@@ -698,6 +739,23 @@ export class Parser<T extends TreeAdapterTypeMap> {
             }
             default:
             // Do nothing
+        }
+
+        //NOTE: <body> and <html> are never popped from the stack, so we need to updated
+        //their end location explicitly.
+        if (
+            this.options.sourceCodeLocationInfo &&
+            token.type === TokenType.END_TAG &&
+            (token.tagName === $.HTML || (token.tagName === $.BODY && this.openElements.hasInScope($.BODY)))
+        ) {
+            for (let i = this.openElements.stackTop; i >= 0; i--) {
+                const element = this.openElements.items[i];
+
+                if (this.treeAdapter.getTagName(element) === token.tagName) {
+                    this._setEndLocation(element, token);
+                    break;
+                }
+            }
         }
     }
 
