@@ -1,13 +1,13 @@
 import * as assert from 'node:assert';
 import dedent from 'dedent';
-import * as parse5 from '../../index.js';
+import * as parse5 from '../index.js';
 import {
     generateLocationInfoParserTests,
     assertStartTagLocation,
     assertNodeLocation,
-} from '../../../../../test/utils/generate-location-info-parser-tests.js';
-import { generateTestsForEachTreeAdapter, treeAdapters } from '../../../../../test/utils/common.js';
-import { TreeAdapterTypeMap } from '../../tree-adapters/interface.js';
+} from '../../../../test/utils/generate-location-info-parser-tests.js';
+import { generateTestsForEachTreeAdapter, treeAdapters } from '../../../../test/utils/common.js';
+import { TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 
 generateLocationInfoParserTests(
     'location-info-parser',

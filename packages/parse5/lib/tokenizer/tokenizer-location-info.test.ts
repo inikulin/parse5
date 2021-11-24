@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
-import { Tokenizer, TokenizerMode } from '../../tokenizer/index.js';
-import { TokenType } from './../../common/token.js';
-import { getSubstringByLineCol, normalizeNewLine } from '../../../../../test/utils/common.js';
+import { Tokenizer, TokenizerMode } from './index.js';
+import { TokenType } from '../common/token.js';
+import { getSubstringByLineCol, normalizeNewLine } from '../../../../test/utils/common.js';
 
 it('Location Info (Tokenizer)', () => {
     const testCases = [
