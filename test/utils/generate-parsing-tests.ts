@@ -17,7 +17,7 @@ export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends 
 export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
     dataDirs: (string | URL)[],
     treeAdapter: TreeAdapter<T>
-) {
+): TreeConstructionTestData<T>[] {
     const tests: TreeConstructionTestData<T>[] = [];
 
     for (const dataDir of dataDirs) {
@@ -48,7 +48,7 @@ export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
     return tests;
 }
 
-function prettyPrintParserAssertionArgs(actual: string, expected: string, chunks?: string[]) {
+function prettyPrintParserAssertionArgs(actual: string, expected: string, chunks?: string[]): string {
     let msg = '\nExpected:\n';
 
     msg += '-----------------\n';
@@ -84,7 +84,7 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
     treeAdapter: TreeAdapter<T>,
     parse: ParseMethod<T>,
     { withoutErrors }: { withoutErrors?: boolean }
-) {
+): () => Promise<void> {
     return async () => {
         const errs: string[] = [];
 
@@ -130,7 +130,7 @@ export function generateParsingTests(
         testSuite = [treePath.pathname, treeRegressionPath.pathname],
     }: { skipFragments?: boolean; withoutErrors?: boolean; testSuite?: string[] },
     parse: ParseMethod<TreeAdapterTypeMap>
-) {
+): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadTreeConstructionTestData(testSuite, treeAdapter).filter(
             (test) => !skipFragments || !test.fragmentContext

@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { Tokenizer, TokenizerMode } from '../../packages/parse5/lib/tokenizer/index.js';
 import { makeChunks } from './common.js';
-import { TokenType, Attribute, Token } from './../../packages/parse5/lib/common/token';
+import { TokenType, Token } from './../../packages/parse5/lib/common/token';
 
 type HtmlLibToken = [string, string | null, ...unknown[]];
 
@@ -15,12 +15,7 @@ export function convertTokenToHtml5Lib(token: Token): HtmlLibToken {
             return ['Character', token.chars];
 
         case TokenType.START_TAG: {
-            const reformatedAttrs: Record<string, string> = {};
-
-            for (const attr of token.attrs) {
-                reformatedAttrs[attr.name] = attr.value;
-            }
-
+            const reformatedAttrs = Object.fromEntries(token.attrs.map(({ name, value }) => [name, value]));
             const startTagEntry: HtmlLibToken = ['StartTag', token.tagName, reformatedAttrs];
 
             if (token.selfClosing) {
@@ -46,11 +41,18 @@ export function convertTokenToHtml5Lib(token: Token): HtmlLibToken {
     }
 }
 
-function sortErrors(result: { errors: { line: number; col: number }[] }) {
-    result.errors.sort((err1, err2) => err1.line - err2.line || err1.col - err2.col);
+interface TokenError {
+    code: string;
+    line: number;
+    col: number;
 }
 
-type TokenSourceCreator = (data: { tokens: Token[]; errors: { code: string; line: number; col: number }[] }) => {
+interface TokenSourceData {
+    tokens: HtmlLibToken[];
+    errors: TokenError[];
+}
+
+type TokenSourceCreator = (data: TokenSourceData) => {
     tokenizer: Tokenizer;
     getNextToken: () => Token;
 };
@@ -60,8 +62,8 @@ function tokenize(
     chunks: string | string[],
     initialState: Tokenizer['state'],
     lastStartTag: string | null
-) {
-    const result = { tokens: [], errors: [] };
+): TokenSourceData {
+    const result: TokenSourceData = { tokens: [], errors: [] };
     const { tokenizer, getNextToken } = createTokenSource(result);
     let token: Token = { type: TokenType.HIBERNATION, location: null };
     let chunkIdx = 0;
@@ -90,18 +92,17 @@ function tokenize(
         token = getNextToken();
     } while (token.type !== TokenType.EOF);
 
-    sortErrors(result);
+    // Sort errors by line and column
+    result.errors.sort((err1, err2) => err1.line - err2.line || err1.col - err2.col);
 
     return result;
 }
 
-function unicodeUnescape(str: string) {
-    return str.replace(/\\u(\w{4})/gi, (_match: string, chCodeStr: string) =>
-        String.fromCharCode(Number.parseInt(chCodeStr, 16))
-    );
+function unicodeUnescape(str: string): string {
+    return str.replace(/\\[Uu]\w{4}/g, (match: string) => String.fromCharCode(Number.parseInt(match.slice(2), 16)));
 }
 
-function unescapeDescrIO(testDescr: TestDescription) {
+function unescapeDescrIO(testDescr: TestDescription): void {
     testDescr.input = unicodeUnescape(testDescr.input);
 
     for (const tokenEntry of testDescr.output) {
@@ -113,12 +114,12 @@ function unescapeDescrIO(testDescr: TestDescription) {
     }
 }
 
-function appendTokenEntry(result: HtmlLibToken[], tokenEntry: HtmlLibToken) {
+function appendTokenEntry(result: HtmlLibToken[], tokenEntry: HtmlLibToken): void {
     if (tokenEntry[0] === 'Character') {
         const lastEntry = result[result.length - 1];
 
-        if (lastEntry && lastEntry[0] === 'Character') {
-            lastEntry[1]! += tokenEntry[1];
+        if (lastEntry && lastEntry[0] === 'Character' && lastEntry[1] != null) {
+            lastEntry[1] += tokenEntry[1];
             return;
         }
     }
@@ -126,7 +127,7 @@ function appendTokenEntry(result: HtmlLibToken[], tokenEntry: HtmlLibToken) {
     result.push(tokenEntry);
 }
 
-function concatCharacterTokens(tokenEntries: HtmlLibToken[]) {
+function concatCharacterTokens(tokenEntries: HtmlLibToken[]): HtmlLibToken[] {
     const result: HtmlLibToken[] = [];
 
     for (const tokenEntry of tokenEntries) {
@@ -136,9 +137,9 @@ function concatCharacterTokens(tokenEntries: HtmlLibToken[]) {
     return result;
 }
 
-function getTokenizerSuitableStateName(testDataStateName: string) {
-    const state =
-        TokenizerMode[testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase() as keyof typeof TokenizerMode];
+function getTokenizerSuitableStateName(testDataStateName: string): Tokenizer['state'] {
+    const name = testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase();
+    const state = TokenizerMode[name as keyof typeof TokenizerMode];
 
     return state;
 }
@@ -219,7 +220,7 @@ export function generateTokenizationTests(
     prefix: string,
     testSuite: string,
     createTokenSource: TokenSourceCreator
-) {
+): void {
     for (const testData of loadTests(testSuite)) {
         const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${testData.initialState}`;
 
