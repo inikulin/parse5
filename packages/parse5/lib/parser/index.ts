@@ -294,8 +294,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
                 break;
             }
 
-            this.currentToken = token;
-
             if (this.skipNextNewLine) {
                 this.skipNextNewLine = false;
 
@@ -310,6 +308,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
                     token.chars = token.chars.substr(1);
                 }
             }
+
+            this.currentToken = token;
 
             this._processInputToken(token);
 

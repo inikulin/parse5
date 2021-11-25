@@ -58,14 +58,14 @@ export class RewritingStream extends SAXParser {
         super({ sourceCodeLocationInfo: true });
     }
 
-    override _transformChunk(chunk: string) {
+    override _transformChunk(chunk: string): string {
         // NOTE: ignore upstream return value as we want to push to
         // the Writable part of Transform stream ourselves.
         super._transformChunk(chunk);
         return '';
     }
 
-    _getRawHtml(location: Location) {
+    private _getRawHtml(location: Location): string {
         const { droppedBufferSize } = this.tokenizer!.preprocessor;
         const start = location.startOffset - droppedBufferSize;
         const end = location.endOffset - droppedBufferSize;
@@ -74,7 +74,7 @@ export class RewritingStream extends SAXParser {
     }
 
     // Events
-    override _handleToken(token: Token): boolean {
+    protected override _handleToken(token: Token): boolean {
         if (!super._handleToken(token)) {
             this.emitRaw(this._getRawHtml(token.location!));
         }
@@ -86,12 +86,12 @@ export class RewritingStream extends SAXParser {
     }
 
     // Emitter API
-    override _emitToken(eventName: string, token: SaxToken) {
+    protected override _emitToken(eventName: string, token: SaxToken) {
         this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation!));
     }
 
     /** Emits serialized document type token into the output stream. */
-    emitDoctype(token: Doctype) {
+    public emitDoctype(token: Doctype): void {
         let res = `<!DOCTYPE ${token.name}`;
 
         if (token.publicId !== null) {
@@ -110,7 +110,7 @@ export class RewritingStream extends SAXParser {
     }
 
     /** Emits serialized start tag token into the output stream. */
-    emitStartTag(token: StartTag) {
+    public emitStartTag(token: StartTag): void {
         const res = token.attrs.reduce(
             (res, attr) => `${res} ${attr.name}="${escapeString(attr.value, true)}"`,
             `<${token.tagName}`
@@ -120,22 +120,22 @@ export class RewritingStream extends SAXParser {
     }
 
     /** Emits serialized end tag token into the output stream. */
-    emitEndTag(token: EndTag) {
+    public emitEndTag(token: EndTag): void {
         this.push(`</${token.tagName}>`);
     }
 
     /** Emits serialized text token into the output stream. */
-    emitText({ text }: Text) {
+    public emitText({ text }: Text): void {
         this.push(escapeString(text, false));
     }
 
     /** Emits serialized comment token into the output stream. */
-    emitComment(token: Comment) {
+    public emitComment(token: Comment): void {
         this.push(`<!--${token.text}-->`);
     }
 
     /** Emits raw HTML string into the output stream. */
-    emitRaw(html: string) {
+    public emitRaw(html: string): void {
         this.push(html);
     }
 }

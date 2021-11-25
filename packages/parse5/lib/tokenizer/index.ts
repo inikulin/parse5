@@ -157,47 +157,47 @@ export const TokenizerMode = {
 //OPTIMIZATION: these utility functions should not be moved out of this module. V8 Crankshaft will not inline
 //this functions if they will be situated in another module due to context switch.
 //Always perform inlining check before modifying this functions ('node --trace-inlining').
-function isWhitespace(cp: number) {
+function isWhitespace(cp: number): boolean {
     return cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED;
 }
 
-function isAsciiDigit(cp: number) {
+function isAsciiDigit(cp: number): boolean {
     return cp >= $.DIGIT_0 && cp <= $.DIGIT_9;
 }
 
-function isAsciiUpper(cp: number) {
+function isAsciiUpper(cp: number): boolean {
     return cp >= $.LATIN_CAPITAL_A && cp <= $.LATIN_CAPITAL_Z;
 }
 
-function isAsciiLower(cp: number) {
+function isAsciiLower(cp: number): boolean {
     return cp >= $.LATIN_SMALL_A && cp <= $.LATIN_SMALL_Z;
 }
 
-function isAsciiLetter(cp: number) {
+function isAsciiLetter(cp: number): boolean {
     return isAsciiLower(cp) || isAsciiUpper(cp);
 }
 
-function isAsciiAlphaNumeric(cp: number) {
+function isAsciiAlphaNumeric(cp: number): boolean {
     return isAsciiLetter(cp) || isAsciiDigit(cp);
 }
 
-function isAsciiUpperHexDigit(cp: number) {
+function isAsciiUpperHexDigit(cp: number): boolean {
     return cp >= $.LATIN_CAPITAL_A && cp <= $.LATIN_CAPITAL_F;
 }
 
-function isAsciiLowerHexDigit(cp: number) {
+function isAsciiLowerHexDigit(cp: number): boolean {
     return cp >= $.LATIN_SMALL_A && cp <= $.LATIN_SMALL_F;
 }
 
-function isAsciiHexDigit(cp: number) {
+function isAsciiHexDigit(cp: number): boolean {
     return isAsciiDigit(cp) || isAsciiUpperHexDigit(cp) || isAsciiLowerHexDigit(cp);
 }
 
-function toAsciiLowerCodePoint(cp: number) {
+function toAsciiLowerCodePoint(cp: number): number {
     return cp + 0x00_20;
 }
 
-function toAsciiLowerChar(cp: number) {
+function toAsciiLowerChar(cp: number): string {
     return String.fromCharCode(toAsciiLowerCodePoint(cp));
 }
 
@@ -224,25 +224,25 @@ function findNamedEntityTreeBranch(nodeIx: number, cp: number): number {
 
 //Tokenizer
 export class Tokenizer {
-    preprocessor: Preprocessor;
+    public preprocessor: Preprocessor;
 
-    tokenQueue: Token[] = [];
+    private tokenQueue: Token[] = [];
 
-    allowCDATA = false;
+    public allowCDATA = false;
+    public lastStartTagName = '';
+    public active = false;
 
-    state = State.DATA;
-    returnState = State.DATA;
+    public state = State.DATA;
+    private returnState = State.DATA;
 
-    charRefCode = -1;
-    tempBuff: number[] = [];
-    lastStartTagName = '';
+    private charRefCode = -1;
+    private tempBuff: number[] = [];
 
-    consumedAfterSnapshot = -1;
-    active = false;
+    private consumedAfterSnapshot = -1;
 
-    currentCharacterToken: CharacterToken | null = null;
-    currentToken: Token | null = null;
-    currentAttr: Attribute = { name: '', value: '' };
+    private currentCharacterToken: CharacterToken | null = null;
+    private currentToken: Token | null = null;
+    private currentAttr: Attribute = { name: '', value: '' };
 
     private addLocationInfo;
     private onParseError;
@@ -264,8 +264,8 @@ export class Tokenizer {
         this._unconsume();
     }
 
-    currentAttrLocation: Location | null = null;
-    ctLoc: Location | null = null;
+    private currentAttrLocation: Location | null = null;
+    private ctLoc: Location | null = null;
     private _getCurrentLocation(): Location | null {
         if (!this.addLocationInfo) {
             return null;
@@ -296,18 +296,18 @@ export class Tokenizer {
         return this.tokenQueue.shift()!;
     }
 
-    public write(chunk: string, isLastChunk: boolean) {
+    public write(chunk: string, isLastChunk: boolean): void {
         this.active = true;
         this.preprocessor.write(chunk, isLastChunk);
     }
 
-    public insertHtmlAtCurrentPos(chunk: string) {
+    public insertHtmlAtCurrentPos(chunk: string): void {
         this.active = true;
         this.preprocessor.insertHtmlAtCurrentPos(chunk);
     }
 
     //Hibernation
-    private _ensureHibernation() {
+    private _ensureHibernation(): boolean {
         if (this.preprocessor.endOfChunkHit) {
             for (; this.consumedAfterSnapshot > 0; this.consumedAfterSnapshot--) {
                 this.preprocessor.retreat();
@@ -323,22 +323,22 @@ export class Tokenizer {
     }
 
     //Consumption
-    private _consume() {
+    private _consume(): number {
         this.consumedAfterSnapshot++;
         return this.preprocessor.advance();
     }
 
-    private _unconsume() {
+    private _unconsume(): void {
         this.consumedAfterSnapshot--;
         this.preprocessor.retreat();
     }
 
-    private _reconsumeInState(state: State) {
+    private _reconsumeInState(state: State): void {
         this.state = state;
         this._unconsume();
     }
 
-    private _consumeSequenceIfMatch(pattern: Uint16Array, startCp: number, caseSensitive: boolean) {
+    private _consumeSequenceIfMatch(pattern: Uint16Array, startCp: number, caseSensitive: boolean): boolean {
         let consumedCount = 0;
         let cp = startCp;
 
@@ -361,7 +361,7 @@ export class Tokenizer {
     }
 
     //Temp buffer
-    private _isTempBufferEqualToScriptString() {
+    private _isTempBufferEqualToScriptString(): boolean {
         return (
             this.tempBuff.length === $$.SCRIPT_STRING.length &&
             this.tempBuff.every((value, index) => value === $$.SCRIPT_STRING[index])
@@ -369,7 +369,7 @@ export class Tokenizer {
     }
 
     //Token creation
-    private _createStartTagToken() {
+    private _createStartTagToken(): void {
         this.currentToken = {
             type: TokenType.START_TAG,
             tagName: '',
@@ -380,7 +380,7 @@ export class Tokenizer {
         };
     }
 
-    private _createEndTagToken() {
+    private _createEndTagToken(): void {
         this.currentToken = {
             type: TokenType.END_TAG,
             tagName: '',
@@ -391,7 +391,7 @@ export class Tokenizer {
         };
     }
 
-    private _createCommentToken() {
+    private _createCommentToken(): void {
         this.currentToken = {
             type: TokenType.COMMENT,
             data: '',
@@ -399,7 +399,7 @@ export class Tokenizer {
         };
     }
 
-    private _createDoctypeToken(initialName: string | null) {
+    private _createDoctypeToken(initialName: string | null): void {
         this.currentToken = {
             type: TokenType.DOCTYPE,
             name: initialName,
@@ -410,7 +410,7 @@ export class Tokenizer {
         };
     }
 
-    private _createCharacterToken(type: CharacterToken['type'], chars: string) {
+    private _createCharacterToken(type: CharacterToken['type'], chars: string): void {
         this.currentCharacterToken = {
             type,
             chars,
@@ -418,7 +418,7 @@ export class Tokenizer {
         };
     }
 
-    private _createEOFToken() {
+    private _createEOFToken(): void {
         const ctLoc = this._getCurrentLocation();
 
         if (ctLoc) {
@@ -431,7 +431,7 @@ export class Tokenizer {
     }
 
     //Tag attributes
-    private _createAttr(attrNameFirstCh: string) {
+    private _createAttr(attrNameFirstCh: string): void {
         this.currentAttr = {
             name: attrNameFirstCh,
             value: '',
@@ -439,7 +439,7 @@ export class Tokenizer {
         this.currentAttrLocation = this._getCurrentLocation();
     }
 
-    private _leaveAttrName(toState: State) {
+    private _leaveAttrName(toState: State): void {
         const token = this.currentToken as TagToken;
 
         if (getTokenAttr(token, this.currentAttr.name) === null) {
@@ -459,7 +459,7 @@ export class Tokenizer {
         this.state = toState;
     }
 
-    private _leaveAttrValue(toState: State) {
+    private _leaveAttrValue(toState: State): void {
         if (this.currentAttrLocation) {
             this.currentAttrLocation.endLine = this.preprocessor.line;
             this.currentAttrLocation.endCol = this.preprocessor.col;
@@ -470,7 +470,7 @@ export class Tokenizer {
     }
 
     //Token emission
-    private _emitCurrentToken() {
+    private _emitCurrentToken(): void {
         this._emitCurrentCharacterToken();
 
         const ct = this.currentToken!;
@@ -499,7 +499,7 @@ export class Tokenizer {
         this.tokenQueue.push(ct);
     }
 
-    private _emitCurrentCharacterToken() {
+    private _emitCurrentCharacterToken(): void {
         if (this.currentCharacterToken) {
             //NOTE: if we have pending character token make it's end location equal to the
             //current token's start location.
@@ -514,7 +514,7 @@ export class Tokenizer {
         }
     }
 
-    private _emitEOFToken() {
+    private _emitEOFToken(): void {
         this._createEOFToken();
         this._emitCurrentToken();
     }
@@ -541,7 +541,7 @@ export class Tokenizer {
         }
     }
 
-    private _emitCodePoint(cp: number) {
+    private _emitCodePoint(cp: number): void {
         let type = TokenType.CHARACTER;
 
         if (isWhitespace(cp)) {
@@ -553,7 +553,7 @@ export class Tokenizer {
         this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
     }
 
-    private _emitSeveralCodePoints(codePoints: number[]) {
+    private _emitSeveralCodePoints(codePoints: number[]): void {
         for (let i = 0; i < codePoints.length; i++) {
             this._emitCodePoint(codePoints[i]);
         }
@@ -561,7 +561,7 @@ export class Tokenizer {
 
     //NOTE: used then we emit character explicitly. This is always a non-whitespace and a non-null character.
     //So we can avoid additional checks here.
-    private _emitChars(ch: string) {
+    private _emitChars(ch: string): void {
         this._appendCharToCurrentCharacterToken(TokenType.CHARACTER, ch);
     }
 
@@ -608,7 +608,7 @@ export class Tokenizer {
         return result;
     }
 
-    private _isCharacterReferenceInAttribute() {
+    private _isCharacterReferenceInAttribute(): boolean {
         return (
             this.returnState === State.ATTRIBUTE_VALUE_DOUBLE_QUOTED ||
             this.returnState === State.ATTRIBUTE_VALUE_SINGLE_QUOTED ||
@@ -616,7 +616,7 @@ export class Tokenizer {
         );
     }
 
-    private _isCharacterReferenceAttributeQuirk(withSemicolon: boolean) {
+    private _isCharacterReferenceAttributeQuirk(withSemicolon: boolean): boolean {
         if (!withSemicolon && this._isCharacterReferenceInAttribute()) {
             const nextCp = this._consume();
 

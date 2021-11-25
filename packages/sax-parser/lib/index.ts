@@ -22,12 +22,12 @@ export interface SAXParserOptions {
 }
 
 export class SAXParser extends Transform {
-    options: SAXParserOptions;
-    tokenizer: Tokenizer;
-    parserFeedbackSimulator: ParserFeedbackSimulator;
-    pendingText: CharacterToken | null = null;
-    lastChunkWritten = false;
-    stopped = false;
+    protected options: SAXParserOptions;
+    protected tokenizer: Tokenizer;
+    protected parserFeedbackSimulator: ParserFeedbackSimulator;
+    private pendingText: CharacterToken | null = null;
+    private lastChunkWritten = false;
+    private stopped = false;
 
     constructor(options: SAXParserOptions = {}) {
         super({ encoding: 'utf8', decodeStrings: false });
@@ -88,12 +88,12 @@ export class SAXParser extends Transform {
      * });
      * ```
      */
-    stop() {
+    public stop() {
         this.stopped = true;
     }
 
     //Internals
-    _transformChunk(chunk: string) {
+    protected _transformChunk(chunk: string): string {
         if (!this.stopped) {
             this.tokenizer.write(chunk, this.lastChunkWritten);
             this._runParsingLoop();
@@ -101,7 +101,7 @@ export class SAXParser extends Transform {
         return chunk;
     }
 
-    _runParsingLoop() {
+    private _runParsingLoop(): void {
         let token = null;
 
         do {
@@ -139,7 +139,7 @@ export class SAXParser extends Transform {
         } while (!this.stopped && token.type !== TokenType.EOF);
     }
 
-    _handleToken(token: Token) {
+    protected _handleToken(token: Token): boolean {
         if (token.type === TokenType.EOF) {
             return true;
         }
@@ -155,11 +155,11 @@ export class SAXParser extends Transform {
         return true;
     }
 
-    _emitToken(eventName: string, token: SaxToken) {
+    protected _emitToken(eventName: string, token: SaxToken): void {
         this.emit(eventName, token);
     }
 
-    _emitPendingText() {
+    private _emitPendingText(): void {
         if (this.pendingText !== null) {
             this._handleToken(this.pendingText);
             this.pendingText = null;

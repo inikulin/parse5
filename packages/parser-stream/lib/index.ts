@@ -27,14 +27,14 @@ import type { DefaultTreeAdapterMap } from '@parse5/parse5/lib/tree-adapters/def
  *
  */
 export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> extends Writable {
-    lastChunkWritten = false;
-    writeCallback: null | (() => void) = null;
-    pausedByScript = false;
+    private lastChunkWritten = false;
+    private writeCallback: null | (() => void) = null;
+    private pausedByScript = false;
 
-    parser: Parser<T>;
-    pendingHtmlInsertions: string[] = [];
+    public parser: Parser<T>;
+    private pendingHtmlInsertions: string[] = [];
     /** The resulting document node. */
-    document: T['document'];
+    public document: T['document'];
 
     constructor(options?: ParserOptions<T>) {
         super({ decodeStrings: false });

@@ -26,12 +26,11 @@ export interface Location {
 }
 
 export interface LocationWithAttributes extends Location {
+    /** Start tag attributes' location info. */
     attrs?: Record<string, Location>;
 }
 
 export interface ElementLocation extends LocationWithAttributes {
-    /** Start tag attributes' location info. */
-    attrs?: Record<string, Location>;
     /** Element's start tag location info. */
     startTag?: Location;
     /**

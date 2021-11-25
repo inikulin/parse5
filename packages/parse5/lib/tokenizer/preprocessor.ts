@@ -1,8 +1,12 @@
-import * as unicode from '../common/unicode.js';
+import {
+    CODE_POINTS as $,
+    getSurrogatePairCodePoint,
+    isControlCodePoint,
+    isSurrogate,
+    isSurrogatePair,
+    isUndefinedCodePoint,
+} from '../common/unicode.js';
 import { ERR, ParserError, ParserErrorHandler } from '../common/error-codes.js';
-
-//Aliases
-const $ = unicode.CODE_POINTS;
 
 //Const
 const DEFAULT_BUFFER_WATERLINE = 1 << 16;
@@ -11,19 +15,19 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 //NOTE: HTML input preprocessing
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream)
 export class Preprocessor {
-    html = '';
+    public html = '';
     private pos = -1;
     private lastGapPos = -1;
     private gapStack: number[] = [];
     private skipNextNewLine = false;
     private lastChunkWritten = false;
-    endOfChunkHit = false;
-    bufferWaterline = DEFAULT_BUFFER_WATERLINE;
+    public endOfChunkHit = false;
+    public bufferWaterline = DEFAULT_BUFFER_WATERLINE;
 
     private isEol = false;
     private lineStartPos = 0;
-    droppedBufferSize = 0;
-    line = 1;
+    public droppedBufferSize = 0;
+    public line = 1;
 
     onParseError: ParserErrorHandler | null;
 
@@ -32,11 +36,11 @@ export class Preprocessor {
     }
 
     /** The column on the current line. If we just saw a gap (eg. a surrogate pair), return the index before. */
-    get col(): number {
+    public get col(): number {
         return this.pos - this.lineStartPos + Number(this.lastGapPos !== this.pos);
     }
 
-    get offset(): number {
+    public get offset(): number {
         return this.droppedBufferSize + this.pos;
     }
 
@@ -56,31 +60,31 @@ export class Preprocessor {
 
     //NOTE: avoid reporting error twice on advance/retreat
     private lastErrOffset = -1;
-    private _err(code: ERR) {
+    private _err(code: ERR): void {
         if (this.onParseError && this.lastErrOffset !== this.offset) {
             this.lastErrOffset = this.offset;
             this.onParseError(this.getError(code));
         }
     }
 
-    private _addGap() {
+    private _addGap(): void {
         this.gapStack.push(this.lastGapPos);
         this.lastGapPos = this.pos;
     }
 
-    private _processSurrogate(cp: number) {
+    private _processSurrogate(cp: number): number {
         //NOTE: try to peek a surrogate pair
         if (this.pos !== this.html.length - 1) {
             const nextCp = this.html.charCodeAt(this.pos + 1);
 
-            if (unicode.isSurrogatePair(nextCp)) {
+            if (isSurrogatePair(nextCp)) {
                 //NOTE: we have a surrogate pair. Peek pair character and recalculate code point.
                 this.pos++;
 
                 //NOTE: add gap that should be avoided during retreat
                 this._addGap();
 
-                return unicode.getSurrogatePairCodePoint(cp, nextCp);
+                return getSurrogatePairCodePoint(cp, nextCp);
             }
         }
 
@@ -96,7 +100,7 @@ export class Preprocessor {
         return cp;
     }
 
-    dropParsedChunk() {
+    public dropParsedChunk(): void {
         if (this.pos > this.bufferWaterline) {
             this.html = this.html.substring(this.pos);
             this.lineStartPos -= this.pos;
@@ -107,7 +111,7 @@ export class Preprocessor {
         }
     }
 
-    write(chunk: string, isLastChunk: boolean) {
+    public write(chunk: string, isLastChunk: boolean): void {
         if (this.html.length > 0) {
             this.html += chunk;
         } else {
@@ -118,13 +122,13 @@ export class Preprocessor {
         this.lastChunkWritten = isLastChunk;
     }
 
-    insertHtmlAtCurrentPos(chunk: string) {
+    public insertHtmlAtCurrentPos(chunk: string): void {
         this.html = this.html.substring(0, this.pos + 1) + chunk + this.html.substring(this.pos + 1);
 
         this.endOfChunkHit = false;
     }
 
-    advance(): number {
+    public advance(): number {
         this.pos++;
 
         //NOTE: LF should be in the last column of the line
@@ -164,7 +168,7 @@ export class Preprocessor {
 
         this.skipNextNewLine = false;
 
-        if (unicode.isSurrogate(cp)) {
+        if (isSurrogate(cp)) {
             cp = this._processSurrogate(cp);
         }
 
@@ -185,15 +189,15 @@ export class Preprocessor {
         return cp;
     }
 
-    private _checkForProblematicCharacters(cp: number) {
-        if (unicode.isControlCodePoint(cp)) {
+    private _checkForProblematicCharacters(cp: number): void {
+        if (isControlCodePoint(cp)) {
             this._err(ERR.controlCharacterInInputStream);
-        } else if (unicode.isUndefinedCodePoint(cp)) {
+        } else if (isUndefinedCodePoint(cp)) {
             this._err(ERR.noncharacterInInputStream);
         }
     }
 
-    retreat() {
+    public retreat(): void {
         if (this.pos === this.lastGapPos) {
             this.lastGapPos = this.gapStack.pop()!;
             this.pos--;
