@@ -189,7 +189,7 @@ export function causesExit(startTagToken: TagToken) {
 }
 
 //Token adjustments
-export function adjustTokenMathMLAttrs(token: TagToken) {
+export function adjustTokenMathMLAttrs(token: TagToken): void {
     for (let i = 0; i < token.attrs.length; i++) {
         if (token.attrs[i].name === DEFINITION_URL_ATTR) {
             token.attrs[i].name = ADJUSTED_DEFINITION_URL_ATTR;
@@ -198,7 +198,7 @@ export function adjustTokenMathMLAttrs(token: TagToken) {
     }
 }
 
-export function adjustTokenSVGAttrs(token: TagToken) {
+export function adjustTokenSVGAttrs(token: TagToken): void {
     for (let i = 0; i < token.attrs.length; i++) {
         const adjustedAttrName = SVG_ATTRS_ADJUSTMENT_MAP.get(token.attrs[i].name);
 
@@ -208,7 +208,7 @@ export function adjustTokenSVGAttrs(token: TagToken) {
     }
 }
 
-export function adjustTokenXMLAttrs(token: TagToken) {
+export function adjustTokenXMLAttrs(token: TagToken): void {
     for (let i = 0; i < token.attrs.length; i++) {
         const adjustedAttrEntry = XML_ATTRS_ADJUSTMENT_MAP.get(token.attrs[i].name);
 
@@ -220,7 +220,7 @@ export function adjustTokenXMLAttrs(token: TagToken) {
     }
 }
 
-export function adjustTokenSVGTagName(token: TagToken) {
+export function adjustTokenSVGTagName(token: TagToken): void {
     const adjustedTagName = SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
 
     if (adjustedTagName != null) {
@@ -229,11 +229,11 @@ export function adjustTokenSVGTagName(token: TagToken) {
 }
 
 //Integration points
-function isMathMLTextIntegrationPoint(tn: string, ns: string) {
+function isMathMLTextIntegrationPoint(tn: string, ns: NS): boolean {
     return ns === NS.MATHML && (tn === $.MI || tn === $.MO || tn === $.MN || tn === $.MS || tn === $.MTEXT);
 }
 
-function isHtmlIntegrationPoint(tn: string, ns: string, attrs: Attribute[]) {
+function isHtmlIntegrationPoint(tn: string, ns: NS, attrs: Attribute[]): boolean {
     if (ns === NS.MATHML && tn === $.ANNOTATION_XML) {
         for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].name === ATTRS.ENCODING) {
@@ -247,14 +247,10 @@ function isHtmlIntegrationPoint(tn: string, ns: string, attrs: Attribute[]) {
     return ns === NS.SVG && (tn === $.FOREIGN_OBJECT || tn === $.DESC || tn === $.TITLE);
 }
 
-export function isIntegrationPoint(tn: string, ns: string, attrs: Attribute[], foreignNS?: string) {
+export function isIntegrationPoint(tn: string, ns: NS, attrs: Attribute[], foreignNS?: NS): boolean {
     if ((!foreignNS || foreignNS === NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs)) {
         return true;
     }
 
-    if ((!foreignNS || foreignNS === NS.MATHML) && isMathMLTextIntegrationPoint(tn, ns)) {
-        return true;
-    }
-
-    return false;
+    return (!foreignNS || foreignNS === NS.MATHML) && isMathMLTextIntegrationPoint(tn, ns);
 }

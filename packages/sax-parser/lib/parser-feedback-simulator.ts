@@ -7,17 +7,15 @@ import { TAG_NAMES as $, NAMESPACES as NS } from '@parse5/parse5/lib/common/html
 //ParserFeedbackSimulator
 //Simulates adjustment of the Tokenizer which performed by standard parser during tree construction.
 export class ParserFeedbackSimulator {
-    namespaceStack: string[] = [];
-    namespaceStackTop = -1;
-    inForeignContent = false;
-    currentNamespace = '';
-    skipNextNewLine = false;
+    private namespaceStack: NS[] = [];
+    private inForeignContent = false;
+    public skipNextNewLine = false;
 
     constructor(private tokenizer: Tokenizer) {
         this._enterNamespace(NS.HTML);
     }
 
-    getNextToken(): Token {
+    public getNextToken(): Token {
         const token = this.tokenizer.getNextToken();
 
         if (token.type === TokenType.START_TAG) {
@@ -32,7 +30,10 @@ export class ParserFeedbackSimulator {
                 this.skipNextNewLine = false;
             }
 
-            if (token.type === TokenType.WHITESPACE_CHARACTER && token.chars[0] === '\n') {
+            if (
+                token.type === TokenType.WHITESPACE_CHARACTER &&
+                token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED
+            ) {
                 if (token.chars.length === 1) {
                     return this.getNextToken();
                 }
@@ -45,26 +46,20 @@ export class ParserFeedbackSimulator {
     }
 
     //Namespace stack mutations
-    _enterNamespace(namespace: string) {
-        this.namespaceStackTop++;
-        this.namespaceStack.push(namespace);
-
+    private _enterNamespace(namespace: NS) {
+        this.namespaceStack.unshift(namespace);
         this.inForeignContent = namespace !== NS.HTML;
-        this.currentNamespace = namespace;
         this.tokenizer.allowCDATA = this.inForeignContent;
     }
 
-    _leaveCurrentNamespace() {
-        this.namespaceStackTop--;
-        this.namespaceStack.pop();
-
-        this.currentNamespace = this.namespaceStack[this.namespaceStackTop];
-        this.inForeignContent = this.currentNamespace !== NS.HTML;
+    private _leaveCurrentNamespace() {
+        this.namespaceStack.shift();
+        this.inForeignContent = this.namespaceStack[0] !== NS.HTML;
         this.tokenizer.allowCDATA = this.inForeignContent;
     }
 
     //Token handlers
-    _ensureTokenizerMode(tn: string) {
+    private _ensureTokenizerMode(tn: string): void {
         switch (tn) {
             case $.TEXTAREA:
             case $.TITLE: {
@@ -97,7 +92,7 @@ export class ParserFeedbackSimulator {
         }
     }
 
-    _handleStartTagToken(token: TagToken) {
+    private _handleStartTagToken(token: TagToken): void {
         let tn = token.tagName;
 
         if (tn === $.SVG) {
@@ -112,7 +107,7 @@ export class ParserFeedbackSimulator {
                 return;
             }
 
-            const currentNs = this.currentNamespace;
+            const currentNs = this.namespaceStack[0];
 
             if (currentNs === NS.MATHML) {
                 foreignContent.adjustTokenMathMLAttrs(token);
@@ -139,11 +134,11 @@ export class ParserFeedbackSimulator {
         }
     }
 
-    _handleEndTagToken(token: TagToken) {
+    private _handleEndTagToken(token: TagToken): void {
         let tn = token.tagName;
 
         if (!this.inForeignContent) {
-            const previousNs = this.namespaceStack[this.namespaceStackTop - 1];
+            const previousNs = this.namespaceStack[1];
 
             if (previousNs === NS.SVG) {
                 const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
@@ -158,14 +153,14 @@ export class ParserFeedbackSimulator {
                 this._leaveCurrentNamespace();
             }
         } else if (
-            (tn === $.SVG && this.currentNamespace === NS.SVG) ||
-            (tn === $.MATH && this.currentNamespace === NS.MATHML)
+            (tn === $.SVG && this.namespaceStack[0] === NS.SVG) ||
+            (tn === $.MATH && this.namespaceStack[0] === NS.MATHML)
         ) {
             this._leaveCurrentNamespace();
         }
 
         // NOTE: adjust end tag name as well for consistency
-        if (this.currentNamespace === NS.SVG) {
+        if (this.namespaceStack[0] === NS.SVG) {
             foreignContent.adjustTokenSVGTagName(token);
         }
     }

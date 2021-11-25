@@ -46,7 +46,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     }
 
     //WritableStream implementation
-    override _write(chunk: string, _encoding: string, callback: () => void) {
+    override _write(chunk: string, _encoding: string, callback: () => void): void {
         if (typeof chunk !== 'string') {
             throw new TypeError('Parser can work only with string streams.');
         }
@@ -56,17 +56,17 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         this._runParsingLoop();
     }
 
-    override _final(callback: () => void) {
+    override _final(callback: () => void): void {
         this.lastChunkWritten = true;
         this._write('', '', callback);
     }
 
     //Scriptable parser implementation
-    private _runParsingLoop() {
+    private _runParsingLoop(): void {
         this.parser.runParsingLoopForCurrentChunk(this.writeCallback, this._scriptHandler);
     }
 
-    private _resume = () => {
+    private _resume = (): void => {
         if (!this.pausedByScript) {
             throw new Error('Parser was already resumed');
         }
@@ -85,13 +85,13 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         }
     };
 
-    private _documentWrite = (html: string) => {
+    private _documentWrite = (html: string): void => {
         if (!this.parser.stopped) {
             this.pendingHtmlInsertions.push(html);
         }
     };
 
-    private _scriptHandler = (scriptElement: T['element']) => {
+    private _scriptHandler = (scriptElement: T['element']): void => {
         if (this.listenerCount('script') > 0) {
             this.pausedByScript = true;
             this.emit('script', scriptElement, this._documentWrite, this._resume);

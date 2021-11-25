@@ -163,7 +163,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     // API
-    parse(html: string) {
+    public parse(html: string): T['document'] {
         const document = this.treeAdapter.createDocument();
 
         this._bootstrap(document, null);
@@ -173,7 +173,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return document;
     }
 
-    parseFragment(html: string, fragmentContext?: T['parentNode'] | null): T['documentFragment'] {
+    public parseFragment(html: string, fragmentContext?: T['parentNode'] | null): T['documentFragment'] {
         //NOTE: use <template> element as a fragment context if context element was not provided,
         //so we will parse in "forgiving" manner
         fragmentContext ??= this.treeAdapter.createElement($.TEMPLATE, NS.HTML, []);
@@ -232,7 +232,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     fosterParentingEnabled = false;
 
     //Bootstrap parser
-    _bootstrap(document: T['document'], fragmentContext: T['element'] | null) {
+    _bootstrap(document: T['document'], fragmentContext: T['element'] | null): void {
         this.tokenizer = new Tokenizer(this.options);
 
         this.stopped = false;
@@ -266,7 +266,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Errors
-    _err(token: Token, code: ERR, beforeToken?: boolean) {
+    _err(token: Token, code: ERR, beforeToken?: boolean): void {
         if (!this.onParseError) return;
 
         const loc = token.location ?? BASE_LOC;
@@ -284,7 +284,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Parsing loop
-    _runParsingLoop(scriptHandler: null | ((scriptElement: T['element']) => void)) {
+    private _runParsingLoop(scriptHandler: null | ((scriptElement: T['element']) => void)): void {
         while (!this.stopped) {
             this._setupTokenizerCDATAMode();
 
@@ -313,16 +313,16 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
             this._processInputToken(token);
 
-            if (scriptHandler && this.pendingScript) {
+            if (scriptHandler !== null && this.pendingScript) {
                 break;
             }
         }
     }
 
-    runParsingLoopForCurrentChunk(
+    public runParsingLoopForCurrentChunk(
         writeCallback: null | (() => void),
         scriptHandler: (scriptElement: T['element']) => void
-    ) {
+    ): void {
         this._runParsingLoop(scriptHandler);
 
         if (scriptHandler && this.pendingScript) {
