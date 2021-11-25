@@ -113,22 +113,20 @@ export function setDocumentType(
     systemId: string | null
 ) {
     const data = doctype.serializeContent(name, publicId, systemId);
-    const doctypeNode = document.children.find(
+    let doctypeNode = document.children.find(
         (node) => isDirective(node) && node.name === '!doctype'
     ) as ProcessingInstruction;
 
     if (doctypeNode) {
         doctypeNode.data = data ?? null;
-        doctypeNode['x-name'] = name ?? undefined;
-        doctypeNode['x-publicId'] = publicId ?? undefined;
-        doctypeNode['x-systemId'] = systemId ?? undefined;
     } else {
-        const node = new ProcessingInstruction('!doctype', data);
-        node['x-name'] = name ?? undefined;
-        node['x-publicId'] = publicId ?? undefined;
-        node['x-systemId'] = systemId ?? undefined;
-        appendChild(document, node);
+        doctypeNode = new ProcessingInstruction('!doctype', data);
+        appendChild(document, doctypeNode);
     }
+
+    doctypeNode['x-name'] = name ?? undefined;
+    doctypeNode['x-publicId'] = publicId ?? undefined;
+    doctypeNode['x-systemId'] = systemId ?? undefined;
 }
 
 export function setDocumentMode(document: Document, mode: DOCUMENT_MODE) {

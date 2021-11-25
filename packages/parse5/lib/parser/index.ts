@@ -335,9 +335,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             return;
         }
 
-        if (writeCallback) {
-            writeCallback();
-        }
+        writeCallback?.();
     }
 
     //Text parsing
