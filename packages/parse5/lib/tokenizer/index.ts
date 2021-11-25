@@ -18,7 +18,7 @@ import {
     Attribute,
     Location,
 } from '../common/token.js';
-import { namedEntityData as neTree } from './named-entity-data.js';
+import { htmlDecodeTree, BinTrieFlags, determineBranch } from 'entities/lib/decode.js';
 import { ERR, ParserErrorHandler } from '../common/error-codes.js';
 
 //C1 Unicode control character reference replacements
@@ -51,12 +51,6 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
     [0x9e, 0x01_7e],
     [0x9f, 0x01_78],
 ]);
-
-// Named entity tree flags
-const HAS_DATA_FLAG = Math.trunc(1);
-const DATA_DUPLET_FLAG = 1 << 1;
-const HAS_BRANCHES_FLAG = 1 << 2;
-const MAX_BRANCH_MARKER_VALUE = HAS_DATA_FLAG | DATA_DUPLET_FLAG | HAS_BRANCHES_FLAG;
 
 //States
 enum State {
@@ -199,27 +193,6 @@ function toAsciiLowerCodePoint(cp: number): number {
 
 function toAsciiLowerChar(cp: number): string {
     return String.fromCharCode(toAsciiLowerCodePoint(cp));
-}
-
-function findNamedEntityTreeBranch(nodeIx: number, cp: number): number {
-    const branchCount = neTree[++nodeIx]!;
-    let lo = ++nodeIx;
-    let hi = lo + branchCount - 1;
-
-    while (lo <= hi) {
-        const mid = (lo + hi) >>> 1;
-        const midCp = neTree[mid]!;
-
-        if (midCp < cp) {
-            lo = mid + 1;
-        } else if (midCp > cp) {
-            hi = mid - 1;
-        } else {
-            return neTree[mid + branchCount]!;
-        }
-    }
-
-    return -1;
 }
 
 //Tokenizer
@@ -566,37 +539,28 @@ export class Tokenizer {
     }
 
     // Character reference helpers
-    private _matchNamedCharacterReference(startCp: number): number[] | null {
+    private _matchNamedCharacterReference(cp: number): number[] | null {
         let result = null;
-        let excess = 1;
-        let i = findNamedEntityTreeBranch(0, startCp);
+        let excess = 0;
 
-        this.tempBuff.push(startCp);
-
-        while (i > -1) {
-            const current = neTree[i];
-            const inNode = current < MAX_BRANCH_MARKER_VALUE;
-            const nodeWithData = inNode && current & HAS_DATA_FLAG;
-
-            if (nodeWithData) {
-                //NOTE: we use greedy search, so we continue lookup at this point
-                result = current & DATA_DUPLET_FLAG ? [neTree[++i], neTree[++i]] : [neTree[++i]];
-                excess = 0;
-            }
-
-            const cp = this._consume();
-
+        for (let i = 0, current = htmlDecodeTree[0]; i >= 0; cp = this._consume()) {
             this.tempBuff.push(cp);
-            excess++;
+            excess += 1;
 
-            if (cp === $.EOF) {
-                break;
-            }
+            i = determineBranch(htmlDecodeTree, current, i + 1, cp);
 
-            if (inNode) {
-                i = current & HAS_BRANCHES_FLAG ? findNamedEntityTreeBranch(i, cp) : -1;
-            } else {
-                i = cp === current ? ++i : -1;
+            if (i < 0) break;
+
+            current = htmlDecodeTree[i];
+
+            // If the branch is a value, store it and continue
+            if (current & BinTrieFlags.HAS_VALUE) {
+                // If this is a surrogate pair, combine the higher bits from the node with the next byte
+                result =
+                    current & BinTrieFlags.MULTI_BYTE
+                        ? [htmlDecodeTree[++i], htmlDecodeTree[++i]]
+                        : [htmlDecodeTree[++i]];
+                excess = 0;
             }
         }
 

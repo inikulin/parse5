@@ -9,6 +9,9 @@
     "scripts": {
         "build": "rm -r dist; tsc"
     },
+    "dependencies": {
+        "entities": "^3.0.1"
+    },
     "keywords": [
         "html",
         "parser",
