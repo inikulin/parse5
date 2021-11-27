@@ -24,7 +24,6 @@
     },
     "scripts": {
         "build": "lerna run build",
-        "bootstrap": "lerna bootstrap",
         "prettier": "prettier '{packages/*/{lib,test}/**/*.js,{bench,test,scripts}/**/*.js}'",
         "format": "npm run format:es && npm run format:prettier",
         "format:es": "npm run lint:es -- --fix",
@@ -37,7 +36,6 @@
         "generate-feedback-tests": "node --loader ts-node/esm scripts/generate-parser-feedback-test/index.ts test/data/html5lib-tests/tree-construction/*.dat test/data/tree-construction-regression/*.dat",
         "bench-perf": "cd bench && npm install && node perf/index.js",
         "bench-memory-sax": "cd bench && npm install && node memory/sax-parser.js",
-        "postinstall": "npm run bootstrap",
         "preversion": "npm test",
         "pre-commit": "lint-staged",
         "publish": "lerna publish",
