@@ -161,12 +161,14 @@ describe('location-info-parser', () => {
             },
         };
         const treeAdapter = { ...treeAdapters.default, ...sourceCodeLocationSetter };
-        const document: any = parse5.parse('<!doctype><body>Testing location</body>', {
+        const document = parse5.parse('<!doctype><body>Testing location</body>', {
             treeAdapter,
             sourceCodeLocationInfo: true,
         });
         const [doctype, html] = document.childNodes;
+        assert.ok(treeAdapters.default.isElementNode(html));
         const [head, body] = html.childNodes;
+        assert.ok(treeAdapters.default.isElementNode(body));
         const [text] = body.childNodes;
 
         assert.deepEqual(doctype.sourceCodeLocation, {
