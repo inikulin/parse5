@@ -1,7 +1,7 @@
 import { Writable } from 'node:stream';
-import { Parser, ParserOptions } from '@parse5/parse5/lib/parser/index.js';
-import type { TreeAdapterTypeMap } from '@parse5/parse5/lib/tree-adapters/interface.js';
-import type { DefaultTreeAdapterMap } from '@parse5/parse5/lib/tree-adapters/default.js';
+import { Parser, ParserOptions } from 'parse5/lib/parser/index.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface.js';
+import type { DefaultTreeAdapterMap } from 'parse5/lib/tree-adapters/default.js';
 
 /**
  * Streaming HTML parser with scripting support.

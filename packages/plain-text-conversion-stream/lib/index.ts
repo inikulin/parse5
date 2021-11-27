@@ -1,7 +1,7 @@
-import type { ParserOptions } from '@parse5/parse5/lib/parser/index.js';
+import type { ParserOptions } from 'parse5/lib/parser/index.js';
 import { ParserStream } from '@parse5/parser-stream/lib/index.js';
-import { TAG_NAMES as $ } from '@parse5/parse5/lib/common/html.js';
-import type { TreeAdapterTypeMap } from '@parse5/parse5/lib/tree-adapters/interface';
+import { TAG_NAMES as $ } from 'parse5/lib/common/html.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
 
 /**
  * Converts plain text files into HTML document as required by [HTML specification](https://html.spec.whatwg.org/#read-text).

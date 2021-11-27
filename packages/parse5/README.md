@@ -5,13 +5,13 @@
 </p>
 
 <div align="center">
-<h1>@parse5/parse5</h1>
+<h1>parse5</h1>
 <i><b>HTML parser and serializer.</b></i>
 </div>
 <br>
 
 <div align="center">
-<code>npm install --save @parse5/parse5</code>
+<code>npm install --save parse5</code>
 </div>
 <br>
 

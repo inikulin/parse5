@@ -17,9 +17,9 @@ This is a fork of the original parse5 package. We want this to become the next v
 
 <p align="center">
   <a href="https://github.com/parse5/parse5-fork/actions/workflows/nodejs-test.yml"><img alt="Build Status" src="https://img.shields.io/github/workflow/status/parse5/parse5-fork/Node.js%20CI?label=tests&style=flat"></a>
-  <a href="https://www.npmjs.com/package/@parse5/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/@parse5/parse5.svg"></a>
-  <a href="https://npmjs.org/package/@parse5/parse5"><img alt="Downloads" src="http://img.shields.io/npm/dm/@parse5/parse5.svg"></a>
-  <a href="https://npmjs.org/package/@parse5/parse5"><img alt="Downloads total" src="http://img.shields.io/npm/dt/@parse5/parse5.svg"></a>
+  <a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
+  <a href="https://npmjs.org/package/parse5"><img alt="Downloads" src="http://img.shields.io/npm/dm/parse5.svg"></a>
+  <a href="https://npmjs.org/package/parse5"><img alt="Downloads total" src="http://img.shields.io/npm/dt/parse5.svg"></a>
 </p>
 
 <p align="center">

@@ -17,7 +17,7 @@ export { ParserOptions, SerializerOptions };
  * @example
  *
  * ```js
- * const parse5 = require('@parse5/parse5');
+ * const parse5 = require('parse5');
  *
  * const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
  *
@@ -39,7 +39,7 @@ export function parse<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
  * @example
  *
  * ```js
- * const parse5 = require('@parse5/parse5');
+ * const parse5 = require('parse5');
  *
  * const documentFragment = parse5.parseFragment('<table></table>');
  *
@@ -87,7 +87,7 @@ export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterM
  * @example
  *
  * ```js
- * const parse5 = require('@parse5/parse5');
+ * const parse5 = require('parse5');
  *
  * const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
  *

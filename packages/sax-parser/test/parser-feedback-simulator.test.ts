@@ -1,4 +1,4 @@
-import { Tokenizer } from '@parse5/parse5/lib/tokenizer/index.js';
+import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
 import { generateTokenizationTests } from '../../../test/utils/generate-tokenization-tests.js';
 import { ParserFeedbackSimulator } from '../lib/parser-feedback-simulator.js';
 

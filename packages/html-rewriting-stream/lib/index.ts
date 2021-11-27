@@ -1,7 +1,7 @@
 import { EndTag, StartTag, Doctype, Text, Comment, SaxToken } from '../../sax-parser/lib/index';
-import type { Token, Location } from '@parse5/parse5/lib/common/token.js';
+import type { Token, Location } from 'parse5/lib/common/token.js';
 import { SAXParser } from '@parse5/sax-parser/lib/index.js';
-import { escapeString } from '@parse5/parse5/lib/serializer/index.js';
+import { escapeString } from 'parse5/lib/serializer/index.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.

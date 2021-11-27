@@ -19,7 +19,8 @@
 
         "baseUrl": ".",
         "paths": {
-            "@parse5/*": ["./packages/*"]
+            "@parse5/*": ["./packages/*"],
+            "parse5/*": ["./packages/parse5/*"]
         }
     }
 }

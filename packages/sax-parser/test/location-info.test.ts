@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import { SAXParser } from '../lib/index.js';
 import { loadSAXParserTestData } from '../../../test/utils/load-sax-parser-test-data.js';
 import { writeChunkedToStream } from '../../../test/utils/common.js';
-import type { Location } from '@parse5/parse5/lib/common/token';
+import type { Location } from 'parse5/lib/common/token';
 
 function handler({ sourceCodeLocation }: { sourceCodeLocation: Location }) {
     assert.strictEqual(typeof sourceCodeLocation.startLine, 'number');

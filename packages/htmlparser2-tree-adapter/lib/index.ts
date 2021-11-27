@@ -1,7 +1,7 @@
-import * as doctype from '@parse5/parse5/lib/common/doctype.js';
-import { DOCUMENT_MODE, NAMESPACES as NS } from '@parse5/parse5/lib/common/html.js';
-import type { Attribute, ElementLocation } from '@parse5/parse5/lib/common/token.js';
-import type { TreeAdapterTypeMap } from '@parse5/parse5/lib/tree-adapters/interface.js';
+import * as doctype from 'parse5/lib/common/doctype.js';
+import { DOCUMENT_MODE, NAMESPACES as NS } from 'parse5/lib/common/html.js';
+import type { Attribute, ElementLocation } from 'parse5/lib/common/token.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface.js';
 import {
     Node,
     NodeWithChildren,

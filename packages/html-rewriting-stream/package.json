@@ -18,7 +18,7 @@
     "license": "MIT",
     "main": "./lib/index.js",
     "dependencies": {
-        "@parse5/parse5": "^6.0.1",
+        "parse5": "^6.0.1",
         "@parse5/sax-parser": "^6.0.1"
     },
     "repository": {

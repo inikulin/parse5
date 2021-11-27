@@ -1,8 +1,8 @@
-import { Tokenizer, TokenizerMode } from '@parse5/parse5/lib/tokenizer/index.js';
-import { TokenType, Token, TagToken } from '@parse5/parse5/lib/common/token.js';
-import * as foreignContent from '@parse5/parse5/lib/common/foreign-content.js';
-import * as unicode from '@parse5/parse5/lib/common/unicode.js';
-import { TAG_NAMES as $, NAMESPACES as NS } from '@parse5/parse5/lib/common/html.js';
+import { Tokenizer, TokenizerMode } from 'parse5/lib/tokenizer/index.js';
+import { TokenType, Token, TagToken } from 'parse5/lib/common/token.js';
+import * as foreignContent from 'parse5/lib/common/foreign-content.js';
+import * as unicode from 'parse5/lib/common/unicode.js';
+import { TAG_NAMES as $, NAMESPACES as NS } from 'parse5/lib/common/html.js';
 
 //ParserFeedbackSimulator
 //Simulates adjustment of the Tokenizer which performed by standard parser during tree construction.
