@@ -2,6 +2,9 @@
     "name": "@parse5/build-scripts",
     "private": true,
     "type": "module",
+    "workspaces": [
+        "packages/*"
+    ],
     "devDependencies": {
         "@types/dedent": "^0.7.0",
         "@types/jest": "^27.0.2",
