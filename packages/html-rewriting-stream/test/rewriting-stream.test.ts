@@ -17,8 +17,18 @@ const srcHtml = dedent`
   </html>
 `;
 
-function createRewriterTest({ src, expected, assignTokenHandlers = () => {} }) {
-    return (done) => {
+function createRewriterTest({
+    src,
+    expected,
+    assignTokenHandlers = () => {
+        /* Ignore */
+    },
+}: {
+    src: string;
+    expected: string;
+    assignTokenHandlers?: (rewriter: RewritingStream) => void;
+}) {
+    return (done: () => void) => {
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
 
@@ -226,7 +236,7 @@ describe('RewritingStream', () => {
               </html>42
             `,
             assignTokenHandlers: (rewriter) => {
-                const rewriteRaw = (_, raw) => {
+                const rewriteRaw = (_: unknown, raw: string) => {
                     rewriter.emitRaw(`${raw}42`);
                 };
 
