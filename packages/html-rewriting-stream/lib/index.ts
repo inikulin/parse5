@@ -1,6 +1,5 @@
-import { EndTag, StartTag, Doctype, Text, Comment, SaxToken } from '../../sax-parser/lib/index';
 import type { Token, Location } from 'parse5/lib/common/token.js';
-import { SAXParser } from '@parse5/sax-parser/lib/index.js';
+import { SAXParser, EndTag, StartTag, Doctype, Text, Comment, SaxToken } from '@parse5/sax-parser/lib/index.js';
 import { escapeString } from 'parse5/lib/serializer/index.js';
 
 /**
