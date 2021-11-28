@@ -1,5 +1,4 @@
-import { readFile, writeFile } from 'node:fs';
-import { promisify } from 'node:util';
+import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { Parser } from '../../packages/parse5/lib/parser/index.js';
 import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
@@ -8,21 +7,19 @@ import { parseDatFile } from '../../test/utils/parse-dat-file.js';
 import { addSlashes } from '../../test/utils/common.js';
 import { TokenType, Token } from '../../packages/parse5/lib/common/token.js';
 
-const readFileAsync = promisify(readFile);
-const writeFileAsync = promisify(writeFile);
+// eslint-disable-next-line no-console
+main().catch(console.error);
 
-main();
-
-async function main() {
+function main() {
     const convertPromises = process.argv.slice(2).map(async (file) => {
-        const content = await readFileAsync(file, 'utf-8');
+        const content = await readFile(file, 'utf-8');
         const feedbackTestContent = generateParserFeedbackTest(content);
         const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
 
-        await writeFileAsync(feedbackTestFile, feedbackTestContent);
+        await writeFile(feedbackTestFile, feedbackTestContent);
     });
 
-    await Promise.all(convertPromises);
+    return Promise.all(convertPromises);
 }
 
 function appendToken(dest: Token[], token: Token) {

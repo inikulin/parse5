@@ -1,4 +1,4 @@
-import * as fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import format from 'human-format';
 import promisifyEvent from 'promisify-event';
 import memwatch from '@airbnb/node-memwatch';
@@ -35,7 +35,7 @@ async function main() {
 }
 
 async function parse() {
-    const data = fs.readFileSync('../test/data/huge-page/huge-page.html', 'utf8');
+    const data = readFile('../test/data/huge-page/huge-page.html', 'utf8');
     let parsedDataSize = 0;
     const stream = new SAXParser();
 
