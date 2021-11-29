@@ -24,7 +24,7 @@
     },
     "scripts": {
         "build": "lerna run build",
-        "prettier": "prettier '{packages/*/{lib,test}/**/*.js,{bench,test,scripts}/**/*.js}'",
+        "prettier": "prettier '**/*.{js,ts,md,json,yml}'",
         "format": "npm run format:es && npm run format:prettier",
         "format:es": "npm run lint:es -- --fix",
         "format:prettier": "npm run prettier -- --write",
@@ -42,9 +42,12 @@
         "prepare": "husky install"
     },
     "lint-staged": {
-        "*.{js,json}": [
+        "*.{js,ts}": [
             "prettier --write",
-            "git add"
+            "eslint --fix"
+        ],
+        "*.{md,json,yml}": [
+            "prettier --write"
         ]
     },
     "jest": {

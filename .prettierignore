@@ -1,2 +1,3 @@
 packages/*/dist/
 docs
+test/data/html5lib-tests
