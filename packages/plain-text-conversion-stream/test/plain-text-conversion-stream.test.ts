@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import * as parse5 from 'parse5/lib/index.js';
 import { PlainTextConversionStream } from '../lib/index.js';
-import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
+import { generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
 
 generateTestsForEachTreeAdapter('plain-test-conversion-stream', (treeAdapter) => {
     it('Plain text conversion stream', () => {

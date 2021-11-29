@@ -5,8 +5,8 @@ import {
     generateLocationInfoParserTests,
     assertStartTagLocation,
     assertNodeLocation,
-} from '../../../../test/utils/generate-location-info-parser-tests.js';
-import { generateTestsForEachTreeAdapter, treeAdapters } from '../../../../test/utils/common.js';
+} from '@parse5/test-utils/utils/generate-location-info-parser-tests.js';
+import { generateTestsForEachTreeAdapter, treeAdapters } from '@parse5/test-utils/utils/common.js';
 import { TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 
 generateLocationInfoParserTests(

@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import { OpenElementStack } from './open-element-stack.js';
-import { generateTestsForEachTreeAdapter } from '../../../../test/utils/common.js';
+import { generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
 
 generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
     function createElement(tagName: string, namespaceURI = '') {

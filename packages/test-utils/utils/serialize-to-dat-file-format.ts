@@ -1,6 +1,6 @@
-import { Attribute } from './../../packages/parse5/lib/common/token';
-import { TreeAdapter, TreeAdapterTypeMap } from './../../packages/parse5/lib/tree-adapters/interface';
-import { TAG_NAMES as $, NAMESPACES as NS } from '../../packages/parse5/lib/common/html.js';
+import { Attribute } from 'parse5/lib/common/token';
+import { TreeAdapter, TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
+import { TAG_NAMES as $, NAMESPACES as NS } from 'parse5/lib/common/html.js';
 
 function getSerializedTreeIndent(indent: number): string {
     return '|'.padEnd(indent + 2, ' ');

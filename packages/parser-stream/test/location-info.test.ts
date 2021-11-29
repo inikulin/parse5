@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
-import { generateLocationInfoParserTests } from '../../../test/utils/generate-location-info-parser-tests.js';
-import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
+import { generateLocationInfoParserTests } from '@parse5/test-utils/utils/generate-location-info-parser-tests.js';
+import { generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
 import { parseChunked } from './utils/parse-chunked.js';
 
 generateLocationInfoParserTests('location-info', 'ParserStream', (input, opts) =>

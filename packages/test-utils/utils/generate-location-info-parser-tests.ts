@@ -1,11 +1,11 @@
-import { ParserOptions } from './../../packages/parse5/lib/parser/index';
-import { Location, ElementLocation } from './../../packages/parse5/lib/common/token';
-import { TreeAdapter, TreeAdapterTypeMap } from './../../packages/parse5/lib/tree-adapters/interface';
+import { ParserOptions } from 'parse5/lib/parser/index';
+import { Location, ElementLocation } from 'parse5/lib/common/token';
+import { TreeAdapter, TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { escapeString } from '../../packages/parse5/lib/serializer/index.js';
-import * as parse5 from '../../packages/parse5/lib/index.js';
+import { escapeString } from 'parse5/lib/serializer/index.js';
+import * as parse5 from 'parse5/lib/index.js';
 import {
     removeNewLines,
     getSubstringByLineCol,

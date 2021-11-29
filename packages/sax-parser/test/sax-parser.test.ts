@@ -1,13 +1,13 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import { SAXParser, SAXParserOptions } from '../lib/index.js';
-import { loadSAXParserTestData } from '../../../test/utils/load-sax-parser-test-data.js';
+import { loadSAXParserTestData } from '@parse5/test-utils/utils/load-sax-parser-test-data.js';
 import {
     getStringDiffMsg,
     writeChunkedToStream,
     removeNewLines,
     WritableStreamStub,
-} from '../../../test/utils/common.js';
+} from '@parse5/test-utils/utils/common.js';
 
 function sanitizeForComparison(str: string) {
     return removeNewLines(str).replace(/\s/g, '').replace(/'/g, '"').toLowerCase();
@@ -68,7 +68,7 @@ function createBasicTest(html: string, expected: string, options?: SAXParserOpti
     };
 }
 
-const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.meta.url);
+const hugePage = new URL('../../test-utils/data/huge-page/huge-page.html', import.meta.url);
 
 describe('SAX parser', () => {
     //Basic tests

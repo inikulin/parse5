@@ -1,6 +1,6 @@
 import { SerializerStream } from '../lib/index.js';
-import { generateSerializerTests } from '../../../test/utils/generate-serializer-tests.js';
-import { WritableStreamStub } from '../../../test/utils/common.js';
+import { generateSerializerTests } from '@parse5/test-utils/utils/generate-serializer-tests.js';
+import { WritableStreamStub } from '@parse5/test-utils/utils/common.js';
 
 generateSerializerTests('SerializerStream', 'SerializerStream', (document, opts) => {
     const stream = new SerializerStream(document, opts);

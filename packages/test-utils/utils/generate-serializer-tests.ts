@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import * as parse5 from '../../packages/parse5/lib/index.js';
-import type { TreeAdapterTypeMap } from '../../packages/parse5/lib/tree-adapters/interface.js';
+import * as parse5 from 'parse5/lib/index.js';
+import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface.js';
 import { generateTestsForEachTreeAdapter, getStringDiffMsg } from './common.js';
 
 export function generateSerializerTests(

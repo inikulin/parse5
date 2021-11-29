@@ -1,12 +1,12 @@
 import { ParserStream } from '../lib/index.js';
-import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
-import { makeChunks, generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
+import { generateParsingTests } from '@parse5/test-utils/utils/generate-parsing-tests.js';
+import { makeChunks, generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
 
 function pause() {
     return new Promise((resolve) => setTimeout(resolve, 5));
 }
 
-const suitePath = new URL('../../../test/data/tree-construction-scripting', import.meta.url);
+const suitePath = new URL('../../../packages/test-utils/data/tree-construction-scripting', import.meta.url);
 
 generateParsingTests(
     'ParserStream - Scripting',

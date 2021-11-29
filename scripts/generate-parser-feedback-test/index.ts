@@ -2,9 +2,9 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { Parser } from '../../packages/parse5/lib/parser/index.js';
 import * as defaultTreeAdapter from '../../packages/parse5/lib/tree-adapters/default.js';
-import { convertTokenToHtml5Lib } from '../../test/utils/generate-tokenization-tests.js';
-import { parseDatFile } from '../../test/utils/parse-dat-file.js';
-import { addSlashes } from '../../test/utils/common.js';
+import { convertTokenToHtml5Lib } from '@parse5/test-utils/utils/generate-tokenization-tests.js';
+import { parseDatFile } from '@parse5/test-utils/utils/parse-dat-file.js';
+import { addSlashes } from '@parse5/test-utils/utils/common.js';
 import { TokenType, Token } from '../../packages/parse5/lib/common/token.js';
 
 // eslint-disable-next-line no-console
