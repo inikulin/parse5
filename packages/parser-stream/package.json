@@ -1,5 +1,5 @@
 {
-    "name": "@parse5/parse5-stream",
+    "name": "@parse5/parser-stream",
     "type": "module",
     "description": "Streaming HTML parser with scripting support.",
     "version": "6.0.1",
