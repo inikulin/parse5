@@ -15,12 +15,6 @@
         "allowSyntheticDefaultImports": true,
         "allowJs": true,
 
-        "outDir": "build",
-
-        "baseUrl": ".",
-        "paths": {
-            "@parse5/*": ["./packages/*"],
-            "parse5/*": ["./packages/parse5/*"]
-        }
+        "outDir": "build"
     }
 }

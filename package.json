@@ -24,7 +24,7 @@
         "typescript": "^4.5.4"
     },
     "scripts": {
-        "build": "lerna run build",
+        "build": "npm run build --workspaces --if-present",
         "prettier": "prettier '**/*.{js,ts,md,json,yml}'",
         "format": "npm run format:es && npm run format:prettier",
         "format:es": "npm run lint:es -- --fix",
