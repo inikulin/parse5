@@ -63,9 +63,7 @@
             }
         },
         "moduleNameMapper": {
-            "^@parse5/(.*)/lib/(.*)(?:\\.js)$": "<rootDir>/packages/$1/lib/$2",
-            "^parse5/lib/(.*)(?:\\.js)$": "<rootDir>/packages/parse5/lib/$1",
-            "^(\\.{1,2}/.*)\\.js$": "$1"
+            "^(.*)\\.js$": "$1"
         }
     }
 }
