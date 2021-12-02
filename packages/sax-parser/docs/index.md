@@ -1,40 +1,5 @@
 # Class: SAXParser
 
-Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML parser. A [transform stream](https://nodejs.org/api/stream.html#stream_class_stream_transform) (which means you can pipe _through_ it, see example).
-
-*__example__*:
-
-```js
-    const SAXParser = require('@parse5/sax-parser');
-    const http = require('http');
-    const fs = require('fs');
-
-    const file = fs.createWriteStream('/home/google.com.html');
-    const parser = new SAXParser();
-
-    parser.on('text', text => {
-       // Handle page text content
-       ...
-    });
-
-    http.get('http://google.com', res => {
-       // SAXParser is the Transform stream, which means you can pipe
-       // through it. So, you can analyze page content and, e.g., save it
-       // to the file at the same time:
-       res.pipe(parser).pipe(file);
-    });
-```
-
-### Constructors
-
-* [constructor](#constructor)
-
-### Methods
-
-* [stop](#stop)
-
-See also: [transform stream API](https://nodejs.org/api/stream.html#stream_class_stream_transform).
-
 ### Events
 
 * [on("startTag")](#on_startag)
@@ -44,24 +9,6 @@ See also: [transform stream API](https://nodejs.org/api/stream.html#stream_class
 * [on("doctype")](#on_doctype)
 
 See also: [transform stream API](https://nodejs.org/api/stream.html#stream_class_stream_transform).
-
----
-
-## Constructors
-
-<a id="constructor"></a>
-
-###  constructor
-
-⊕ **new SAXParser**(options?: *[SAXParserOptions](sax-parser-options.md)*): [SAXParser]()
-
-**Parameters:**
-
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| `Optional` options | [SAXParserOptions](sax-parser-options.md) |  Parsing options. |
-
-**Returns:** [SAXParser]()
 
 ___
 
