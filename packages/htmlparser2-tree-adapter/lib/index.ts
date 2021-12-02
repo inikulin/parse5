@@ -12,8 +12,8 @@ import {
     Text,
     isDirective,
     isText,
-    isComment,
-    isTag,
+    
+    
 } from 'domhandler';
 
 export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
@@ -55,7 +55,7 @@ export function createElement(tagName: string, namespaceURI: NS, attrs: Attribut
     }
 
     const node = new Element(tagName, attribs, []);
-    (node as any).namespace = namespaceURI;
+    node.namespace = namespaceURI;
     node['x-attribsNamespace'] = attribsNamespace;
     node['x-attribsPrefix'] = attribsPrefix;
     return node;
@@ -213,7 +213,7 @@ export function getTagName(element: Element) {
 }
 
 export function getNamespaceURI(element: Element): NS {
-    return (element as any).namespace;
+    return element.namespace as NS;
 }
 
 export function getTextNodeContent(textNode: Text) {
@@ -237,14 +237,14 @@ export function getDocumentTypeNodeSystemId(doctypeNode: ProcessingInstruction) 
 }
 
 //Node types
-export const isTextNode = isText;
-export const isCommentNode = isComment;
+
+
 
 export function isDocumentTypeNode(node: Node): node is ProcessingInstruction {
     return isDirective(node) && node.name === '!doctype';
 }
 
-export const isElementNode = isTag;
+
 
 // Source code location
 export function setNodeSourceCodeLocation(node: Node, location: ElementLocation | null) {
@@ -253,18 +253,20 @@ export function setNodeSourceCodeLocation(node: Node, location: ElementLocation 
         node.endIndex = location.endOffset;
     }
 
-    (node as any).sourceCodeLocation = location;
+    node.sourceCodeLocation = location as any;
 }
 
 export function getNodeSourceCodeLocation(node: Node) {
-    return (node as any).sourceCodeLocation as ElementLocation | null | undefined;
+    return node.sourceCodeLocation as ElementLocation | null | undefined;
 }
 
 export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<ElementLocation>) {
     if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
 
-    (node as any).sourceCodeLocation = {
-        ...(node as any).sourceCodeLocation,
+    node.sourceCodeLocation = {
+        ...node.sourceCodeLocation,
         ...endLocation,
-    };
+    } as any;
 }
+
+export {isComment as isCommentNode, isTag as isElementNode, isText as isTextNode} from 'domhandler';

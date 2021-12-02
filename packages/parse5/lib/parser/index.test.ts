@@ -16,8 +16,9 @@ generateParsingTests('parser', 'Parser', {}, (test, opts) => ({
 describe('parser', () => {
     it('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {
         const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
-        const document: any = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
+        const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
+        assert.ok(treeAdapters.htmlparser2.isDocumentTypeNode(document.childNodes[0]));
         assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
     });
 

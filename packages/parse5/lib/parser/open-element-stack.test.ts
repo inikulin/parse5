@@ -4,14 +4,14 @@ import { OpenElementStack } from './open-element-stack.js';
 import { generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
 
 generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
-    function createElement(tagName: string, namespaceURI = '') {
-        return treeAdapter.createElement(tagName, namespaceURI as any, []);
+    function createElement(tagName: string, namespaceURI = NS.HTML) {
+        return treeAdapter.createElement(tagName, namespaceURI, []);
     }
 
     test('Push element', () => {
         const document = treeAdapter.createDocument();
-        const element1 = createElement('#element1', 'namespace1');
-        const element2 = createElement('#element2', 'namespace2');
+        const element1 = createElement('#element1', NS.XLINK);
+        const element2 = createElement('#element2', NS.SVG);
         const stack = new OpenElementStack(document, treeAdapter);
 
         assert.strictEqual(stack.current, document);
@@ -29,7 +29,7 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
     });
 
     test('Pop element', () => {
-        const element = createElement('#element', 'namespace1');
+        const element = createElement('#element', NS.XLINK);
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element);
@@ -46,8 +46,8 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
     });
 
     test('Replace element', () => {
-        const element = createElement('#element', 'namespace');
-        const newElement = createElement('#newElement', 'newElementNamespace');
+        const element = createElement('#element', NS.MATHML);
+        const newElement = createElement('#newElement', NS.SVG);
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push('#element2');
@@ -59,9 +59,9 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
     });
 
     test('Insert element after element', () => {
-        const element1 = createElement('#element1', 'namespace1');
-        const element2 = createElement('#element2', 'namespace2');
-        const element3 = createElement('#element3', 'namespace3');
+        const element1 = createElement('#element1', NS.XLINK);
+        const element2 = createElement('#element2', NS.SVG);
+        const element3 = createElement('#element3', NS.XML);
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(element1);
@@ -238,7 +238,7 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
     });
 
     test('Try peek properly nested <body> element', () => {
-        const bodyElement = createElement($.BODY, '');
+        const bodyElement = createElement($.BODY, NS.HTML);
         let stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter);
 
         stack.push(createElement($.HTML));

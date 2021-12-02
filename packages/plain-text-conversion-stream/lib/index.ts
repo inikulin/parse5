@@ -30,10 +30,10 @@ export class PlainTextConversionStream<T extends TreeAdapterTypeMap> extends Par
         // NOTE: see https://html.spec.whatwg.org/#read-text
         this.parser._insertFakeElement($.HTML);
         this.parser._insertFakeElement($.HEAD);
-        this.parser.openElements!.pop();
+        this.parser.openElements.pop();
         this.parser._insertFakeElement($.BODY);
         this.parser._insertFakeElement($.PRE);
-        this.parser.treeAdapter.insertText(this.parser.openElements!.current, '\n');
+        this.parser.treeAdapter.insertText(this.parser.openElements.current, '\n');
         this.parser.switchToPlaintextParsing();
     }
 }

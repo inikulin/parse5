@@ -78,7 +78,10 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     //Update current element
     _isInTemplate() {
-        return this.current && isTemplate(this.currentTagName!, this.treeAdapter.getNamespaceURI(this.current));
+        return (
+            this.currentTagName != null &&
+            isTemplate(this.currentTagName, this.treeAdapter.getNamespaceURI(this.current))
+        );
     }
 
     _updateCurrentElement() {

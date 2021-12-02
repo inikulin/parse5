@@ -41,7 +41,7 @@ export function parseDatFile<T extends TreeAdapterTypeMap>(testSet: string, tree
     let curDirective = '';
     let curDescr: Record<string, number | string[]> | null = null;
 
-    testSet.split(/\r?\n/).forEach((line, idx) => {
+    for (const [idx, line] of testSet.split(/\r?\n/).entries()) {
         if (line === '#data') {
             curDescr = { '#line': idx + 1 };
             testDescrs.push(curDescr);
@@ -53,7 +53,7 @@ export function parseDatFile<T extends TreeAdapterTypeMap>(testSet: string, tree
         } else {
             (curDescr![curDirective] as string[]).push(line);
         }
-    });
+    }
 
     return testDescrs.map((descr) => {
         const fragmentContextTagName = (descr['#document-fragment'] as string[] | undefined)?.[0];

@@ -65,11 +65,11 @@ export class RewritingStream extends SAXParser {
     }
 
     private _getRawHtml(location: Location): string {
-        const { droppedBufferSize } = this.tokenizer!.preprocessor;
+        const { droppedBufferSize } = this.tokenizer.preprocessor;
         const start = location.startOffset - droppedBufferSize;
         const end = location.endOffset - droppedBufferSize;
 
-        return this.tokenizer.preprocessor.html!.slice(start, end);
+        return this.tokenizer.preprocessor.html.slice(start, end);
     }
 
     // Events

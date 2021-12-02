@@ -61,34 +61,34 @@ export class ParserFeedbackSimulator {
     //Token handlers
     private _ensureTokenizerMode(tn: string): void {
         switch (tn) {
-            case $.TEXTAREA:
-            case $.TITLE: {
-                this.tokenizer.state = TokenizerMode.RCDATA;
-
-                break;
-            }
-            case $.PLAINTEXT: {
-                this.tokenizer.state = TokenizerMode.PLAINTEXT;
-
-                break;
-            }
-            case $.SCRIPT: {
-                this.tokenizer.state = TokenizerMode.SCRIPT_DATA;
-
-                break;
-            }
-            case $.STYLE:
-            case $.IFRAME:
-            case $.XMP:
-            case $.NOEMBED:
-            case $.NOFRAMES:
-            case $.NOSCRIPT: {
-                this.tokenizer.state = TokenizerMode.RAWTEXT;
-
-                break;
-            }
-            default:
-            // Do nothing
+        case $.TEXTAREA: 
+        case $.TITLE: {
+            this.tokenizer.state = TokenizerMode.RCDATA;
+        
+        break;
+        }
+        case $.PLAINTEXT: {
+            this.tokenizer.state = TokenizerMode.PLAINTEXT;
+        
+        break;
+        }
+        case $.SCRIPT: {
+            this.tokenizer.state = TokenizerMode.SCRIPT_DATA;
+        
+        break;
+        }
+        case $.STYLE: 
+        case $.IFRAME: 
+        case $.XMP: 
+        case $.NOEMBED: 
+        case $.NOFRAMES: 
+        case $.NOSCRIPT: {
+            this.tokenizer.state = TokenizerMode.RAWTEXT;
+        
+        break;
+        }
+        default:
+        // Do nothing
         }
     }
 

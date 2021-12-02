@@ -52,7 +52,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         }
 
         this.writeCallback = callback;
-        this.parser.tokenizer!.write(chunk, this.lastChunkWritten);
+        this.parser.tokenizer.write(chunk, this.lastChunkWritten);
         this._runParsingLoop();
     }
 
@@ -74,13 +74,13 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         while (this.pendingHtmlInsertions.length > 0) {
             const html = this.pendingHtmlInsertions.pop()!;
 
-            this.parser.tokenizer!.insertHtmlAtCurrentPos(html);
+            this.parser.tokenizer.insertHtmlAtCurrentPos(html);
         }
 
         this.pausedByScript = false;
 
         //NOTE: keep parsing if we don't wait for the next input chunk
-        if (this.parser.tokenizer!.active) {
+        if (this.parser.tokenizer.active) {
             this._runParsingLoop();
         }
     };

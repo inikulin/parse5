@@ -179,8 +179,8 @@ export enum TAG_NAMES {
 
 const $ = TAG_NAMES;
 
-export const SPECIAL_ELEMENTS = {
-    [NS.HTML]: new Set<string>([
+export const SPECIAL_ELEMENTS: Record<NAMESPACES, Set<string>> = {
+    [NS.HTML]: new Set([
         $.ADDRESS,
         $.APPLET,
         $.AREA,
@@ -263,8 +263,11 @@ export const SPECIAL_ELEMENTS = {
         $.WBR,
         $.XMP,
     ]),
-    [NS.MATHML]: new Set<string>([$.MI, $.MO, $.MN, $.MS, $.MTEXT, $.ANNOTATION_XML]),
-    [NS.SVG]: new Set<string>([$.TITLE, $.FOREIGN_OBJECT, $.DESC]),
+    [NS.MATHML]: new Set([$.MI, $.MO, $.MN, $.MS, $.MTEXT, $.ANNOTATION_XML]),
+    [NS.SVG]: new Set([$.TITLE, $.FOREIGN_OBJECT, $.DESC]),
+    [NS.XLINK]: new Set(),
+    [NS.XML]: new Set(),
+    [NS.XMLNS]: new Set(),
 };
 
 export function isNumberedHeader(tn: string): boolean {

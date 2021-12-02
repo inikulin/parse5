@@ -130,9 +130,7 @@ function appendTokenEntry(result: HtmlLibToken[], tokenEntry: HtmlLibToken): voi
 function concatCharacterTokens(tokenEntries: HtmlLibToken[]): HtmlLibToken[] {
     const result: HtmlLibToken[] = [];
 
-    for (const tokenEntry of tokenEntries) {
-        appendTokenEntry(result, tokenEntry);
-    }
+    for (const tokenEntry of tokenEntries) appendTokenEntry(result, tokenEntry);
 
     return result;
 }
@@ -186,7 +184,7 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 
         const setName = fileName.replace('.test', '');
 
-        for (const descr of testDescrs) {
+        testDescrs.forEach((descr: TestDescription) => {
             if (!descr.initialStates) {
                 descr.initialStates = ['Data state'];
             }
@@ -197,7 +195,7 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 
             const expected = descr.output;
 
-            for (const initialState of descr.initialStates) {
+            descr.initialStates.forEach((initialState: string) => {
                 tests.push({
                     idx: ++testIdx,
                     setName,
@@ -208,8 +206,8 @@ function loadTests(dataDirPath: string): LoadedTest[] {
                     lastStartTag: descr.lastStartTag,
                     expectedErrors: descr.errors || [],
                 });
-            }
-        }
+            });
+        });
     }
 
     return tests;

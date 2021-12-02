@@ -46,15 +46,15 @@ function createRewriterTest({
 
 describe('RewritingStream', () => {
     // Raw data tests
-    for (const [idx, data] of loadSAXParserTestData().entries()) {
-        it(
-            `Raw token serialization - ${idx + 1}.${data.name}`,
-            createRewriterTest({
-                src: data.src,
-                expected: data.src,
-            })
-        );
-    }
+    for (const [idx, data] of loadSAXParserTestData().entries()) 
+            it(
+                `Raw token serialization - ${idx + 1}.${data.name}`,
+                createRewriterTest({
+                    src: data.src,
+                    expected: data.src,
+                })
+            )
+    ;
 
     it(
         'rewrite start tags',
