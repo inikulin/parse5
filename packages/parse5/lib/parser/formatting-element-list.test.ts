@@ -201,6 +201,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
         const entry = list.getElementEntry(element1);
 
+        assert.ok(entry);
         assert.strictEqual(entry.type, EntryType.Element);
         assert.strictEqual(entry.token, token);
         assert.strictEqual(entry.element, element1);
