@@ -4,7 +4,7 @@ import { TagToken, TokenType } from '../common/token.js';
 import { FormattingElementList, EntryType } from './formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
 
-function createToken(name: string): TagToken {
+function createToken(name: $): TagToken {
     return {
         type: TokenType.START_TAG,
         tagName: name,
@@ -30,8 +30,8 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
     test('Push element', () => {
         const list = new FormattingElementList(treeAdapter);
-        const element1Token = createToken('token1');
-        const element2Token = createToken('token2');
+        const element1Token = createToken($.DIV);
+        const element2Token = createToken($.P);
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.P, NS.HTML, []);
 
@@ -50,19 +50,18 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
     test('Insert element after bookmark', () => {
         const list = new FormattingElementList(treeAdapter);
-        const token = createToken('token1');
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.P, NS.HTML, []);
         const element3 = treeAdapter.createElement($.SPAN, NS.HTML, []);
         const element4 = treeAdapter.createElement($.TITLE, NS.HTML, []);
 
-        list.pushElement(element1, token);
+        list.pushElement(element1, createToken($.DIV));
         list.bookmark = list.entries[0];
 
-        list.pushElement(element2, token);
-        list.pushElement(element3, token);
+        list.pushElement(element2, createToken($.P));
+        list.pushElement(element3, createToken($.SPAN));
 
-        list.insertElementAfterBookmark(element4, token);
+        list.insertElementAfterBookmark(element4, createToken($.TITLE));
 
         assert.strictEqual(list.entries.length, 4);
         expect(list.entries[2]).toHaveProperty('element', element4);
@@ -70,12 +69,12 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
     test('Push element - Noah Ark condition', () => {
         const list = new FormattingElementList(treeAdapter);
-        const token1 = createToken('token1');
-        const token2 = createToken('token2');
-        const token3 = createToken('token3');
-        const token4 = createToken('token4');
-        const token5 = createToken('token5');
-        const token6 = createToken('token6');
+        const token1 = createToken($.DIV);
+        const token2 = createToken($.DIV);
+        const token3 = createToken($.DIV);
+        const token4 = createToken($.DIV);
+        const token5 = createToken($.DIV);
+        const token6 = createToken($.DIV);
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -120,7 +119,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
     test('Clear to the last marker', () => {
         const list = new FormattingElementList(treeAdapter);
-        const token = createToken('token');
+        const token = createToken($.DIV);
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -146,7 +145,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
     test('Remove entry', () => {
         const list = new FormattingElementList(treeAdapter);
-        const token = createToken('token');
+        const token = createToken($.DIV);
 
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, [
             { name: 'attr1', value: 'val1' },
@@ -173,7 +172,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
     test('Get entry in scope with given tag name', () => {
         const list = new FormattingElementList(treeAdapter);
-        const token = createToken('token');
+        const token = createToken($.DIV);
         const element = treeAdapter.createElement($.DIV, NS.HTML, []);
 
         assert.ok(!list.getElementEntryInScopeWithTagName($.DIV));
@@ -191,7 +190,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
 
     test('Get element entry', () => {
         const list = new FormattingElementList(treeAdapter);
-        const token = createToken('token');
+        const token = createToken($.DIV);
         const element1 = treeAdapter.createElement($.DIV, NS.HTML, []);
         const element2 = treeAdapter.createElement($.A, NS.HTML, []);
 
@@ -200,7 +199,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.pushElement(element2, token);
         list.insertMarker();
 
-        const entry = list.getElementEntry(element1)!;
+        const entry = list.getElementEntry(element1);
 
         assert.strictEqual(entry.type, EntryType.Element);
         assert.strictEqual(entry.token, token);
