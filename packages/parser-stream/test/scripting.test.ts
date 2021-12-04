@@ -1,7 +1,10 @@
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from '@parse5/test-utils/utils/generate-parsing-tests.js';
 import { makeChunks, generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
-import { setTimeout } from 'timers/promises';
+
+function pause() {
+    return new Promise((resolve) => setTimeout(resolve, 5));
+}
 
 const suitePath = new URL('../../../packages/test-utils/data/tree-construction-scripting', import.meta.url);
 
@@ -28,7 +31,7 @@ generateParsingTests(
                 (document as any).write = documentWrite;
 
                 //NOTE: emulate postponed script execution
-                await setTimeout(5);
+                await pause();
 
                 try {
                     /* eslint-disable no-eval */
@@ -44,7 +47,7 @@ generateParsingTests(
         //NOTE: emulate async input stream behavior
         for (const chunk of chunks) {
             parser.write(chunk);
-            await setTimeout(5);
+            await pause();
         }
 
         parser.end();
