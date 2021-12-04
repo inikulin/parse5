@@ -3,8 +3,6 @@ import { Serializer, SerializerOptions } from './serializer/index.js';
 import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
-
-
 // Shorthands
 
 /**
@@ -112,5 +110,5 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     return serializer.serialize();
 }
 
-export {ParserOptions} from './parser/index.js';
-export {SerializerOptions} from './serializer/index.js';
+export { ParserOptions } from './parser/index.js';
+export { SerializerOptions } from './serializer/index.js';

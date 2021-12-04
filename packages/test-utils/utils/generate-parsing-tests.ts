@@ -132,12 +132,13 @@ export function generateParsingTests(
     parse: ParseMethod<TreeAdapterTypeMap>
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
-        for (const test of loadTreeConstructionTestData(testSuite, treeAdapter)
-            .filter((test) => !skipFragments || !test.fragmentContext)) {
-                it(
-                    `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`,
-                    createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, { withoutErrors })
-                );
-            }
+        for (const test of loadTreeConstructionTestData(testSuite, treeAdapter).filter(
+            (test) => !skipFragments || !test.fragmentContext
+        )) {
+            it(
+                `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`,
+                createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, { withoutErrors })
+            );
+        }
     });
 }

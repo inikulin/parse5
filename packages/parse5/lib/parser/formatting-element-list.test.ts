@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
+import { TAG_NAMES as $, NAMESPACES as NS, getTagID } from '../common/html.js';
 import { TagToken, TokenType } from '../common/token.js';
 import { FormattingElementList, EntryType } from './formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '@parse5/test-utils/utils/common.js';
@@ -8,14 +8,17 @@ function createToken(name: $): TagToken {
     return {
         type: TokenType.START_TAG,
         tagName: name,
+        tagID: getTagID(name),
         ackSelfClosing: false,
         selfClosing: false,
         attrs: [],
         location: null,
     };
-}
 
 generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
+    
+    }
+
     test('Insert marker', () => {
         const list = new FormattingElementList(treeAdapter);
 

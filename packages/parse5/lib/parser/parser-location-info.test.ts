@@ -138,18 +138,21 @@ describe('location-info-parser', () => {
     it('Updating node source code location (GH-314)', () => {
         const sourceCodeLocationSetter = {
             setNodeSourceCodeLocation(node: any, location: any) {
-                node.sourceCodeLocation = location === null ? null : {
-                        start: {
-                            line: location.startLine,
-                            column: location.startCol,
-                            offset: location.startOffset,
-                        },
-                        end: {
-                            line: location.endLine,
-                            column: location.endCol,
-                            offset: location.endOffset,
-                        },
-                    };
+                node.sourceCodeLocation =
+                    location === null
+                        ? null
+                        : {
+                              start: {
+                                  line: location.startLine,
+                                  column: location.startCol,
+                                  offset: location.startOffset,
+                              },
+                              end: {
+                                  line: location.endLine,
+                                  column: location.endCol,
+                                  offset: location.endOffset,
+                              },
+                          };
             },
             updateNodeSourceCodeLocation(node: any, endLocation: any) {
                 node.sourceCodeLocation = {

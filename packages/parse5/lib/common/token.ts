@@ -1,3 +1,5 @@
+import type { TAG_ID } from './html.js';
+
 export enum TokenType {
     CHARACTER,
     NULL_CHARACTER,
@@ -67,6 +69,8 @@ export interface Attribute {
 export interface TagToken extends TokenBase {
     readonly type: TokenType.START_TAG | TokenType.END_TAG;
     tagName: string;
+    /** Used to cache the ID of the tag name. */
+    tagID: TAG_ID;
     selfClosing: boolean;
     ackSelfClosing: boolean;
     attrs: Attribute[];

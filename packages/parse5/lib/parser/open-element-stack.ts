@@ -1,20 +1,9 @@
-import { TAG_NAMES as $, NAMESPACES as NS, isNumberedHeader } from '../common/html.js';
+import { TAG_ID as $, NAMESPACES as NS, isNumberedHeader } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 
 //Element utils
-const IMPLICIT_END_TAG_REQUIRED = new Set<string>([
-    $.DD,
-    $.DT,
-    $.LI,
-    $.OPTGROUP,
-    $.OPTION,
-    $.P,
-    $.RB,
-    $.RP,
-    $.RT,
-    $.RTC,
-]);
-const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set<string>([
+const IMPLICIT_END_TAG_REQUIRED = new Set([$.DD, $.DT, $.LI, $.OPTGROUP, $.OPTION, $.P, $.RB, $.RP, $.RT, $.RTC]);
+const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set([
     ...IMPLICIT_END_TAG_REQUIRED,
     $.CAPTION,
     $.COLGROUP,
@@ -25,7 +14,7 @@ const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set<string>([
     $.THEAD,
     $.TR,
 ]);
-const SCOPING_ELEMENT_NS = new Map<string, NS>([
+const SCOPING_ELEMENT_NS = new Map<$, NS>([
     [$.APPLET, NS.HTML],
     [$.CAPTION, NS.HTML],
     [$.HTML, NS.HTML],
@@ -46,10 +35,6 @@ const SCOPING_ELEMENT_NS = new Map<string, NS>([
     [$.TITLE, NS.SVG],
 ]);
 
-function isTemplate(tagName: string, namespace: NS): boolean {
-    return tagName === $.TEMPLATE && namespace === NS.HTML;
-}
-
 const NAMED_HEADERS = [$.H1, $.H2, $.H3, $.H4, $.H5, $.H6];
 const TABLE_ROW_CONTEXT = [$.TR, $.TEMPLATE, $.HTML];
 const TABLE_BODY_CONTEXT = [$.TBODY, $.TFOOT, $.THEAD, $.TEMPLATE, $.HTML];
@@ -59,11 +44,16 @@ const TABLE_CELLS = [$.TD, $.TH];
 //Stack of open elements
 export class OpenElementStack<T extends TreeAdapterTypeMap> {
     items: T['parentNode'][] = [];
+    tagIDs: $[] = [];
     current: T['parentNode'];
-    currentTagName: string | null = null;
-    currentTmplContent: T['documentFragment'] | null = null;
     stackTop = -1;
     tmplCount = 0;
+
+    currentTagId = $.UNKNOWN;
+
+    get currentTmplContentOrNode(): T['parentNode'] {
+        return this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : this.current;
+    }
 
     public onItemPop: null | ((node: T['parentNode']) => void) = null;
 
@@ -77,23 +67,21 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Update current element
-    _isInTemplate() {
-        return (
-            this.currentTagName != null &&
-            isTemplate(this.currentTagName, this.treeAdapter.getNamespaceURI(this.current))
-        );
+    private _isInTemplate() {
+        return this.currentTagId === $.TEMPLATE && this.treeAdapter.getNamespaceURI(this.current) === NS.HTML;
     }
 
-    _updateCurrentElement() {
+    private _updateCurrentElement() {
         this.current = this.items[this.stackTop];
-        this.currentTagName = this.current && this.treeAdapter.getTagName(this.current);
-
-        this.currentTmplContent = this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : null;
+        this.currentTagId = this.tagIDs[this.stackTop];
     }
 
     //Mutations
-    push(element: T['element']) {
-        this.items[++this.stackTop] = element;
+    push(element: T['element'], tagID: $) {
+        this.stackTop++;
+
+        this.items[this.stackTop] = element;
+        this.tagIDs[this.stackTop] = tagID;
         this._updateCurrentElement();
 
         if (this._isInTemplate()) {
@@ -122,10 +110,11 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         }
     }
 
-    insertAfter(referenceElement: T['element'], newElement: T['element']) {
+    insertAfter(referenceElement: T['element'], newElement: T['element'], newElementID: $) {
         const insertionIdx = this._indexOf(referenceElement) + 1;
 
         this.items.splice(insertionIdx, 0, newElement);
+        this.tagIDs.splice(insertionIdx, 0, newElementID);
         this.stackTop++;
 
         if (insertionIdx === this.stackTop) {
@@ -133,19 +122,14 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         }
     }
 
-    popUntilTagNamePopped(tagName: string) {
-        let targetIdx = this.stackTop;
+    popUntilTagNamePopped(tagName: $) {
+        let targetIdx = this.stackTop + 1;
 
-        for (; targetIdx > 0; targetIdx--) {
-            if (
-                this.treeAdapter.getTagName(this.items[targetIdx]) === tagName &&
-                this.treeAdapter.getNamespaceURI(this.items[targetIdx]) === NS.HTML
-            ) {
-                break;
-            }
-        }
+        do {
+            targetIdx = this.tagIDs.lastIndexOf(tagName, targetIdx - 1);
+        } while (targetIdx > 0 && this.treeAdapter.getNamespaceURI(this.items[targetIdx]) !== NS.HTML);
 
-        this.shortenToLength(targetIdx);
+        this.shortenToLength(targetIdx < 0 ? 0 : targetIdx);
     }
 
     shortenToLength(idx: number) {
@@ -154,7 +138,8 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
             if (
                 this.tmplCount > 0 &&
-                isTemplate(this.treeAdapter.getTagName(this.items[i]), this.treeAdapter.getNamespaceURI(this.items[i]))
+                this.tagIDs[i] === $.TEMPLATE &&
+                this.treeAdapter.getNamespaceURI(this.items[i]) === NS.HTML
             ) {
                 this.tmplCount -= 1;
             }
@@ -169,7 +154,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(idx < 0 ? 0 : idx);
     }
 
-    protected popUntilPopped(tagNames: string[], targetNS: NS) {
+    private popUntilPopped(tagNames: $[], targetNS: NS) {
         const idx = this._indexOfTagNames(tagNames, targetNS);
         this.shortenToLength(idx < 0 ? 0 : idx);
     }
@@ -189,19 +174,16 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(1);
     }
 
-    private _indexOfTagNames(tagNames: string[], namespace: NS) {
+    private _indexOfTagNames(tagNames: $[], namespace: NS) {
         for (let i = this.stackTop; i >= 0; i--) {
-            if (
-                tagNames.includes(this.treeAdapter.getTagName(this.items[i])) &&
-                this.treeAdapter.getNamespaceURI(this.items[i]) === namespace
-            ) {
+            if (tagNames.includes(this.tagIDs[i]) && this.treeAdapter.getNamespaceURI(this.items[i]) === namespace) {
                 return i;
             }
         }
         return -1;
     }
 
-    private clearBackTo(tagNames: string[], targetNS: NS) {
+    private clearBackTo(tagNames: $[], targetNS: NS) {
         const idx = this._indexOfTagNames(tagNames, targetNS);
         this.shortenToLength(idx + 1);
     }
@@ -227,6 +209,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             } else {
                 this.onItemPop?.(element);
                 this.items.splice(idx, 1);
+                this.tagIDs.splice(idx, 1);
                 this.stackTop--;
                 this._updateCurrentElement();
             }
@@ -236,9 +219,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     //Search
     tryPeekProperlyNestedBodyElement() {
         //Properly nested <body> element (should be second element in stack).
-        const element = this.items[1];
-
-        return element && this.treeAdapter.getTagName(element) === $.BODY ? element : null;
+        return this.stackTop >= 1 && this.tagIDs[1] === $.BODY ? this.items[1] : null;
     }
 
     contains(element: T['element']) {
@@ -252,13 +233,13 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     isRootHtmlElementCurrent() {
-        return this.stackTop === 0 && this.currentTagName === $.HTML;
+        return this.stackTop === 0 && this.tagIDs[0] === $.HTML;
     }
 
     //Element in scope
-    hasInScope(tagName: string) {
+    hasInScope(tagName: $) {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.treeAdapter.getTagName(this.items[i]);
+            const tn = this.tagIDs[i];
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
             if (tn === tagName && ns === NS.HTML) {
@@ -275,7 +256,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     hasNumberedHeaderInScope() {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.treeAdapter.getTagName(this.items[i]);
+            const tn = this.tagIDs[i];
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
             if (isNumberedHeader(tn) && ns === NS.HTML) {
@@ -290,9 +271,9 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInListItemScope(tagName: string) {
+    hasInListItemScope(tagName: $) {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.treeAdapter.getTagName(this.items[i]);
+            const tn = this.tagIDs[i];
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
             if (tn === tagName && ns === NS.HTML) {
@@ -307,9 +288,9 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInButtonScope(tagName: string) {
+    hasInButtonScope(tagName: $) {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.treeAdapter.getTagName(this.items[i]);
+            const tn = this.tagIDs[i];
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
             if (tn === tagName && ns === NS.HTML) {
@@ -324,9 +305,9 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInTableScope(tagName: string) {
+    hasInTableScope(tagName: $) {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.treeAdapter.getTagName(this.items[i]);
+            const tn = this.tagIDs[i];
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
             if (ns !== NS.HTML) {
@@ -347,7 +328,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     hasTableBodyContextInTableScope() {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.treeAdapter.getTagName(this.items[i]);
+            const tn = this.tagIDs[i];
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
             if (ns !== NS.HTML) {
@@ -366,9 +347,9 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInSelectScope(tagName: string) {
+    hasInSelectScope(tagName: $) {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.treeAdapter.getTagName(this.items[i]);
+            const tn = this.tagIDs[i];
             const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
             if (ns !== NS.HTML) {
@@ -389,22 +370,21 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     //Implied end tags
     generateImpliedEndTags() {
-        while (this.currentTagName !== null && IMPLICIT_END_TAG_REQUIRED.has(this.currentTagName)) {
+        while (IMPLICIT_END_TAG_REQUIRED.has(this.currentTagId)) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsThoroughly() {
-        while (this.currentTagName !== null && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagName)) {
+        while (IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsWithExclusion(exclusionTagName: string) {
         while (
-            this.currentTagName !== null &&
-            this.currentTagName !== exclusionTagName &&
-            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagName)
+            this.treeAdapter.getTagName(this.current) !== exclusionTagName &&
+            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)
         ) {
             this.pop();
         }

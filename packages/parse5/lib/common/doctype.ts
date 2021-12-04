@@ -70,7 +70,11 @@ const QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES = [
     '-//w3c//dtd html 4.01 transitional//',
 ];
 
-const QUIRKS_MODE_PUBLIC_IDS = new Set(['-//w3o//dtd w3 html strict 3.0//en//', '-/w3c/dtd html 4.0 transitional/en', 'html']);
+const QUIRKS_MODE_PUBLIC_IDS = new Set([
+    '-//w3o//dtd w3 html strict 3.0//en//',
+    '-/w3c/dtd html 4.0 transitional/en',
+    'html',
+]);
 const LIMITED_QUIRKS_PUBLIC_ID_PREFIXES = ['-//w3c//dtd xhtml 1.0 frameset//', '-//w3c//dtd xhtml 1.0 transitional//'];
 
 const LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES = [

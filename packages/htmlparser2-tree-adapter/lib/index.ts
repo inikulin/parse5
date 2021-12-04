@@ -12,8 +12,6 @@ import {
     Text,
     isDirective,
     isText,
-    
-    
 } from 'domhandler';
 
 export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
@@ -238,13 +236,9 @@ export function getDocumentTypeNodeSystemId(doctypeNode: ProcessingInstruction) 
 
 //Node types
 
-
-
 export function isDocumentTypeNode(node: Node): node is ProcessingInstruction {
     return isDirective(node) && node.name === '!doctype';
 }
-
-
 
 // Source code location
 export function setNodeSourceCodeLocation(node: Node, location: ElementLocation | null) {
@@ -269,4 +263,4 @@ export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<El
     } as any;
 }
 
-export {isComment as isCommentNode, isTag as isElementNode, isText as isTextNode} from 'domhandler';
+export { isComment as isCommentNode, isTag as isElementNode, isText as isTextNode } from 'domhandler';

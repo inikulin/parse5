@@ -114,30 +114,31 @@ export class Serializer<T extends TreeAdapterTypeMap> {
 
             if (!attr.namespace) {
                 this.html += attr.name;
-            } else switch (attr.namespace) {
- case NS.XML: {
-                this.html += `xml:${attr.name}`;
-            
- break;
- }
- case NS.XMLNS: {
-                if (attr.name !== 'xmlns') {
-                    this.html += 'xmlns:';
-                }
+            } else
+                switch (attr.namespace) {
+                    case NS.XML: {
+                        this.html += `xml:${attr.name}`;
 
-                this.html += attr.name;
-            
- break;
- }
- case NS.XLINK: {
-                this.html += `xlink:${attr.name}`;
-            
- break;
- }
- default: {
-                this.html += `${attr.prefix}:${attr.name}`;
-            }
- }
+                        break;
+                    }
+                    case NS.XMLNS: {
+                        if (attr.name !== 'xmlns') {
+                            this.html += 'xmlns:';
+                        }
+
+                        this.html += attr.name;
+
+                        break;
+                    }
+                    case NS.XLINK: {
+                        this.html += `xlink:${attr.name}`;
+
+                        break;
+                    }
+                    default: {
+                        this.html += `${attr.prefix}:${attr.name}`;
+                    }
+                }
 
             this.html += `="${value}"`;
         }
@@ -147,9 +148,10 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         const content = this.treeAdapter.getTextNodeContent(node);
         const parent = this.treeAdapter.getParentNode(node);
 
-        this.html += parent &&
-            this.treeAdapter.isElementNode(parent) &&
-            UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent)) ? content : escapeString(content, false);
+        this.html +=
+            parent && this.treeAdapter.isElementNode(parent) && UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent))
+                ? content
+                : escapeString(content, false);
     }
 
     private _serializeCommentNode(node: T['commentNode']) {

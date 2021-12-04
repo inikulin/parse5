@@ -1,4 +1,4 @@
-import { TAG_NAMES as $, NAMESPACES as NS, ATTRS } from './html.js';
+import { TAG_ID as $, NAMESPACES as NS, ATTRS, getTagID } from './html.js';
 import type { TagToken, Attribute } from './token.js';
 
 //MIME types
@@ -131,7 +131,7 @@ export const SVG_TAG_NAMES_ADJUSTMENT_MAP = new Map(
 );
 
 //Tags that causes exit from foreign content
-const EXITS_FOREIGN_CONTENT = new Set<string>([
+const EXITS_FOREIGN_CONTENT = new Set([
     $.B,
     $.BIG,
     $.BLOCKQUOTE,
@@ -180,7 +180,7 @@ const EXITS_FOREIGN_CONTENT = new Set<string>([
 
 //Check exit from foreign content
 export function causesExit(startTagToken: TagToken) {
-    const tn = startTagToken.tagName;
+    const tn = startTagToken.tagID;
     const isFontWithAttrs =
         tn === $.FONT &&
         startTagToken.attrs.some(({ name }) => name === ATTRS.COLOR || name === ATTRS.SIZE || name === ATTRS.FACE);
@@ -225,15 +225,16 @@ export function adjustTokenSVGTagName(token: TagToken): void {
 
     if (adjustedTagName != null) {
         token.tagName = adjustedTagName;
+        token.tagID = getTagID(token.tagName);
     }
 }
 
 //Integration points
-function isMathMLTextIntegrationPoint(tn: string, ns: NS): boolean {
+function isMathMLTextIntegrationPoint(tn: $, ns: NS): boolean {
     return ns === NS.MATHML && (tn === $.MI || tn === $.MO || tn === $.MN || tn === $.MS || tn === $.MTEXT);
 }
 
-function isHtmlIntegrationPoint(tn: string, ns: NS, attrs: Attribute[]): boolean {
+function isHtmlIntegrationPoint(tn: $, ns: NS, attrs: Attribute[]): boolean {
     if (ns === NS.MATHML && tn === $.ANNOTATION_XML) {
         for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].name === ATTRS.ENCODING) {
@@ -247,7 +248,7 @@ function isHtmlIntegrationPoint(tn: string, ns: NS, attrs: Attribute[]): boolean
     return ns === NS.SVG && (tn === $.FOREIGN_OBJECT || tn === $.DESC || tn === $.TITLE);
 }
 
-export function isIntegrationPoint(tn: string, ns: NS, attrs: Attribute[], foreignNS?: NS): boolean {
+export function isIntegrationPoint(tn: $, ns: NS, attrs: Attribute[], foreignNS?: NS): boolean {
     if ((!foreignNS || foreignNS === NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs)) {
         return true;
     }
