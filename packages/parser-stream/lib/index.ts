@@ -56,9 +56,12 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         this._runParsingLoop();
     }
 
-    override _final(callback: () => void): void {
+    // TODO [engine:node@>=16]: Due to issues with Node < 16, we are overriding `end` instead of `_final`.
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    override end(chunk: any, encoding?: any, callback?: any) {
         this.lastChunkWritten = true;
-        this._write('', '', callback);
+        super.end(chunk || '', encoding, callback);
     }
 
     //Scriptable parser implementation
