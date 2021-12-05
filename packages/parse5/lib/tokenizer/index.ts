@@ -303,26 +303,21 @@ export class Tokenizer {
         this._unconsume();
     }
 
-    private _consumeSequenceIfMatch(pattern: Uint16Array, startCp: number, caseSensitive: boolean): boolean {
-        let consumedCount = 0;
-        let cp = startCp;
+    private _consumeSequenceIfMatch(pattern: Uint16Array, caseSensitive: boolean): boolean {
+        for (let i = 0; i < pattern.length; i++) {
+            const cp = this.preprocessor.peek(i);
 
-        const isMatch = pattern.every((patternCp, patternPos) => {
-            if (patternPos > 0) {
-                cp = this._consume();
-                consumedCount++;
-            }
-
-            return cp !== $.EOF && (cp === patternCp || (!caseSensitive && cp === toAsciiLowerCodePoint(patternCp)));
-        });
-
-        if (!isMatch) {
-            while (consumedCount--) {
-                this._unconsume();
+            if (cp !== pattern[i] && (caseSensitive || cp !== toAsciiLowerCodePoint(pattern[i]))) {
+                return false;
             }
         }
 
-        return isMatch;
+        // We will already have consumed one character before calling this method.
+        for (let i = 1; i < pattern.length; i++) {
+            this._consume();
+        }
+
+        return true;
     }
 
     //Temp buffer
@@ -549,7 +544,7 @@ export class Tokenizer {
 
             // If the branch is a value, store it and continue
             if (current & BinTrieFlags.HAS_VALUE) {
-                const nextCp = this.preprocessor.peek();
+                const nextCp = this.preprocessor.peek(1);
 
                 if (
                     cp !== $.SEMICOLON &&
@@ -1976,12 +1971,12 @@ export class Tokenizer {
     // Markup declaration open state
     //------------------------------------------------------------------
     private _stateMarkupDeclarationOpen(cp: number) {
-        if (this._consumeSequenceIfMatch($$.DASH_DASH_STRING, cp, true)) {
+        if (this._consumeSequenceIfMatch($$.DASH_DASH_STRING, true)) {
             this._createCommentToken();
             this.state = State.COMMENT_START;
-        } else if (this._consumeSequenceIfMatch($$.DOCTYPE_STRING, cp, false)) {
+        } else if (this._consumeSequenceIfMatch($$.DOCTYPE_STRING, false)) {
             this.state = State.DOCTYPE;
-        } else if (this._consumeSequenceIfMatch($$.CDATA_START_STRING, cp, true)) {
+        } else if (this._consumeSequenceIfMatch($$.CDATA_START_STRING, true)) {
             if (this.allowCDATA) {
                 this.state = State.CDATA_SECTION;
             } else {
@@ -2344,9 +2339,9 @@ export class Tokenizer {
                 break;
             }
             default:
-                if (this._consumeSequenceIfMatch($$.PUBLIC_STRING, cp, false)) {
+                if (this._consumeSequenceIfMatch($$.PUBLIC_STRING, false)) {
                     this.state = State.AFTER_DOCTYPE_PUBLIC_KEYWORD;
-                } else if (this._consumeSequenceIfMatch($$.SYSTEM_STRING, cp, false)) {
+                } else if (this._consumeSequenceIfMatch($$.SYSTEM_STRING, false)) {
                     this.state = State.AFTER_DOCTYPE_SYSTEM_KEYWORD;
                 }
                 //NOTE: sequence lookup can be abrupted by hibernation. In that case lookup

@@ -128,8 +128,15 @@ export class Preprocessor {
         this.endOfChunkHit = false;
     }
 
-    public peek(): number {
-        return this.html.charCodeAt(this.pos + 1);
+    public peek(offset: number): number {
+        const pos = this.pos + offset;
+
+        if (pos >= this.html.length) {
+            this.endOfChunkHit = !this.lastChunkWritten;
+            return $.EOF;
+        }
+
+        return this.html.charCodeAt(pos);
     }
 
     public advance(): number {
