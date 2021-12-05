@@ -1188,39 +1188,46 @@ export class Tokenizer {
         }
     }
 
+    private handleSpecialEndTag(cp: number): boolean {
+        const token = this.currentToken as TagToken;
+
+        const lower = cp | 0x20;
+        if (token.tagName.length < this.lastStartTagName.length) {
+            if (this.lastStartTagName.charCodeAt(token.tagName.length) !== lower) {
+                return true;
+            }
+            token.tagName += String.fromCodePoint(lower);
+            this.tempBuff.push(cp);
+            return false;
+        }
+
+        switch (cp) {
+            case $.SPACE:
+            case $.LINE_FEED:
+            case $.TABULATION:
+            case $.FORM_FEED: {
+                this.state = State.BEFORE_ATTRIBUTE_NAME;
+                return false;
+            }
+            case $.SOLIDUS: {
+                this.state = State.SELF_CLOSING_START_TAG;
+                return false;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._emitCurrentToken();
+                this.state = State.DATA;
+                return false;
+            }
+            default: {
+                return true;
+            }
+        }
+    }
+
     // RCDATA end tag name state
     //------------------------------------------------------------------
     private _stateRcdataEndTagName(cp: number) {
-        const token = this.currentToken as TagToken;
-
-        if (isAsciiUpper(cp)) {
-            token.tagName += toAsciiLowerChar(cp);
-            this.tempBuff.push(cp);
-        } else if (isAsciiLower(cp)) {
-            token.tagName += String.fromCodePoint(cp);
-            this.tempBuff.push(cp);
-        } else {
-            if (this.lastStartTagName === token.tagName) {
-                switch (cp) {
-                    case $.SPACE:
-                    case $.LINE_FEED:
-                    case $.TABULATION:
-                    case $.FORM_FEED: {
-                        this.state = State.BEFORE_ATTRIBUTE_NAME;
-                        return;
-                    }
-                    case $.SOLIDUS: {
-                        this.state = State.SELF_CLOSING_START_TAG;
-                        return;
-                    }
-                    case $.GREATER_THAN_SIGN: {
-                        this.state = State.DATA;
-                        this._emitCurrentToken();
-                        return;
-                    }
-                }
-            }
-
+        if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
             this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.RCDATA;
@@ -1258,36 +1265,7 @@ export class Tokenizer {
     // RAWTEXT end tag name state
     //------------------------------------------------------------------
     private _stateRawtextEndTagName(cp: number) {
-        const token = this.currentToken as TagToken;
-
-        if (isAsciiUpper(cp)) {
-            token.tagName += toAsciiLowerChar(cp);
-            this.tempBuff.push(cp);
-        } else if (isAsciiLower(cp)) {
-            token.tagName += String.fromCodePoint(cp);
-            this.tempBuff.push(cp);
-        } else {
-            if (this.lastStartTagName === token.tagName) {
-                switch (cp) {
-                    case $.SPACE:
-                    case $.LINE_FEED:
-                    case $.TABULATION:
-                    case $.FORM_FEED: {
-                        this.state = State.BEFORE_ATTRIBUTE_NAME;
-                        return;
-                    }
-                    case $.SOLIDUS: {
-                        this.state = State.SELF_CLOSING_START_TAG;
-                        return;
-                    }
-                    case $.GREATER_THAN_SIGN: {
-                        this._emitCurrentToken();
-                        this.state = State.DATA;
-                        return;
-                    }
-                }
-            }
-
+        if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
             this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.RAWTEXT;
@@ -1328,36 +1306,7 @@ export class Tokenizer {
     // Script data end tag name state
     //------------------------------------------------------------------
     private _stateScriptDataEndTagName(cp: number) {
-        const token = this.currentToken as TagToken;
-
-        if (isAsciiUpper(cp)) {
-            token.tagName += toAsciiLowerChar(cp);
-            this.tempBuff.push(cp);
-        } else if (isAsciiLower(cp)) {
-            token.tagName += String.fromCodePoint(cp);
-            this.tempBuff.push(cp);
-        } else {
-            if (this.lastStartTagName === token.tagName) {
-                switch (cp) {
-                    case $.SPACE:
-                    case $.LINE_FEED:
-                    case $.TABULATION:
-                    case $.FORM_FEED: {
-                        this.state = State.BEFORE_ATTRIBUTE_NAME;
-                        return;
-                    }
-                    case $.SOLIDUS: {
-                        this.state = State.SELF_CLOSING_START_TAG;
-                        return;
-                    }
-                    case $.GREATER_THAN_SIGN: {
-                        this._emitCurrentToken();
-                        this.state = State.DATA;
-                        return;
-                    }
-                }
-            }
-
+        if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
             this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.SCRIPT_DATA;
@@ -1519,36 +1468,7 @@ export class Tokenizer {
     // Script data escaped end tag name state
     //------------------------------------------------------------------
     private _stateScriptDataEscapedEndTagName(cp: number) {
-        const token = this.currentToken as TagToken;
-
-        if (isAsciiUpper(cp)) {
-            token.tagName += toAsciiLowerChar(cp);
-            this.tempBuff.push(cp);
-        } else if (isAsciiLower(cp)) {
-            token.tagName += String.fromCodePoint(cp);
-            this.tempBuff.push(cp);
-        } else {
-            if (this.lastStartTagName === token.tagName) {
-                switch (cp) {
-                    case $.SPACE:
-                    case $.LINE_FEED:
-                    case $.TABULATION:
-                    case $.FORM_FEED: {
-                        this.state = State.BEFORE_ATTRIBUTE_NAME;
-                        return;
-                    }
-                    case $.SOLIDUS: {
-                        this.state = State.SELF_CLOSING_START_TAG;
-                        return;
-                    }
-                    case $.GREATER_THAN_SIGN: {
-                        this._emitCurrentToken();
-                        this.state = State.DATA;
-                        return;
-                    }
-                }
-            }
-
+        if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
             this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.SCRIPT_DATA_ESCAPED;
