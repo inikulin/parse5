@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { Tokenizer, TokenizerMode } from 'parse5/lib/tokenizer/index.js';
+import { Tokenizer, TokenizerMode, State as TokenizerState } from 'parse5/lib/tokenizer/index.js';
 import { makeChunks } from './common.js';
 import { TokenType, Token } from 'parse5/lib/common/token.js';
 
@@ -220,14 +220,16 @@ export function generateTokenizationTests(
     createTokenSource: TokenSourceCreator
 ): void {
     for (const testData of loadTests(testSuite)) {
-        const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${testData.initialState}`;
+        const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${
+            TokenizerState[testData.initialState]
+        }`;
 
         it(testName, () => {
             const chunks = makeChunks(testData.input);
             const result = tokenize(
                 createTokenSource,
                 chunks,
-                testData.initialState as Tokenizer['state'],
+                testData.initialState as TokenizerState,
                 testData.lastStartTag
             );
 

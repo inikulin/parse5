@@ -54,7 +54,7 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
 ]);
 
 //States
-enum State {
+export enum State {
     DATA,
     RCDATA,
     RAWTEXT,
