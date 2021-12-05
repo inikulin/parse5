@@ -46,7 +46,9 @@ function createRewriterTest({
 
 describe('RewritingStream', () => {
     // Raw data tests
-    for (const [idx, data] of loadSAXParserTestData().entries())
+    for (const [idx, data] of loadSAXParserTestData().entries()) {
+        // NOTE: if we don't have any event handlers assigned, stream should use raw
+        // data for the serialization, so serialized content should identical to the original.
         it(
             `Raw token serialization - ${idx + 1}.${data.name}`,
             createRewriterTest({
@@ -54,6 +56,7 @@ describe('RewritingStream', () => {
                 expected: data.src,
             })
         );
+    }
 
     it(
         'rewrite start tags',

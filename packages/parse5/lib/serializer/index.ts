@@ -118,7 +118,6 @@ export class Serializer<T extends TreeAdapterTypeMap> {
                 switch (attr.namespace) {
                     case NS.XML: {
                         this.html += `xml:${attr.name}`;
-
                         break;
                     }
                     case NS.XMLNS: {
@@ -127,12 +126,10 @@ export class Serializer<T extends TreeAdapterTypeMap> {
                         }
 
                         this.html += attr.name;
-
                         break;
                     }
                     case NS.XLINK: {
                         this.html += `xlink:${attr.name}`;
-
                         break;
                     }
                     default: {

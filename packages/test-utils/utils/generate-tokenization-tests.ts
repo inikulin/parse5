@@ -176,7 +176,7 @@ function loadTests(dataDirPath: string): LoadedTest[] {
         const filePath = path.join(dataDirPath, fileName);
         const testSetJson = fs.readFileSync(filePath).toString();
         const testSet = JSON.parse(testSetJson);
-        const testDescrs = testSet.tests;
+        const testDescrs: TestDescription[] = testSet.tests;
 
         if (!testDescrs) {
             continue;
@@ -184,7 +184,7 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 
         const setName = fileName.replace('.test', '');
 
-        testDescrs.forEach((descr: TestDescription) => {
+        for (const descr of testDescrs) {
             if (!descr.initialStates) {
                 descr.initialStates = ['Data state'];
             }
@@ -195,7 +195,7 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 
             const expected = descr.output;
 
-            descr.initialStates.forEach((initialState: string) => {
+            for (const initialState of descr.initialStates) {
                 tests.push({
                     idx: ++testIdx,
                     setName,
@@ -206,8 +206,8 @@ function loadTests(dataDirPath: string): LoadedTest[] {
                     lastStartTag: descr.lastStartTag,
                     expectedErrors: descr.errors || [],
                 });
-            });
-        });
+            }
+        }
     }
 
     return tests;

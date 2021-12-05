@@ -64,17 +64,14 @@ export class ParserFeedbackSimulator {
             case $.TEXTAREA:
             case $.TITLE: {
                 this.tokenizer.state = TokenizerMode.RCDATA;
-
                 break;
             }
             case $.PLAINTEXT: {
                 this.tokenizer.state = TokenizerMode.PLAINTEXT;
-
                 break;
             }
             case $.SCRIPT: {
                 this.tokenizer.state = TokenizerMode.SCRIPT_DATA;
-
                 break;
             }
             case $.STYLE:
@@ -84,7 +81,6 @@ export class ParserFeedbackSimulator {
             case $.NOFRAMES:
             case $.NOSCRIPT: {
                 this.tokenizer.state = TokenizerMode.RAWTEXT;
-
                 break;
             }
             default:

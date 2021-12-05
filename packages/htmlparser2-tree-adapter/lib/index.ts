@@ -13,6 +13,7 @@ import {
     isDirective,
     isText,
 } from 'domhandler';
+export { isComment as isCommentNode, isTag as isElementNode, isText as isTextNode } from 'domhandler';
 
 export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
     Node,
@@ -262,5 +263,3 @@ export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<El
         ...endLocation,
     } as any;
 }
-
-export { isComment as isCommentNode, isTag as isElementNode, isText as isTextNode } from 'domhandler';

@@ -368,40 +368,36 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _initTokenizerForFragmentParsing() {
-        if (this.fragmentContext && this.treeAdapter.getNamespaceURI(this.fragmentContext) === NS.HTML) {
-            const tn = this.fragmentContextID;
+    private _initTokenizerForFragmentParsing() {
+        if (!this.fragmentContext || this.treeAdapter.getNamespaceURI(this.fragmentContext) !== NS.HTML) {
+            return;
+        }
 
-            switch (tn) {
-                case $.TITLE:
-                case $.TEXTAREA: {
-                    this.tokenizer.state = TokenizerMode.RCDATA;
-
-                    break;
-                }
-                case $.STYLE:
-                case $.XMP:
-                case $.IFRAME:
-                case $.NOEMBED:
-                case $.NOFRAMES:
-                case $.NOSCRIPT: {
-                    this.tokenizer.state = TokenizerMode.RAWTEXT;
-
-                    break;
-                }
-                case $.SCRIPT: {
-                    this.tokenizer.state = TokenizerMode.SCRIPT_DATA;
-
-                    break;
-                }
-                case $.PLAINTEXT: {
-                    this.tokenizer.state = TokenizerMode.PLAINTEXT;
-
-                    break;
-                }
-                default:
-                // Do nothing
+        switch (this.fragmentContextID) {
+            case $.TITLE:
+            case $.TEXTAREA: {
+                this.tokenizer.state = TokenizerMode.RCDATA;
+                break;
             }
+            case $.STYLE:
+            case $.XMP:
+            case $.IFRAME:
+            case $.NOEMBED:
+            case $.NOFRAMES:
+            case $.NOSCRIPT: {
+                this.tokenizer.state = TokenizerMode.RAWTEXT;
+                break;
+            }
+            case $.SCRIPT: {
+                this.tokenizer.state = TokenizerMode.SCRIPT_DATA;
+                break;
+            }
+            case $.PLAINTEXT: {
+                this.tokenizer.state = TokenizerMode.PLAINTEXT;
+                break;
+            }
+            default:
+            // Do nothing
         }
     }
 
@@ -610,117 +606,94 @@ export class Parser<T extends TreeAdapterTypeMap> {
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
                 modeInitial(this, token);
-
                 break;
             }
             case InsertionMode.BEFORE_HTML: {
                 modeBeforeHtml(this, token);
-
                 break;
             }
             case InsertionMode.BEFORE_HEAD: {
                 modeBeforeHead(this, token);
-
                 break;
             }
             case InsertionMode.IN_HEAD: {
                 modeInHead(this, token);
-
                 break;
             }
             case InsertionMode.IN_HEAD_NO_SCRIPT: {
                 modeInHeadNoScript(this, token);
-
                 break;
             }
             case InsertionMode.AFTER_HEAD: {
                 modeAfterHead(this, token);
-
                 break;
             }
             case InsertionMode.IN_BODY: {
                 modeInBody(this, token);
-
                 break;
             }
             case InsertionMode.TEXT: {
                 modeText(this, token);
-
                 break;
             }
             case InsertionMode.IN_TABLE: {
                 modeInTable(this, token);
-
                 break;
             }
             case InsertionMode.IN_TABLE_TEXT: {
                 modeInTableText(this, token);
-
                 break;
             }
             case InsertionMode.IN_CAPTION: {
                 modeInCaption(this, token);
-
                 break;
             }
             case InsertionMode.IN_COLUMN_GROUP: {
                 modeInColumnGroup(this, token);
-
                 break;
             }
             case InsertionMode.IN_TABLE_BODY: {
                 modeInTableBody(this, token);
-
                 break;
             }
             case InsertionMode.IN_ROW: {
                 modeInRow(this, token);
-
                 break;
             }
             case InsertionMode.IN_CELL: {
                 modeInCell(this, token);
-
                 break;
             }
             case InsertionMode.IN_SELECT: {
                 modeInSelect(this, token);
-
                 break;
             }
             case InsertionMode.IN_SELECT_IN_TABLE: {
                 modeInSelectInTable(this, token);
-
                 break;
             }
             case InsertionMode.IN_TEMPLATE: {
                 modeInTemplate(this, token);
-
                 break;
             }
             case InsertionMode.AFTER_BODY: {
                 modeAfterBody(this, token);
-
                 break;
             }
             case InsertionMode.IN_FRAMESET: {
                 modeInFrameset(this, token);
-
                 break;
             }
             case InsertionMode.AFTER_FRAMESET: {
                 modeAfterFrameset(this, token);
-
                 break;
             }
             case InsertionMode.AFTER_AFTER_BODY: {
                 modeAfterAfterBody(this, token);
-
                 break;
             }
             case InsertionMode.AFTER_AFTER_FRAMESET: {
                 modeAfterAfterFrameset(this, token);
-
                 break;
             }
             default:
@@ -746,32 +719,26 @@ export class Parser<T extends TreeAdapterTypeMap> {
         switch (token.type) {
             case TokenType.CHARACTER: {
                 characterInForeignContent(this, token);
-
                 break;
             }
             case TokenType.NULL_CHARACTER: {
                 nullCharacterInForeignContent(this, token);
-
                 break;
             }
             case TokenType.WHITESPACE_CHARACTER: {
                 this._insertCharacters(token);
-
                 break;
             }
             case TokenType.COMMENT: {
                 appendComment(this, token);
-
                 break;
             }
             case TokenType.START_TAG: {
                 startTagInForeignContent(this, token);
-
                 break;
             }
             case TokenType.END_TAG: {
                 endTagInForeignContent(this, token);
-
                 break;
             }
             default:
@@ -934,7 +901,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
                 } else {
                     parent = this.openElements.items[i - 1];
                 }
-
                 break;
             }
         }
@@ -1092,7 +1058,7 @@ function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
     p._adoptNodes(furthestBlock, newElement);
     p.treeAdapter.appendChild(furthestBlock, newElement);
 
-    p.activeFormattingElements.insertElementAfterBookmark(newElement, formattingElementEntry.token);
+    p.activeFormattingElements.insertElementAfterBookmark(newElement, token);
     p.activeFormattingElements.removeEntry(formattingElementEntry);
 
     p.openElements.remove(formattingElementEntry.element);
@@ -1127,11 +1093,6 @@ function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
 
 //Generic token handlers
 //------------------------------------------------------------------
-
-function misplacedDoctype<T extends TreeAdapterTypeMap>(p: Parser<T>, token: DoctypeToken) {
-    p._err(token, ERR.misplacedDoctype);
-}
-
 function appendComment<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken) {
     p._appendCommentNode(token, p.openElements.currentTmplContentOrNode);
 }
@@ -1197,22 +1158,18 @@ function modeBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
         case TokenType.NULL_CHARACTER:
         case TokenType.EOF: {
             tokenBeforeHtml(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagBeforeHtml(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagBeforeHtml(p, token);
-
             break;
         }
         default:
@@ -1251,27 +1208,22 @@ function modeBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
         case TokenType.NULL_CHARACTER:
         case TokenType.EOF: {
             tokenBeforeHead(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.DOCTYPE: {
-            misplacedDoctype(p, token);
-
+            p._err(token, ERR.misplacedDoctype);
             break;
         }
         case TokenType.START_TAG: {
             startTagBeforeHead(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagBeforeHead(p, token);
-
             break;
         }
         default:
@@ -1318,32 +1270,26 @@ function modeInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
         case TokenType.NULL_CHARACTER:
         case TokenType.EOF: {
             tokenInHead(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.DOCTYPE: {
-            misplacedDoctype(p, token);
-
+            p._err(token, ERR.misplacedDoctype);
             break;
         }
         case TokenType.START_TAG: {
             startTagInHead(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInHead(p, token);
-
             break;
         }
         default:
@@ -1352,12 +1298,9 @@ function modeInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
 }
 
 function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
-
             break;
         }
         case $.BASE:
@@ -1367,12 +1310,10 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
         case $.META: {
             p._appendElement(token, NS.HTML);
             token.ackSelfClosing = true;
-
             break;
         }
         case $.TITLE: {
             p._switchToTextParsing(token, TokenizerMode.RCDATA);
-
             break;
         }
         case $.NOSCRIPT: {
@@ -1382,18 +1323,15 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
                 p._insertElement(token, NS.HTML);
                 p.insertionMode = InsertionMode.IN_HEAD_NO_SCRIPT;
             }
-
             break;
         }
         case $.NOFRAMES:
         case $.STYLE: {
             p._switchToTextParsing(token, TokenizerMode.RAWTEXT);
-
             break;
         }
         case $.SCRIPT: {
             p._switchToTextParsing(token, TokenizerMode.SCRIPT_DATA);
-
             break;
         }
         case $.TEMPLATE: {
@@ -1402,12 +1340,10 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             p.framesetOk = false;
             p.insertionMode = InsertionMode.IN_TEMPLATE;
             p.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
-
             break;
         }
         case $.HEAD: {
             p._err(token, ERR.misplacedStartTagForHeadElement);
-
             break;
         }
         default: {
@@ -1417,20 +1353,16 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
 }
 
 function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.HEAD: {
             p.openElements.pop();
             p.insertionMode = InsertionMode.AFTER_HEAD;
-
             break;
         }
         case $.BODY:
         case $.BR:
         case $.HTML: {
             tokenInHead(p, token);
-
             break;
         }
         case $.TEMPLATE: {
@@ -1448,7 +1380,6 @@ function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
             } else {
                 p._err(token, ERR.endTagWithoutMatchingOpenElement);
             }
-
             break;
         }
         default: {
@@ -1471,32 +1402,26 @@ function modeInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
         case TokenType.NULL_CHARACTER:
         case TokenType.EOF: {
             tokenInHeadNoScript(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.DOCTYPE: {
-            misplacedDoctype(p, token);
-
+            p._err(token, ERR.misplacedDoctype);
             break;
         }
         case TokenType.START_TAG: {
             startTagInHeadNoScript(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInHeadNoScript(p, token);
-
             break;
         }
         default:
@@ -1505,12 +1430,9 @@ function modeInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
 }
 
 function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
-
             break;
         }
         case $.BASEFONT:
@@ -1521,12 +1443,10 @@ function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
         case $.NOFRAMES:
         case $.STYLE: {
             startTagInHead(p, token);
-
             break;
         }
         case $.NOSCRIPT: {
             p._err(token, ERR.nestedNoscriptInHead);
-
             break;
         }
         default: {
@@ -1565,32 +1485,26 @@ function modeAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
         case TokenType.NULL_CHARACTER:
         case TokenType.EOF: {
             tokenAfterHead(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.DOCTYPE: {
-            misplacedDoctype(p, token);
-
+            p._err(token, ERR.misplacedDoctype);
             break;
         }
         case TokenType.START_TAG: {
             startTagAfterHead(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagAfterHead(p, token);
-
             break;
         }
         default:
@@ -1599,25 +1513,20 @@ function modeAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
 }
 
 function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
-
             break;
         }
         case $.BODY: {
             p._insertElement(token, NS.HTML);
             p.framesetOk = false;
             p.insertionMode = InsertionMode.IN_BODY;
-
             break;
         }
         case $.FRAMESET: {
             p._insertElement(token, NS.HTML);
             p.insertionMode = InsertionMode.IN_FRAMESET;
-
             break;
         }
         case $.BASE:
@@ -1634,12 +1543,10 @@ function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
             p.openElements.push(p.headElement!, $.HEAD);
             startTagInHead(p, token);
             p.openElements.remove(p.headElement!);
-
             break;
         }
         case $.HEAD: {
             p._err(token, ERR.misplacedStartTagForHeadElement);
-
             break;
         }
         default: {
@@ -1672,32 +1579,26 @@ function modeInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInBody(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInBody(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -2055,239 +1956,218 @@ function genericStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token
 function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
     const tn = token.tagID;
 
-    if (
-        tn === $.I ||
-        tn === $.S ||
-        tn === $.B ||
-        tn === $.U ||
-        tn === $.EM ||
-        tn === $.TT ||
-        tn === $.BIG ||
-        tn === $.CODE ||
-        tn === $.FONT ||
-        tn === $.SMALL ||
-        tn === $.STRIKE ||
-        tn === $.STRONG
-    ) {
-        bStartTagInBody(p, token);
-    } else if (tn === $.A) {
-        aStartTagInBody(p, token);
-    } else if (isNumberedHeader(tn)) {
-        numberedHeaderStartTagInBody(p, token);
-    } else
-        switch (tn) {
-            case $.P:
-            case $.DL:
-            case $.OL:
-            case $.UL:
-            case $.DIV:
-            case $.DIR:
-            case $.NAV:
-            case $.MAIN:
-            case $.MENU:
-            case $.ASIDE:
-            case $.CENTER:
-            case $.FIGURE:
-            case $.FOOTER:
-            case $.HEADER:
-            case $.HGROUP:
-            case $.DIALOG:
-            case $.DETAILS:
-            case $.ADDRESS:
-            case $.ARTICLE:
-            case $.SECTION:
-            case $.SUMMARY:
-            case $.FIELDSET:
-            case $.BLOCKQUOTE:
-            case $.FIGCAPTION: {
-                addressStartTagInBody(p, token);
-
-                break;
-            }
-            case $.LI:
-            case $.DD:
-            case $.DT: {
-                listItemStartTagInBody(p, token);
-
-                break;
-            }
-            case $.BR:
-            case $.IMG:
-            case $.WBR:
-            case $.AREA:
-            case $.EMBED:
-            case $.KEYGEN: {
-                areaStartTagInBody(p, token);
-
-                break;
-            }
-            case $.HR: {
-                hrStartTagInBody(p, token);
-
-                break;
-            }
-            case $.RB:
-            case $.RTC: {
-                rbStartTagInBody(p, token);
-
-                break;
-            }
-            case $.RT:
-            case $.RP: {
-                rtStartTagInBody(p, token);
-
-                break;
-            }
-            case $.PRE:
-            case $.LISTING: {
-                preStartTagInBody(p, token);
-
-                break;
-            }
-            case $.XMP: {
-                xmpStartTagInBody(p, token);
-
-                break;
-            }
-            case $.SVG: {
-                svgStartTagInBody(p, token);
-
-                break;
-            }
-            case $.HTML: {
-                htmlStartTagInBody(p, token);
-
-                break;
-            }
-            case $.BASE:
-            case $.LINK:
-            case $.META:
-            case $.STYLE:
-            case $.TITLE:
-            case $.SCRIPT:
-            case $.BGSOUND:
-            case $.BASEFONT:
-            case $.TEMPLATE: {
-                startTagInHead(p, token);
-
-                break;
-            }
-            case $.BODY: {
-                bodyStartTagInBody(p, token);
-
-                break;
-            }
-            case $.FORM: {
-                formStartTagInBody(p, token);
-
-                break;
-            }
-            case $.NOBR: {
-                nobrStartTagInBody(p, token);
-
-                break;
-            }
-            case $.MATH: {
-                mathStartTagInBody(p, token);
-
-                break;
-            }
-            case $.TABLE: {
-                tableStartTagInBody(p, token);
-
-                break;
-            }
-            case $.INPUT: {
-                inputStartTagInBody(p, token);
-
-                break;
-            }
-            case $.PARAM:
-            case $.TRACK:
-            case $.SOURCE: {
-                paramStartTagInBody(p, token);
-
-                break;
-            }
-            case $.IMAGE: {
-                imageStartTagInBody(p, token);
-
-                break;
-            }
-            case $.BUTTON: {
-                buttonStartTagInBody(p, token);
-
-                break;
-            }
-            case $.APPLET:
-            case $.OBJECT:
-            case $.MARQUEE: {
-                appletStartTagInBody(p, token);
-
-                break;
-            }
-            case $.IFRAME: {
-                iframeStartTagInBody(p, token);
-
-                break;
-            }
-            case $.SELECT: {
-                selectStartTagInBody(p, token);
-
-                break;
-            }
-            case $.OPTION:
-            case $.OPTGROUP: {
-                optgroupStartTagInBody(p, token);
-
-                break;
-            }
-            case $.NOEMBED: {
-                noembedStartTagInBody(p, token);
-
-                break;
-            }
-            case $.FRAMESET: {
-                framesetStartTagInBody(p, token);
-
-                break;
-            }
-            case $.TEXTAREA: {
-                textareaStartTagInBody(p, token);
-
-                break;
-            }
-            case $.NOSCRIPT: {
-                if (p.options.scriptingEnabled) {
-                    noembedStartTagInBody(p, token);
-                } else {
-                    genericStartTagInBody(p, token);
-                }
-
-                break;
-            }
-            case $.PLAINTEXT: {
-                plaintextStartTagInBody(p, token);
-
-                break;
-            }
-            default:
-                if (
-                    tn !== $.COL &&
-                    tn !== $.TH &&
-                    tn !== $.TD &&
-                    tn !== $.TR &&
-                    tn !== $.HEAD &&
-                    tn !== $.FRAME &&
-                    tn !== $.TBODY &&
-                    tn !== $.TFOOT &&
-                    tn !== $.THEAD &&
-                    tn !== $.CAPTION &&
-                    tn !== $.COLGROUP
-                ) {
-                    genericStartTagInBody(p, token);
-                }
+    switch (tn) {
+        case $.I:
+        case $.S:
+        case $.B:
+        case $.U:
+        case $.EM:
+        case $.TT:
+        case $.BIG:
+        case $.CODE:
+        case $.FONT:
+        case $.SMALL:
+        case $.STRIKE:
+        case $.STRONG: {
+            bStartTagInBody(p, token);
+            break;
         }
+        case $.A: {
+            aStartTagInBody(p, token);
+            break;
+        }
+        case $.H1:
+        case $.H2:
+        case $.H3:
+        case $.H4:
+        case $.H5:
+        case $.H6: {
+            numberedHeaderStartTagInBody(p, token);
+            break;
+        }
+        case $.P:
+        case $.DL:
+        case $.OL:
+        case $.UL:
+        case $.DIV:
+        case $.DIR:
+        case $.NAV:
+        case $.MAIN:
+        case $.MENU:
+        case $.ASIDE:
+        case $.CENTER:
+        case $.FIGURE:
+        case $.FOOTER:
+        case $.HEADER:
+        case $.HGROUP:
+        case $.DIALOG:
+        case $.DETAILS:
+        case $.ADDRESS:
+        case $.ARTICLE:
+        case $.SECTION:
+        case $.SUMMARY:
+        case $.FIELDSET:
+        case $.BLOCKQUOTE:
+        case $.FIGCAPTION: {
+            addressStartTagInBody(p, token);
+            break;
+        }
+        case $.LI:
+        case $.DD:
+        case $.DT: {
+            listItemStartTagInBody(p, token);
+            break;
+        }
+        case $.BR:
+        case $.IMG:
+        case $.WBR:
+        case $.AREA:
+        case $.EMBED:
+        case $.KEYGEN: {
+            areaStartTagInBody(p, token);
+            break;
+        }
+        case $.HR: {
+            hrStartTagInBody(p, token);
+            break;
+        }
+        case $.RB:
+        case $.RTC: {
+            rbStartTagInBody(p, token);
+            break;
+        }
+        case $.RT:
+        case $.RP: {
+            rtStartTagInBody(p, token);
+            break;
+        }
+        case $.PRE:
+        case $.LISTING: {
+            preStartTagInBody(p, token);
+            break;
+        }
+        case $.XMP: {
+            xmpStartTagInBody(p, token);
+            break;
+        }
+        case $.SVG: {
+            svgStartTagInBody(p, token);
+            break;
+        }
+        case $.HTML: {
+            htmlStartTagInBody(p, token);
+            break;
+        }
+        case $.BASE:
+        case $.LINK:
+        case $.META:
+        case $.STYLE:
+        case $.TITLE:
+        case $.SCRIPT:
+        case $.BGSOUND:
+        case $.BASEFONT:
+        case $.TEMPLATE: {
+            startTagInHead(p, token);
+            break;
+        }
+        case $.BODY: {
+            bodyStartTagInBody(p, token);
+            break;
+        }
+        case $.FORM: {
+            formStartTagInBody(p, token);
+            break;
+        }
+        case $.NOBR: {
+            nobrStartTagInBody(p, token);
+            break;
+        }
+        case $.MATH: {
+            mathStartTagInBody(p, token);
+            break;
+        }
+        case $.TABLE: {
+            tableStartTagInBody(p, token);
+            break;
+        }
+        case $.INPUT: {
+            inputStartTagInBody(p, token);
+            break;
+        }
+        case $.PARAM:
+        case $.TRACK:
+        case $.SOURCE: {
+            paramStartTagInBody(p, token);
+            break;
+        }
+        case $.IMAGE: {
+            imageStartTagInBody(p, token);
+            break;
+        }
+        case $.BUTTON: {
+            buttonStartTagInBody(p, token);
+            break;
+        }
+        case $.APPLET:
+        case $.OBJECT:
+        case $.MARQUEE: {
+            appletStartTagInBody(p, token);
+            break;
+        }
+        case $.IFRAME: {
+            iframeStartTagInBody(p, token);
+            break;
+        }
+        case $.SELECT: {
+            selectStartTagInBody(p, token);
+            break;
+        }
+        case $.OPTION:
+        case $.OPTGROUP: {
+            optgroupStartTagInBody(p, token);
+            break;
+        }
+        case $.NOEMBED: {
+            noembedStartTagInBody(p, token);
+            break;
+        }
+        case $.FRAMESET: {
+            framesetStartTagInBody(p, token);
+            break;
+        }
+        case $.TEXTAREA: {
+            textareaStartTagInBody(p, token);
+            break;
+        }
+        case $.NOSCRIPT: {
+            if (p.options.scriptingEnabled) {
+                noembedStartTagInBody(p, token);
+            } else {
+                genericStartTagInBody(p, token);
+            }
+            break;
+        }
+        case $.PLAINTEXT: {
+            plaintextStartTagInBody(p, token);
+            break;
+        }
+
+        case $.COL:
+        case $.TH:
+        case $.TD:
+        case $.TR:
+        case $.HEAD:
+        case $.FRAME:
+        case $.TBODY:
+        case $.TFOOT:
+        case $.THEAD:
+        case $.CAPTION:
+        case $.COLGROUP:
+            // Ignore
+            break;
+        default:
+            genericStartTagInBody(p, token);
+    }
 }
 
 function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
@@ -2400,9 +2280,7 @@ function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 }
 
 function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.A:
         case $.B:
         case $.I:
@@ -2418,12 +2296,10 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         case $.STRIKE:
         case $.STRONG: {
             callAdoptionAgency(p, token);
-
             break;
         }
         case $.P: {
             pEndTagInBody(p);
-
             break;
         }
         case $.DL:
@@ -2452,61 +2328,55 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         case $.BLOCKQUOTE:
         case $.FIGCAPTION: {
             addressEndTagInBody(p, token);
-
             break;
         }
         case $.LI: {
             liEndTagInBody(p);
-
             break;
         }
         case $.DD:
         case $.DT: {
             ddEndTagInBody(p, token);
-
             break;
         }
-        default:
-            if (isNumberedHeader(tn)) {
-                numberedHeaderEndTagInBody(p);
-            } else
-                switch (tn) {
-                    case $.BR: {
-                        brEndTagInBody(p);
-
-                        break;
-                    }
-                    case $.BODY: {
-                        bodyEndTagInBody(p);
-
-                        break;
-                    }
-                    case $.HTML: {
-                        htmlEndTagInBody(p, token);
-
-                        break;
-                    }
-                    case $.FORM: {
-                        formEndTagInBody(p);
-
-                        break;
-                    }
-                    case $.APPLET:
-                    case $.OBJECT:
-                    case $.MARQUEE: {
-                        appletEndTagInBody(p, token);
-
-                        break;
-                    }
-                    case $.TEMPLATE: {
-                        endTagInHead(p, token);
-
-                        break;
-                    }
-                    default: {
-                        genericEndTagInBody(p, token);
-                    }
-                }
+        case $.H1:
+        case $.H2:
+        case $.H3:
+        case $.H4:
+        case $.H5:
+        case $.H6: {
+            numberedHeaderEndTagInBody(p);
+            break;
+        }
+        case $.BR: {
+            brEndTagInBody(p);
+            break;
+        }
+        case $.BODY: {
+            bodyEndTagInBody(p);
+            break;
+        }
+        case $.HTML: {
+            htmlEndTagInBody(p, token);
+            break;
+        }
+        case $.FORM: {
+            formEndTagInBody(p);
+            break;
+        }
+        case $.APPLET:
+        case $.OBJECT:
+        case $.MARQUEE: {
+            appletEndTagInBody(p, token);
+            break;
+        }
+        case $.TEMPLATE: {
+            endTagInHead(p, token);
+            break;
+        }
+        default: {
+            genericEndTagInBody(p, token);
+        }
     }
 }
 
@@ -2526,17 +2396,14 @@ function modeText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
         case TokenType.NULL_CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInText(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInText(p, token);
-
             break;
         }
         default:
@@ -2568,27 +2435,22 @@ function modeInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
         case TokenType.NULL_CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
             characterInTable(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInTable(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInTable(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -2668,58 +2530,47 @@ function formStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 }
 
 function startTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.TD:
         case $.TH:
         case $.TR: {
             tdStartTagInTable(p, token);
-
             break;
         }
         case $.STYLE:
         case $.SCRIPT:
         case $.TEMPLATE: {
             startTagInHead(p, token);
-
             break;
         }
         case $.COL: {
             colStartTagInTable(p, token);
-
             break;
         }
         case $.FORM: {
             formStartTagInTable(p, token);
-
             break;
         }
         case $.TABLE: {
             tableStartTagInTable(p, token);
-
             break;
         }
         case $.TBODY:
         case $.TFOOT:
         case $.THEAD: {
             tbodyStartTagInTable(p, token);
-
             break;
         }
         case $.INPUT: {
             inputStartTagInTable(p, token);
-
             break;
         }
         case $.CAPTION: {
             captionStartTagInTable(p, token);
-
             break;
         }
         case $.COLGROUP: {
             colgroupStartTagInTable(p, token);
-
             break;
         }
         default: {
@@ -2808,32 +2659,26 @@ function modeInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInCaption(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInCaption(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -2896,32 +2741,26 @@ function modeInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: To
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER: {
             tokenInColumnGroup(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInColumnGroup(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInColumnGroup(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -2930,23 +2769,18 @@ function modeInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: To
 }
 
 function startTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
-
             break;
         }
         case $.COL: {
             p._appendElement(token, NS.HTML);
             token.ackSelfClosing = true;
-
             break;
         }
         case $.TEMPLATE: {
             startTagInHead(p, token);
-
             break;
         }
         default: {
@@ -2986,27 +2820,22 @@ function modeInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
         case TokenType.NULL_CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
             characterInTable(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInTableBody(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInTableBody(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -3015,14 +2844,11 @@ function modeInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
 }
 
 function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.TR: {
             p.openElements.clearBackToTableBodyContext();
             p._insertElement(token, NS.HTML);
             p.insertionMode = InsertionMode.IN_ROW;
-
             break;
         }
         case $.TH:
@@ -3031,7 +2857,6 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
             p._insertFakeElement(TN.TR, $.TR);
             p.insertionMode = InsertionMode.IN_ROW;
             modeInRow(p, token);
-
             break;
         }
         case $.CAPTION:
@@ -3046,7 +2871,6 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
                 p.insertionMode = InsertionMode.IN_TABLE;
                 modeInTable(p, token);
             }
-
             break;
         }
         default: {
@@ -3093,27 +2917,22 @@ function modeInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
         case TokenType.NULL_CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
             characterInTable(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInRow(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInRow(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -3150,16 +2969,13 @@ function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTok
 }
 
 function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.TR: {
             if (p.openElements.hasInTableScope($.TR)) {
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
             }
-
             break;
         }
         case $.TABLE: {
@@ -3169,33 +2985,31 @@ function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
                 modeInTableBody(p, token);
             }
-
             break;
         }
         case $.TBODY:
         case $.TFOOT:
         case $.THEAD: {
-            if (p.openElements.hasInTableScope(tn) || p.openElements.hasInTableScope($.TR)) {
+            if (p.openElements.hasInTableScope(token.tagID) || p.openElements.hasInTableScope($.TR)) {
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
                 modeInTableBody(p, token);
             }
-
+            break;
+        }
+        case $.BODY:
+        case $.CAPTION:
+        case $.COL:
+        case $.COLGROUP:
+        case $.HTML:
+        case $.TD:
+        case $.TH: {
+            // Ignore end tag
             break;
         }
         default:
-            if (
-                tn !== $.BODY &&
-                tn !== $.CAPTION &&
-                tn !== $.COL &&
-                tn !== $.COLGROUP &&
-                tn !== $.HTML &&
-                tn !== $.TD &&
-                tn !== $.TH
-            ) {
-                endTagInTable(p, token);
-            }
+            endTagInTable(p, token);
     }
 }
 
@@ -3205,32 +3019,26 @@ function modeInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInCell(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInCell(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -3278,27 +3086,22 @@ function modeInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) 
         case TokenType.CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInSelect(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInSelect(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -3307,12 +3110,9 @@ function modeInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) 
 }
 
 function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
-
             break;
         }
         case $.OPTION: {
@@ -3321,7 +3121,6 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
             }
 
             p._insertElement(token, NS.HTML);
-
             break;
         }
         case $.OPTGROUP: {
@@ -3334,7 +3133,6 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
             }
 
             p._insertElement(token, NS.HTML);
-
             break;
         }
         case $.INPUT:
@@ -3345,17 +3143,15 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
                 p.openElements.popUntilTagNamePopped($.SELECT);
                 p._resetInsertionMode();
 
-                if (tn !== $.SELECT) {
+                if (token.tagID !== $.SELECT) {
                     p._processToken(token);
                 }
             }
-
             break;
         }
         case $.SCRIPT:
         case $.TEMPLATE: {
             startTagInHead(p, token);
-
             break;
         }
         default:
@@ -3397,27 +3193,22 @@ function modeInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
         case TokenType.CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInSelectInTable(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInSelectInTable(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInBody(p, token);
-
             break;
         }
         default:
@@ -3475,32 +3266,26 @@ function modeInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInTemplate(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInTemplate(p, token);
-
             break;
         }
         case TokenType.EOF: {
             eofInTemplate(p, token);
-
             break;
         }
         default:
@@ -3582,32 +3367,26 @@ function modeAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER: {
             tokenAfterBody(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendCommentToRootHtmlElement(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagAfterBody(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagAfterBody(p, token);
-
             break;
         }
         case TokenType.EOF: {
             stopParsing(p, token);
-
             break;
         }
         default:
@@ -3644,27 +3423,22 @@ function modeInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
     switch (token.type) {
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagInFrameset(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagInFrameset(p, token);
-
             break;
         }
         case TokenType.EOF: {
             stopParsing(p, token);
-
             break;
         }
         default:
@@ -3673,28 +3447,22 @@ function modeInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
 }
 
 function startTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
-
             break;
         }
         case $.FRAMESET: {
             p._insertElement(token, NS.HTML);
-
             break;
         }
         case $.FRAME: {
             p._appendElement(token, NS.HTML);
             token.ackSelfClosing = true;
-
             break;
         }
         case $.NOFRAMES: {
             startTagInHead(p, token);
-
             break;
         }
         default:
@@ -3718,27 +3486,22 @@ function modeAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: To
     switch (token.type) {
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendComment(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagAfterFrameset(p, token);
-
             break;
         }
         case TokenType.END_TAG: {
             endTagAfterFrameset(p, token);
-
             break;
         }
         case TokenType.EOF: {
             stopParsing(p, token);
-
             break;
         }
         default:
@@ -3770,27 +3533,22 @@ function modeAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
         case TokenType.NULL_CHARACTER:
         case TokenType.END_TAG: {
             tokenAfterAfterBody(p, token);
-
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendCommentToDocument(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagAfterAfterBody(p, token);
-
             break;
         }
         case TokenType.EOF: {
             stopParsing(p, token);
-
             break;
         }
         default:
@@ -3817,22 +3575,18 @@ function modeAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     switch (token.type) {
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
-
             break;
         }
         case TokenType.COMMENT: {
             appendCommentToDocument(p, token);
-
             break;
         }
         case TokenType.START_TAG: {
             startTagAfterAfterFrameset(p, token);
-
             break;
         }
         case TokenType.EOF: {
             stopParsing(p, token);
-
             break;
         }
         default:

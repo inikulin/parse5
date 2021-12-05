@@ -14,11 +14,9 @@ function createToken(name: $): TagToken {
         attrs: [],
         location: null,
     };
+}
 
 generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
-    
-    }
-
     test('Insert marker', () => {
         const list = new FormattingElementList(treeAdapter);
 
