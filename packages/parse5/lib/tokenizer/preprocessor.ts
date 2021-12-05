@@ -128,6 +128,10 @@ export class Preprocessor {
         this.endOfChunkHit = false;
     }
 
+    public peek(): number {
+        return this.html.charCodeAt(this.pos + 1);
+    }
+
     public advance(): number {
         this.pos++;
 

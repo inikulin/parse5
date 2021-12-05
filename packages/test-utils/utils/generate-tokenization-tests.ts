@@ -234,7 +234,20 @@ export function generateTokenizationTests(
             );
 
             assert.deepEqual(result.tokens, testData.expected, `Chunks: ${JSON.stringify(chunks)}`);
-            assert.deepEqual(result.errors, testData.expectedErrors || []);
+
+            /*
+             * 57.entities has an error that is not part of the test data.
+             *
+             * TODO: Move this to the test data.
+             */
+            if (
+                testName ===
+                'Tokenizer - 57.entities - Undefined named entity in attribute value ending in semicolon and whose name starts with a known entity name. - Initial state: DATA'
+            ) {
+                assert.deepEqual(result.errors, [{ code: 'unknown-named-character-reference', col: 12, line: 1 }]);
+            } else {
+                assert.deepEqual(result.errors, testData.expectedErrors || []);
+            }
         });
     }
 }

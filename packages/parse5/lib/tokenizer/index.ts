@@ -229,12 +229,6 @@ export class Tokenizer {
         this.onParseError?.(this.preprocessor.getError(code));
     }
 
-    private _errOnNextCodePoint(code: ERR) {
-        this._consume();
-        this._err(code);
-        this._unconsume();
-    }
-
     private currentAttrLocation: Location | null = null;
     private ctLoc: Location | null = null;
     private _getCurrentLocation(): Location | null {
@@ -538,28 +532,42 @@ export class Tokenizer {
     }
 
     // Character reference helpers
-    private _matchNamedCharacterReference(cp: number): number[] | null {
-        let result = null;
+    private _matchNamedCharacterReference(cp: number): boolean {
+        let hasResult = false;
         let excess = 0;
+        let withoutSemicolon = false;
 
         for (let i = 0, current = htmlDecodeTree[0]; i >= 0; cp = this._consume()) {
-            this.tempBuff.push(cp);
-            excess += 1;
-
             i = determineBranch(htmlDecodeTree, current, i + 1, cp);
 
             if (i < 0) break;
+
+            this.tempBuff.push(cp);
+            excess += 1;
 
             current = htmlDecodeTree[i];
 
             // If the branch is a value, store it and continue
             if (current & BinTrieFlags.HAS_VALUE) {
-                // If this is a surrogate pair, combine the higher bits from the node with the next byte
-                result =
-                    current & BinTrieFlags.MULTI_BYTE
-                        ? [htmlDecodeTree[++i], htmlDecodeTree[++i]]
-                        : [htmlDecodeTree[++i]];
-                excess = 0;
+                const nextCp = this.preprocessor.peek();
+
+                if (
+                    cp !== $.SEMICOLON &&
+                    this._isCharacterReferenceInAttribute() &&
+                    (nextCp === $.EQUALS_SIGN || isAsciiAlphaNumeric(nextCp))
+                ) {
+                    // No need to consider multi-byte values, as legacy entities are always a single byte.
+                    i += 1;
+                } else {
+                    // If this is a surrogate pair, consume the next two bytes.
+                    this.tempBuff =
+                        current & BinTrieFlags.MULTI_BYTE
+                            ? [htmlDecodeTree[++i], htmlDecodeTree[++i]]
+                            : [htmlDecodeTree[++i]];
+                    excess = 0;
+                    hasResult = true;
+                    withoutSemicolon = cp !== $.SEMICOLON;
+                }
             }
         }
 
@@ -568,7 +576,16 @@ export class Tokenizer {
             this._unconsume();
         }
 
-        return result;
+        if (withoutSemicolon && !this.preprocessor.endOfChunkHit) {
+            this._err(ERR.missingSemicolonAfterCharacterReference);
+        }
+
+        // We want to emit the error above on the code point after the entity.
+        // We always consume one code point too many in the loop, and we wait to
+        // unconsume it until after the error is emitted.
+        this._unconsume();
+
+        return hasResult;
     }
 
     private _isCharacterReferenceInAttribute(): boolean {
@@ -577,18 +594,6 @@ export class Tokenizer {
             this.returnState === State.ATTRIBUTE_VALUE_SINGLE_QUOTED ||
             this.returnState === State.ATTRIBUTE_VALUE_UNQUOTED
         );
-    }
-
-    private _isCharacterReferenceAttributeQuirk(withSemicolon: boolean): boolean {
-        if (!withSemicolon && this._isCharacterReferenceInAttribute()) {
-            const nextCp = this._consume();
-
-            this._unconsume();
-
-            return nextCp === $.EQUALS_SIGN || isAsciiAlphaNumeric(nextCp);
-        }
-
-        return false;
     }
 
     private _flushCodePointsConsumedAsCharacterReference() {
@@ -2894,22 +2899,9 @@ export class Tokenizer {
         //results are no longer valid and we will need to start over.
         if (this._ensureHibernation()) {
             this.tempBuff = [$.AMPERSAND];
-        } else if (matchResult) {
-            const withSemicolon = this.tempBuff[this.tempBuff.length - 1] === $.SEMICOLON;
-
-            if (!this._isCharacterReferenceAttributeQuirk(withSemicolon)) {
-                if (!withSemicolon) {
-                    this._errOnNextCodePoint(ERR.missingSemicolonAfterCharacterReference);
-                }
-
-                this.tempBuff = matchResult;
-            }
-
-            this._flushCodePointsConsumedAsCharacterReference();
-            this.state = this.returnState;
         } else {
             this._flushCodePointsConsumedAsCharacterReference();
-            this.state = State.AMBIGUOUS_AMPERSAND;
+            this.state = matchResult ? this.returnState : State.AMBIGUOUS_AMPERSAND;
         }
     }
 
