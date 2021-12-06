@@ -193,6 +193,17 @@ function toAsciiLowerChar(cp: number): string {
     return String.fromCharCode(toAsciiLowerCodePoint(cp));
 }
 
+function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
+    return (
+        cp === $.SPACE ||
+        cp === $.LINE_FEED ||
+        cp === $.TABULATION ||
+        cp === $.FORM_FEED ||
+        cp === $.SOLIDUS ||
+        cp === $.GREATER_THAN_SIGN
+    );
+}
+
 //Tokenizer
 export class Tokenizer {
     public preprocessor: Preprocessor;
@@ -303,7 +314,7 @@ export class Tokenizer {
         this._unconsume();
     }
 
-    private _consumeSequenceIfMatch(pattern: Uint16Array, caseSensitive: boolean): boolean {
+    private _isSequenceMatch(pattern: Uint16Array, caseSensitive: boolean): boolean {
         for (let i = 0; i < pattern.length; i++) {
             const cp = this.preprocessor.peek(i);
 
@@ -312,20 +323,19 @@ export class Tokenizer {
             }
         }
 
-        // We will already have consumed one character before calling this method.
-        for (let i = 1; i < pattern.length; i++) {
-            this._consume();
-        }
-
         return true;
     }
 
-    //Temp buffer
-    private _isTempBufferEqualToScriptString(): boolean {
-        return (
-            this.tempBuff.length === $$.SCRIPT_STRING.length &&
-            this.tempBuff.every((value, index) => value === $$.SCRIPT_STRING[index])
-        );
+    private _consumeSequenceIfMatch(pattern: Uint16Array, caseSensitive: boolean): boolean {
+        if (this._isSequenceMatch(pattern, caseSensitive)) {
+            // We will already have consumed one character before calling this method.
+            for (let i = 1; i < pattern.length; i++) {
+                this._consume();
+            }
+
+            return true;
+        }
+        return false;
     }
 
     //Token creation
@@ -1480,24 +1490,16 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapeStart(cp: number) {
         if (
-            cp === $.SPACE ||
-            cp === $.LINE_FEED ||
-            cp === $.TABULATION ||
-            cp === $.FORM_FEED ||
-            cp === $.SOLIDUS ||
-            cp === $.GREATER_THAN_SIGN
+            this._isSequenceMatch($$.SCRIPT_STRING, false) &&
+            isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT_STRING.length))
         ) {
-            this.state = this._isTempBufferEqualToScriptString()
-                ? State.SCRIPT_DATA_DOUBLE_ESCAPED
-                : State.SCRIPT_DATA_ESCAPED;
             this._emitCodePoint(cp);
-        } else if (isAsciiUpper(cp)) {
-            this.tempBuff.push(toAsciiLowerCodePoint(cp));
-            this._emitCodePoint(cp);
-        } else if (isAsciiLower(cp)) {
-            this.tempBuff.push(cp);
-            this._emitCodePoint(cp);
-        } else {
+            for (let i = 0; i < $$.SCRIPT_STRING.length; i++) {
+                this._emitCodePoint(this._consume());
+            }
+
+            this.state = State.SCRIPT_DATA_DOUBLE_ESCAPED;
+        } else if (!this._ensureHibernation()) {
             this.state = State.SCRIPT_DATA_ESCAPED;
             this._stateScriptDataEscaped(cp);
         }
@@ -1618,25 +1620,16 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapeEnd(cp: number) {
         if (
-            cp === $.SPACE ||
-            cp === $.LINE_FEED ||
-            cp === $.TABULATION ||
-            cp === $.FORM_FEED ||
-            cp === $.SOLIDUS ||
-            cp === $.GREATER_THAN_SIGN
+            this._isSequenceMatch($$.SCRIPT_STRING, false) &&
+            isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT_STRING.length))
         ) {
-            this.state = this._isTempBufferEqualToScriptString()
-                ? State.SCRIPT_DATA_ESCAPED
-                : State.SCRIPT_DATA_DOUBLE_ESCAPED;
+            this._emitCodePoint(cp);
+            for (let i = 0; i < $$.SCRIPT_STRING.length; i++) {
+                this._emitCodePoint(this._consume());
+            }
 
-            this._emitCodePoint(cp);
-        } else if (isAsciiUpper(cp)) {
-            this.tempBuff.push(toAsciiLowerCodePoint(cp));
-            this._emitCodePoint(cp);
-        } else if (isAsciiLower(cp)) {
-            this.tempBuff.push(cp);
-            this._emitCodePoint(cp);
-        } else {
+            this.state = State.SCRIPT_DATA_ESCAPED;
+        } else if (!this._ensureHibernation()) {
             this.state = State.SCRIPT_DATA_DOUBLE_ESCAPED;
             this._stateScriptDataDoubleEscaped(cp);
         }
