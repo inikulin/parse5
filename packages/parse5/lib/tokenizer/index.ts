@@ -191,19 +191,16 @@ function toAsciiLower(cp: number): number {
     return cp + 0x00_20;
 }
 
+function isWhitespace(cp: number): boolean {
+    return cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED;
+}
+
 function isEntityInAttributeInvalidEnd(nextCp: number): boolean {
     return nextCp === $.EQUALS_SIGN || isAsciiAlphaNumeric(nextCp);
 }
 
 function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
-    return (
-        cp === $.SPACE ||
-        cp === $.LINE_FEED ||
-        cp === $.TABULATION ||
-        cp === $.FORM_FEED ||
-        cp === $.SOLIDUS ||
-        cp === $.GREATER_THAN_SIGN
-    );
+    return isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN;
 }
 
 //Tokenizer
@@ -513,7 +510,7 @@ export class Tokenizer {
     private _emitCodePoint(cp: number): void {
         let type = TokenType.CHARACTER;
 
-        if (cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED) {
+        if (isWhitespace(cp)) {
             type = TokenType.WHITESPACE_CHARACTER;
         } else if (cp === $.NULL) {
             type = TokenType.NULL_CHARACTER;
