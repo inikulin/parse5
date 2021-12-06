@@ -77,7 +77,11 @@ export class SAXParser extends Transform {
     }
 
     //TransformStream implementation
-    override _transform(chunk: string, _encoding: string, callback: (error?: Error | null, data?: string) => void) {
+    override _transform(
+        chunk: string,
+        _encoding: string,
+        callback: (error?: Error | null, data?: string) => void
+    ): void {
         if (typeof chunk !== 'string') {
             throw new TypeError('Parser can work only with string streams.');
         }
@@ -85,7 +89,7 @@ export class SAXParser extends Transform {
         callback(null, this._transformChunk(chunk));
     }
 
-    override _final(callback: (error?: Error | null, data?: string) => void) {
+    override _final(callback: (error?: Error | null, data?: string) => void): void {
         this.lastChunkWritten = true;
         callback(null, this._transformChunk(''));
     }
@@ -118,7 +122,7 @@ export class SAXParser extends Transform {
      * });
      * ```
      */
-    public stop() {
+    public stop(): void {
         this.stopped = true;
     }
 
@@ -262,7 +266,10 @@ const TOKEN_EMISSION_HELPERS = {
     },
     [TokenType.COMMENT]: {
         eventName: 'comment',
-        reshapeToken: (origToken: CommentToken) => ({ text: origToken.data, sourceCodeLocation: origToken.location }),
+        reshapeToken: (origToken: CommentToken): Comment => ({
+            text: origToken.data,
+            sourceCodeLocation: origToken.location,
+        }),
     },
     [TokenType.DOCTYPE]: {
         eventName: 'doctype',
@@ -278,6 +285,6 @@ const TOKEN_EMISSION_HELPERS = {
     [TokenType.WHITESPACE_CHARACTER]: TEXT_EMISSION_HELPER,
     [TokenType.HIBERNATION]: {
         eventName: 'hibernation',
-        reshapeToken: () => ({}),
+        reshapeToken: (): Record<string, never> => ({}),
     },
 };

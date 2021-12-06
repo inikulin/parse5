@@ -1,4 +1,5 @@
 import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
+import type { Token } from 'parse5/lib/common/token.js';
 import { generateTokenizationTests } from '@parse5/test-utils/utils/generate-tokenization-tests.js';
 import { ParserFeedbackSimulator } from '../lib/parser-feedback-simulator.js';
 
@@ -8,5 +9,5 @@ generateTokenizationTests('ParserFeedbackSimulator', 'ParserFeedbackSimulator', 
     const tokenizer = new Tokenizer({});
     const feedbackSimulator = new ParserFeedbackSimulator(tokenizer);
 
-    return { tokenizer, getNextToken: () => feedbackSimulator.getNextToken() };
+    return { tokenizer, getNextToken: (): Token => feedbackSimulator.getNextToken() };
 });

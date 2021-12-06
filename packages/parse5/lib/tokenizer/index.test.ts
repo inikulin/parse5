@@ -1,5 +1,6 @@
 import * as parse5 from '../index.js';
 import { Tokenizer } from './index.js';
+import type { Token } from './../common/token';
 import { generateTokenizationTests } from '@parse5/test-utils/utils/generate-tokenization-tests.js';
 
 const dataPath = new URL('../../../test-utils/data/html5lib-tests/tokenizer', import.meta.url);
@@ -7,7 +8,7 @@ const dataPath = new URL('../../../test-utils/data/html5lib-tests/tokenizer', im
 generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors }) => {
     const tokenizer = new Tokenizer({
         sourceCodeLocationInfo: true,
-        onParseError(err) {
+        onParseError(err): void {
             errors.push({
                 code: err.code,
                 line: err.startLine,
@@ -16,7 +17,7 @@ generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors
         },
     });
 
-    return { tokenizer, getNextToken: () => tokenizer.getNextToken() };
+    return { tokenizer, getNextToken: (): Token => tokenizer.getNextToken() };
 });
 
 describe('tokenizer', () => {

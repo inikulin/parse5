@@ -8,7 +8,7 @@ export function parseChunked(
     opts: ParserOptions<TreeAdapterTypeMap>,
     minChunkSize?: number,
     maxChunkSize?: number
-) {
+): { node: TreeAdapterTypeMap['document']; chunks: string[] } {
     const parserStream = new ParserStream(opts);
     const chunks = makeChunks(html, minChunkSize, maxChunkSize);
 

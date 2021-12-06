@@ -31,7 +31,10 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     //Noah Ark's condition
     //OPTIMIZATION: at first we try to find possible candidates for exclusion using
     //lightweight heuristics without thorough attributes check.
-    private _getNoahArkConditionCandidates(newElement: T['element'], neAttrs: Attribute[]) {
+    private _getNoahArkConditionCandidates(
+        newElement: T['element'],
+        neAttrs: Attribute[]
+    ): { idx: number; attrs: Attribute[] }[] {
         const candidates = [];
 
         const neAttrsLength = neAttrs.length;
@@ -62,7 +65,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         return candidates;
     }
 
-    private _ensureNoahArkCondition(newElement: T['element']) {
+    private _ensureNoahArkCondition(newElement: T['element']): void {
         if (this.entries.length < NOAH_ARK_CAPACITY) return;
 
         const neAttrs = this.treeAdapter.getAttrList(newElement);
@@ -85,11 +88,11 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     }
 
     //Mutations
-    insertMarker() {
+    insertMarker(): void {
         this.entries.unshift({ type: EntryType.Marker });
     }
 
-    pushElement(element: T['element'], token: TagToken) {
+    pushElement(element: T['element'], token: TagToken): void {
         this._ensureNoahArkCondition(element);
 
         this.entries.unshift({
@@ -99,7 +102,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         });
     }
 
-    insertElementAfterBookmark(element: T['element'], token: TagToken) {
+    insertElementAfterBookmark(element: T['element'], token: TagToken): void {
         const bookmarkIdx = this.entries.indexOf(this.bookmark!);
 
         this.entries.splice(bookmarkIdx, 0, {
@@ -109,7 +112,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         });
     }
 
-    removeEntry(entry: Entry<T>) {
+    removeEntry(entry: Entry<T>): void {
         const entryIndex = this.entries.indexOf(entry);
 
         if (entryIndex >= 0) {
@@ -117,7 +120,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         }
     }
 
-    clearToLastMarker() {
+    clearToLastMarker(): void {
         const markerIdx = this.entries.findIndex((entry) => entry.type === EntryType.Marker);
 
         if (markerIdx >= 0) {
@@ -128,7 +131,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     }
 
     //Search
-    getElementEntryInScopeWithTagName(tagName: string) {
+    getElementEntryInScopeWithTagName(tagName: string): ElementEntry<T> | null {
         const entry = this.entries.find(
             (entry) => entry.type === EntryType.Marker || this.treeAdapter.getTagName(entry.element) === tagName
         );

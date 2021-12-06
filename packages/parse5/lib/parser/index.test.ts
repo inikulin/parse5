@@ -1,6 +1,7 @@
 import * as assert from 'node:assert';
 import * as parse5 from '../index.js';
-import { Parser } from './index.js';
+import { Parser, ParserOptions } from './index.js';
+import type { TreeAdapterTypeMap } from './../tree-adapters/interface.js';
 import { generateParsingTests } from '@parse5/test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from '@parse5/test-utils/utils/common.js';
 import { NAMESPACES as NS } from '../common/html.js';
@@ -24,7 +25,11 @@ describe('parser', () => {
 
     describe('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
         beforeEach(() => {
-            Parser.prototype.parseFragment = function (html, fragmentContext) {
+            Parser.prototype.parseFragment = function <T extends TreeAdapterTypeMap>(
+                this: Parser<T>,
+                html: string,
+                fragmentContext?: T['element']
+            ): { html: string; fragmentContext: T['element'] | null | undefined; options: ParserOptions<T> } {
                 return {
                     html,
                     fragmentContext,

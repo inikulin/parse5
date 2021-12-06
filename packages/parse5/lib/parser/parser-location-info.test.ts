@@ -137,7 +137,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 describe('location-info-parser', () => {
     it('Updating node source code location (GH-314)', () => {
         const sourceCodeLocationSetter = {
-            setNodeSourceCodeLocation(node: any, location: any) {
+            setNodeSourceCodeLocation(node: any, location: any): void {
                 node.sourceCodeLocation =
                     location === null
                         ? null
@@ -154,7 +154,7 @@ describe('location-info-parser', () => {
                               },
                           };
             },
-            updateNodeSourceCodeLocation(node: any, endLocation: any) {
+            updateNodeSourceCodeLocation(node: any, endLocation: any): void {
                 node.sourceCodeLocation = {
                     start: node.sourceCodeLocation.start,
                     end: {

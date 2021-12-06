@@ -64,14 +64,14 @@ export class Serializer<T extends TreeAdapterTypeMap> {
     }
 
     //API
-    serialize() {
+    serialize(): string {
         this._serializeChildNodes(this.startNode);
 
         return this.html;
     }
 
     //Internals
-    private _serializeChildNodes(parentNode: T['parentNode']) {
+    private _serializeChildNodes(parentNode: T['parentNode']): void {
         const childNodes = this.treeAdapter.getChildNodes(parentNode);
 
         if (childNodes) {
@@ -89,7 +89,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         }
     }
 
-    private _serializeElement(node: T['element']) {
+    private _serializeElement(node: T['element']): void {
         const tn = this.treeAdapter.getTagName(node);
         const ns = this.treeAdapter.getNamespaceURI(node);
 
@@ -106,7 +106,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         }
     }
 
-    private _serializeAttributes(node: T['element']) {
+    private _serializeAttributes(node: T['element']): void {
         for (const attr of this.treeAdapter.getAttrList(node)) {
             const value = escapeString(attr.value, true);
 
@@ -141,7 +141,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
         }
     }
 
-    private _serializeTextNode(node: T['textNode']) {
+    private _serializeTextNode(node: T['textNode']): void {
         const content = this.treeAdapter.getTextNodeContent(node);
         const parent = this.treeAdapter.getParentNode(node);
 
@@ -151,11 +151,11 @@ export class Serializer<T extends TreeAdapterTypeMap> {
                 : escapeString(content, false);
     }
 
-    private _serializeCommentNode(node: T['commentNode']) {
+    private _serializeCommentNode(node: T['commentNode']): void {
         this.html += `<!--${this.treeAdapter.getCommentNodeContent(node)}-->`;
     }
 
-    private _serializeDocumentTypeNode(node: T['documentType']) {
+    private _serializeDocumentTypeNode(node: T['documentType']): void {
         const name = this.treeAdapter.getDocumentTypeNodeName(node);
 
         this.html += `<${doctype.serializeContent(name, null, null)}>`;
@@ -163,7 +163,7 @@ export class Serializer<T extends TreeAdapterTypeMap> {
 }
 
 // NOTE: used in tests and by rewriting stream
-export function escapeString(str: string, attrMode = false) {
+export function escapeString(str: string, attrMode = false): string {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
     return attrMode

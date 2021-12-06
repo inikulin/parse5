@@ -85,14 +85,14 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
     parse: ParseMethod<T>,
     { withoutErrors }: { withoutErrors?: boolean }
 ): () => Promise<void> {
-    return async () => {
+    return async (): Promise<void> => {
         const errs: string[] = [];
 
         const opts = {
             scriptingEnabled: test.scriptingEnabled,
             treeAdapter,
 
-            onParseError: (err: ParserError) => {
+            onParseError: (err: ParserError): void => {
                 let errStr = `(${err.startLine}:${err.startCol}`;
 
                 // NOTE: use ranges for token errors

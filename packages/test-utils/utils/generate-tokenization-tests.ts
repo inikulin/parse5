@@ -76,15 +76,9 @@ function tokenize(
         tokenizer.lastStartTagName = lastStartTag;
     }
 
-    function writeChunk() {
-        const chunk = chunks[chunkIdx];
-
-        tokenizer.write(chunk, ++chunkIdx === chunks.length);
-    }
-
     do {
         if (token.type === TokenType.HIBERNATION) {
-            writeChunk();
+            tokenizer.write(chunks[chunkIdx], ++chunkIdx === chunks.length);
         } else {
             appendTokenEntry(result.tokens, convertTokenToHtml5Lib(token));
         }

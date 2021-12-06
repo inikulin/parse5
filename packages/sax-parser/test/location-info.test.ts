@@ -4,7 +4,7 @@ import { loadSAXParserTestData } from '@parse5/test-utils/utils/load-sax-parser-
 import { writeChunkedToStream } from '@parse5/test-utils/utils/common.js';
 import type { Location } from 'parse5/lib/common/token';
 
-function assertLocation({ sourceCodeLocation }: { sourceCodeLocation: Location }) {
+function assertLocation({ sourceCodeLocation }: { sourceCodeLocation: Location }): void {
     assert.strictEqual(typeof sourceCodeLocation.startLine, 'number');
     assert.strictEqual(typeof sourceCodeLocation.startCol, 'number');
     assert.strictEqual(typeof sourceCodeLocation.startOffset, 'number');

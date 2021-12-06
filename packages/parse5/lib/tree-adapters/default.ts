@@ -124,19 +124,19 @@ const createTextNode = function (value: string): TextNode {
 };
 
 //Tree mutation
-export function appendChild(parentNode: NodeWithChildren, newNode: NodeWithParent) {
+export function appendChild(parentNode: NodeWithChildren, newNode: NodeWithParent): void {
     parentNode.childNodes.push(newNode);
     newNode.parentNode = parentNode;
 }
 
-export function insertBefore(parentNode: NodeWithChildren, newNode: NodeWithParent, referenceNode: Node) {
+export function insertBefore(parentNode: NodeWithChildren, newNode: NodeWithParent, referenceNode: Node): void {
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
 
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
     newNode.parentNode = parentNode;
 }
 
-export function setTemplateContent(templateElement: Template, contentElement: DocumentFragment) {
+export function setTemplateContent(templateElement: Template, contentElement: DocumentFragment): void {
     templateElement.content = contentElement;
 }
 
@@ -144,7 +144,7 @@ export function getTemplateContent(templateElement: Template): DocumentFragment 
     return templateElement.content;
 }
 
-export function setDocumentType(document: Document, name: string, publicId: string, systemId: string) {
+export function setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
     const doctypeNode = document.childNodes.find((node) => node.nodeName === '#documentType') as DocumentType;
 
     if (doctypeNode) {
@@ -163,7 +163,7 @@ export function setDocumentType(document: Document, name: string, publicId: stri
     }
 }
 
-export function setDocumentMode(document: Document, mode: DOCUMENT_MODE) {
+export function setDocumentMode(document: Document, mode: DOCUMENT_MODE): void {
     document.mode = mode;
 }
 
@@ -171,7 +171,7 @@ export function getDocumentMode(document: Document): DOCUMENT_MODE {
     return document.mode;
 }
 
-export function detachNode(node: NodeWithParent) {
+export function detachNode(node: NodeWithParent): void {
     if (node.parentNode) {
         const idx = node.parentNode.childNodes.indexOf(node);
 
@@ -180,7 +180,7 @@ export function detachNode(node: NodeWithParent) {
     }
 }
 
-export function insertText(parentNode: NodeWithChildren, text: string) {
+export function insertText(parentNode: NodeWithChildren, text: string): void {
     if (parentNode.childNodes.length > 0) {
         const prevNode = parentNode.childNodes[parentNode.childNodes.length - 1];
 
@@ -193,7 +193,7 @@ export function insertText(parentNode: NodeWithChildren, text: string) {
     appendChild(parentNode, createTextNode(text));
 }
 
-export function insertTextBefore(parentNode: NodeWithChildren, text: string, referenceNode: Node) {
+export function insertTextBefore(parentNode: NodeWithChildren, text: string, referenceNode: Node): void {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
 
     if (prevNode && isTextNode(prevNode)) {
@@ -231,31 +231,31 @@ export function getAttrList(element: Element): Attribute[] {
 }
 
 //Node data
-export function getTagName(element: Element) {
+export function getTagName(element: Element): string {
     return element.tagName;
 }
 
-export function getNamespaceURI(element: Element) {
+export function getNamespaceURI(element: Element): string {
     return element.namespaceURI;
 }
 
-export function getTextNodeContent(textNode: TextNode) {
+export function getTextNodeContent(textNode: TextNode): string {
     return textNode.value;
 }
 
-export function getCommentNodeContent(commentNode: CommentNode) {
+export function getCommentNodeContent(commentNode: CommentNode): string {
     return commentNode.data;
 }
 
-export function getDocumentTypeNodeName(doctypeNode: DocumentType) {
+export function getDocumentTypeNodeName(doctypeNode: DocumentType): string {
     return doctypeNode.name;
 }
 
-export function getDocumentTypeNodePublicId(doctypeNode: DocumentType) {
+export function getDocumentTypeNodePublicId(doctypeNode: DocumentType): string {
     return doctypeNode.publicId;
 }
 
-export function getDocumentTypeNodeSystemId(doctypeNode: DocumentType) {
+export function getDocumentTypeNodeSystemId(doctypeNode: DocumentType): string {
     return doctypeNode.systemId;
 }
 
@@ -277,7 +277,7 @@ export function isElementNode(node: Node): node is Element {
 }
 
 // Source code location
-export function setNodeSourceCodeLocation(node: Node, location: ElementLocation | null) {
+export function setNodeSourceCodeLocation(node: Node, location: ElementLocation | null): void {
     node.sourceCodeLocation = location;
 }
 
@@ -285,7 +285,7 @@ export function getNodeSourceCodeLocation(node: Node): ElementLocation | undefin
     return node.sourceCodeLocation;
 }
 
-export function updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation) {
+export function updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
     node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
 }
 

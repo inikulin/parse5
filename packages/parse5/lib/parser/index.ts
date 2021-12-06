@@ -228,7 +228,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.openElements = new OpenElementStack(this.document, this.treeAdapter);
 
         if (this.options.sourceCodeLocationInfo) {
-            this.openElements.onItemPop = (element) => this._setEndLocation(element, this.currentToken!);
+            this.openElements.onItemPop = (element): void => this._setEndLocation(element, this.currentToken!);
         }
 
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
@@ -317,7 +317,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Text parsing
-    private _setupTokenizerCDATAMode() {
+    private _setupTokenizerCDATAMode(): void {
         let current;
         let currentTagId;
 
@@ -335,27 +335,30 @@ export class Parser<T extends TreeAdapterTypeMap> {
             !this._isIntegrationPoint(currentTagId, current);
     }
 
-    _switchToTextParsing(currentToken: TagToken, nextTokenizerState: typeof TokenizerMode[keyof typeof TokenizerMode]) {
+    _switchToTextParsing(
+        currentToken: TagToken,
+        nextTokenizerState: typeof TokenizerMode[keyof typeof TokenizerMode]
+    ): void {
         this._insertElement(currentToken, NS.HTML);
         this.tokenizer.state = nextTokenizerState;
         this.originalInsertionMode = this.insertionMode;
         this.insertionMode = InsertionMode.TEXT;
     }
 
-    switchToPlaintextParsing() {
+    switchToPlaintextParsing(): void {
         this.insertionMode = InsertionMode.TEXT;
         this.originalInsertionMode = InsertionMode.IN_BODY;
         this.tokenizer.state = TokenizerMode.PLAINTEXT;
     }
 
     //Fragment parsing
-    _getAdjustedCurrentElement() {
+    _getAdjustedCurrentElement(): T['element'] {
         return this.openElements.stackTop === 0 && this.fragmentContext
             ? this.fragmentContext
             : this.openElements.current;
     }
 
-    _findFormInFragmentContext() {
+    _findFormInFragmentContext(): void {
         let node = this.fragmentContext;
 
         while (node) {
@@ -368,7 +371,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    private _initTokenizerForFragmentParsing() {
+    private _initTokenizerForFragmentParsing(): void {
         if (!this.fragmentContext || this.treeAdapter.getNamespaceURI(this.fragmentContext) !== NS.HTML) {
             return;
         }
@@ -402,7 +405,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Tree mutation
-    _setDocumentType(token: DoctypeToken) {
+    _setDocumentType(token: DoctypeToken): void {
         const name = token.name || '';
         const publicId = token.publicId || '';
         const systemId = token.systemId || '';
@@ -419,7 +422,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _attachElementToTree(element: T['element'], location: LocationWithAttributes | null) {
+    _attachElementToTree(element: T['element'], location: LocationWithAttributes | null): void {
         const loc = location && {
             ...location,
             startTag: location,
@@ -436,27 +439,27 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _appendElement(token: TagToken, namespaceURI: NS) {
+    _appendElement(token: TagToken, namespaceURI: NS): void {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
         this._attachElementToTree(element, token.location);
     }
 
-    _insertElement(token: TagToken, namespaceURI: NS) {
+    _insertElement(token: TagToken, namespaceURI: NS): void {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
         this._attachElementToTree(element, token.location);
         this.openElements.push(element, token.tagID);
     }
 
-    _insertFakeElement(tagName: string, tagID: $) {
+    _insertFakeElement(tagName: string, tagID: $): void {
         const element = this.treeAdapter.createElement(tagName, NS.HTML, []);
 
         this._attachElementToTree(element, null);
         this.openElements.push(element, tagID);
     }
 
-    _insertTemplate(token: TagToken) {
+    _insertTemplate(token: TagToken): void {
         const tmpl = this.treeAdapter.createElement(token.tagName, NS.HTML, token.attrs);
         const content = this.treeAdapter.createDocumentFragment();
 
@@ -466,7 +469,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.treeAdapter.setNodeSourceCodeLocation(content, null);
     }
 
-    _insertFakeRootElement() {
+    _insertFakeRootElement(): void {
         const element = this.treeAdapter.createElement(TN.HTML, NS.HTML, []);
         this.treeAdapter.setNodeSourceCodeLocation(element, null);
 
@@ -474,14 +477,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.openElements.push(element, $.HTML);
     }
 
-    _appendCommentNode(token: CommentToken, parent: T['parentNode']) {
+    _appendCommentNode(token: CommentToken, parent: T['parentNode']): void {
         const commentNode = this.treeAdapter.createCommentNode(token.data);
 
         this.treeAdapter.appendChild(parent, commentNode);
         this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location);
     }
 
-    _insertCharacters(token: CharacterToken) {
+    _insertCharacters(token: CharacterToken): void {
         let parent;
         let beforeElement;
 
@@ -516,14 +519,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _adoptNodes(donor: T['parentNode'], recipient: T['parentNode']) {
+    _adoptNodes(donor: T['parentNode'], recipient: T['parentNode']): void {
         for (let child = this.treeAdapter.getFirstChild(donor); child; child = this.treeAdapter.getFirstChild(donor)) {
             this.treeAdapter.detachNode(child);
             this.treeAdapter.appendChild(recipient, child);
         }
     }
 
-    _setEndLocation(element: T['element'], closingToken: Token) {
+    _setEndLocation(element: T['element'], closingToken: Token): void {
         const loc = this.treeAdapter.getNodeSourceCodeLocation(element);
 
         if (loc && closingToken.location) {
@@ -550,7 +553,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Token processing
-    _shouldProcessTokenInForeignContent(token: Token) {
+    _shouldProcessTokenInForeignContent(token: Token): boolean {
         let current;
         let currentTagId;
 
@@ -602,7 +605,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return token.type !== TokenType.EOF;
     }
 
-    _processToken(token: Token) {
+    _processToken(token: Token): void {
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
                 modeInitial(this, token);
@@ -715,7 +718,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _processTokenInForeignContent(token: Token) {
+    _processTokenInForeignContent(token: Token): void {
         switch (token.type) {
             case TokenType.CHARACTER: {
                 characterInForeignContent(this, token);
@@ -746,7 +749,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _processInputToken(token: Token) {
+    _processInputToken(token: Token): void {
         if (this._shouldProcessTokenInForeignContent(token)) {
             this._processTokenInForeignContent(token);
         } else {
@@ -767,7 +770,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Active formatting elements reconstruction
-    _reconstructActiveFormattingElements() {
+    _reconstructActiveFormattingElements(): void {
         const listLength = this.activeFormattingElements.entries.length;
 
         if (listLength) {
@@ -786,20 +789,20 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Close elements
-    _closeTableCell() {
+    _closeTableCell(): void {
         this.openElements.generateImpliedEndTags();
         this.openElements.popUntilTableCellPopped();
         this.activeFormattingElements.clearToLastMarker();
         this.insertionMode = InsertionMode.IN_ROW;
     }
 
-    _closePElement() {
+    _closePElement(): void {
         this.openElements.generateImpliedEndTagsWithExclusion(TN.P);
         this.openElements.popUntilTagNamePopped($.P);
     }
 
     //Insertion modes
-    _resetInsertionMode() {
+    _resetInsertionMode(): void {
         for (let i = this.openElements.stackTop; i >= 0; i--) {
             //Insertion mode reset map
             switch (i === 0 && this.fragmentContext ? this.fragmentContextID : this.openElements.tagIDs[i]) {
@@ -854,7 +857,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.insertionMode = InsertionMode.IN_BODY;
     }
 
-    _resetInsertionModeForSelect(selectIdx: number) {
+    _resetInsertionModeForSelect(selectIdx: number): void {
         if (selectIdx > 0) {
             for (let i = selectIdx - 1; i > 0; i--) {
                 const tn = this.openElements.tagIDs[i];
@@ -876,11 +879,11 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return TABLE_STRUCTURE_TAGS.has(tn);
     }
 
-    _shouldFosterParentOnInsertion() {
+    _shouldFosterParentOnInsertion(): boolean {
         return this.fosterParentingEnabled && this._isElementCausesFosterParenting(this.openElements.currentTagId);
     }
 
-    _findFosterParentingLocation() {
+    _findFosterParentingLocation(): { parent: T['parentNode']; beforeElement: T['element'] | null } {
         let parent: T['parentNode'] | undefined;
         let beforeElement: null | T['element'] = null;
 
@@ -908,7 +911,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return { parent: parent ?? this.openElements.items[0], beforeElement };
     }
 
-    _fosterParentElement(element: T['element']) {
+    _fosterParentElement(element: T['element']): void {
         const location = this._findFosterParentingLocation();
 
         if (location.beforeElement) {
@@ -931,7 +934,10 @@ export class Parser<T extends TreeAdapterTypeMap> {
 //------------------------------------------------------------------
 
 //Steps 5-8 of the algorithm
-function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    token: TagToken
+): ElementEntry<T> | null {
     let formattingElementEntry = p.activeFormattingElements.getElementEntryInScopeWithTagName(token.tagName);
 
     if (formattingElementEntry) {
@@ -949,7 +955,10 @@ function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(p: Parser<
 }
 
 //Steps 9 and 10 of the algorithm
-function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(p: Parser<T>, formattingElementEntry: ElementEntry<T>) {
+function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    formattingElementEntry: ElementEntry<T>
+): T['parentNode'] | null {
     let furthestBlock = null;
     let idx = p.openElements.stackTop;
 
@@ -978,7 +987,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     furthestBlock: T['element'],
     formattingElement: T['element']
-) {
+): T['element'] {
     let lastElement = furthestBlock;
     let nextElement = p.openElements.getCommonAncestor(furthestBlock) as T['element'];
 
@@ -1013,7 +1022,10 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
 }
 
 //Step 13.7 of the algorithm
-function aaRecreateElementFromEntry<T extends TreeAdapterTypeMap>(p: Parser<T>, elementEntry: ElementEntry<T>) {
+function aaRecreateElementFromEntry<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    elementEntry: ElementEntry<T>
+): T['element'] {
     const ns = p.treeAdapter.getNamespaceURI(elementEntry.element);
     const newElement = p.treeAdapter.createElement(elementEntry.token.tagName, ns, elementEntry.token.attrs);
 
@@ -1028,7 +1040,7 @@ function aaInsertLastNodeInCommonAncestor<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     commonAncestor: T['parentNode'],
     lastElement: T['element']
-) {
+): void {
     const tn = p.treeAdapter.getTagName(commonAncestor);
     const tid = getTagID(tn);
 
@@ -1050,7 +1062,7 @@ function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     furthestBlock: T['parentNode'],
     formattingElementEntry: ElementEntry<T>
-) {
+): void {
     const ns = p.treeAdapter.getNamespaceURI(formattingElementEntry.element);
     const { token } = formattingElementEntry;
     const newElement = p.treeAdapter.createElement(token.tagName, ns, token.attrs);
@@ -1066,7 +1078,7 @@ function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
 }
 
 //Algorithm entry point
-function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     for (let i = 0; i < AA_OUTER_LOOP_ITER; i++) {
         const formattingElementEntry = aaObtainFormattingElementEntry(p, token);
 
@@ -1093,19 +1105,19 @@ function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
 
 //Generic token handlers
 //------------------------------------------------------------------
-function appendComment<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken) {
+function appendComment<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken): void {
     p._appendCommentNode(token, p.openElements.currentTmplContentOrNode);
 }
 
-function appendCommentToRootHtmlElement<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken) {
+function appendCommentToRootHtmlElement<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken): void {
     p._appendCommentNode(token, p.openElements.items[0]);
 }
 
-function appendCommentToDocument<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken) {
+function appendCommentToDocument<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CommentToken): void {
     p._appendCommentNode(token, p.document);
 }
 
-function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken) {
+function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken): void {
     p.stopped = true;
 
     if (token.location) {
@@ -1119,7 +1131,7 @@ function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken
 
 // The "initial" insertion mode
 //------------------------------------------------------------------
-function modeInitial<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInitial<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     if (token.type === TokenType.COMMENT) {
         appendComment(p, token);
     } else if (token.type === TokenType.DOCTYPE) {
@@ -1129,7 +1141,7 @@ function modeInitial<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     }
 }
 
-function doctypeInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: DoctypeToken) {
+function doctypeInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: DoctypeToken): void {
     p._setDocumentType(token);
 
     const mode = token.forceQuirks ? DOCUMENT_MODE.QUIRKS : doctype.getDocumentMode(token);
@@ -1143,7 +1155,7 @@ function doctypeInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     p.insertionMode = InsertionMode.BEFORE_HTML;
 }
 
-function tokenInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p._err(token, ERR.missingDoctype, true);
     p.treeAdapter.setDocumentMode(p.document, DOCUMENT_MODE.QUIRKS);
     p.insertionMode = InsertionMode.BEFORE_HTML;
@@ -1152,7 +1164,7 @@ function tokenInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
 
 // The "before html" insertion mode
 //------------------------------------------------------------------
-function modeBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -1177,7 +1189,7 @@ function modeBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
     }
 }
 
-function startTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         p._insertElement(token, NS.HTML);
         p.insertionMode = InsertionMode.BEFORE_HEAD;
@@ -1186,7 +1198,7 @@ function startTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function endTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.HTML || tn === $.HEAD || tn === $.BODY || tn === $.BR) {
@@ -1194,7 +1206,7 @@ function endTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
     }
 }
 
-function tokenBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p._insertFakeRootElement();
     p.insertionMode = InsertionMode.BEFORE_HEAD;
     modeBeforeHead(p, token);
@@ -1202,7 +1214,7 @@ function tokenBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
 
 // The "before head" insertion mode
 //------------------------------------------------------------------
-function modeBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -1231,7 +1243,7 @@ function modeBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
     }
 }
 
-function startTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.HTML) {
@@ -1245,7 +1257,7 @@ function startTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function endTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.HEAD || tn === $.BODY || tn === $.HTML || tn === $.BR) {
@@ -1255,7 +1267,7 @@ function endTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
     }
 }
 
-function tokenBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p._insertFakeElement(TN.HEAD, $.HEAD);
     p.headElement = p.openElements.current;
     p.insertionMode = InsertionMode.IN_HEAD;
@@ -1264,7 +1276,7 @@ function tokenBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
 
 // The "in head" insertion mode
 //------------------------------------------------------------------
-function modeInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -1297,7 +1309,7 @@ function modeInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     }
 }
 
-function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
@@ -1352,7 +1364,7 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
     }
 }
 
-function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HEAD: {
             p.openElements.pop();
@@ -1388,7 +1400,7 @@ function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
     }
 }
 
-function tokenInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p.openElements.pop();
     p.insertionMode = InsertionMode.AFTER_HEAD;
     modeAfterHead(p, token);
@@ -1396,7 +1408,7 @@ function tokenInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
 
 // The "in head no script" insertion mode
 //------------------------------------------------------------------
-function modeInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -1429,7 +1441,7 @@ function modeInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
@@ -1455,7 +1467,7 @@ function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     }
 }
 
-function endTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.NOSCRIPT) {
@@ -1468,7 +1480,7 @@ function endTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     }
 }
 
-function tokenInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     const errCode = token.type === TokenType.EOF ? ERR.openElementsLeftAfterEof : ERR.disallowedContentInNoscriptInHead;
 
     p._err(token, errCode);
@@ -1479,7 +1491,7 @@ function tokenInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 
 // The "after head" insertion mode
 //------------------------------------------------------------------
-function modeAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -1512,7 +1524,7 @@ function modeAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
     }
 }
 
-function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
@@ -1555,7 +1567,7 @@ function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     }
 }
 
-function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.BODY || tn === $.HTML || tn === $.BR) {
@@ -1567,7 +1579,7 @@ function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
     }
 }
 
-function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p._insertFakeElement(TN.BODY, $.BODY);
     p.insertionMode = InsertionMode.IN_BODY;
     modeInBody(p, token);
@@ -1575,7 +1587,7 @@ function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
 
 // The "in body" insertion mode
 //------------------------------------------------------------------
-function modeInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
@@ -1606,24 +1618,24 @@ function modeInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     }
 }
 
-function whitespaceCharacterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
+function whitespaceCharacterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     p._reconstructActiveFormattingElements();
     p._insertCharacters(token);
 }
 
-function characterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
+function characterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     p._reconstructActiveFormattingElements();
     p._insertCharacters(token);
     p.framesetOk = false;
 }
 
-function htmlStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function htmlStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.tmplCount === 0) {
         p.treeAdapter.adoptAttributes(p.openElements.items[0], token.attrs);
     }
 }
 
-function bodyStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function bodyStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const bodyElement = p.openElements.tryPeekProperlyNestedBodyElement();
 
     if (bodyElement && p.openElements.tmplCount === 0) {
@@ -1632,7 +1644,7 @@ function bodyStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function framesetStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function framesetStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const bodyElement = p.openElements.tryPeekProperlyNestedBodyElement();
 
     if (p.framesetOk && bodyElement) {
@@ -1643,7 +1655,7 @@ function framesetStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     }
 }
 
-function addressStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function addressStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1651,7 +1663,7 @@ function addressStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token
     p._insertElement(token, NS.HTML);
 }
 
-function numberedHeaderStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function numberedHeaderStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1663,7 +1675,7 @@ function numberedHeaderStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>
     p._insertElement(token, NS.HTML);
 }
 
-function preStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function preStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1675,7 +1687,7 @@ function preStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     p.framesetOk = false;
 }
 
-function formStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function formStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const inTemplate = p.openElements.tmplCount > 0;
 
     if (!p.formElement || inTemplate) {
@@ -1691,7 +1703,7 @@ function formStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function listItemStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function listItemStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.framesetOk = false;
 
     const tn = token.tagID;
@@ -1732,7 +1744,7 @@ function listItemStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     p._insertElement(token, NS.HTML);
 }
 
-function plaintextStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function plaintextStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1741,7 +1753,7 @@ function plaintextStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, tok
     p.tokenizer.state = TokenizerMode.PLAINTEXT;
 }
 
-function buttonStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function buttonStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInScope($.BUTTON)) {
         p.openElements.generateImpliedEndTags();
         p.openElements.popUntilTagNamePopped($.BUTTON);
@@ -1752,7 +1764,7 @@ function buttonStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     p.framesetOk = false;
 }
 
-function aStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function aStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const activeElementEntry = p.activeFormattingElements.getElementEntryInScopeWithTagName(TN.A);
 
     if (activeElementEntry) {
@@ -1766,13 +1778,13 @@ function aStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
     p.activeFormattingElements.pushElement(p.openElements.current, token);
 }
 
-function bStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function bStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
     p.activeFormattingElements.pushElement(p.openElements.current, token);
 }
 
-function nobrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function nobrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
 
     if (p.openElements.hasInScope($.NOBR)) {
@@ -1784,14 +1796,14 @@ function nobrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     p.activeFormattingElements.pushElement(p.openElements.current, token);
 }
 
-function appletStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function appletStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
     p.activeFormattingElements.insertMarker();
     p.framesetOk = false;
 }
 
-function tableStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function tableStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.treeAdapter.getDocumentMode(p.document) !== DOCUMENT_MODE.QUIRKS && p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1801,20 +1813,20 @@ function tableStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     p.insertionMode = InsertionMode.IN_TABLE;
 }
 
-function areaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function areaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
     p._appendElement(token, NS.HTML);
     p.framesetOk = false;
     token.ackSelfClosing = true;
 }
 
-function isHiddenInput(token: TagToken) {
+function isHiddenInput(token: TagToken): boolean {
     const inputType = getTokenAttr(token, ATTRS.TYPE);
 
     return inputType != null && inputType.toLowerCase() === HIDDEN_INPUT_TYPE;
 }
 
-function inputStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function inputStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
     p._appendElement(token, NS.HTML);
 
@@ -1825,12 +1837,12 @@ function inputStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     token.ackSelfClosing = true;
 }
 
-function paramStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function paramStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._appendElement(token, NS.HTML);
     token.ackSelfClosing = true;
 }
 
-function hrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function hrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1840,13 +1852,13 @@ function hrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
     token.ackSelfClosing = true;
 }
 
-function imageStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function imageStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     token.tagName = TN.IMG;
     token.tagID = $.IMG;
     areaStartTagInBody(p, token);
 }
 
-function textareaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function textareaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._insertElement(token, NS.HTML);
     //NOTE: If the next token is a U+000A LINE FEED (LF) character token, then ignore that token and move
     //on to the next one. (Newlines at the start of textarea elements are ignored as an authoring convenience.)
@@ -1857,7 +1869,7 @@ function textareaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     p.insertionMode = InsertionMode.TEXT;
 }
 
-function xmpStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function xmpStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInButtonScope($.P)) {
         p._closePElement();
     }
@@ -1867,18 +1879,18 @@ function xmpStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     p._switchToTextParsing(token, TokenizerMode.RAWTEXT);
 }
 
-function iframeStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function iframeStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.framesetOk = false;
     p._switchToTextParsing(token, TokenizerMode.RAWTEXT);
 }
 
 //NOTE: here we assume that we always act as an user agent with enabled plugins, so we parse
 //<noembed> as a rawtext.
-function noembedStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function noembedStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._switchToTextParsing(token, TokenizerMode.RAWTEXT);
 }
 
-function selectStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function selectStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
     p.framesetOk = false;
@@ -1893,7 +1905,7 @@ function selectStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
             : InsertionMode.IN_SELECT;
 }
 
-function optgroupStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function optgroupStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.currentTagId === $.OPTION) {
         p.openElements.pop();
     }
@@ -1902,7 +1914,7 @@ function optgroupStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     p._insertElement(token, NS.HTML);
 }
 
-function rbStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function rbStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInScope($.RUBY)) {
         p.openElements.generateImpliedEndTags();
     }
@@ -1910,7 +1922,7 @@ function rbStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
     p._insertElement(token, NS.HTML);
 }
 
-function rtStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function rtStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInScope($.RUBY)) {
         p.openElements.generateImpliedEndTagsWithExclusion(TN.RTC);
     }
@@ -1918,7 +1930,7 @@ function rtStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
     p._insertElement(token, NS.HTML);
 }
 
-function mathStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function mathStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
 
     foreignContent.adjustTokenMathMLAttrs(token);
@@ -1933,7 +1945,7 @@ function mathStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     token.ackSelfClosing = true;
 }
 
-function svgStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function svgStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
 
     foreignContent.adjustTokenSVGAttrs(token);
@@ -1948,12 +1960,12 @@ function svgStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     token.ackSelfClosing = true;
 }
 
-function genericStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function genericStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
 }
 
-function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     switch (tn) {
@@ -2170,20 +2182,20 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
     }
 }
 
-function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
+function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     if (p.openElements.hasInScope($.BODY)) {
         p.insertionMode = InsertionMode.AFTER_BODY;
     }
 }
 
-function htmlEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function htmlEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInScope($.BODY)) {
         p.insertionMode = InsertionMode.AFTER_BODY;
         modeAfterBody(p, token);
     }
 }
 
-function addressEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function addressEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (p.openElements.hasInScope(tn)) {
@@ -2192,7 +2204,7 @@ function addressEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     }
 }
 
-function formEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
+function formEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     const inTemplate = p.openElements.tmplCount > 0;
     const { formElement } = p;
 
@@ -2211,7 +2223,7 @@ function formEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     }
 }
 
-function pEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
+function pEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     if (!p.openElements.hasInButtonScope($.P)) {
         p._insertFakeElement(TN.P, $.P);
     }
@@ -2219,14 +2231,14 @@ function pEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
     p._closePElement();
 }
 
-function liEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
+function liEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     if (p.openElements.hasInListItemScope($.LI)) {
         p.openElements.generateImpliedEndTagsWithExclusion(TN.LI);
         p.openElements.popUntilTagNamePopped($.LI);
     }
 }
 
-function ddEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function ddEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (p.openElements.hasInScope(tn)) {
@@ -2235,14 +2247,14 @@ function ddEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
     }
 }
 
-function numberedHeaderEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
+function numberedHeaderEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     if (p.openElements.hasNumberedHeaderInScope()) {
         p.openElements.generateImpliedEndTags();
         p.openElements.popUntilNumberedHeaderPopped();
     }
 }
 
-function appletEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function appletEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (p.openElements.hasInScope(tn)) {
@@ -2252,14 +2264,14 @@ function appletEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function brEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>) {
+function brEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     p._reconstructActiveFormattingElements();
     p._insertFakeElement(TN.BR, $.BR);
     p.openElements.pop();
     p.framesetOk = false;
 }
 
-function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagName;
 
     for (let i = p.openElements.stackTop; i > 0; i--) {
@@ -2279,7 +2291,7 @@ function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     }
 }
 
-function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.A:
         case $.B:
@@ -2380,7 +2392,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
     }
 }
 
-function eofInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken) {
+function eofInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken): void {
     if (p.tmplInsertionModeStack.length > 0) {
         eofInTemplate(p, token);
     } else {
@@ -2390,7 +2402,7 @@ function eofInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken) 
 
 // The "text" insertion mode
 //------------------------------------------------------------------
-function modeText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -2411,7 +2423,7 @@ function modeText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     }
 }
 
-function endTagInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.SCRIPT) {
         p.pendingScript = p.openElements.current;
     }
@@ -2420,7 +2432,7 @@ function endTagInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
     p.insertionMode = p.originalInsertionMode;
 }
 
-function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken) {
+function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken): void {
     p._err(token, ERR.eofInElementThatCanContainOnlyText);
     p.openElements.pop();
     p.insertionMode = p.originalInsertionMode;
@@ -2429,7 +2441,7 @@ function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken) 
 
 // The "in table" insertion mode
 //------------------------------------------------------------------
-function modeInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -2458,7 +2470,7 @@ function modeInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     }
 }
 
-function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
+function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     if (TABLE_STRUCTURE_TAGS.has(p.openElements.currentTagId)) {
         p.pendingCharacterTokens = [];
         p.hasNonWhitespacePendingCharacterToken = false;
@@ -2470,40 +2482,40 @@ function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Cha
     }
 }
 
-function captionStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function captionStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.openElements.clearBackToTableContext();
     p.activeFormattingElements.insertMarker();
     p._insertElement(token, NS.HTML);
     p.insertionMode = InsertionMode.IN_CAPTION;
 }
 
-function colgroupStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function colgroupStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.openElements.clearBackToTableContext();
     p._insertElement(token, NS.HTML);
     p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
 }
 
-function colStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function colStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.openElements.clearBackToTableContext();
     p._insertFakeElement(TN.COLGROUP, $.COLGROUP);
     p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
     modeInColumnGroup(p, token);
 }
 
-function tbodyStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function tbodyStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.openElements.clearBackToTableContext();
     p._insertElement(token, NS.HTML);
     p.insertionMode = InsertionMode.IN_TABLE_BODY;
 }
 
-function tdStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function tdStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.openElements.clearBackToTableContext();
     p._insertFakeElement(TN.TBODY, $.TBODY);
     p.insertionMode = InsertionMode.IN_TABLE_BODY;
     modeInTableBody(p, token);
 }
 
-function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInTableScope($.TABLE)) {
         p.openElements.popUntilTagNamePopped($.TABLE);
         p._resetInsertionMode();
@@ -2511,7 +2523,7 @@ function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     }
 }
 
-function inputStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function inputStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (isHiddenInput(token)) {
         p._appendElement(token, NS.HTML);
     } else {
@@ -2521,7 +2533,7 @@ function inputStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     token.ackSelfClosing = true;
 }
 
-function formStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function formStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (!p.formElement && p.openElements.tmplCount === 0) {
         p._insertElement(token, NS.HTML);
         p.formElement = p.openElements.current;
@@ -2529,7 +2541,7 @@ function formStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     }
 }
 
-function startTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.TD:
         case $.TH:
@@ -2579,7 +2591,7 @@ function startTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
     }
 }
 
-function endTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.TABLE) {
@@ -2606,7 +2618,7 @@ function endTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTok
     }
 }
 
-function tokenInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     const savedFosterParentingState = p.fosterParentingEnabled;
 
     p.fosterParentingEnabled = true;
@@ -2617,7 +2629,7 @@ function tokenInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) 
 
 // The "in table text" insertion mode
 //------------------------------------------------------------------
-function modeInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     if (token.type === TokenType.CHARACTER) {
         characterInTableText(p, token);
     } else if (token.type === TokenType.WHITESPACE_CHARACTER) {
@@ -2627,16 +2639,16 @@ function modeInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
     }
 }
 
-function whitespaceCharacterInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
+function whitespaceCharacterInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     p.pendingCharacterTokens.push(token);
 }
 
-function characterInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
+function characterInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     p.pendingCharacterTokens.push(token);
     p.hasNonWhitespacePendingCharacterToken = true;
 }
 
-function tokenInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     let i = 0;
 
     if (p.hasNonWhitespacePendingCharacterToken) {
@@ -2655,7 +2667,7 @@ function tokenInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tok
 
 // The "in caption" insertion mode
 //------------------------------------------------------------------
-function modeInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
@@ -2688,7 +2700,7 @@ function modeInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
 
 const TABLE_VOID_ELEMENTS = new Set([$.CAPTION, $.COL, $.COLGROUP, $.TBODY, $.TD, $.TFOOT, $.TH, $.THEAD, $.TR]);
 
-function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (TABLE_VOID_ELEMENTS.has(tn)) {
@@ -2704,7 +2716,7 @@ function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     }
 }
 
-function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.CAPTION || tn === $.TABLE) {
@@ -2736,7 +2748,7 @@ function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 
 // The "in column group" insertion mode
 //------------------------------------------------------------------
-function modeInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER: {
@@ -2768,7 +2780,7 @@ function modeInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: To
     }
 }
 
-function startTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
@@ -2789,7 +2801,7 @@ function startTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token
     }
 }
 
-function endTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.COLGROUP) {
@@ -2804,7 +2816,7 @@ function endTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     }
 }
 
-function tokenInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     if (p.openElements.currentTagId === $.COLGROUP) {
         p.openElements.pop();
         p.insertionMode = InsertionMode.IN_TABLE;
@@ -2814,7 +2826,7 @@ function tokenInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
 
 // The "in table body" insertion mode
 //------------------------------------------------------------------
-function modeInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -2843,7 +2855,7 @@ function modeInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
     }
 }
 
-function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.TR: {
             p.openElements.clearBackToTableBodyContext();
@@ -2879,7 +2891,7 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     }
 }
 
-function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD) {
@@ -2911,7 +2923,7 @@ function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
 
 // The "in row" insertion mode
 //------------------------------------------------------------------
-function modeInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -2940,7 +2952,7 @@ function modeInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     }
 }
 
-function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.TH || tn === $.TD) {
@@ -2968,7 +2980,7 @@ function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTok
     }
 }
 
-function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.TR: {
             if (p.openElements.hasInTableScope($.TR)) {
@@ -3015,7 +3027,7 @@ function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken
 
 // The "in cell" insertion mode
 //------------------------------------------------------------------
-function modeInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
@@ -3046,7 +3058,7 @@ function modeInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
     }
 }
 
-function startTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (TABLE_VOID_ELEMENTS.has(tn)) {
@@ -3059,7 +3071,7 @@ function startTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
     }
 }
 
-function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.TD || tn === $.TH) {
@@ -3081,7 +3093,7 @@ function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
 
 // The "in select" insertion mode
 //------------------------------------------------------------------
-function modeInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
@@ -3109,7 +3121,7 @@ function modeInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) 
     }
 }
 
-function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
@@ -3159,7 +3171,7 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
     }
 }
 
-function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.OPTGROUP) {
@@ -3188,7 +3200,7 @@ function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
 
 // The "in select in table" insertion mode
 //------------------------------------------------------------------
-function modeInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.WHITESPACE_CHARACTER: {
@@ -3216,7 +3228,7 @@ function modeInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     }
 }
 
-function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (
@@ -3237,7 +3249,7 @@ function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, tok
     }
 }
 
-function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (
@@ -3262,7 +3274,7 @@ function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token
 
 // The "in template" insertion mode
 //------------------------------------------------------------------
-function modeInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER: {
             characterInBody(p, token);
@@ -3293,7 +3305,7 @@ function modeInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
     }
 }
 
-function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         // First, handle tags that can start without a mode change
         case $.BASE:
@@ -3342,13 +3354,13 @@ function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function endTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.TEMPLATE) {
         endTagInHead(p, token);
     }
 }
 
-function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken) {
+function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken): void {
     if (p.openElements.tmplCount > 0) {
         p.openElements.popUntilTagNamePopped($.TEMPLATE);
         p.activeFormattingElements.clearToLastMarker();
@@ -3362,7 +3374,7 @@ function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFTok
 
 // The "after body" insertion mode
 //------------------------------------------------------------------
-function modeAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER: {
@@ -3394,7 +3406,7 @@ function modeAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token)
     }
 }
 
-function startTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         startTagInBody(p, token);
     } else {
@@ -3402,7 +3414,7 @@ function startTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     }
 }
 
-function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         if (!p.fragmentContext) {
             p.insertionMode = InsertionMode.AFTER_AFTER_BODY;
@@ -3412,14 +3424,14 @@ function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
     }
 }
 
-function tokenAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p.insertionMode = InsertionMode.IN_BODY;
     modeInBody(p, token);
 }
 
 // The "in frameset" insertion mode
 //------------------------------------------------------------------
-function modeInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
@@ -3446,7 +3458,7 @@ function modeInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
     }
 }
 
-function startTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
             startTagInBody(p, token);
@@ -3470,7 +3482,7 @@ function startTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function endTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.FRAMESET && !p.openElements.isRootHtmlElementCurrent()) {
         p.openElements.pop();
 
@@ -3482,7 +3494,7 @@ function endTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 
 // The "after frameset" insertion mode
 //------------------------------------------------------------------
-function modeAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.WHITESPACE_CHARACTER: {
             p._insertCharacters(token);
@@ -3509,7 +3521,7 @@ function modeAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: To
     }
 }
 
-function startTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.HTML) {
@@ -3519,7 +3531,7 @@ function startTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token
     }
 }
 
-function endTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         p.insertionMode = InsertionMode.AFTER_AFTER_FRAMESET;
     }
@@ -3527,7 +3539,7 @@ function endTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 
 // The "after after body" insertion mode
 //------------------------------------------------------------------
-function modeAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER:
         case TokenType.NULL_CHARACTER:
@@ -3556,7 +3568,7 @@ function modeAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     }
 }
 
-function startTagAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         startTagInBody(p, token);
     } else {
@@ -3564,14 +3576,14 @@ function startTagAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     }
 }
 
-function tokenAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function tokenAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p.insertionMode = InsertionMode.IN_BODY;
     modeInBody(p, token);
 }
 
 // The "after after frameset" insertion mode
 //------------------------------------------------------------------
-function modeAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token) {
+function modeAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.WHITESPACE_CHARACTER: {
             whitespaceCharacterInBody(p, token);
@@ -3594,7 +3606,7 @@ function modeAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     }
 }
 
-function startTagAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (tn === $.HTML) {
@@ -3606,17 +3618,17 @@ function startTagAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, 
 
 // The rules for parsing tokens in foreign content
 //------------------------------------------------------------------
-function nullCharacterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
+function nullCharacterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     token.chars = unicode.REPLACEMENT_CHARACTER;
     p._insertCharacters(token);
 }
 
-function characterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken) {
+function characterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     p._insertCharacters(token);
     p.framesetOk = false;
 }
 
-function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (foreignContent.causesExit(token) && !p.fragmentContext) {
         while (
             p.treeAdapter.getNamespaceURI(p.openElements.current) !== NS.HTML &&
@@ -3649,7 +3661,7 @@ function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, to
     }
 }
 
-function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken) {
+function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     for (let i = p.openElements.stackTop; i > 0; i--) {
         const element = p.openElements.items[i];
 

@@ -77,7 +77,7 @@ export interface TagToken extends TokenBase {
     location: LocationWithAttributes | null;
 }
 
-export function getTokenAttr(token: TagToken, attrName: string) {
+export function getTokenAttr(token: TagToken, attrName: string): string | null {
     for (let i = token.attrs.length - 1; i >= 0; i--) {
         if (token.attrs[i].name === attrName) {
             return token.attrs[i].value;

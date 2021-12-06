@@ -179,7 +179,7 @@ const EXITS_FOREIGN_CONTENT = new Set([
 ]);
 
 //Check exit from foreign content
-export function causesExit(startTagToken: TagToken) {
+export function causesExit(startTagToken: TagToken): boolean {
     const tn = startTagToken.tagID;
     const isFontWithAttrs =
         tn === $.FONT &&

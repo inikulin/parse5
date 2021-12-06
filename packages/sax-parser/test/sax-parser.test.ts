@@ -9,12 +9,12 @@ import {
     WritableStreamStub,
 } from '@parse5/test-utils/utils/common.js';
 
-function sanitizeForComparison(str: string) {
+function sanitizeForComparison(str: string): string {
     return removeNewLines(str).replace(/\s/g, '').replace(/'/g, '"').toLowerCase();
 }
 
 function createBasicTest(html: string, expected: string, options?: SAXParserOptions) {
-    return function () {
+    return function (): void {
         //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         let actual = '';
         const parser = new SAXParser(options);
@@ -80,13 +80,13 @@ describe('SAX parser', () => {
         const writable = new WritableStreamStub();
         let handlerCallCount = 0;
 
-        const handler = function () {
+        function handler(): void {
             handlerCallCount++;
 
             if (handlerCallCount === 10) {
                 parser.stop();
             }
-        };
+        }
 
         fs.createReadStream(hugePage, 'utf8').pipe(parser).pipe(writable);
 

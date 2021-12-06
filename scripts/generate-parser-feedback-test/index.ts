@@ -10,7 +10,7 @@ import { TokenType, Token } from '../../packages/parse5/lib/common/token.js';
 // eslint-disable-next-line no-console
 main().catch(console.error);
 
-function main() {
+function main(): Promise<void[]> {
     const convertPromises = process.argv.slice(2).map(async (file) => {
         const content = await readFile(file, 'utf-8');
         const feedbackTestContent = generateParserFeedbackTest(content);
@@ -22,7 +22,7 @@ function main() {
     return Promise.all(convertPromises);
 }
 
-function appendToken(dest: Token[], token: Token) {
+function appendToken(dest: Token[], token: Token): void {
     if (token.type === TokenType.EOF) return;
 
     if (token.type === TokenType.NULL_CHARACTER || token.type === TokenType.WHITESPACE_CHARACTER) {
@@ -40,11 +40,11 @@ function appendToken(dest: Token[], token: Token) {
     dest.push(token);
 }
 
-function collectParserTokens(html: string) {
+function collectParserTokens(html: string): ReturnType<typeof convertTokenToHtml5Lib>[] {
     const tokens: Token[] = [];
     const parser = new Parser();
 
-    parser._processInputToken = function (token) {
+    parser._processInputToken = function (token): void {
         Parser.prototype._processInputToken.call(this, token);
 
         // NOTE: Needed to split attributes of duplicate <html> and <body>
@@ -61,7 +61,7 @@ function collectParserTokens(html: string) {
     return tokens.map((token) => convertTokenToHtml5Lib(token));
 }
 
-function generateParserFeedbackTest(parserTestFile: string) {
+function generateParserFeedbackTest(parserTestFile: string): string {
     const tests = parseDatFile(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {

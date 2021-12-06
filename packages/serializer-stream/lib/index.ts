@@ -46,7 +46,7 @@ export class SerializerStream<T extends TreeAdapterTypeMap> extends Readable {
     }
 
     //Readable stream implementation
-    override _read() {
+    override _read(): void {
         this.serializer.serialize();
         this.push(null);
     }

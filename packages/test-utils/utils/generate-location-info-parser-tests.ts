@@ -18,7 +18,7 @@ function walkTree<T extends TreeAdapterTypeMap>(
     document: T['document'],
     treeAdapter: TreeAdapter<T>,
     handler: (node: T['node']) => void
-) {
+): void {
     const stack = [...treeAdapter.getChildNodes(document)];
     let node;
     while ((node = stack.shift())) {
@@ -32,7 +32,7 @@ function walkTree<T extends TreeAdapterTypeMap>(
     }
 }
 
-function assertLocation(loc: Location, expected: string, html: string, lines: string[]) {
+function assertLocation(loc: Location, expected: string, html: string, lines: string[]): void {
     //Offsets
     let actual = html.substring(loc.startOffset, loc.endOffset);
 
@@ -54,7 +54,7 @@ export function assertStartTagLocation(
     serializedNode: string,
     html: string,
     lines: string[]
-) {
+): void {
     assert.ok(location.startTag, 'Expected startTag to be defined');
     const length = location.startTag.endOffset - location.startTag.startOffset;
     const expected = serializedNode.substring(0, length);
@@ -63,7 +63,7 @@ export function assertStartTagLocation(
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
-function assertEndTagLocation(location: ElementLocation, serializedNode: string, html: string, lines: string[]) {
+function assertEndTagLocation(location: ElementLocation, serializedNode: string, html: string, lines: string[]): void {
     assert.ok(location.endTag, 'Expected endTag to be defined');
     const length = location.endTag.endOffset - location.endTag.startOffset;
     const expected = serializedNode.slice(-length);
@@ -71,7 +71,7 @@ function assertEndTagLocation(location: ElementLocation, serializedNode: string,
     assertLocation(location.endTag, expected, html, lines);
 }
 
-function assertAttrsLocation(location: ElementLocation, serializedNode: string, html: string, lines: string[]) {
+function assertAttrsLocation(location: ElementLocation, serializedNode: string, html: string, lines: string[]): void {
     assert.ok(location.attrs, 'Expected attrs to be defined');
 
     for (const attr of Object.values(location.attrs)) {
@@ -81,13 +81,13 @@ function assertAttrsLocation(location: ElementLocation, serializedNode: string, 
     }
 }
 
-export function assertNodeLocation(location: Location, serializedNode: string, html: string, lines: string[]) {
+export function assertNodeLocation(location: Location, serializedNode: string, html: string, lines: string[]): void {
     const expected = removeNewLines(serializedNode);
 
     assertLocation(location, expected, html, lines);
 }
 
-function loadParserLocationInfoTestData() {
+function loadParserLocationInfoTestData(): { name: string; data: string }[] {
     const dataDirPath = new URL('../data/location-info', import.meta.url);
     const testSetFileDirs = fs.readdirSync(dataDirPath);
 
@@ -106,7 +106,7 @@ export function generateLocationInfoParserTests(
     name: string,
     _prefix: string,
     parse: (html: string, opts: ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] }
-) {
+): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadParserLocationInfoTestData()) {
             //NOTE: How it works: we parse document with the location info.

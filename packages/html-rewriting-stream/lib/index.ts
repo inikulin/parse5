@@ -85,7 +85,7 @@ export class RewritingStream extends SAXParser {
     }
 
     // Emitter API
-    protected override _emitToken(eventName: string, token: SaxToken) {
+    protected override _emitToken(eventName: string, token: SaxToken): void {
         this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation!));
     }
 

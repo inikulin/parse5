@@ -46,13 +46,13 @@ export class ParserFeedbackSimulator {
     }
 
     //Namespace stack mutations
-    private _enterNamespace(namespace: NS) {
+    private _enterNamespace(namespace: NS): void {
         this.namespaceStack.unshift(namespace);
         this.inForeignContent = namespace !== NS.HTML;
         this.tokenizer.allowCDATA = this.inForeignContent;
     }
 
-    private _leaveCurrentNamespace() {
+    private _leaveCurrentNamespace(): void {
         this.namespaceStack.shift();
         this.inForeignContent = this.namespaceStack[0] !== NS.HTML;
         this.tokenizer.allowCDATA = this.inForeignContent;
