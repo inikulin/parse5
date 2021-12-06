@@ -53,6 +53,8 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
     [0x9f, 0x01_78],
 ]);
 
+const HIBERNATION_TOKEN: Token = { type: TokenType.HIBERNATION, location: null };
+
 //States
 export enum State {
     DATA,
@@ -294,7 +296,7 @@ export class Tokenizer {
             }
 
             this.active = false;
-            this.tokenQueue.push({ type: TokenType.HIBERNATION, location: null });
+            this.tokenQueue.push(HIBERNATION_TOKEN);
 
             return true;
         }

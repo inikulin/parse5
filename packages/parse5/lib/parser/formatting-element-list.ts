@@ -21,6 +21,8 @@ export interface ElementEntry<T extends TreeAdapterTypeMap> {
 
 export type Entry<T extends TreeAdapterTypeMap> = MarkerEntry | ElementEntry<T>;
 
+const MARKER: MarkerEntry = { type: EntryType.Marker };
+
 //List of formatting elements
 export class FormattingElementList<T extends TreeAdapterTypeMap> {
     entries: Entry<T>[] = [];
@@ -94,7 +96,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
 
     //Mutations
     insertMarker(): void {
-        this.entries.unshift({ type: EntryType.Marker });
+        this.entries.unshift(MARKER);
     }
 
     pushElement(element: T['element'], token: TagToken): void {
@@ -126,7 +128,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     }
 
     clearToLastMarker(): void {
-        const markerIdx = this.entries.findIndex((entry) => entry.type === EntryType.Marker);
+        const markerIdx = this.entries.indexOf(MARKER);
 
         if (markerIdx >= 0) {
             this.entries.splice(0, markerIdx + 1);
