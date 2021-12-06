@@ -75,15 +75,20 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
 
         //NOTE: build attrs map for the new element so we can perform fast lookups
         const neAttrsMap = new Map(neAttrs.map((neAttr: Attribute) => [neAttr.name, neAttr.value]));
-
-        const filteredCandidates = candidates.filter((candidate) =>
-            // We know that `candidate.attrs.length === neAttrs.length`
-            candidate.attrs.every((cAttr) => neAttrsMap.get(cAttr.name) === cAttr.value)
-        );
+        let validCandidates = 0;
 
         //NOTE: remove bottommost candidates until Noah's Ark condition will not be met
-        for (let i = NOAH_ARK_CAPACITY - 1; i < filteredCandidates.length; i++) {
-            this.entries.splice(filteredCandidates[i].idx, 1);
+        for (let i = 0; i < candidates.length; i++) {
+            const candidate = candidates[i];
+
+            // We know that `candidate.attrs.length === neAttrs.length`
+            if (candidate.attrs.every((cAttr) => neAttrsMap.get(cAttr.name) === cAttr.value)) {
+                validCandidates += 1;
+
+                if (validCandidates >= NOAH_ARK_CAPACITY) {
+                    this.entries.splice(candidate.idx, 1);
+                }
+            }
         }
     }
 
