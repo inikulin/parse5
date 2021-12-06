@@ -284,10 +284,7 @@ export class Tokenizer {
     //Hibernation
     private _ensureHibernation(): boolean {
         if (this.preprocessor.endOfChunkHit) {
-            for (; this.consumedAfterSnapshot > 0; this.consumedAfterSnapshot--) {
-                this.preprocessor.retreat();
-            }
-
+            this._unconsume(this.consumedAfterSnapshot);
             this.active = false;
             this.tokenQueue.push(HIBERNATION_TOKEN);
 
@@ -303,14 +300,14 @@ export class Tokenizer {
         return this.preprocessor.advance();
     }
 
-    private _unconsume(): void {
-        this.consumedAfterSnapshot--;
-        this.preprocessor.retreat();
+    private _unconsume(count: number): void {
+        this.consumedAfterSnapshot -= count;
+        this.preprocessor.retreat(count);
     }
 
     private _reconsumeInState(state: State): void {
         this.state = state;
-        this._unconsume();
+        this._unconsume(1);
     }
 
     private _advanceBy(count: number): void {
@@ -568,9 +565,7 @@ export class Tokenizer {
             }
         }
 
-        while (excess--) {
-            this._unconsume();
-        }
+        this._unconsume(excess);
 
         if (withoutSemicolon && !this.preprocessor.endOfChunkHit) {
             this._err(ERR.missingSemicolonAfterCharacterReference);
@@ -579,7 +574,7 @@ export class Tokenizer {
         // We want to emit the error above on the code point after the entity.
         // We always consume one code point too many in the loop, and we wait to
         // unconsume it until after the error is emitted.
-        this._unconsume();
+        this._unconsume(1);
 
         return hasResult;
     }
@@ -2208,7 +2203,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateBeforeDoctypeName(cp: number): void {
         if (isAsciiUpper(cp)) {
-            this._createDoctypeToken(String.fromCharCode(toAsciiLower(cp))(cp));
+            this._createDoctypeToken(String.fromCharCode(toAsciiLower(cp)));
             this.state = State.DOCTYPE_NAME;
         } else
             switch (cp) {

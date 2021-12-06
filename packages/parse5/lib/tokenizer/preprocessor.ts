@@ -229,13 +229,13 @@ export class Preprocessor {
         }
     }
 
-    public retreat(): void {
-        if (this.pos === this.lastGapPos) {
+    public retreat(count: number): void {
+        this.pos -= count;
+
+        while (this.pos < this.lastGapPos) {
             this.lastGapPos = this.gapStack.pop()!;
             this.pos--;
         }
-
-        this.pos--;
 
         this.isEol = false;
     }
