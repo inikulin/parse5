@@ -193,6 +193,10 @@ function toAsciiLowerChar(cp: number): string {
     return String.fromCharCode(toAsciiLowerCodePoint(cp));
 }
 
+function isEntityInAttributeInvalidEnd(nextCp: number) {
+    return nextCp === $.EQUALS_SIGN || isAsciiAlphaNumeric(nextCp);
+}
+
 function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
     return (
         cp === $.SPACE ||
@@ -547,19 +551,16 @@ export class Tokenizer {
 
             if (i < 0) break;
 
-            this.tempBuff.push(cp);
             excess += 1;
 
             current = htmlDecodeTree[i];
 
             // If the branch is a value, store it and continue
             if (current & BinTrieFlags.HAS_VALUE) {
-                const nextCp = this.preprocessor.peek(1);
-
                 if (
                     cp !== $.SEMICOLON &&
                     this._isCharacterReferenceInAttribute() &&
-                    (nextCp === $.EQUALS_SIGN || isAsciiAlphaNumeric(nextCp))
+                    isEntityInAttributeInvalidEnd(this.preprocessor.peek(1))
                 ) {
                     // No need to consider multi-byte values, as legacy entities are always a single byte.
                     i += 1;
@@ -577,7 +578,6 @@ export class Tokenizer {
         }
 
         while (excess--) {
-            this.tempBuff.pop();
             this._unconsume();
         }
 
