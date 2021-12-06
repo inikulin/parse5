@@ -1,7 +1,7 @@
 import { Preprocessor } from './preprocessor.js';
 import {
     CODE_POINTS as $,
-    CODE_POINT_SEQUENCES as $$,
+    SEQUENCES as $$,
     REPLACEMENT_CHARACTER,
     isSurrogate,
     isUndefinedCodePoint,
@@ -187,12 +187,8 @@ function isAsciiHexDigit(cp: number): boolean {
     return isAsciiDigit(cp) || isAsciiUpperHexDigit(cp) || isAsciiLowerHexDigit(cp);
 }
 
-function toAsciiLowerCodePoint(cp: number): number {
+function toAsciiLower(cp: number): number {
     return cp + 0x00_20;
-}
-
-function toAsciiLowerChar(cp: number): string {
-    return String.fromCharCode(toAsciiLowerCodePoint(cp));
 }
 
 function isEntityInAttributeInvalidEnd(nextCp: number): boolean {
@@ -320,25 +316,21 @@ export class Tokenizer {
         this._unconsume();
     }
 
-    private _isSequenceMatch(pattern: Uint16Array, caseSensitive: boolean): boolean {
-        for (let i = 0; i < pattern.length; i++) {
-            const cp = this.preprocessor.peek(i);
-
-            if (cp !== pattern[i] && (caseSensitive || cp !== toAsciiLowerCodePoint(pattern[i]))) {
-                return false;
-            }
+    private _advanceBy(count: number): void {
+        this.consumedAfterSnapshot += count;
+        for (let i = 0; i < count; i++) {
+            this.preprocessor.advance();
         }
-
-        return true;
     }
 
-    private _consumeSequenceIfMatch(pattern: Uint16Array, caseSensitive: boolean): boolean {
+    private _isSequenceMatch(pattern: string, caseSensitive: boolean): boolean {
+        return this.preprocessor.startsWith(pattern, caseSensitive);
+    }
+
+    private _consumeSequenceIfMatch(pattern: string, caseSensitive: boolean): boolean {
         if (this._isSequenceMatch(pattern, caseSensitive)) {
             // We will already have consumed one character before calling this method.
-            for (let i = 1; i < pattern.length; i++) {
-                this._consume();
-            }
-
+            this._advanceBy(pattern.length - 1);
             return true;
         }
         return false;
@@ -1168,7 +1160,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.tagName += isAsciiUpper(cp) ? toAsciiLowerChar(cp) : String.fromCodePoint(cp);
+                token.tagName += String.fromCodePoint(isAsciiUpper(cp) ? toAsciiLower(cp) : cp);
             }
         }
     }
@@ -1177,7 +1169,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRcdataLessThanSign(cp: number): void {
         if (cp === $.SOLIDUS) {
-            this.tempBuff.length = 0;
             this.state = State.RCDATA_END_TAG_OPEN;
         } else {
             this._emitChars('<');
@@ -1190,7 +1181,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRcdataEndTagOpen(cp: number): void {
         if (isAsciiLetter(cp)) {
-            this._createEndTagToken();
             this.state = State.RCDATA_END_TAG_NAME;
             this._stateRcdataEndTagName(cp);
         } else {
@@ -1200,38 +1190,39 @@ export class Tokenizer {
         }
     }
 
-    private handleSpecialEndTag(cp: number): boolean {
-        const token = this.currentToken as TagToken;
-
-        const lower = cp | 0x20;
-        if (token.tagName.length < this.lastStartTagName.length) {
-            if (this.lastStartTagName.charCodeAt(token.tagName.length) !== lower) {
-                return true;
-            }
-            token.tagName += String.fromCodePoint(lower);
-            this.tempBuff.push(cp);
-            return false;
+    private handleSpecialEndTag(_cp: number): boolean {
+        if (!this._isSequenceMatch(this.lastStartTagName, false)) {
+            return !this._ensureHibernation();
         }
+
+        this._createEndTagToken();
+        const token = this.currentToken as TagToken;
+        token.tagName = this.lastStartTagName;
+
+        const cp = this.preprocessor.peek(this.lastStartTagName.length);
 
         switch (cp) {
             case $.SPACE:
             case $.LINE_FEED:
             case $.TABULATION:
             case $.FORM_FEED: {
+                this._advanceBy(this.lastStartTagName.length);
                 this.state = State.BEFORE_ATTRIBUTE_NAME;
                 return false;
             }
             case $.SOLIDUS: {
+                this._advanceBy(this.lastStartTagName.length);
                 this.state = State.SELF_CLOSING_START_TAG;
                 return false;
             }
             case $.GREATER_THAN_SIGN: {
+                this._advanceBy(this.lastStartTagName.length);
                 this._emitCurrentToken();
                 this.state = State.DATA;
                 return false;
             }
             default: {
-                return true;
+                return !this._ensureHibernation();
             }
         }
     }
@@ -1241,7 +1232,6 @@ export class Tokenizer {
     private _stateRcdataEndTagName(cp: number): void {
         if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
-            this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.RCDATA;
             this._stateRcdata(cp);
         }
@@ -1251,7 +1241,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRawtextLessThanSign(cp: number): void {
         if (cp === $.SOLIDUS) {
-            this.tempBuff.length = 0;
             this.state = State.RAWTEXT_END_TAG_OPEN;
         } else {
             this._emitChars('<');
@@ -1264,7 +1253,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRawtextEndTagOpen(cp: number): void {
         if (isAsciiLetter(cp)) {
-            this._createEndTagToken();
             this.state = State.RAWTEXT_END_TAG_NAME;
             this._stateRawtextEndTagName(cp);
         } else {
@@ -1279,7 +1267,6 @@ export class Tokenizer {
     private _stateRawtextEndTagName(cp: number): void {
         if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
-            this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.RAWTEXT;
             this._stateRawtext(cp);
         }
@@ -1289,7 +1276,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataLessThanSign(cp: number): void {
         if (cp === $.SOLIDUS) {
-            this.tempBuff.length = 0;
             this.state = State.SCRIPT_DATA_END_TAG_OPEN;
         } else if (cp === $.EXCLAMATION_MARK) {
             this.state = State.SCRIPT_DATA_ESCAPE_START;
@@ -1305,7 +1291,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataEndTagOpen(cp: number): void {
         if (isAsciiLetter(cp)) {
-            this._createEndTagToken();
             this.state = State.SCRIPT_DATA_END_TAG_NAME;
             this._stateScriptDataEndTagName(cp);
         } else {
@@ -1320,7 +1305,6 @@ export class Tokenizer {
     private _stateScriptDataEndTagName(cp: number): void {
         if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
-            this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.SCRIPT_DATA;
             this._stateScriptData(cp);
         }
@@ -1449,10 +1433,8 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataEscapedLessThanSign(cp: number): void {
         if (cp === $.SOLIDUS) {
-            this.tempBuff.length = 0;
             this.state = State.SCRIPT_DATA_ESCAPED_END_TAG_OPEN;
         } else if (isAsciiLetter(cp)) {
-            this.tempBuff.length = 0;
             this._emitChars('<');
             this.state = State.SCRIPT_DATA_DOUBLE_ESCAPE_START;
             this._stateScriptDataDoubleEscapeStart(cp);
@@ -1467,7 +1449,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataEscapedEndTagOpen(cp: number): void {
         if (isAsciiLetter(cp)) {
-            this._createEndTagToken();
             this.state = State.SCRIPT_DATA_ESCAPED_END_TAG_NAME;
             this._stateScriptDataEscapedEndTagName(cp);
         } else {
@@ -1482,7 +1463,6 @@ export class Tokenizer {
     private _stateScriptDataEscapedEndTagName(cp: number): void {
         if (this.handleSpecialEndTag(cp)) {
             this._emitChars('</');
-            this._emitSeveralCodePoints(this.tempBuff);
             this.state = State.SCRIPT_DATA_ESCAPED;
             this._stateScriptDataEscaped(cp);
         }
@@ -1492,11 +1472,11 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapeStart(cp: number): void {
         if (
-            this._isSequenceMatch($$.SCRIPT_STRING, false) &&
-            isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT_STRING.length))
+            this._isSequenceMatch($$.SCRIPT, false) &&
+            isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT.length))
         ) {
             this._emitCodePoint(cp);
-            for (let i = 0; i < $$.SCRIPT_STRING.length; i++) {
+            for (let i = 0; i < $$.SCRIPT.length; i++) {
                 this._emitCodePoint(this._consume());
             }
 
@@ -1609,7 +1589,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapedLessThanSign(cp: number): void {
         if (cp === $.SOLIDUS) {
-            this.tempBuff.length = 0;
             this.state = State.SCRIPT_DATA_DOUBLE_ESCAPE_END;
             this._emitChars('/');
         } else {
@@ -1622,11 +1601,11 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapeEnd(cp: number): void {
         if (
-            this._isSequenceMatch($$.SCRIPT_STRING, false) &&
-            isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT_STRING.length))
+            this._isSequenceMatch($$.SCRIPT, false) &&
+            isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT.length))
         ) {
             this._emitCodePoint(cp);
-            for (let i = 0; i < $$.SCRIPT_STRING.length; i++) {
+            for (let i = 0; i < $$.SCRIPT.length; i++) {
                 this._emitCodePoint(this._consume());
             }
 
@@ -1703,7 +1682,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.name += isAsciiUpper(cp) ? toAsciiLowerChar(cp) : String.fromCodePoint(cp);
+                this.currentAttr.name += String.fromCodePoint(isAsciiUpper(cp) ? toAsciiLower(cp) : cp);
             }
         }
     }
@@ -1966,12 +1945,12 @@ export class Tokenizer {
     // Markup declaration open state
     //------------------------------------------------------------------
     private _stateMarkupDeclarationOpen(cp: number): void {
-        if (this._consumeSequenceIfMatch($$.DASH_DASH_STRING, true)) {
+        if (this._consumeSequenceIfMatch($$.DASH_DASH, true)) {
             this._createCommentToken();
             this.state = State.COMMENT_START;
-        } else if (this._consumeSequenceIfMatch($$.DOCTYPE_STRING, false)) {
+        } else if (this._consumeSequenceIfMatch($$.DOCTYPE, false)) {
             this.state = State.DOCTYPE;
-        } else if (this._consumeSequenceIfMatch($$.CDATA_START_STRING, true)) {
+        } else if (this._consumeSequenceIfMatch($$.CDATA_START, true)) {
             if (this.allowCDATA) {
                 this.state = State.CDATA_SECTION;
             } else {
@@ -2232,7 +2211,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateBeforeDoctypeName(cp: number): void {
         if (isAsciiUpper(cp)) {
-            this._createDoctypeToken(toAsciiLowerChar(cp));
+            this._createDoctypeToken(String.fromCharCode(toAsciiLower(cp))(cp));
             this.state = State.DOCTYPE_NAME;
         } else
             switch (cp) {
@@ -2303,7 +2282,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.name += isAsciiUpper(cp) ? toAsciiLowerChar(cp) : String.fromCodePoint(cp);
+                token.name += String.fromCodePoint(isAsciiUpper(cp) ? toAsciiLower(cp) : cp);
             }
         }
     }
@@ -2334,9 +2313,9 @@ export class Tokenizer {
                 break;
             }
             default:
-                if (this._consumeSequenceIfMatch($$.PUBLIC_STRING, false)) {
+                if (this._consumeSequenceIfMatch($$.PUBLIC, false)) {
                     this.state = State.AFTER_DOCTYPE_PUBLIC_KEYWORD;
-                } else if (this._consumeSequenceIfMatch($$.SYSTEM_STRING, false)) {
+                } else if (this._consumeSequenceIfMatch($$.SYSTEM, false)) {
                     this.state = State.AFTER_DOCTYPE_SYSTEM_KEYWORD;
                 }
                 //NOTE: sequence lookup can be abrupted by hibernation. In that case lookup

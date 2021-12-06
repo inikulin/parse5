@@ -42,13 +42,13 @@ export enum CODE_POINTS {
     REPLACEMENT_CHARACTER = 0xff_fd,
 }
 
-export const CODE_POINT_SEQUENCES = {
-    DASH_DASH_STRING: new Uint16Array([0x2d, 0x2d]), //--
-    DOCTYPE_STRING: new Uint16Array([0x44, 0x4f, 0x43, 0x54, 0x59, 0x50, 0x45]), //DOCTYPE
-    CDATA_START_STRING: new Uint16Array([0x5b, 0x43, 0x44, 0x41, 0x54, 0x41, 0x5b]), //[CDATA[
-    SCRIPT_STRING: new Uint16Array([0x53, 0x43, 0x52, 0x49, 0x50, 0x54]), //SCRIPT
-    PUBLIC_STRING: new Uint16Array([0x50, 0x55, 0x42, 0x4c, 0x49, 0x43]), //PUBLIC
-    SYSTEM_STRING: new Uint16Array([0x53, 0x59, 0x53, 0x54, 0x45, 0x4d]), //SYSTEM
+export const SEQUENCES = {
+    DASH_DASH: '--',
+    CDATA_START: '[CDATA[',
+    DOCTYPE: 'doctype',
+    SCRIPT: 'script',
+    PUBLIC: 'public',
+    SYSTEM: 'system',
 };
 
 //Surrogates

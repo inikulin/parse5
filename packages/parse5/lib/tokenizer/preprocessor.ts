@@ -128,6 +128,27 @@ export class Preprocessor {
         this.endOfChunkHit = false;
     }
 
+    public startsWith(pattern: string, caseSensitive: boolean): boolean {
+        if (this.pos + pattern.length > this.html.length) {
+            this.endOfChunkHit = !this.lastChunkWritten;
+            return false;
+        }
+
+        if (caseSensitive) {
+            return this.html.startsWith(pattern, this.pos);
+        }
+
+        for (let i = 0; i < pattern.length; i++) {
+            const cp = this.html.charCodeAt(this.pos + i) | 0x20;
+
+            if (cp !== pattern.charCodeAt(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public peek(offset: number): number {
         const pos = this.pos + offset;
 
