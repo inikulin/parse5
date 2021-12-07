@@ -194,6 +194,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     openElements!: OpenElementStack<T>;
     activeFormattingElements!: FormattingElementList<T>;
+    private _considerForeignContent = false;
 
     /**
      * The template insertion mode stack is maintained from the left.
@@ -220,16 +221,13 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.document = document;
         this.fragmentContext = fragmentContext;
         this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
+        this._setContextModes(fragmentContext ?? document, this.fragmentContextID);
 
         this.headElement = null;
         this.formElement = null;
         this.currentToken = null;
 
-        this.openElements = new OpenElementStack(this.document, this.treeAdapter);
-
-        if (this.options.sourceCodeLocationInfo) {
-            this.openElements.onItemPop = (element): void => this._setEndLocation(element, this.currentToken!);
-        }
+        this.openElements = new OpenElementStack(this.document, this.treeAdapter, this.onItemPush, this.onItemPop);
 
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
@@ -264,8 +262,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
     //Parsing loop
     private _runParsingLoop(scriptHandler: null | ((scriptElement: T['element']) => void)): void {
         while (!this.stopped) {
-            this._setupTokenizerCDATAMode();
-
             const token = this.tokenizer.getNextToken();
 
             if (token.type === TokenType.HIBERNATION) {
@@ -317,22 +313,35 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Text parsing
-    private _setupTokenizerCDATAMode(): void {
-        let current;
-        let currentTagId;
-
-        if (this.openElements.stackTop === 0 && this.fragmentContext) {
-            current = this.fragmentContext;
-            currentTagId = this.fragmentContextID;
-        } else {
-            ({ current, currentTagId } = this.openElements);
+    private onItemPop = (node: T['parentNode'], isTop: boolean): void => {
+        if (this.options.sourceCodeLocationInfo) {
+            this._setEndLocation(node, this.currentToken!);
         }
 
-        this.tokenizer.allowCDATA =
-            current &&
-            current !== this.document &&
-            this.treeAdapter.getNamespaceURI(current) !== NS.HTML &&
-            !this._isIntegrationPoint(currentTagId, current);
+        if (isTop) {
+            let current;
+            let currentTagId;
+
+            if (this.openElements.stackTop === 0 && this.fragmentContext) {
+                current = this.fragmentContext;
+                currentTagId = this.fragmentContextID;
+            } else {
+                ({ current, currentTagId } = this.openElements);
+            }
+
+            this._setContextModes(current, currentTagId);
+        }
+    };
+
+    private onItemPush = (node: T['parentNode'], tid: number, isTop: boolean): void => {
+        if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
+    };
+
+    private _setContextModes(current: T['parentNode'], tid: number): void {
+        const isHTML = current === this.document || this.treeAdapter.getNamespaceURI(current) === NS.HTML;
+
+        this._considerForeignContent = !isHTML;
+        this.tokenizer.allowCDATA = !isHTML && !this._isIntegrationPoint(tid, current);
     }
 
     _switchToTextParsing(
@@ -553,9 +562,9 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Token processing
-    _shouldProcessTokenInForeignContent(token: Token): boolean {
-        let current;
-        let currentTagId;
+    private _shouldProcessTokenInForeignContent(token: Token): boolean {
+        let current: T['parentNode'];
+        let currentTagId: number;
 
         if (this.openElements.stackTop === 0 && this.fragmentContext) {
             current = this.fragmentContext;
@@ -564,15 +573,9 @@ export class Parser<T extends TreeAdapterTypeMap> {
             ({ current, currentTagId } = this.openElements);
         }
 
-        if (current === this.document) {
-            return false;
-        }
-
         const ns = this.treeAdapter.getNamespaceURI(current);
 
-        if (ns === NS.HTML) {
-            return false;
-        }
+        //NOTE: We won't get here with current === document, or ns === NS.HTML
 
         if (
             token.type === TokenType.START_TAG &&
@@ -750,7 +753,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _processInputToken(token: Token): void {
-        if (this._shouldProcessTokenInForeignContent(token)) {
+        if (this._considerForeignContent && this._shouldProcessTokenInForeignContent(token)) {
             this._processTokenInForeignContent(token);
         } else {
             this._processToken(token);

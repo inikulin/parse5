@@ -55,9 +55,12 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : this.current;
     }
 
-    public onItemPop: null | ((node: T['parentNode']) => void) = null;
-
-    constructor(document: T['document'], private treeAdapter: TreeAdapter<T>) {
+    constructor(
+        document: T['document'],
+        private treeAdapter: TreeAdapter<T>,
+        private onItemPush: (node: T['parentNode'], tid: number, isTop: boolean) => void,
+        private onItemPop: (node: T['parentNode'], isTop: boolean) => void
+    ) {
         this.current = document;
     }
 
@@ -81,23 +84,27 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.stackTop++;
 
         this.items[this.stackTop] = element;
+        this.current = element;
         this.tagIDs[this.stackTop] = tagID;
-        this._updateCurrentElement();
+        this.currentTagId = tagID;
 
         if (this._isInTemplate()) {
             this.tmplCount++;
         }
+
+        this.onItemPush(element, tagID, true);
     }
 
     pop(): void {
-        this.onItemPop?.(this.current);
-        this.stackTop--;
-
+        const popped = this.current;
         if (this.tmplCount > 0 && this._isInTemplate()) {
             this.tmplCount--;
         }
 
+        this.stackTop--;
         this._updateCurrentElement();
+
+        this.onItemPop(popped, true);
     }
 
     replace(oldElement: T['element'], newElement: T['element']): void {
@@ -106,7 +113,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.items[idx] = newElement;
 
         if (idx === this.stackTop) {
-            this._updateCurrentElement();
+            this.current = newElement;
         }
     }
 
@@ -120,6 +127,8 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         if (insertionIdx === this.stackTop) {
             this._updateCurrentElement();
         }
+
+        this.onItemPush(this.current, this.currentTagId, insertionIdx === this.stackTop);
     }
 
     popUntilTagNamePopped(tagName: $): void {
@@ -133,20 +142,18 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     shortenToLength(idx: number): void {
-        for (let i = this.stackTop; (this.onItemPop || this.tmplCount > 0) && i >= idx; i--) {
-            this.onItemPop?.(this.items[i]);
+        for (; this.stackTop >= idx; ) {
+            const popped = this.current;
 
-            if (
-                this.tmplCount > 0 &&
-                this.tagIDs[i] === $.TEMPLATE &&
-                this.treeAdapter.getNamespaceURI(this.items[i]) === NS.HTML
-            ) {
+            if (this.tmplCount > 0 && this._isInTemplate()) {
                 this.tmplCount -= 1;
             }
-        }
 
-        this.stackTop = idx - 1;
-        this._updateCurrentElement();
+            this.stackTop--;
+            this._updateCurrentElement();
+
+            this.onItemPop(popped, this.stackTop < idx);
+        }
     }
 
     popUntilElementPopped(element: T['element']): void {
@@ -207,11 +214,11 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             if (idx === this.stackTop) {
                 this.pop();
             } else {
-                this.onItemPop?.(element);
                 this.items.splice(idx, 1);
                 this.tagIDs.splice(idx, 1);
                 this.stackTop--;
                 this._updateCurrentElement();
+                this.onItemPop(element, false);
             }
         }
     }
