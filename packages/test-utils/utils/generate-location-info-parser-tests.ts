@@ -39,13 +39,13 @@ function assertLocation(loc: Location, expected: string, html: string, lines: st
     expected = removeNewLines(expected);
     actual = removeNewLines(actual);
 
-    assert.strictEqual(expected, actual, getStringDiffMsg(actual, expected));
+    assert.ok(expected === actual, getStringDiffMsg(actual, expected));
 
     //Line/col
     actual = getSubstringByLineCol(lines, loc);
     actual = removeNewLines(actual);
 
-    assert.strictEqual(actual, expected, getStringDiffMsg(actual, expected));
+    assert.ok(actual === expected, getStringDiffMsg(actual, expected));
 }
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag

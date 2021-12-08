@@ -110,7 +110,7 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
         const actual = serializeToDatFileFormat(node, opts.treeAdapter);
         const msg = prettyPrintParserAssertionArgs(actual, test.expected, chunks);
 
-        assert.strictEqual(actual, test.expected, msg);
+        assert.ok(actual === test.expected, msg);
 
         if (!withoutErrors) {
             assert.deepEqual(errs.sort(), test.expectedErrors.sort());
