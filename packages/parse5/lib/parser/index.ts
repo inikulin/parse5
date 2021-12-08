@@ -227,7 +227,12 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.formElement = null;
         this.currentToken = null;
 
-        this.openElements = new OpenElementStack(this.document, this.treeAdapter, this.onItemPush, this.onItemPop);
+        this.openElements = new OpenElementStack(
+            this.document,
+            this.treeAdapter,
+            this.onItemPush.bind(this),
+            this.onItemPop.bind(this)
+        );
 
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
@@ -313,7 +318,11 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Text parsing
-    private onItemPop = (node: T['parentNode'], isTop: boolean): void => {
+    private onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
+        if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
+    }
+
+    private onItemPop(node: T['parentNode'], isTop: boolean): void {
         if (this.options.sourceCodeLocationInfo) {
             this._setEndLocation(node, this.currentToken!);
         }
@@ -331,11 +340,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
             this._setContextModes(current, currentTagId);
         }
-    };
-
-    private onItemPush = (node: T['parentNode'], tid: number, isTop: boolean): void => {
-        if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
-    };
+    }
 
     private _setContextModes(current: T['parentNode'], tid: number): void {
         const isHTML = current === this.document || this.treeAdapter.getNamespaceURI(current) === NS.HTML;
