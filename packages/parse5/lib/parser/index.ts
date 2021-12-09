@@ -437,12 +437,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _attachElementToTree(element: T['element'], location: LocationWithAttributes | null): void {
-        const loc = location && {
-            ...location,
-            startTag: location,
-        };
+        if (this.options.sourceCodeLocationInfo) {
+            const loc = location && {
+                ...location,
+                startTag: location,
+            };
 
-        this.treeAdapter.setNodeSourceCodeLocation(element, loc);
+            this.treeAdapter.setNodeSourceCodeLocation(element, loc);
+        }
 
         if (this._shouldFosterParentOnInsertion()) {
             this._fosterParentElement(element);
@@ -480,12 +482,12 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.treeAdapter.setTemplateContent(tmpl, content);
         this._attachElementToTree(tmpl, token.location);
         this.openElements.push(tmpl, token.tagID);
-        this.treeAdapter.setNodeSourceCodeLocation(content, null);
+        if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(content, null);
     }
 
     _insertFakeRootElement(): void {
         const element = this.treeAdapter.createElement(TN.HTML, NS.HTML, []);
-        this.treeAdapter.setNodeSourceCodeLocation(element, null);
+        if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(element, null);
 
         this.treeAdapter.appendChild(this.openElements.current, element);
         this.openElements.push(element, $.HTML);
@@ -495,7 +497,9 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const commentNode = this.treeAdapter.createCommentNode(token.data);
 
         this.treeAdapter.appendChild(parent, commentNode);
-        this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location);
+        if (this.options.sourceCodeLocationInfo) {
+            this.treeAdapter.setNodeSourceCodeLocation(commentNode, token.location);
+        }
     }
 
     _insertCharacters(token: CharacterToken): void {
@@ -528,7 +532,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         if (tnLoc) {
             const { endLine, endCol, endOffset } = token.location;
             this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
-        } else {
+        } else if (this.options.sourceCodeLocationInfo) {
             this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
         }
     }
