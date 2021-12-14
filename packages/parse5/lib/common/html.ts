@@ -177,6 +177,11 @@ export enum TAG_NAMES {
     XMP = 'xmp',
 }
 
+/**
+ * Tag IDs are numeric IDs for known tag names.
+ *
+ * We use tag IDs to improve the performance of tag name comparisons.
+ */
 export enum TAG_ID {
     UNKNOWN,
 

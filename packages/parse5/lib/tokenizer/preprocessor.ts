@@ -129,6 +129,7 @@ export class Preprocessor {
     }
 
     public startsWith(pattern: string, caseSensitive: boolean): boolean {
+        // Check if our buffer has enough characters
         if (this.pos + pattern.length > this.html.length) {
             this.endOfChunkHit = !this.lastChunkWritten;
             return false;
