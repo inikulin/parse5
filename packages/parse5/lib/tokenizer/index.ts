@@ -317,12 +317,8 @@ export class Tokenizer {
         }
     }
 
-    private _isSequenceMatch(pattern: string, caseSensitive: boolean): boolean {
-        return this.preprocessor.startsWith(pattern, caseSensitive);
-    }
-
     private _consumeSequenceIfMatch(pattern: string, caseSensitive: boolean): boolean {
-        if (this._isSequenceMatch(pattern, caseSensitive)) {
+        if (this.preprocessor.startsWith(pattern, caseSensitive)) {
             // We will already have consumed one character before calling this method.
             this._advanceBy(pattern.length - 1);
             return true;
@@ -1183,7 +1179,7 @@ export class Tokenizer {
     }
 
     private handleSpecialEndTag(_cp: number): boolean {
-        if (!this._isSequenceMatch(this.lastStartTagName, false)) {
+        if (!this.preprocessor.startsWith(this.lastStartTagName, false)) {
             return !this._ensureHibernation();
         }
 
@@ -1464,7 +1460,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapeStart(cp: number): void {
         if (
-            this._isSequenceMatch($$.SCRIPT, false) &&
+            this.preprocessor.startsWith($$.SCRIPT, false) &&
             isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT.length))
         ) {
             this._emitCodePoint(cp);
@@ -1593,7 +1589,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptDataDoubleEscapeEnd(cp: number): void {
         if (
-            this._isSequenceMatch($$.SCRIPT, false) &&
+            this.preprocessor.startsWith($$.SCRIPT, false) &&
             isScriptDataDoubleEscapeSequenceEnd(this.preprocessor.peek($$.SCRIPT.length))
         ) {
             this._emitCodePoint(cp);
