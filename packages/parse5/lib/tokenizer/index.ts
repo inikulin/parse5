@@ -434,19 +434,26 @@ export class Tokenizer {
         this.currentToken = null;
 
         //NOTE: store emited start tag's tagName to determine is the following end tag token is appropriate.
-        if (ct.type === TokenType.START_TAG) {
-            ct.tagID = getTagID(ct.tagName);
-            this.lastStartTagName = ct.tagName;
-        } else if (ct.type === TokenType.END_TAG) {
-            ct.tagID = getTagID(ct.tagName);
-
-            if (ct.attrs.length > 0) {
-                this._err(ERR.endTagWithAttributes);
+        switch (ct.type) {
+            case TokenType.START_TAG: {
+                ct.tagID = getTagID(ct.tagName);
+                this.lastStartTagName = ct.tagName;
+                break;
             }
+            case TokenType.END_TAG: {
+                ct.tagID = getTagID(ct.tagName);
 
-            if (ct.selfClosing) {
-                this._err(ERR.endTagWithTrailingSolidus);
+                if (ct.attrs.length > 0) {
+                    this._err(ERR.endTagWithAttributes);
+                }
+
+                if (ct.selfClosing) {
+                    this._err(ERR.endTagWithTrailingSolidus);
+                }
+                break;
             }
+            default:
+            // Do nothing
         }
 
         if (ct.location && ct.type !== TokenType.EOF) {
@@ -1044,13 +1051,19 @@ export class Tokenizer {
         this.preprocessor.dropParsedChunk();
         this.ctLoc = this._getCurrentLocation();
 
-        if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._emitChars(REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this._emitChars(REPLACEMENT_CHARACTER);
+                break;
+            }
+            case $.EOF: {
+                this._emitEOFToken();
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -1100,19 +1113,26 @@ export class Tokenizer {
             this._createEndTagToken();
             this.state = State.TAG_NAME;
             this._stateTagName(cp);
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.missingEndTagName);
-            this.state = State.DATA;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofBeforeTagName);
-            this._emitChars('</');
-            this._emitEOFToken();
-        } else {
-            this._err(ERR.invalidFirstCharacterOfTagName);
-            this._createCommentToken();
-            this.state = State.BOGUS_COMMENT;
-            this._stateBogusComment(cp);
-        }
+        } else
+            switch (cp) {
+                case $.GREATER_THAN_SIGN: {
+                    this._err(ERR.missingEndTagName);
+                    this.state = State.DATA;
+                    break;
+                }
+                case $.EOF: {
+                    this._err(ERR.eofBeforeTagName);
+                    this._emitChars('</');
+                    this._emitEOFToken();
+                    break;
+                }
+                default: {
+                    this._err(ERR.invalidFirstCharacterOfTagName);
+                    this._createCommentToken();
+                    this.state = State.BOGUS_COMMENT;
+                    this._stateBogusComment(cp);
+                }
+            }
     }
 
     // Tag name state
@@ -1263,15 +1283,21 @@ export class Tokenizer {
     // Script data less-than sign state
     //------------------------------------------------------------------
     private _stateScriptDataLessThanSign(cp: number): void {
-        if (cp === $.SOLIDUS) {
-            this.state = State.SCRIPT_DATA_END_TAG_OPEN;
-        } else if (cp === $.EXCLAMATION_MARK) {
-            this.state = State.SCRIPT_DATA_ESCAPE_START;
-            this._emitChars('<!');
-        } else {
-            this._emitChars('<');
-            this.state = State.SCRIPT_DATA;
-            this._stateScriptData(cp);
+        switch (cp) {
+            case $.SOLIDUS: {
+                this.state = State.SCRIPT_DATA_END_TAG_OPEN;
+                break;
+            }
+            case $.EXCLAMATION_MARK: {
+                this.state = State.SCRIPT_DATA_ESCAPE_START;
+                this._emitChars('<!');
+                break;
+            }
+            default: {
+                this._emitChars('<');
+                this.state = State.SCRIPT_DATA;
+                this._stateScriptData(cp);
+            }
         }
     }
 
@@ -1889,17 +1915,23 @@ export class Tokenizer {
     // Self-closing start tag state
     //------------------------------------------------------------------
     private _stateSelfClosingStartTag(cp: number): void {
-        if (cp === $.GREATER_THAN_SIGN) {
-            (this.currentToken as TagToken).selfClosing = true;
-            this.state = State.DATA;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInTag);
-            this._emitEOFToken();
-        } else {
-            this._err(ERR.unexpectedSolidusInTag);
-            this.state = State.BEFORE_ATTRIBUTE_NAME;
-            this._stateBeforeAttributeName(cp);
+        switch (cp) {
+            case $.GREATER_THAN_SIGN: {
+                (this.currentToken as TagToken).selfClosing = true;
+                this.state = State.DATA;
+                this._emitCurrentToken();
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInTag);
+                this._emitEOFToken();
+                break;
+            }
+            default: {
+                this._err(ERR.unexpectedSolidusInTag);
+                this.state = State.BEFORE_ATTRIBUTE_NAME;
+                this._stateBeforeAttributeName(cp);
+            }
         }
     }
 
@@ -1962,15 +1994,21 @@ export class Tokenizer {
     // Comment start state
     //------------------------------------------------------------------
     private _stateCommentStart(cp: number): void {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = State.COMMENT_START_DASH;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.abruptClosingOfEmptyComment);
-            this.state = State.DATA;
-            this._emitCurrentToken();
-        } else {
-            this.state = State.COMMENT;
-            this._stateComment(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = State.COMMENT_START_DASH;
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.abruptClosingOfEmptyComment);
+                this.state = State.DATA;
+                this._emitCurrentToken();
+                break;
+            }
+            default: {
+                this.state = State.COMMENT;
+                this._stateComment(cp);
+            }
         }
     }
 
@@ -2039,14 +2077,20 @@ export class Tokenizer {
     private _stateCommentLessThanSign(cp: number): void {
         const token = this.currentToken as CommentToken;
 
-        if (cp === $.EXCLAMATION_MARK) {
-            token.data += '!';
-            this.state = State.COMMENT_LESS_THAN_SIGN_BANG;
-        } else if (cp === $.LESS_THAN_SIGN) {
-            token.data += '<';
-        } else {
-            this.state = State.COMMENT;
-            this._stateComment(cp);
+        switch (cp) {
+            case $.EXCLAMATION_MARK: {
+                token.data += '!';
+                this.state = State.COMMENT_LESS_THAN_SIGN_BANG;
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                token.data += '<';
+                break;
+            }
+            default: {
+                this.state = State.COMMENT;
+                this._stateComment(cp);
+            }
         }
     }
 
@@ -2086,16 +2130,22 @@ export class Tokenizer {
     // Comment end dash state
     //------------------------------------------------------------------
     private _stateCommentEndDash(cp: number): void {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = State.COMMENT_END;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInComment);
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            (this.currentToken as CommentToken).data += '-';
-            this.state = State.COMMENT;
-            this._stateComment(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = State.COMMENT_END;
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInComment);
+                this._emitCurrentToken();
+                this._emitEOFToken();
+                break;
+            }
+            default: {
+                (this.currentToken as CommentToken).data += '-';
+                this.state = State.COMMENT;
+                this._stateComment(cp);
+            }
         }
     }
 
@@ -2794,13 +2844,19 @@ export class Tokenizer {
     // CDATA section state
     //------------------------------------------------------------------
     private _stateCdataSection(cp: number): void {
-        if (cp === $.RIGHT_SQUARE_BRACKET) {
-            this.state = State.CDATA_SECTION_BRACKET;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInCdata);
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.RIGHT_SQUARE_BRACKET: {
+                this.state = State.CDATA_SECTION_BRACKET;
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInCdata);
+                this._emitEOFToken();
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -2819,14 +2875,20 @@ export class Tokenizer {
     // CDATA section end state
     //------------------------------------------------------------------
     private _stateCdataSectionEnd(cp: number): void {
-        if (cp === $.GREATER_THAN_SIGN) {
-            this.state = State.DATA;
-        } else if (cp === $.RIGHT_SQUARE_BRACKET) {
-            this._emitChars(']');
-        } else {
-            this._emitChars(']]');
-            this.state = State.CDATA_SECTION;
-            this._stateCdataSection(cp);
+        switch (cp) {
+            case $.GREATER_THAN_SIGN: {
+                this.state = State.DATA;
+                break;
+            }
+            case $.RIGHT_SQUARE_BRACKET: {
+                this._emitChars(']');
+                break;
+            }
+            default: {
+                this._emitChars(']]');
+                this.state = State.CDATA_SECTION;
+                this._stateCdataSection(cp);
+            }
         }
     }
 

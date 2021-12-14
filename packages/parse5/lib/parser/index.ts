@@ -896,31 +896,30 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _findFosterParentingLocation(): { parent: T['parentNode']; beforeElement: T['element'] | null } {
-        let parent: T['parentNode'] | undefined;
-        let beforeElement: null | T['element'] = null;
-
         for (let i = this.openElements.stackTop; i >= 0; i--) {
             const openElement = this.openElements.items[i];
-            const tn = this.openElements.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(openElement);
 
-            if (tn === $.TEMPLATE && ns === NS.HTML) {
-                parent = this.treeAdapter.getTemplateContent(openElement);
-                break;
-            } else if (tn === $.TABLE) {
-                const parentNode = this.treeAdapter.getParentNode(openElement);
+            switch (this.openElements.tagIDs[i]) {
+                case $.TEMPLATE:
+                    if (this.treeAdapter.getNamespaceURI(openElement) === NS.HTML) {
+                        return { parent: this.treeAdapter.getTemplateContent(openElement), beforeElement: null };
+                    }
+                    break;
+                case $.TABLE: {
+                    const parent = this.treeAdapter.getParentNode(openElement);
 
-                if (parentNode) {
-                    parent = parentNode;
-                    beforeElement = openElement;
-                } else {
-                    parent = this.openElements.items[i - 1];
+                    if (parent) {
+                        return { parent, beforeElement: openElement };
+                    }
+
+                    return { parent: this.openElements.items[i - 1], beforeElement: null };
                 }
-                break;
+                default:
+                // Do nothing
             }
         }
 
-        return { parent: parent ?? this.openElements.items[0], beforeElement };
+        return { parent: this.openElements.items[0], beforeElement: null };
     }
 
     _fosterParentElement(element: T['element']): void {
@@ -1144,12 +1143,22 @@ function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken
 // The "initial" insertion mode
 //------------------------------------------------------------------
 function modeInitial<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    if (token.type === TokenType.COMMENT) {
-        appendComment(p, token);
-    } else if (token.type === TokenType.DOCTYPE) {
-        doctypeInInitialMode(p, token);
-    } else if (token.type !== TokenType.WHITESPACE_CHARACTER) {
-        tokenInInitialMode(p, token);
+    switch (token.type) {
+        case TokenType.COMMENT: {
+            appendComment(p, token);
+            break;
+        }
+        case TokenType.DOCTYPE: {
+            doctypeInInitialMode(p, token);
+            break;
+        }
+        case TokenType.WHITESPACE_CHARACTER: {
+            // Ignore token
+            break;
+        }
+        default: {
+            tokenInInitialMode(p, token);
+        }
     }
 }
 
@@ -1256,16 +1265,20 @@ function modeBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
 }
 
 function startTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.HEAD) {
-        p._insertElement(token, NS.HTML);
-        p.headElement = p.openElements.current;
-        p.insertionMode = InsertionMode.IN_HEAD;
-    } else {
-        tokenBeforeHead(p, token);
+    switch (token.tagID) {
+        case $.HTML: {
+            startTagInBody(p, token);
+            break;
+        }
+        case $.HEAD: {
+            p._insertElement(token, NS.HTML);
+            p.headElement = p.openElements.current;
+            p.insertionMode = InsertionMode.IN_HEAD;
+            break;
+        }
+        default: {
+            tokenBeforeHead(p, token);
+        }
     }
 }
 
@@ -1480,15 +1493,19 @@ function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
 }
 
 function endTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.NOSCRIPT) {
-        p.openElements.pop();
-        p.insertionMode = InsertionMode.IN_HEAD;
-    } else if (tn === $.BR) {
-        tokenInHeadNoScript(p, token);
-    } else {
-        p._err(token, ERR.endTagWithoutMatchingOpenElement);
+    switch (token.tagID) {
+        case $.NOSCRIPT: {
+            p.openElements.pop();
+            p.insertionMode = InsertionMode.IN_HEAD;
+            break;
+        }
+        case $.BR: {
+            tokenInHeadNoScript(p, token);
+            break;
+        }
+        default: {
+            p._err(token, ERR.endTagWithoutMatchingOpenElement);
+        }
     }
 }
 
@@ -1580,14 +1597,20 @@ function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
 }
 
 function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.BODY || tn === $.HTML || tn === $.BR) {
-        tokenAfterHead(p, token);
-    } else if (tn === $.TEMPLATE) {
-        endTagInHead(p, token);
-    } else {
-        p._err(token, ERR.endTagWithoutMatchingOpenElement);
+    switch (token.tagID) {
+        case $.BODY:
+        case $.HTML:
+        case $.BR: {
+            tokenAfterHead(p, token);
+            break;
+        }
+        case $.TEMPLATE: {
+            endTagInHead(p, token);
+            break;
+        }
+        default: {
+            p._err(token, ERR.endTagWithoutMatchingOpenElement);
+        }
     }
 }
 
@@ -1978,9 +2001,7 @@ function genericStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token
 }
 
 function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    switch (tn) {
+    switch (token.tagID) {
         case $.I:
         case $.S:
         case $.B:
@@ -2186,11 +2207,13 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
         case $.TFOOT:
         case $.THEAD:
         case $.CAPTION:
-        case $.COLGROUP:
-            // Ignore
+        case $.COLGROUP: {
+            // Ignore token
             break;
-        default:
+        }
+        default: {
             genericStartTagInBody(p, token);
+        }
     }
 }
 
@@ -2285,13 +2308,14 @@ function brEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
 
 function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagName;
+    const tid = token.tagID;
 
     for (let i = p.openElements.stackTop; i > 0; i--) {
         const element = p.openElements.items[i];
         const elementId = p.openElements.tagIDs[i];
 
         // Compare the tag name here, as the tag might not be a known tag with an ID.
-        if (p.treeAdapter.getTagName(element) === tn) {
+        if (tid === elementId && (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)) {
             p.openElements.generateImpliedEndTagsWithExclusion(tn);
             if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
             break;
@@ -2604,29 +2628,35 @@ function startTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 }
 
 function endTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.TABLE) {
-        if (p.openElements.hasInTableScope($.TABLE)) {
-            p.openElements.popUntilTagNamePopped($.TABLE);
-            p._resetInsertionMode();
+    switch (token.tagID) {
+        case $.TABLE: {
+            if (p.openElements.hasInTableScope($.TABLE)) {
+                p.openElements.popUntilTagNamePopped($.TABLE);
+                p._resetInsertionMode();
+            }
+            break;
         }
-    } else if (tn === $.TEMPLATE) {
-        endTagInHead(p, token);
-    } else if (
-        tn !== $.BODY &&
-        tn !== $.CAPTION &&
-        tn !== $.COL &&
-        tn !== $.COLGROUP &&
-        tn !== $.HTML &&
-        tn !== $.TBODY &&
-        tn !== $.TD &&
-        tn !== $.TFOOT &&
-        tn !== $.TH &&
-        tn !== $.THEAD &&
-        tn !== $.TR
-    ) {
-        tokenInTable(p, token);
+        case $.TEMPLATE: {
+            endTagInHead(p, token);
+            break;
+        }
+        case $.BODY:
+        case $.CAPTION:
+        case $.COL:
+        case $.COLGROUP:
+        case $.HTML:
+        case $.TBODY:
+        case $.TD:
+        case $.TFOOT:
+        case $.TH:
+        case $.THEAD:
+        case $.TR: {
+            // Ignore token
+            break;
+        }
+        default: {
+            tokenInTable(p, token);
+        }
     }
 }
 
@@ -2642,12 +2672,22 @@ function tokenInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token):
 // The "in table text" insertion mode
 //------------------------------------------------------------------
 function modeInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    if (token.type === TokenType.CHARACTER) {
-        characterInTableText(p, token);
-    } else if (token.type === TokenType.WHITESPACE_CHARACTER) {
-        whitespaceCharacterInTableText(p, token);
-    } else if (token.type !== TokenType.NULL_CHARACTER) {
-        tokenInTableText(p, token);
+    switch (token.type) {
+        case TokenType.CHARACTER: {
+            characterInTableText(p, token);
+            break;
+        }
+        case TokenType.WHITESPACE_CHARACTER: {
+            whitespaceCharacterInTableText(p, token);
+            break;
+        }
+        case TokenType.NULL_CHARACTER: {
+            // Ignore token
+            break;
+        }
+        default: {
+            tokenInTableText(p, token);
+        }
     }
 }
 
@@ -2731,30 +2771,37 @@ function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
 function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
-    if (tn === $.CAPTION || tn === $.TABLE) {
-        if (p.openElements.hasInTableScope($.CAPTION)) {
-            p.openElements.generateImpliedEndTags();
-            p.openElements.popUntilTagNamePopped($.CAPTION);
-            p.activeFormattingElements.clearToLastMarker();
-            p.insertionMode = InsertionMode.IN_TABLE;
+    switch (tn) {
+        case $.CAPTION:
+        case $.TABLE: {
+            if (p.openElements.hasInTableScope($.CAPTION)) {
+                p.openElements.generateImpliedEndTags();
+                p.openElements.popUntilTagNamePopped($.CAPTION);
+                p.activeFormattingElements.clearToLastMarker();
+                p.insertionMode = InsertionMode.IN_TABLE;
 
-            if (tn === $.TABLE) {
-                modeInTable(p, token);
+                if (tn === $.TABLE) {
+                    modeInTable(p, token);
+                }
             }
+            break;
         }
-    } else if (
-        tn !== $.BODY &&
-        tn !== $.COL &&
-        tn !== $.COLGROUP &&
-        tn !== $.HTML &&
-        tn !== $.TBODY &&
-        tn !== $.TD &&
-        tn !== $.TFOOT &&
-        tn !== $.TH &&
-        tn !== $.THEAD &&
-        tn !== $.TR
-    ) {
-        endTagInBody(p, token);
+        case $.BODY:
+        case $.COL:
+        case $.COLGROUP:
+        case $.HTML:
+        case $.TBODY:
+        case $.TD:
+        case $.TFOOT:
+        case $.TH:
+        case $.THEAD:
+        case $.TR: {
+            // Ignore token
+            break;
+        }
+        default: {
+            endTagInBody(p, token);
+        }
     }
 }
 
@@ -2814,17 +2861,25 @@ function startTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token
 }
 
 function endTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.COLGROUP) {
-        if (p.openElements.currentTagId === $.COLGROUP) {
-            p.openElements.pop();
-            p.insertionMode = InsertionMode.IN_TABLE;
+    switch (token.tagID) {
+        case $.COLGROUP: {
+            if (p.openElements.currentTagId === $.COLGROUP) {
+                p.openElements.pop();
+                p.insertionMode = InsertionMode.IN_TABLE;
+            }
+            break;
         }
-    } else if (tn === $.TEMPLATE) {
-        endTagInHead(p, token);
-    } else if (tn !== $.COL) {
-        tokenInColumnGroup(p, token);
+        case $.TEMPLATE: {
+            endTagInHead(p, token);
+            break;
+        }
+        case $.COL: {
+            // Ignore token
+            break;
+        }
+        default: {
+            tokenInColumnGroup(p, token);
+        }
     }
 }
 
@@ -2906,30 +2961,40 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
-    if (tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD) {
-        if (p.openElements.hasInTableScope(tn)) {
-            p.openElements.clearBackToTableBodyContext();
-            p.openElements.pop();
-            p.insertionMode = InsertionMode.IN_TABLE;
+    switch (token.tagID) {
+        case $.TBODY:
+        case $.TFOOT:
+        case $.THEAD: {
+            if (p.openElements.hasInTableScope(tn)) {
+                p.openElements.clearBackToTableBodyContext();
+                p.openElements.pop();
+                p.insertionMode = InsertionMode.IN_TABLE;
+            }
+            break;
         }
-    } else if (tn === $.TABLE) {
-        if (p.openElements.hasTableBodyContextInTableScope()) {
-            p.openElements.clearBackToTableBodyContext();
-            p.openElements.pop();
-            p.insertionMode = InsertionMode.IN_TABLE;
-            modeInTable(p, token);
+        case $.TABLE: {
+            if (p.openElements.hasTableBodyContextInTableScope()) {
+                p.openElements.clearBackToTableBodyContext();
+                p.openElements.pop();
+                p.insertionMode = InsertionMode.IN_TABLE;
+                modeInTable(p, token);
+            }
+            break;
         }
-    } else if (
-        tn !== $.BODY &&
-        tn !== $.CAPTION &&
-        tn !== $.COL &&
-        tn !== $.COLGROUP &&
-        tn !== $.HTML &&
-        tn !== $.TD &&
-        tn !== $.TH &&
-        tn !== $.TR
-    ) {
-        endTagInTable(p, token);
+        case $.BODY:
+        case $.CAPTION:
+        case $.COL:
+        case $.COLGROUP:
+        case $.HTML:
+        case $.TD:
+        case $.TH:
+        case $.TR: {
+            // Ignore token
+            break;
+        }
+        default: {
+            endTagInTable(p, token);
+        }
     }
 }
 
@@ -2965,30 +3030,33 @@ function modeInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): vo
 }
 
 function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.TH || tn === $.TD) {
-        p.openElements.clearBackToTableRowContext();
-        p._insertElement(token, NS.HTML);
-        p.insertionMode = InsertionMode.IN_CELL;
-        p.activeFormattingElements.insertMarker();
-    } else if (
-        tn === $.CAPTION ||
-        tn === $.COL ||
-        tn === $.COLGROUP ||
-        tn === $.TBODY ||
-        tn === $.TFOOT ||
-        tn === $.THEAD ||
-        tn === $.TR
-    ) {
-        if (p.openElements.hasInTableScope($.TR)) {
+    switch (token.tagID) {
+        case $.TH:
+        case $.TD: {
             p.openElements.clearBackToTableRowContext();
-            p.openElements.pop();
-            p.insertionMode = InsertionMode.IN_TABLE_BODY;
-            modeInTableBody(p, token);
+            p._insertElement(token, NS.HTML);
+            p.insertionMode = InsertionMode.IN_CELL;
+            p.activeFormattingElements.insertMarker();
+            break;
         }
-    } else {
-        startTagInTable(p, token);
+        case $.CAPTION:
+        case $.COL:
+        case $.COLGROUP:
+        case $.TBODY:
+        case $.TFOOT:
+        case $.THEAD:
+        case $.TR: {
+            if (p.openElements.hasInTableScope($.TR)) {
+                p.openElements.clearBackToTableRowContext();
+                p.openElements.pop();
+                p.insertionMode = InsertionMode.IN_TABLE_BODY;
+                modeInTableBody(p, token);
+            }
+            break;
+        }
+        default: {
+            startTagInTable(p, token);
+        }
     }
 }
 
@@ -3086,20 +3154,39 @@ function startTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
 function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
-    if (tn === $.TD || tn === $.TH) {
-        if (p.openElements.hasInTableScope(tn)) {
-            p.openElements.generateImpliedEndTags();
-            p.openElements.popUntilTagNamePopped(tn);
-            p.activeFormattingElements.clearToLastMarker();
-            p.insertionMode = InsertionMode.IN_ROW;
+    switch (tn) {
+        case $.TD:
+        case $.TH: {
+            if (p.openElements.hasInTableScope(tn)) {
+                p.openElements.generateImpliedEndTags();
+                p.openElements.popUntilTagNamePopped(tn);
+                p.activeFormattingElements.clearToLastMarker();
+                p.insertionMode = InsertionMode.IN_ROW;
+            }
+            break;
         }
-    } else if (TABLE_STRUCTURE_TAGS.has(tn)) {
-        if (p.openElements.hasInTableScope(tn)) {
-            p._closeTableCell();
-            p._processToken(token);
+        case $.TABLE:
+        case $.TBODY:
+        case $.TFOOT:
+        case $.THEAD:
+        case $.TR: {
+            if (p.openElements.hasInTableScope(tn)) {
+                p._closeTableCell();
+                p._processToken(token);
+            }
+            break;
         }
-    } else if (tn !== $.BODY && tn !== $.CAPTION && tn !== $.COL && tn !== $.COLGROUP && tn !== $.HTML) {
-        endTagInBody(p, token);
+        case $.BODY:
+        case $.CAPTION:
+        case $.COL:
+        case $.COLGROUP:
+        case $.HTML: {
+            // Ignore token
+            break;
+        }
+        default: {
+            endTagInBody(p, token);
+        }
     }
 }
 
@@ -3184,29 +3271,40 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 }
 
 function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
+    switch (token.tagID) {
+        case $.OPTGROUP: {
+            if (
+                p.openElements.stackTop > 0 &&
+                p.openElements.currentTagId === $.OPTION &&
+                p.openElements.tagIDs[p.openElements.stackTop - 1] === $.OPTGROUP
+            ) {
+                p.openElements.pop();
+            }
 
-    if (tn === $.OPTGROUP) {
-        if (
-            p.openElements.stackTop > 0 &&
-            p.openElements.currentTagId === $.OPTION &&
-            p.openElements.tagIDs[p.openElements.stackTop - 1] === $.OPTGROUP
-        ) {
-            p.openElements.pop();
+            if (p.openElements.currentTagId === $.OPTGROUP) {
+                p.openElements.pop();
+            }
+            break;
         }
-
-        if (p.openElements.currentTagId === $.OPTGROUP) {
-            p.openElements.pop();
+        case $.OPTION: {
+            if (p.openElements.currentTagId === $.OPTION) {
+                p.openElements.pop();
+            }
+            break;
         }
-    } else if (tn === $.OPTION) {
-        if (p.openElements.currentTagId === $.OPTION) {
-            p.openElements.pop();
+        case $.SELECT: {
+            if (p.openElements.hasInSelectScope($.SELECT)) {
+                p.openElements.popUntilTagNamePopped($.SELECT);
+                p._resetInsertionMode();
+            }
+            break;
         }
-    } else if (tn === $.SELECT && p.openElements.hasInSelectScope($.SELECT)) {
-        p.openElements.popUntilTagNamePopped($.SELECT);
-        p._resetInsertionMode();
-    } else if (tn === $.TEMPLATE) {
-        endTagInHead(p, token);
+        case $.TEMPLATE: {
+            endTagInHead(p, token);
+            break;
+        }
+        default:
+        // Do nothing
     }
 }
 
@@ -3534,12 +3632,17 @@ function modeAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: To
 }
 
 function startTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.NOFRAMES) {
-        startTagInHead(p, token);
+    switch (token.tagID) {
+        case $.HTML: {
+            startTagInBody(p, token);
+            break;
+        }
+        case $.NOFRAMES: {
+            startTagInHead(p, token);
+            break;
+        }
+        default:
+        // Do nothing
     }
 }
 
@@ -3619,12 +3722,17 @@ function modeAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
 }
 
 function startTagAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.NOFRAMES) {
-        startTagInHead(p, token);
+    switch (token.tagID) {
+        case $.HTML: {
+            startTagInBody(p, token);
+            break;
+        }
+        case $.NOFRAMES: {
+            startTagInHead(p, token);
+            break;
+        }
+        default:
+        // Do nothing
     }
 }
 

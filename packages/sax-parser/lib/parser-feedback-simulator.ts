@@ -18,27 +18,42 @@ export class ParserFeedbackSimulator {
     public getNextToken(): Token {
         const token = this.tokenizer.getNextToken();
 
-        if (token.type === TokenType.START_TAG) {
-            this._handleStartTagToken(token);
-        } else if (token.type === TokenType.END_TAG) {
-            this._handleEndTagToken(token);
-        } else if (token.type === TokenType.NULL_CHARACTER && this.inForeignContent) {
-            token.type = TokenType.CHARACTER;
-            token.chars = unicode.REPLACEMENT_CHARACTER;
-        } else if (this.skipNextNewLine) {
-            if (token.type !== TokenType.HIBERNATION) {
-                this.skipNextNewLine = false;
+        switch (token.type) {
+            case TokenType.START_TAG: {
+                this._handleStartTagToken(token);
+                break;
+            }
+            case TokenType.END_TAG: {
+                this._handleEndTagToken(token);
+                break;
             }
 
-            if (
-                token.type === TokenType.WHITESPACE_CHARACTER &&
-                token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED
-            ) {
-                if (token.chars.length === 1) {
-                    return this.getNextToken();
+            case TokenType.NULL_CHARACTER: {
+                this.skipNextNewLine = false;
+                if (this.inForeignContent) {
+                    token.type = TokenType.CHARACTER;
+                    token.chars = unicode.REPLACEMENT_CHARACTER;
                 }
+                break;
+            }
+            case TokenType.WHITESPACE_CHARACTER: {
+                if (this.skipNextNewLine && token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED) {
+                    this.skipNextNewLine = false;
 
-                token.chars = token.chars.substr(1);
+                    if (token.chars.length === 1) {
+                        return this.getNextToken();
+                    }
+
+                    token.chars = token.chars.substr(1);
+                }
+                break;
+            }
+            case TokenType.HIBERNATION: {
+                // Ignore
+                break;
+            }
+            default: {
+                this.skipNextNewLine = false;
             }
         }
 
@@ -91,10 +106,17 @@ export class ParserFeedbackSimulator {
     private _handleStartTagToken(token: TagToken): void {
         let tn = token.tagID;
 
-        if (tn === $.SVG) {
-            this._enterNamespace(NS.SVG);
-        } else if (tn === $.MATH) {
-            this._enterNamespace(NS.MATHML);
+        switch (tn) {
+            case $.SVG: {
+                this._enterNamespace(NS.SVG);
+                break;
+            }
+            case $.MATH: {
+                this._enterNamespace(NS.MATHML);
+                break;
+            }
+            default:
+            // Do nothing
         }
 
         if (this.inForeignContent) {
@@ -120,11 +142,20 @@ export class ParserFeedbackSimulator {
                 this._enterNamespace(NS.HTML);
             }
         } else {
-            if (tn === $.PRE || tn === $.TEXTAREA || tn === $.LISTING) {
-                this.skipNextNewLine = true;
-            } else if (tn === $.IMAGE) {
-                token.tagName = TN.IMG;
-                token.tagID = $.IMG;
+            switch (tn) {
+                case $.PRE:
+                case $.TEXTAREA:
+                case $.LISTING: {
+                    this.skipNextNewLine = true;
+                    break;
+                }
+                case $.IMAGE: {
+                    token.tagName = TN.IMG;
+                    token.tagID = $.IMG;
+                    break;
+                }
+                default:
+                // Do nothing
             }
 
             this._ensureTokenizerMode(tn);
