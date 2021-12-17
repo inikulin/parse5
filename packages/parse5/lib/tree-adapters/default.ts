@@ -145,7 +145,7 @@ export function getTemplateContent(templateElement: Template): DocumentFragment 
 }
 
 export function setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
-    const doctypeNode = document.childNodes.find((node) => node.nodeName === '#documentType') as DocumentType;
+    const doctypeNode = document.childNodes.find((node) => node.nodeName === NodeType.DocumentType) as DocumentType;
 
     if (doctypeNode) {
         doctypeNode.name = name;
@@ -269,7 +269,7 @@ export function isCommentNode(node: Node): node is CommentNode {
 }
 
 export function isDocumentTypeNode(node: Node): node is DocumentType {
-    return node.nodeName === '#documentType';
+    return node.nodeName === NodeType.DocumentType;
 }
 
 export function isElementNode(node: Node): node is Element {

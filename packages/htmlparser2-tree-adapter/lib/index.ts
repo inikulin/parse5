@@ -36,8 +36,7 @@ export function createDocument(): Document {
 }
 
 export function createDocumentFragment(): Document {
-    const node = new Document([]);
-    return node;
+    return new Document([]);
 }
 
 export function createElement(tagName: string, namespaceURI: NS, attrs: Attribute[]): Element {

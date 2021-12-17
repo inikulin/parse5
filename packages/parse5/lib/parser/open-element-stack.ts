@@ -65,7 +65,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Index of element
-    _indexOf(element: T['element']): number {
+    private _indexOf(element: T['element']): number {
         return this.items.lastIndexOf(element, this.stackTop);
     }
 
@@ -142,7 +142,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     shortenToLength(idx: number): void {
-        for (; this.stackTop >= idx; ) {
+        while (this.stackTop >= idx) {
             const popped = this.current;
 
             if (this.tmplCount > 0 && this._isInTemplate()) {

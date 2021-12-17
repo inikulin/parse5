@@ -131,9 +131,7 @@ function concatCharacterTokens(tokenEntries: HtmlLibToken[]): HtmlLibToken[] {
 
 function getTokenizerSuitableStateName(testDataStateName: string): Tokenizer['state'] {
     const name = testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase();
-    const state = TokenizerMode[name as keyof typeof TokenizerMode];
-
-    return state;
+    return TokenizerMode[name as keyof typeof TokenizerMode];
 }
 
 interface TestDescription {
