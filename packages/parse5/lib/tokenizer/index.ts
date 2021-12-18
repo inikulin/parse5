@@ -217,7 +217,6 @@ export class Tokenizer {
     private returnState = State.DATA;
 
     private charRefCode = -1;
-    private tempBuff: number[] = [];
 
     private consumedAfterSnapshot = -1;
 
@@ -519,12 +518,6 @@ export class Tokenizer {
         this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
     }
 
-    private _emitSeveralCodePoints(codePoints: number[]): void {
-        for (let i = 0; i < codePoints.length; i++) {
-            this._emitCodePoint(codePoints[i]);
-        }
-    }
-
     //NOTE: used then we emit character explicitly. This is always a non-whitespace and a non-null character.
     //So we can avoid additional checks here.
     private _emitChars(ch: string): void {
@@ -532,8 +525,8 @@ export class Tokenizer {
     }
 
     // Character reference helpers
-    private _matchNamedCharacterReference(cp: number): boolean {
-        let hasResult = false;
+    private _matchNamedCharacterReference(cp: number): number[] | null {
+        let result: number[] | null = null;
         let excess = 0;
         let withoutSemicolon = false;
 
@@ -557,12 +550,11 @@ export class Tokenizer {
                     i += 1;
                 } else {
                     // If this is a surrogate pair, consume the next two bytes.
-                    this.tempBuff =
+                    result =
                         current & BinTrieFlags.MULTI_BYTE
                             ? [htmlDecodeTree[++i], htmlDecodeTree[++i]]
                             : [htmlDecodeTree[++i]];
                     excess = 0;
-                    hasResult = true;
                     withoutSemicolon = cp !== $.SEMICOLON;
                 }
             }
@@ -579,7 +571,7 @@ export class Tokenizer {
         // unconsume it until after the error is emitted.
         this._unconsume(1);
 
-        return hasResult;
+        return result;
     }
 
     private _isCharacterReferenceInAttribute(): boolean {
@@ -590,14 +582,12 @@ export class Tokenizer {
         );
     }
 
-    private _flushCodePointsConsumedAsCharacterReference(): void {
+    private _flushCodePointConsumedAsCharacterReference(cp: number): void {
         if (this._isCharacterReferenceInAttribute()) {
-            this.currentAttr.value += String.fromCodePoint(...this.tempBuff);
+            this.currentAttr.value += String.fromCodePoint(cp);
         } else {
-            this._emitSeveralCodePoints(this.tempBuff);
+            this._emitCodePoint(cp);
         }
-
-        this.tempBuff.length = 0;
     }
 
     // Calling states this way turns out to be much faster than any other approach.
@@ -1981,7 +1971,7 @@ export class Tokenizer {
             }
         }
 
-        //NOTE: sequence lookup can be abrupted by hibernation. In that case lookup
+        //NOTE: Sequence lookups can be abrupted by hibernation. In that case, lookup
         //results are no longer valid and we will need to start over.
         else if (!this._ensureHibernation()) {
             this._err(ERR.incorrectlyOpenedComment);
@@ -2895,16 +2885,13 @@ export class Tokenizer {
     // Character reference state
     //------------------------------------------------------------------
     private _stateCharacterReference(cp: number): void {
-        this.tempBuff = [$.AMPERSAND];
-
         if (cp === $.NUMBER_SIGN) {
-            this.tempBuff.push(cp);
             this.state = State.NUMERIC_CHARACTER_REFERENCE;
         } else if (isAsciiAlphaNumeric(cp)) {
             this.state = State.NAMED_CHARACTER_REFERENCE;
             this._stateNamedCharacterReference(cp);
         } else {
-            this._flushCodePointsConsumedAsCharacterReference();
+            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
             this._reconsumeInState(this.returnState);
         }
     }
@@ -2914,13 +2901,18 @@ export class Tokenizer {
     private _stateNamedCharacterReference(cp: number): void {
         const matchResult = this._matchNamedCharacterReference(cp);
 
-        //NOTE: matching can be abrupted by hibernation. In that case match
+        //NOTE: Matching can be abrupted by hibernation. In that case, match
         //results are no longer valid and we will need to start over.
         if (this._ensureHibernation()) {
-            this.tempBuff = [$.AMPERSAND];
+            // Stay in the state, try again.
+        } else if (matchResult) {
+            for (let i = 0; i < matchResult.length; i++) {
+                this._flushCodePointConsumedAsCharacterReference(matchResult[i]);
+            }
+            this.state = this.returnState;
         } else {
-            this._flushCodePointsConsumedAsCharacterReference();
-            this.state = matchResult ? this.returnState : State.AMBIGUOUS_AMPERSAND;
+            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
+            this.state = State.AMBIGUOUS_AMPERSAND;
         }
     }
 
@@ -2928,11 +2920,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateAmbiguousAmpersand(cp: number): void {
         if (isAsciiAlphaNumeric(cp)) {
-            if (this._isCharacterReferenceInAttribute()) {
-                this.currentAttr.value += String.fromCodePoint(cp);
-            } else {
-                this._emitCodePoint(cp);
-            }
+            this._flushCodePointConsumedAsCharacterReference(cp);
         } else {
             if (cp === $.SEMICOLON) {
                 this._err(ERR.unknownNamedCharacterReference);
@@ -2948,7 +2936,6 @@ export class Tokenizer {
         this.charRefCode = 0;
 
         if (cp === $.LATIN_SMALL_X || cp === $.LATIN_CAPITAL_X) {
-            this.tempBuff.push(cp);
             this.state = State.HEXADEMICAL_CHARACTER_REFERENCE_START;
         } else {
             this.state = State.DECIMAL_CHARACTER_REFERENCE_START;
@@ -2964,8 +2951,10 @@ export class Tokenizer {
             this._stateHexademicalCharacterReference(cp);
         } else {
             this._err(ERR.absenceOfDigitsInNumericCharacterReference);
-            this._flushCodePointsConsumedAsCharacterReference();
-            this._reconsumeInState(this.returnState);
+            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
+            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
+            this._unconsume(2);
+            this.state = this.returnState;
         }
     }
 
@@ -2977,7 +2966,8 @@ export class Tokenizer {
             this._stateDecimalCharacterReference(cp);
         } else {
             this._err(ERR.absenceOfDigitsInNumericCharacterReference);
-            this._flushCodePointsConsumedAsCharacterReference();
+            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
+            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
             this._reconsumeInState(this.returnState);
         }
     }
@@ -3038,9 +3028,7 @@ export class Tokenizer {
             }
         }
 
-        this.tempBuff = [this.charRefCode];
-
-        this._flushCodePointsConsumedAsCharacterReference();
+        this._flushCodePointConsumedAsCharacterReference(this.charRefCode);
         this._reconsumeInState(this.returnState);
     }
 }
