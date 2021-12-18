@@ -545,9 +545,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _setEndLocation(element: T['element'], closingToken: Token): void {
-        const loc = this.treeAdapter.getNodeSourceCodeLocation(element);
-
-        if (loc && closingToken.location) {
+        if (this.treeAdapter.getNodeSourceCodeLocation(element) && closingToken.location) {
             const ctLoc = closingToken.location;
             const tn = this.treeAdapter.getTagName(element);
 
@@ -713,20 +711,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
             }
             default:
             // Do nothing
-        }
-
-        //NOTE: <body> and <html> are never popped from the stack, so we need to updated
-        //their end location explicitly.
-        if (
-            this.options.sourceCodeLocationInfo &&
-            token.type === TokenType.END_TAG &&
-            (token.tagID === $.HTML || (token.tagID === $.BODY && this.openElements.hasInScope($.BODY)))
-        ) {
-            const idx = this.openElements.tagIDs.lastIndexOf(token.tagID, this.openElements.stackTop);
-
-            if (idx >= 0) {
-                this._setEndLocation(this.openElements.items[idx], token);
-            }
         }
     }
 
@@ -2217,9 +2201,18 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
     }
 }
 
-function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
+function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInScope($.BODY)) {
         p.insertionMode = InsertionMode.AFTER_BODY;
+
+        //NOTE: <body> is never popped from the stack, so we need to updated
+        //the end location explicitly.
+        if (p.options.sourceCodeLocationInfo) {
+            const bodyElement = p.openElements.tryPeekProperlyNestedBodyElement();
+            if (bodyElement) {
+                p._setEndLocation(bodyElement, token);
+            }
+        }
     }
 }
 
@@ -2401,7 +2394,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
             break;
         }
         case $.BODY: {
-            bodyEndTagInBody(p);
+            bodyEndTagInBody(p, token);
             break;
         }
         case $.HTML: {
@@ -3528,6 +3521,12 @@ function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
     if (token.tagID === $.HTML) {
         if (!p.fragmentContext) {
             p.insertionMode = InsertionMode.AFTER_AFTER_BODY;
+        }
+
+        //NOTE: <html> is never popped from the stack, so we need to updated
+        //the end location explicitly.
+        if (p.options.sourceCodeLocationInfo && p.openElements.tagIDs[0] === $.HTML) {
+            p._setEndLocation(p.openElements.items[0], token);
         }
     } else {
         tokenAfterBody(p, token);

@@ -156,10 +156,10 @@ export class SAXParser extends Transform {
                 } else {
                     this.pendingText.chars += token.chars;
 
-                    if (this.options.sourceCodeLocationInfo) {
-                        const { endLine, endCol, endOffset } = token.location!;
+                    if (token.location && this.pendingText.location) {
+                        const { endLine, endCol, endOffset } = token.location;
                         this.pendingText.location = {
-                            ...this.pendingText.location!,
+                            ...this.pendingText.location,
                             endLine,
                             endCol,
                             endOffset,
