@@ -115,7 +115,6 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
 export class Parser<T extends TreeAdapterTypeMap> {
     options: ParserOptions<T>;
     treeAdapter: TreeAdapter<T>;
-    pendingScript: null | T['element'];
     private onParseError: ParserErrorHandler | null;
     private currentToken: Token | null = null;
 
@@ -123,17 +122,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.options = {
             scriptingEnabled: true,
             sourceCodeLocationInfo: false,
-            onParseError: null,
-            treeAdapter: defaultTreeAdapter as TreeAdapter<T>,
             ...options,
         };
 
-        this.treeAdapter = this.options.treeAdapter!;
-        this.pendingScript = null;
+        this.treeAdapter = this.options.treeAdapter ??= defaultTreeAdapter as TreeAdapter<T>;
+        this.onParseError = this.options.onParseError ??= null;
 
-        this.onParseError = this.options.onParseError ?? null;
-
-        if (this.options.onParseError) {
+        // Always enable location info if we report parse errors.
+        if (this.onParseError) {
             this.options.sourceCodeLocationInfo = true;
         }
     }
@@ -191,6 +187,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     headElement: null | T['element'] = null;
     formElement: null | T['element'] = null;
+    pendingScript: null | T['element'] = null;
 
     openElements!: OpenElementStack<T>;
     activeFormattingElements!: FormattingElementList<T>;
@@ -225,6 +222,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         this.headElement = null;
         this.formElement = null;
+        this.pendingScript = null;
         this.currentToken = null;
 
         this.openElements = new OpenElementStack(
