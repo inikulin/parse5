@@ -26,7 +26,7 @@ generateParsingTests(
 
             parser.on('script', async (scriptElement, documentWrite, resume) => {
                 const scriptTextNode = opts.treeAdapter.getChildNodes(scriptElement)[0];
-                const script = scriptTextNode && opts.treeAdapter.getTextNodeContent(scriptTextNode);
+                const script = scriptTextNode ? opts.treeAdapter.getTextNodeContent(scriptTextNode) : '';
 
                 (document as any).write = documentWrite;
 

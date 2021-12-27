@@ -10,36 +10,30 @@ export enum NodeType {
     DocumentType = '#documentType',
 }
 
-export interface Node {
+export interface Document {
     /** The name of the node. */
-    nodeName: NodeType | string;
-    /** Comment source code location info. Available if location info is enabled. */
-    sourceCodeLocation?: Location | null;
-}
-
-export interface NodeWithChildren extends Node {
-    childNodes: Node[];
-}
-
-export interface NodeWithParent extends Node {
-    /** Parent node. */
-    parentNode: NodeWithChildren | null;
-}
-
-export interface Document extends NodeWithChildren {
     nodeName: NodeType.Document;
     /**
      * Document mode.
      *
      * @see {@link DOCUMENT_MODE} */
     mode: DOCUMENT_MODE;
+    /** The node's children. */
+    childNodes: ChildNode[];
+    /** Comment source code location info. Available if location info is enabled. */
+    sourceCodeLocation?: Location | null;
 }
 
-export interface DocumentFragment extends NodeWithChildren {
+export interface DocumentFragment {
+    /** The name of the node. */
     nodeName: NodeType.DocumentFragment;
+    /** The node's children. */
+    childNodes: ChildNode[];
+    /** Comment source code location info. Available if location info is enabled. */
+    sourceCodeLocation?: Location | null;
 }
 
-export interface Element extends NodeWithChildren, NodeWithParent {
+export interface Element {
     /** Element tag name. Same as {@link tagName}. */
     nodeName: string;
     /** Element tag name. Same as {@link nodeName}. */
@@ -50,18 +44,31 @@ export interface Element extends NodeWithChildren, NodeWithParent {
     namespaceURI: NAMESPACES;
     /** Element source code location info, with attributes. Available if location info is enabled. */
     sourceCodeLocation?: ElementLocation | null;
+    /** Parent node. */
+    parentNode: ParentNode | null;
+    /** The node's children. */
+    childNodes: ChildNode[];
 }
 
-export interface CommentNode extends NodeWithParent {
+export interface CommentNode {
+    /** The name of the node. */
     nodeName: NodeType.Comment;
+    /** Parent node. */
+    parentNode: ParentNode | null;
     /** Comment text. */
     data: string;
+    /** Comment source code location info. Available if location info is enabled. */
+    sourceCodeLocation?: Location | null;
 }
 
-export interface TextNode extends NodeWithParent {
+export interface TextNode {
     nodeName: NodeType.Text;
+    /** Parent node. */
+    parentNode: ParentNode | null;
     /** Text content. */
     value: string;
+    /** Comment source code location info. Available if location info is enabled. */
+    sourceCodeLocation?: Location | null;
 }
 
 export interface Template extends Element {
@@ -70,15 +77,37 @@ export interface Template extends Element {
     content: DocumentFragment;
 }
 
-export interface DocumentType extends NodeWithParent {
+export interface DocumentType {
+    /** The name of the node. */
     nodeName: NodeType.DocumentType;
+    /** Parent node. */
+    parentNode: ParentNode | null;
     /** Document type name. */
     name: string;
     /** Document type public identifier. */
     publicId: string;
     /** Document type system identifier. */
     systemId: string;
+    /** Comment source code location info. Available if location info is enabled. */
+    sourceCodeLocation?: Location | null;
 }
+
+export type ParentNode = Document | DocumentFragment | Element | Template;
+export type ChildNode = Element | Template | CommentNode | TextNode | DocumentType;
+export type Node = ParentNode | ChildNode;
+
+export type DefaultTreeAdapterMap = TreeAdapterTypeMap<
+    Node,
+    ParentNode,
+    ChildNode,
+    Document,
+    DocumentFragment,
+    Element,
+    CommentNode,
+    TextNode,
+    Template,
+    DocumentType
+>;
 
 //Node construction
 export function createDocument(): Document {
@@ -124,12 +153,12 @@ const createTextNode = function (value: string): TextNode {
 };
 
 //Tree mutation
-export function appendChild(parentNode: NodeWithChildren, newNode: NodeWithParent): void {
+export function appendChild(parentNode: ParentNode, newNode: ChildNode): void {
     parentNode.childNodes.push(newNode);
     newNode.parentNode = parentNode;
 }
 
-export function insertBefore(parentNode: NodeWithChildren, newNode: NodeWithParent, referenceNode: Node): void {
+export function insertBefore(parentNode: ParentNode, newNode: ChildNode, referenceNode: ChildNode): void {
     const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
 
     parentNode.childNodes.splice(insertionIdx, 0, newNode);
@@ -171,7 +200,7 @@ export function getDocumentMode(document: Document): DOCUMENT_MODE {
     return document.mode;
 }
 
-export function detachNode(node: NodeWithParent): void {
+export function detachNode(node: ChildNode): void {
     if (node.parentNode) {
         const idx = node.parentNode.childNodes.indexOf(node);
 
@@ -180,7 +209,7 @@ export function detachNode(node: NodeWithParent): void {
     }
 }
 
-export function insertText(parentNode: NodeWithChildren, text: string): void {
+export function insertText(parentNode: ParentNode, text: string): void {
     if (parentNode.childNodes.length > 0) {
         const prevNode = parentNode.childNodes[parentNode.childNodes.length - 1];
 
@@ -193,7 +222,7 @@ export function insertText(parentNode: NodeWithChildren, text: string): void {
     appendChild(parentNode, createTextNode(text));
 }
 
-export function insertTextBefore(parentNode: NodeWithChildren, text: string, referenceNode: Node): void {
+export function insertTextBefore(parentNode: ParentNode, text: string, referenceNode: ChildNode): void {
     const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
 
     if (prevNode && isTextNode(prevNode)) {
@@ -214,15 +243,15 @@ export function adoptAttributes(recipient: Element, attrs: Attribute[]): void {
 }
 
 //Tree traversing
-export function getFirstChild(node: NodeWithChildren): null | Node {
+export function getFirstChild(node: ParentNode): null | ChildNode {
     return node.childNodes[0];
 }
 
-export function getChildNodes(node: NodeWithChildren): Node[] {
+export function getChildNodes(node: ParentNode): Node[] {
     return node.childNodes;
 }
 
-export function getParentNode(node: NodeWithParent): null | NodeWithChildren {
+export function getParentNode(node: ChildNode): null | ParentNode {
     return node.parentNode;
 }
 
@@ -288,16 +317,3 @@ export function getNodeSourceCodeLocation(node: Node): ElementLocation | undefin
 export function updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
     node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
 }
-
-export type DefaultTreeAdapterMap = TreeAdapterTypeMap<
-    Node,
-    NodeWithChildren,
-    NodeWithParent,
-    Document,
-    DocumentFragment,
-    Element,
-    CommentNode,
-    TextNode,
-    Template,
-    DocumentType
->;

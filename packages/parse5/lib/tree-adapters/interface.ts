@@ -2,20 +2,20 @@ import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
 import type { Attribute, ElementLocation } from '../common/token.js';
 
 export interface TreeAdapterTypeMap<
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    Node = {},
-    NodeWithChildren extends Node = Node,
-    NodeWithParent extends Node = Node,
-    Document extends NodeWithChildren = NodeWithChildren,
-    DocumentFragment extends NodeWithChildren = NodeWithChildren,
-    Element extends NodeWithChildren & NodeWithParent = NodeWithChildren & NodeWithParent,
-    CommentNode extends NodeWithParent = NodeWithParent,
-    TextNode extends NodeWithParent = NodeWithParent,
-    Template extends Element = Element,
-    DocumentType extends NodeWithParent = NodeWithParent
+    Node = unknown,
+    ParentNode = unknown,
+    ChildNode = unknown,
+    Document = unknown,
+    DocumentFragment = unknown,
+    Element = unknown,
+    CommentNode = unknown,
+    TextNode = unknown,
+    Template = unknown,
+    DocumentType = unknown
 > {
     node: Node;
-    parentNode: NodeWithChildren;
+    parentNode: ParentNode;
+    childNode: ChildNode;
     document: Document;
     documentFragment: DocumentFragment;
     element: Element;
@@ -47,7 +47,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param parentNode - Parent node.
      * @param newNode -  Child node.
      */
-    appendChild(parentNode: T['parentNode'], newNode: T['node']): void;
+    appendChild(parentNode: T['parentNode'], newNode: T['childNode']): void;
 
     /**
      * Creates a comment node.
@@ -80,7 +80,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node to remove.
      */
-    detachNode(node: T['node']): void;
+    detachNode(node: T['childNode']): void;
 
     /**
      * Returns the given element's attributes in an array, in the form of name-value pairs.
@@ -95,7 +95,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    getChildNodes(node: T['parentNode']): Array<T['node']>;
+    getChildNodes(node: T['parentNode']): T['childNode'][];
 
     /**
      * Returns the given comment node's content.
@@ -137,7 +137,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param node - Node.
      */
-    getFirstChild(node: T['parentNode']): T['node'] | null;
+    getFirstChild(node: T['parentNode']): T['childNode'] | null;
 
     /**
      * Returns the given element's namespace.
@@ -188,7 +188,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param newNode -  Child node.
      * @param referenceNode -  Reference node.
      */
-    insertBefore(parentNode: T['parentNode'], newNode: T['node'], referenceNode: T['node']): void;
+    insertBefore(parentNode: T['parentNode'], newNode: T['childNode'], referenceNode: T['childNode']): void;
 
     /**
      * Inserts text into a node. If the last child of the node is a text node, the provided text will be appended to the
@@ -208,7 +208,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param text - Text to insert.
      * @param referenceNode - Node to insert text before.
      */
-    insertTextBefore(parentNode: T['parentNode'], text: string, referenceNode: T['node']): void;
+    insertTextBefore(parentNode: T['parentNode'], text: string, referenceNode: T['childNode']): void;
 
     /**
      * Determines if the given node is a comment node.
