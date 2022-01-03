@@ -1,0 +1,32 @@
+{
+    "name": "parse5-serializer-stream",
+    "type": "module",
+    "description": "Streaming HTML serializer.",
+    "version": "6.0.1",
+    "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
+    "contributors": "https://github.com/parse5/parse5-fork/graphs/contributors",
+    "homepage": "https://github.com/parse5/parse5-fork",
+    "scripts": {
+        "build": "rm -r dist; tsc"
+    },
+    "keywords": [
+        "parse5",
+        "parser",
+        "stream",
+        "streaming",
+        "serializer",
+        "serialiser"
+    ],
+    "license": "MIT",
+    "main": "./lib/index.js",
+    "dependencies": {
+        "parse5": "^6.0.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/parse5/parse5-fork.git"
+    },
+    "files": [
+        "lib"
+    ]
+}

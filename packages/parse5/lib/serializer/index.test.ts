@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import * as parse5 from '../index.js';
-import { generateSerializerTests } from '@parse5/test-utils/utils/generate-serializer-tests.js';
-import { treeAdapters } from '@parse5/test-utils/utils/common.js';
+import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
+import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import type { Element } from '../tree-adapters/default';
 import type { TreeAdapter } from '../tree-adapters/interface';
 

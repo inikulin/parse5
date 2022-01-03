@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { Tokenizer, TokenizerMode } from './index.js';
 import { TokenType } from '../common/token.js';
-import { getSubstringByLineCol, normalizeNewLine } from '@parse5/test-utils/utils/common.js';
+import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
 it('Location Info (Tokenizer)', () => {
     const testCases = [

@@ -1,5 +1,3 @@
-test/benchmark/node_modules/**/*.js
-test/memory_benchmark/node_modules/**/*.js
-packages/test-utils/data/html5lib-tests
+packages/parse5-test-utils/data/html5lib-tests
 packages/*/dist/
 node_modules
