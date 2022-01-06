@@ -38,7 +38,7 @@ Location info property name added by currently implemented tree adapters has bee
 [startCol](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/source-code-location/location.md#startcol)
 respectively.
 
-* Updated (**breaking**): `SAXParser` now passes token objects to event handlers instead of separate arguments. See [SAXParser documentation](https://github.com/inikulin/parse5/blob/master/packages/sax-parser/docs/index.md) for more info.
+* Updated (**breaking**): `SAXParser` now passes token objects to event handlers instead of separate arguments. See [SAXParser documentation](https://github.com/inikulin/parse5/blob/master/packages/parse5-sax-parser/docs/index.md) for more info.
 (GH [#247](https://github.com/inikulin/parse5/issues/247)).
 
 * Added: [endLine](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/source-code-location/location.md#endline) and [endCol](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/source-code-location/location.md#endcol) location info
@@ -46,7 +46,7 @@ properties.
 
 * Added: [scriptingEnabled](https://github.com/inikulin/parse5/blob/master/packages/parse5/docs/options/parser-options.md#scriptingenabled) flag to the `ParserOptions` which controls how `<noscript>` tags are handled by the parser. (GH [#192](https://github.com/inikulin/parse5/issues/192)).
 
-* Added: [HTML rewriting stream](https://github.com/inikulin/parse5/tree/master/packages/html-rewriting-stream#readme).
+* Added: [HTML rewriting stream](https://github.com/inikulin/parse5/tree/master/packages/parse5-html-rewriting-stream#readme).
 (GH [#222](https://github.com/inikulin/parse5/issues/222)).
 
 * Removed (**breaking**): `parse5` no longer ship TypeScript definitions. Existing TypeScript definitions

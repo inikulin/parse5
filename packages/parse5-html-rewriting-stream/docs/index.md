@@ -22,7 +22,7 @@ Raised when the rewriter encounters a start tag.
 | Param | Type |
 | ------ | ------ |
 | event | "startTag" |
-| listener | function (startTag: *[StartTagToken](../../sax-parser/docs/tokens/start-tag.md)*, rawHtml: *String*) |
+| listener | function (startTag: *[StartTagToken](../../parse5-sax-parser/docs/tokens/start-tag.md)*, rawHtml: *String*) |
 
 **Returns:** `this`
 
@@ -40,7 +40,7 @@ Raised when rewriter encounters an end tag.
 | Param | Type |
 | ------ | ------ |
 | event | "endTag" |
-| listener | function (endTag: *[EndTagToken](../../sax-parser/docs/tokens/end-tag.md)*, rawHtml: *String*) |
+| listener | function (endTag: *[EndTagToken](../../parse5-sax-parser/docs/tokens/end-tag.md)*, rawHtml: *String*) |
 
 **Returns:** `this`
 
@@ -58,7 +58,7 @@ Raised when rewriter encounters a comment.
 | Param | Type |
 | ------ | ------ |
 | event | "comment" |
-| listener | function (comment: *[CommentToken](../../sax-parser/docs/tokens/comment.md)*, rawHtml: *String*) |
+| listener | function (comment: *[CommentToken](../../parse5-sax-parser/docs/tokens/comment.md)*, rawHtml: *String*) |
 
 **Returns:** `this`
 
@@ -76,7 +76,7 @@ Raised when rewriter encounters text content.
 | Param | Type |
 | ------ | ------ |
 | event | "text" |
-| listener | function (text: *[TextToken](../../sax-parser/docs/tokens/text.md)*, rawHtml: *String*)|
+| listener | function (text: *[TextToken](../../parse5-sax-parser/docs/tokens/text.md)*, rawHtml: *String*)|
 
 **Returns:** `this`
 
@@ -94,7 +94,7 @@ Raised when rewriter encounters a [document type declaration](https://en.wikiped
 | Param | Type |
 | ------ | ------ |
 | event | "doctype" |
-| listener | function (doctype: *[DoctypeToken](../../sax-parser/docs/tokens/doctype.md)*, rawHtml: *String*) |
+| listener | function (doctype: *[DoctypeToken](../../parse5-sax-parser/docs/tokens/doctype.md)*, rawHtml: *String*) |
 
 **Returns:** `this`
 
