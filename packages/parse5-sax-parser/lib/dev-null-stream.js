@@ -1,11 +1,7 @@
-'use strict';
+import { Writable } from 'stream';
 
-const { Writable } = require('stream');
-
-class DevNullStream extends Writable {
+export class DevNullStream extends Writable {
     _write(chunk, encoding, cb) {
         cb();
     }
 }
-
-module.exports = DevNullStream;

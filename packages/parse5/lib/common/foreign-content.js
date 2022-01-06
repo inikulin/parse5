@@ -1,7 +1,5 @@
-'use strict';
-
-const Tokenizer = require('../tokenizer');
-const HTML = require('./html');
+import { Tokenizer } from '../tokenizer/index.js';
+import * as HTML from './html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -11,7 +9,7 @@ const ATTRS = HTML.ATTRS;
 //MIME types
 const MIME_TYPES = {
     TEXT_HTML: 'text/html',
-    APPLICATION_XML: 'application/xhtml+xml'
+    APPLICATION_XML: 'application/xhtml+xml',
 };
 
 //Attributes
@@ -75,7 +73,7 @@ const SVG_ATTRS_ADJUSTMENT_MAP = {
     viewtarget: 'viewTarget',
     xchannelselector: 'xChannelSelector',
     ychannelselector: 'yChannelSelector',
-    zoomandpan: 'zoomAndPan'
+    zoomandpan: 'zoomAndPan',
 };
 
 const XML_ATTRS_ADJUSTMENT_MAP = {
@@ -90,11 +88,11 @@ const XML_ATTRS_ADJUSTMENT_MAP = {
     'xml:lang': { prefix: 'xml', name: 'lang', namespace: NS.XML },
     'xml:space': { prefix: 'xml', name: 'space', namespace: NS.XML },
     xmlns: { prefix: '', name: 'xmlns', namespace: NS.XMLNS },
-    'xmlns:xlink': { prefix: 'xmlns', name: 'xlink', namespace: NS.XMLNS }
+    'xmlns:xlink': { prefix: 'xmlns', name: 'xlink', namespace: NS.XMLNS },
 };
 
 //SVG tag names adjustment map
-const SVG_TAG_NAMES_ADJUSTMENT_MAP = (exports.SVG_TAG_NAMES_ADJUSTMENT_MAP = {
+export const SVG_TAG_NAMES_ADJUSTMENT_MAP = {
     altglyph: 'altGlyph',
     altglyphdef: 'altGlyphDef',
     altglyphitem: 'altGlyphItem',
@@ -130,8 +128,8 @@ const SVG_TAG_NAMES_ADJUSTMENT_MAP = (exports.SVG_TAG_NAMES_ADJUSTMENT_MAP = {
     glyphref: 'glyphRef',
     lineargradient: 'linearGradient',
     radialgradient: 'radialGradient',
-    textpath: 'textPath'
-});
+    textpath: 'textPath',
+};
 
 //Tags that causes exit from foreign content
 const EXITS_FOREIGN_CONTENT = {
@@ -178,11 +176,11 @@ const EXITS_FOREIGN_CONTENT = {
     [$.TT]: true,
     [$.U]: true,
     [$.UL]: true,
-    [$.VAR]: true
+    [$.VAR]: true,
 };
 
 //Check exit from foreign content
-exports.causesExit = function(startTagToken) {
+export function causesExit(startTagToken) {
     const tn = startTagToken.tagName;
     const isFontWithAttrs =
         tn === $.FONT &&
@@ -191,19 +189,19 @@ exports.causesExit = function(startTagToken) {
             Tokenizer.getTokenAttr(startTagToken, ATTRS.FACE) !== null);
 
     return isFontWithAttrs ? true : EXITS_FOREIGN_CONTENT[tn];
-};
+}
 
 //Token adjustments
-exports.adjustTokenMathMLAttrs = function(token) {
+export function adjustTokenMathMLAttrs(token) {
     for (let i = 0; i < token.attrs.length; i++) {
         if (token.attrs[i].name === DEFINITION_URL_ATTR) {
             token.attrs[i].name = ADJUSTED_DEFINITION_URL_ATTR;
             break;
         }
     }
-};
+}
 
-exports.adjustTokenSVGAttrs = function(token) {
+export function adjustTokenSVGAttrs(token) {
     for (let i = 0; i < token.attrs.length; i++) {
         const adjustedAttrName = SVG_ATTRS_ADJUSTMENT_MAP[token.attrs[i].name];
 
@@ -211,9 +209,9 @@ exports.adjustTokenSVGAttrs = function(token) {
             token.attrs[i].name = adjustedAttrName;
         }
     }
-};
+}
 
-exports.adjustTokenXMLAttrs = function(token) {
+export function adjustTokenXMLAttrs(token) {
     for (let i = 0; i < token.attrs.length; i++) {
         const adjustedAttrEntry = XML_ATTRS_ADJUSTMENT_MAP[token.attrs[i].name];
 
@@ -223,15 +221,15 @@ exports.adjustTokenXMLAttrs = function(token) {
             token.attrs[i].namespace = adjustedAttrEntry.namespace;
         }
     }
-};
+}
 
-exports.adjustTokenSVGTagName = function(token) {
+export function adjustTokenSVGTagName(token) {
     const adjustedTagName = SVG_TAG_NAMES_ADJUSTMENT_MAP[token.tagName];
 
     if (adjustedTagName) {
         token.tagName = adjustedTagName;
     }
-};
+}
 
 //Integration points
 function isMathMLTextIntegrationPoint(tn, ns) {
@@ -252,7 +250,7 @@ function isHtmlIntegrationPoint(tn, ns, attrs) {
     return ns === NS.SVG && (tn === $.FOREIGN_OBJECT || tn === $.DESC || tn === $.TITLE);
 }
 
-exports.isIntegrationPoint = function(tn, ns, attrs, foreignNS) {
+export function isIntegrationPoint(tn, ns, attrs, foreignNS) {
     if ((!foreignNS || foreignNS === NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs)) {
         return true;
     }
@@ -262,4 +260,4 @@ exports.isIntegrationPoint = function(tn, ns, attrs, foreignNS) {
     }
 
     return false;
-};
+}

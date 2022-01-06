@@ -1,6 +1,4 @@
-'use strict';
-
-const { DOCUMENT_MODE } = require('./html');
+import { DOCUMENT_MODE } from './html.js';
 
 //Const
 const VALID_DOCTYPE_NAME = 'html';
@@ -62,12 +60,12 @@ const QUIRKS_MODE_PUBLIC_ID_PREFIXES = [
     '-//w3c//dtd w3 html//',
     '-//w3o//dtd w3 html 3.0//',
     '-//webtechs//dtd mozilla html 2.0//',
-    '-//webtechs//dtd mozilla html//'
+    '-//webtechs//dtd mozilla html//',
 ];
 
 const QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES = QUIRKS_MODE_PUBLIC_ID_PREFIXES.concat([
     '-//w3c//dtd html 4.01 frameset//',
-    '-//w3c//dtd html 4.01 transitional//'
+    '-//w3c//dtd html 4.01 transitional//',
 ]);
 
 const QUIRKS_MODE_PUBLIC_IDS = ['-//w3o//dtd w3 html strict 3.0//en//', '-/w3c/dtd html 4.0 transitional/en', 'html'];
@@ -75,7 +73,7 @@ const LIMITED_QUIRKS_PUBLIC_ID_PREFIXES = ['-//w3c//dtd xhtml 1.0 frameset//', '
 
 const LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES = LIMITED_QUIRKS_PUBLIC_ID_PREFIXES.concat([
     '-//w3c//dtd html 4.01 frameset//',
-    '-//w3c//dtd html 4.01 transitional//'
+    '-//w3c//dtd html 4.01 transitional//',
 ]);
 
 //Utils
@@ -96,15 +94,15 @@ function hasPrefix(publicId, prefixes) {
 }
 
 //API
-exports.isConforming = function(token) {
+export function isConforming(token) {
     return (
         token.name === VALID_DOCTYPE_NAME &&
         token.publicId === null &&
         (token.systemId === null || token.systemId === VALID_SYSTEM_ID)
     );
-};
+}
 
-exports.getDocumentMode = function(token) {
+export function getDocumentMode(token) {
     if (token.name !== VALID_DOCTYPE_NAME) {
         return DOCUMENT_MODE.QUIRKS;
     }
@@ -139,9 +137,9 @@ exports.getDocumentMode = function(token) {
     }
 
     return DOCUMENT_MODE.NO_QUIRKS;
-};
+}
 
-exports.serializeContent = function(name, publicId, systemId) {
+export function serializeContent(name, publicId, systemId) {
     let str = '!DOCTYPE ';
 
     if (name) {
@@ -159,4 +157,4 @@ exports.serializeContent = function(name, publicId, systemId) {
     }
 
     return str;
-};
+}

@@ -1,37 +1,38 @@
-'use strict';
+import { readFileSync, createReadStream, readdirSync } from 'fs';
+import Benchmark from 'benchmark';
+import { loadTreeConstructionTestData } from '../../test/utils/generate-parsing-tests.js';
+import { loadSAXParserTestData } from '../../test/utils/load-sax-parser-test-data.js';
+import { treeAdapters, WritableStreamStub } from '../../test/utils/common.js';
+import * as parse5 from '../../packages/parse5/lib/index.js';
+import { ParserStream as parse5Stream } from '../../packages/parse5-parser-stream/lib/index.js';
+import * as parse5Upstream from 'parse5';
 
-const { join } = require('path');
-const { readFileSync, createReadStream, readdirSync } = require('fs');
-const Benchmark = require('benchmark');
-const { loadTreeConstructionTestData } = require('../../test/utils/generate-parsing-tests');
-const loadSAXParserTestData = require('../../test/utils/load-sax-parser-test-data');
-const { treeAdapters, WritableStreamStub } = require('../../test/utils/common');
+const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
+const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);
+const saxPath = new URL('../../test/data/sax/', import.meta.url);
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
-global.workingCopy = require('../../packages/parse5/lib');
-global.WorkingCopyParserStream = require('../../packages/parse5-parser-stream/lib');
-global.upstreamParser = require('parse5');
+global.workingCopy = parse5;
+global.WorkingCopyParserStream = parse5Stream;
+global.upstreamParser = parse5Upstream;
 
 // Huge page data
-global.hugePage = readFileSync(join(__dirname, '../../test/data/huge-page/huge-page.html')).toString();
+global.hugePage = readFileSync(hugePagePath).toString();
 
 // Micro data
-global.microTests = loadTreeConstructionTestData(
-    [join(__dirname, '../../test/data/html5lib-tests/tree-construction')],
-    treeAdapters.default
-)
+global.microTests = loadTreeConstructionTestData([treeConstructionPath], treeAdapters.default)
     .filter(
-        test =>
+        (test) =>
             //NOTE: this test caused stack overflow in parse5 v1.x
             test.input !== '<button><p><button>'
     )
-    .map(test => ({
+    .map((test) => ({
         html: test.input,
-        fragmentContext: test.fragmentContext
+        fragmentContext: test.fragmentContext,
     }));
 
-global.runMicro = function(parser) {
+global.runMicro = function (parser) {
     for (const test of microTests) {
         if (test.fragmentContext) {
             parser.parseFragment(test.fragmentContext, test.html);
@@ -42,22 +43,22 @@ global.runMicro = function(parser) {
 };
 
 // Pages data
-const pages = loadSAXParserTestData().map(test => test.src);
+const pages = loadSAXParserTestData().map((test) => test.src);
 
-global.runPages = function(parser) {
+global.runPages = function (parser) {
     for (let j = 0; j < pages.length; j++) {
         parser.parse(pages[j]);
     }
 };
 
 // Stream data
-global.files = readdirSync(join(__dirname, '../../test/data/sax')).map(dirName =>
-    join(__dirname, '../../test/data/sax', dirName, 'src.html')
-);
+global.files = readdirSync(saxPath).map((dirName) => {
+    return new URL(`./${dirName}/src.html`, saxPath).pathname;
+});
 
 // Utils
 function getHz(suite, testName) {
-    return suite.filter(t => t.name === testName)[0].hz;
+    return suite.filter((t) => t.name === testName)[0].hz;
 }
 
 function runBench({ name, workingCopyFn, upstreamFn, defer = false }) {
@@ -67,7 +68,7 @@ function runBench({ name, workingCopyFn, upstreamFn, defer = false }) {
         .add('Working copy', workingCopyFn, { defer })
         .add('Upstream', upstreamFn, { defer })
         .on('start', () => console.log(name))
-        .on('cycle', event => console.log(String(event.target)))
+        .on('cycle', (event) => console.log(String(event.target)))
         .on('complete', () => {
             const workingCopyHz = getHz(suite, 'Working copy');
             const upstreamHz = getHz(suite, 'Upstream');
@@ -85,28 +86,28 @@ function runBench({ name, workingCopyFn, upstreamFn, defer = false }) {
 runBench({
     name: 'parse5 regression benchmark - MICRO',
     workingCopyFn: () => runMicro(workingCopy),
-    upstreamFn: () => runMicro(upstreamParser)
+    upstreamFn: () => runMicro(upstreamParser),
 });
 
 runBench({
     name: 'parse5 regression benchmark - HUGE',
     workingCopyFn: () => workingCopy.parse(hugePage),
-    upstreamFn: () => upstreamParser.parse(hugePage)
+    upstreamFn: () => upstreamParser.parse(hugePage),
 });
 
 runBench({
     name: 'parse5 regression benchmark - PAGES',
     workingCopyFn: () => runPages(workingCopy),
-    upstreamFn: () => runPages(upstreamParser)
+    upstreamFn: () => runPages(upstreamParser),
 });
 
 runBench({
     name: 'parse5 regression benchmark - STREAM',
     defer: true,
-    workingCopyFn: async deferred => {
+    workingCopyFn: async (deferred) => {
         const parsePromises = files.map(
-            fileName =>
-                new Promise(resolve => {
+            (fileName) =>
+                new Promise((resolve) => {
                     const stream = createReadStream(fileName, 'utf8');
                     const parserStream = new WorkingCopyParserStream();
 
@@ -118,10 +119,10 @@ runBench({
         await Promise.all(parsePromises);
         deferred.resolve();
     },
-    upstreamFn: async deferred => {
+    upstreamFn: async (deferred) => {
         const parsePromises = files.map(
-            fileName =>
-                new Promise(resolve => {
+            (fileName) =>
+                new Promise((resolve) => {
                     const stream = createReadStream(fileName, 'utf8');
                     const writable = new WritableStreamStub();
 
@@ -136,5 +137,5 @@ runBench({
 
         await Promise.all(parsePromises);
         deferred.resolve();
-    }
+    },
 });

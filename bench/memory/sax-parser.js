@@ -1,10 +1,8 @@
-'use strict';
-
-const fs = require('fs');
-const format = require('human-format');
-const promisifyEvent = require('promisify-event');
-const memwatch = require('node-memwatch');
-const SAXParser = require('../../packages/parse5-sax-parser/lib');
+import * as fs from 'fs';
+import format from 'human-format';
+import promisifyEvent from 'promisify-event';
+import memwatch from '@airbnb/node-memwatch';
+import SAXParser from '../../packages/parse5-sax-parser/lib/index.js';
 
 main();
 
@@ -16,13 +14,13 @@ async function main() {
     const heapDiffMeasurement = new memwatch.HeapDiff();
     let heapDiff = null;
 
-    memwatch.on('stats', stats => {
+    memwatch.on('stats', (stats) => {
         maxMemUsage = Math.max(maxMemUsage, stats['current_base']);
     });
 
     startDate = new Date();
 
-    const parserPromise = parse().then(dataSize => {
+    const parserPromise = parse().then((dataSize) => {
         parsedDataSize = dataSize;
         endDate = new Date();
         heapDiff = heapDiffMeasurement.end();
@@ -30,7 +28,7 @@ async function main() {
 
     await Promise.all([
         parserPromise,
-        promisifyEvent(memwatch, 'stats') // NOTE: we need at least one `stats` result
+        promisifyEvent(memwatch, 'stats'), // NOTE: we need at least one `stats` result
     ]);
 
     printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
@@ -57,7 +55,7 @@ function getDuration(startDate, endDate) {
     const scale = new format.Scale({
         seconds: 1,
         minutes: 60,
-        hours: 3600
+        hours: 3600,
     });
 
     return format((endDate - startDate) / 1000, { scale: scale });

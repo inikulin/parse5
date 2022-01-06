@@ -1,13 +1,11 @@
-'use strict';
-
-const format = require('human-format');
+import format from 'human-format';
 
 main();
 
-function main() {
+async function main() {
     const before = process.memoryUsage().rss;
 
-    require('../../packages/parse5/lib/tokenizer/named-entity-data');
+    await import('../../packages/parse5/lib/tokenizer/named-entity-data.js');
 
     const after = process.memoryUsage().rss;
 

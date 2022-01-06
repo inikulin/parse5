@@ -1,9 +1,7 @@
-'use strict';
-
-const Preprocessor = require('./preprocessor');
-const unicode = require('../common/unicode');
-const neTree = require('./named-entity-data');
-const ERR = require('../common/error-codes');
+import { Preprocessor } from './preprocessor.js';
+import * as unicode from '../common/unicode.js';
+import { namedEntityData as neTree } from './named-entity-data.js';
+import { ERR } from '../common/error-codes.js';
 
 //Aliases
 const $ = unicode.CODE_POINTS;
@@ -37,7 +35,7 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = {
     0x9b: 0x203a,
     0x9c: 0x0153,
     0x9e: 0x017e,
-    0x9f: 0x0178
+    0x9f: 0x0178,
 };
 
 // Named entity tree flags
@@ -211,7 +209,7 @@ function findNamedEntityTreeBranch(nodeIx, cp) {
 }
 
 //Tokenizer
-class Tokenizer {
+export class Tokenizer {
     constructor() {
         this.preprocessor = new Preprocessor();
 
@@ -360,7 +358,7 @@ class Tokenizer {
             tagName: '',
             selfClosing: false,
             ackSelfClosing: false,
-            attrs: []
+            attrs: [],
         };
     }
 
@@ -369,14 +367,14 @@ class Tokenizer {
             type: Tokenizer.END_TAG_TOKEN,
             tagName: '',
             selfClosing: false,
-            attrs: []
+            attrs: [],
         };
     }
 
     _createCommentToken() {
         this.currentToken = {
             type: Tokenizer.COMMENT_TOKEN,
-            data: ''
+            data: '',
         };
     }
 
@@ -386,14 +384,14 @@ class Tokenizer {
             name: initialName,
             forceQuirks: false,
             publicId: null,
-            systemId: null
+            systemId: null,
         };
     }
 
     _createCharacterToken(type, ch) {
         this.currentCharacterToken = {
             type: type,
-            chars: ch
+            chars: ch,
         };
     }
 
@@ -405,7 +403,7 @@ class Tokenizer {
     _createAttr(attrNameFirstCh) {
         this.currentAttr = {
             name: attrNameFirstCh,
-            value: ''
+            value: '',
         };
     }
 
@@ -2179,11 +2177,11 @@ Tokenizer.MODE = {
     RCDATA: RCDATA_STATE,
     RAWTEXT: RAWTEXT_STATE,
     SCRIPT_DATA: SCRIPT_DATA_STATE,
-    PLAINTEXT: PLAINTEXT_STATE
+    PLAINTEXT: PLAINTEXT_STATE,
 };
 
 //Static
-Tokenizer.getTokenAttr = function(token, attrName) {
+Tokenizer.getTokenAttr = function (token, attrName) {
     for (let i = token.attrs.length - 1; i >= 0; i--) {
         if (token.attrs[i].name === attrName) {
             return token.attrs[i].value;
@@ -2192,5 +2190,3 @@ Tokenizer.getTokenAttr = function(token, attrName) {
 
     return null;
 };
-
-module.exports = Tokenizer;

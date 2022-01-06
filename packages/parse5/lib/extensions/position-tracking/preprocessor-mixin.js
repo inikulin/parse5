@@ -1,8 +1,6 @@
-'use strict';
+import { Mixin } from '../../utils/mixin.js';
 
-const Mixin = require('../../utils/mixin');
-
-class PositionTrackingPreprocessorMixin extends Mixin {
+export class PositionTrackingPreprocessorMixin extends Mixin {
     constructor(preprocessor) {
         super(preprocessor);
 
@@ -56,9 +54,7 @@ class PositionTrackingPreprocessorMixin extends Mixin {
                 mxn.lineStartPos -= reduction;
                 mxn.droppedBufferSize += reduction;
                 mxn.offset = mxn.droppedBufferSize + this.pos;
-            }
+            },
         };
     }
 }
-
-module.exports = PositionTrackingPreprocessorMixin;

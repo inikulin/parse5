@@ -1,8 +1,6 @@
-'use strict';
+import { Mixin } from '../../utils/mixin.js';
 
-const Mixin = require('../../utils/mixin');
-
-class LocationInfoOpenElementStackMixin extends Mixin {
+export class LocationInfoOpenElementStackMixin extends Mixin {
     constructor(stack, opts) {
         super(stack);
 
@@ -27,9 +25,7 @@ class LocationInfoOpenElementStackMixin extends Mixin {
             remove(element) {
                 mxn.onItemPop(this.current);
                 orig.remove.call(this, element);
-            }
+            },
         };
     }
 }
-
-module.exports = LocationInfoOpenElementStackMixin;

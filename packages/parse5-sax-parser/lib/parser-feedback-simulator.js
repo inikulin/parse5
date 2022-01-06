@@ -1,9 +1,7 @@
-'use strict';
-
-const Tokenizer = require('parse5/lib/tokenizer');
-const foreignContent = require('parse5/lib/common/foreign-content');
-const unicode = require('parse5/lib/common/unicode');
-const HTML = require('parse5/lib/common/html');
+import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
+import * as foreignContent from 'parse5/lib/common/foreign-content.js';
+import * as unicode from 'parse5/lib/common/unicode.js';
+import * as HTML from 'parse5/lib/common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -11,7 +9,7 @@ const NS = HTML.NAMESPACES;
 
 //ParserFeedbackSimulator
 //Simulates adjustment of the Tokenizer which performed by standard parser during tree construction.
-class ParserFeedbackSimulator {
+export class ParserFeedbackSimulator {
     constructor(tokenizer) {
         this.tokenizer = tokenizer;
 
@@ -155,5 +153,3 @@ class ParserFeedbackSimulator {
         }
     }
 }
-
-module.exports = ParserFeedbackSimulator;

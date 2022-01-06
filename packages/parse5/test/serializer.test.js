@@ -1,27 +1,24 @@
-'use strict';
+import assert from 'assert';
+import * as parse5 from '../lib/index.js';
+import { generateSeriliazerTests } from '../../../test/utils/generate-serializer-tests.js';
+import { treeAdapters } from '../../../test/utils/common.js';
 
-const assert = require('assert');
-const parse5 = require('../lib');
-const generateSeriliazerTests = require('../../../test/utils/generate-serializer-tests');
-const { treeAdapters } = require('../../../test/utils/common');
+generateSeriliazerTests('serializer', 'Serializer', parse5.serialize);
 
-generateSeriliazerTests(exports, 'Serializer', parse5.serialize);
+suite('serializer', () => {
+    suite("Regression - Get text node's parent tagName only if it's an Element node (GH-38)", () => {
+        test('serializes correctly', () => {
+            const document = parse5.parse('<template>yo<div></div>42</template>');
+            const treeAdapter = {
+                ...treeAdapters.default,
+                getTagName: (element) => {
+                    assert.ok(element.tagName);
 
-exports["Regression - Get text node's parent tagName only if it's an Element node (GH-38)"] = {
-    test() {
-        const document = parse5.parse('<template>yo<div></div>42</template>');
-        const originalGetTagName = (this.originalGetTagName = treeAdapters.default.getTagName);
+                    return treeAdapters.default.getTagName(element);
+                },
+            };
 
-        treeAdapters.default.getTagName = function(element) {
-            assert.ok(element.tagName);
-
-            return originalGetTagName(element);
-        };
-
-        parse5.serialize(document);
-    },
-
-    after() {
-        treeAdapters.default.getTagName = this.originalGetTagName;
-    }
-};
+            parse5.serialize(document, { treeAdapter });
+        });
+    });
+});

@@ -1,24 +1,24 @@
 'use strict';
 
-const doctype = require('parse5/lib/common/doctype');
-const { DOCUMENT_MODE } = require('parse5/lib/common/html');
-const { NodeWithChildren, Element, ProcessingInstruction, Comment, Text } = require('domhandler');
+import * as doctype from 'parse5/lib/common/doctype.js';
+import { DOCUMENT_MODE } from 'parse5/lib/common/html.js';
+import { NodeWithChildren, Element, ProcessingInstruction, Comment, Text } from 'domhandler';
 
 //Node construction
-exports.createDocument = function() {
+export function createDocument() {
     const node = new NodeWithChildren('root', []);
     node.name = 'root';
     node['x-mode'] = DOCUMENT_MODE.NO_QUIRKS;
     return node;
-};
+}
 
-exports.createDocumentFragment = function() {
+export function createDocumentFragment() {
     const node = new NodeWithChildren('root', []);
     node.name = 'root';
     return node;
-};
+}
 
-exports.createElement = function(tagName, namespaceURI, attrs) {
+export function createElement(tagName, namespaceURI, attrs) {
     const attribs = Object.create(null);
     const attribsNamespace = Object.create(null);
     const attribsPrefix = Object.create(null);
@@ -36,18 +36,18 @@ exports.createElement = function(tagName, namespaceURI, attrs) {
     node['x-attribsNamespace'] = attribsNamespace;
     node['x-attribsPrefix'] = attribsPrefix;
     return node;
-};
+}
 
-exports.createCommentNode = function(data) {
+export function createCommentNode(data) {
     return new Comment(data);
-};
+}
 
-const createTextNode = function(value) {
+function createTextNode(value) {
     return new Text(value);
-};
+}
 
 //Tree mutation
-const appendChild = (exports.appendChild = function(parentNode, newNode) {
+export function appendChild(parentNode, newNode) {
     const prev = parentNode.children[parentNode.children.length - 1];
 
     if (prev) {
@@ -57,9 +57,9 @@ const appendChild = (exports.appendChild = function(parentNode, newNode) {
 
     parentNode.children.push(newNode);
     newNode.parent = parentNode;
-});
+}
 
-const insertBefore = (exports.insertBefore = function(parentNode, newNode, referenceNode) {
+export function insertBefore(parentNode, newNode, referenceNode) {
     const insertionIdx = parentNode.children.indexOf(referenceNode);
     const prev = referenceNode.prev;
 
@@ -73,17 +73,17 @@ const insertBefore = (exports.insertBefore = function(parentNode, newNode, refer
 
     parentNode.children.splice(insertionIdx, 0, newNode);
     newNode.parent = parentNode;
-});
+}
 
-exports.setTemplateContent = function(templateElement, contentElement) {
+export function setTemplateContent(templateElement, contentElement) {
     appendChild(templateElement, contentElement);
-};
+}
 
-exports.getTemplateContent = function(templateElement) {
+export function getTemplateContent(templateElement) {
     return templateElement.children[0];
-};
+}
 
-exports.setDocumentType = function(document, name, publicId, systemId) {
+export function setDocumentType(document, name, publicId, systemId) {
     const data = doctype.serializeContent(name, publicId, systemId);
     let doctypeNode = null;
 
@@ -106,17 +106,17 @@ exports.setDocumentType = function(document, name, publicId, systemId) {
         node['x-systemId'] = systemId;
         appendChild(document, node);
     }
-};
+}
 
-exports.setDocumentMode = function(document, mode) {
+export function setDocumentMode(document, mode) {
     document['x-mode'] = mode;
-};
+}
 
-exports.getDocumentMode = function(document) {
+export function getDocumentMode(document) {
     return document['x-mode'];
-};
+}
 
-exports.detachNode = function(node) {
+export function detachNode(node) {
     if (node.parent) {
         const idx = node.parent.children.indexOf(node);
         const prev = node.prev;
@@ -136,9 +136,9 @@ exports.detachNode = function(node) {
         node.parent.children.splice(idx, 1);
         node.parent = null;
     }
-};
+}
 
-exports.insertText = function(parentNode, text) {
+export function insertText(parentNode, text) {
     const lastChild = parentNode.children[parentNode.children.length - 1];
 
     if (lastChild && lastChild.type === 'text') {
@@ -146,9 +146,9 @@ exports.insertText = function(parentNode, text) {
     } else {
         appendChild(parentNode, createTextNode(text));
     }
-};
+}
 
-exports.insertTextBefore = function(parentNode, text, referenceNode) {
+export function insertTextBefore(parentNode, text, referenceNode) {
     const prevNode = parentNode.children[parentNode.children.indexOf(referenceNode) - 1];
 
     if (prevNode && prevNode.type === 'text') {
@@ -156,9 +156,9 @@ exports.insertTextBefore = function(parentNode, text, referenceNode) {
     } else {
         insertBefore(parentNode, createTextNode(text), referenceNode);
     }
-};
+}
 
-exports.adoptAttributes = function(recipient, attrs) {
+export function adoptAttributes(recipient, attrs) {
     for (let i = 0; i < attrs.length; i++) {
         const attrName = attrs[i].name;
 
@@ -168,22 +168,22 @@ exports.adoptAttributes = function(recipient, attrs) {
             recipient['x-attribsPrefix'][attrName] = attrs[i].prefix;
         }
     }
-};
+}
 
 //Tree traversing
-exports.getFirstChild = function(node) {
+export function getFirstChild(node) {
     return node.children[0];
-};
+}
 
-exports.getChildNodes = function(node) {
+export function getChildNodes(node) {
     return node.children;
-};
+}
 
-exports.getParentNode = function(node) {
+export function getParentNode(node) {
     return node.parent;
-};
+}
 
-exports.getAttrList = function(element) {
+export function getAttrList(element) {
     const attrList = [];
 
     for (const name in element.attribs) {
@@ -191,68 +191,68 @@ exports.getAttrList = function(element) {
             name: name,
             value: element.attribs[name],
             namespace: element['x-attribsNamespace'][name],
-            prefix: element['x-attribsPrefix'][name]
+            prefix: element['x-attribsPrefix'][name],
         });
     }
 
     return attrList;
-};
+}
 
 //Node data
-exports.getTagName = function(element) {
+export function getTagName(element) {
     return element.name;
-};
+}
 
-exports.getNamespaceURI = function(element) {
+export function getNamespaceURI(element) {
     return element.namespace;
-};
+}
 
-exports.getTextNodeContent = function(textNode) {
+export function getTextNodeContent(textNode) {
     return textNode.data;
-};
+}
 
-exports.getCommentNodeContent = function(commentNode) {
+export function getCommentNodeContent(commentNode) {
     return commentNode.data;
-};
+}
 
-exports.getDocumentTypeNodeName = function(doctypeNode) {
+export function getDocumentTypeNodeName(doctypeNode) {
     return doctypeNode['x-name'];
-};
+}
 
-exports.getDocumentTypeNodePublicId = function(doctypeNode) {
+export function getDocumentTypeNodePublicId(doctypeNode) {
     return doctypeNode['x-publicId'];
-};
+}
 
-exports.getDocumentTypeNodeSystemId = function(doctypeNode) {
+export function getDocumentTypeNodeSystemId(doctypeNode) {
     return doctypeNode['x-systemId'];
-};
+}
 
 //Node types
-exports.isTextNode = function(node) {
+export function isTextNode(node) {
     return node.type === 'text';
-};
+}
 
-exports.isCommentNode = function(node) {
+export function isCommentNode(node) {
     return node.type === 'comment';
-};
+}
 
-exports.isDocumentTypeNode = function(node) {
+export function isDocumentTypeNode(node) {
     return node.type === 'directive' && node.name === '!doctype';
-};
+}
 
-exports.isElementNode = function(node) {
+export function isElementNode(node) {
     return !!node.attribs;
-};
+}
 
 // Source code location
-exports.setNodeSourceCodeLocation = function(node, location) {
+export function setNodeSourceCodeLocation(node, location) {
     node.sourceCodeLocation = location;
-};
+}
 
-exports.getNodeSourceCodeLocation = function(node) {
+export function getNodeSourceCodeLocation(node) {
     return node.sourceCodeLocation;
-};
+}
 
-exports.updateNodeSourceCodeLocation = function(node, endLocation) {
+export function updateNodeSourceCodeLocation(node, endLocation) {
     node.sourceCodeLocation = Object.assign(node.sourceCodeLocation, endLocation);
-};
+}

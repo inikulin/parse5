@@ -1,7 +1,7 @@
-const ParserStream = require('../../lib');
-const { makeChunks } = require('../../../../test/utils/common');
+import { ParserStream } from '../../lib/index.js';
+import { makeChunks } from '../../../../test/utils/common.js';
 
-module.exports = function parseChunked(html, opts, minChunkSize, maxChunkSize) {
+export function parseChunked(html, opts, minChunkSize, maxChunkSize) {
     const parserStream = new ParserStream(opts);
     const chunks = makeChunks(html, minChunkSize, maxChunkSize);
 
@@ -19,6 +19,6 @@ module.exports = function parseChunked(html, opts, minChunkSize, maxChunkSize) {
 
     return {
         node: parserStream.document,
-        chunks: chunks
+        chunks: chunks,
     };
-};
+}

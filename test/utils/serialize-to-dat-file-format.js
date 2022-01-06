@@ -1,4 +1,4 @@
-const HTML = require('../../packages/parse5/lib/common/html');
+import * as HTML from '../../packages/parse5/lib/common/html.js';
 
 function getSerializedTreeIndent(indent) {
     let str = '|';
@@ -24,7 +24,7 @@ function getElementSerializedNamespaceURI(element, treeAdapter) {
 function serializeNodeList(nodes, indent, treeAdapter) {
     let str = '';
 
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
         str += getSerializedTreeIndent(indent);
 
         if (treeAdapter.isCommentNode(node)) {
@@ -50,7 +50,7 @@ function serializeNodeList(nodes, indent, treeAdapter) {
             let childrenIndent = indent + 2;
             const serializedAttrs = [];
 
-            treeAdapter.getAttrList(node).forEach(attr => {
+            treeAdapter.getAttrList(node).forEach((attr) => {
                 let attrStr = getSerializedTreeIndent(childrenIndent);
 
                 if (attr.prefix) {
@@ -77,6 +77,6 @@ function serializeNodeList(nodes, indent, treeAdapter) {
     return str;
 }
 
-module.exports = function serializeToDatFileFormat(rootNode, treeAdapter) {
+export function serializeToDatFileFormat(rootNode, treeAdapter) {
     return serializeNodeList(treeAdapter.getChildNodes(rootNode), 0, treeAdapter);
-};
+}

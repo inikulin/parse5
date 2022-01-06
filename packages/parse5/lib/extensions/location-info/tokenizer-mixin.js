@@ -1,10 +1,8 @@
-'use strict';
+import { Mixin } from '../../utils/mixin.js';
+import { Tokenizer } from '../../tokenizer/index.js';
+import { PositionTrackingPreprocessorMixin } from '../position-tracking/preprocessor-mixin.js';
 
-const Mixin = require('../../utils/mixin');
-const Tokenizer = require('../../tokenizer');
-const PositionTrackingPreprocessorMixin = require('../position-tracking/preprocessor-mixin');
-
-class LocationInfoTokenizerMixin extends Mixin {
+export class LocationInfoTokenizerMixin extends Mixin {
     constructor(tokenizer) {
         super(tokenizer);
 
@@ -21,7 +19,7 @@ class LocationInfoTokenizerMixin extends Mixin {
             startOffset: this.posTracker.offset,
             endLine: -1,
             endCol: -1,
-            endOffset: -1
+            endOffset: -1,
         };
     }
 
@@ -126,14 +124,14 @@ class LocationInfoTokenizerMixin extends Mixin {
                 }
 
                 orig._emitCurrentCharacterToken.call(this);
-            }
+            },
         };
 
         //NOTE: patch initial states for each mode to obtain token start position
-        Object.keys(Tokenizer.MODE).forEach(modeName => {
+        Object.keys(Tokenizer.MODE).forEach((modeName) => {
             const state = Tokenizer.MODE[modeName];
 
-            methods[state] = function(cp) {
+            methods[state] = function (cp) {
                 mxn.ctLoc = mxn._getCurrentLocation();
                 orig[state].call(this, cp);
             };
@@ -142,5 +140,3 @@ class LocationInfoTokenizerMixin extends Mixin {
         return methods;
     }
 }
-
-module.exports = LocationInfoTokenizerMixin;

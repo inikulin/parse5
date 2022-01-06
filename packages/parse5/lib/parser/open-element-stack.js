@@ -1,6 +1,4 @@
-'use strict';
-
-const HTML = require('../common/html');
+import * as HTML from '../common/html.js';
 
 //Aliases
 const $ = HTML.TAG_NAMES;
@@ -119,7 +117,7 @@ function isScopingElement(tn, ns) {
 }
 
 //Stack of open elements
-class OpenElementStack {
+export class OpenElementStack {
     constructor(document, treeAdapter) {
         this.stackTop = -1;
         this.items = [];
@@ -478,5 +476,3 @@ class OpenElementStack {
         }
     }
 }
-
-module.exports = OpenElementStack;

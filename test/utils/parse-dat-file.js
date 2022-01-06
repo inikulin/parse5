@@ -1,4 +1,4 @@
-const HTML = require('../../packages/parse5/lib/common/html');
+import * as HTML from '../../packages/parse5/lib/common/html.js';
 
 function createFragmentContext(tagName, treeAdapter) {
     if (!tagName) {
@@ -21,7 +21,7 @@ function createFragmentContext(tagName, treeAdapter) {
     return treeAdapter.createElement(tagName, namespace, []);
 }
 
-module.exports = function parseDatFile(testSet, treeAdapter) {
+export function parseDatFile(testSet, treeAdapter) {
     const testDescrs = [];
     let curDirective = '';
     let curDescr = null;
@@ -40,7 +40,7 @@ module.exports = function parseDatFile(testSet, treeAdapter) {
         }
     });
 
-    return testDescrs.map(descr => {
+    return testDescrs.map((descr) => {
         const fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];
 
         return {
@@ -50,7 +50,7 @@ module.exports = function parseDatFile(testSet, treeAdapter) {
             disableEntitiesDecoding: !!descr['#disable-html-entities-decoding'],
             lineNum: descr['#line'],
             scriptingEnabled: !descr['#script-off'],
-            fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter)
+            fragmentContext: createFragmentContext(fragmentContextTagName, treeAdapter),
         };
     });
-};
+}

@@ -1,17 +1,15 @@
-'use strict';
-
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const { escapeString } = require('../../packages/parse5/lib/serializer');
-const parse5 = require('../../packages/parse5/lib');
-const {
+import assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
+import { escapeString } from '../../packages/parse5/lib/serializer/index.js';
+import * as parse5 from '../../packages/parse5/lib/index.js';
+import {
     removeNewLines,
     getSubstringByLineCol,
     getStringDiffMsg,
     normalizeNewLine,
-    generateTestsForEachTreeAdapter
-} = require('./common');
+    generateTestsForEachTreeAdapter,
+} from './common.js';
 
 function walkTree(document, treeAdapter, handler) {
     for (let stack = treeAdapter.getChildNodes(document).slice(); stack.length; ) {
@@ -43,7 +41,7 @@ function assertLocation(loc, expected, html, lines) {
 }
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag
-function assertStartTagLocation(location, serializedNode, html, lines) {
+export function assertStartTagLocation(location, serializedNode, html, lines) {
     const length = location.startTag.endOffset - location.startTag.startOffset;
     const expected = serializedNode.substring(0, length);
 
@@ -59,59 +57,59 @@ function assertEndTagLocation(location, serializedNode, html, lines) {
 }
 
 function assertAttrsLocation(location, serializedNode, html, lines) {
-    location.attrs.forEach(attr => {
+    location.attrs.forEach((attr) => {
         const expected = serializedNode.slice(attr.startOffset, attr.endOffset);
 
         assertLocation(attr, expected, html, lines);
     });
 }
 
-function assertNodeLocation(location, serializedNode, html, lines) {
+export function assertNodeLocation(location, serializedNode, html, lines) {
     const expected = removeNewLines(serializedNode);
 
     assertLocation(location, expected, html, lines);
 }
 
 function loadParserLocationInfoTestData() {
-    const dataDirPath = path.join(__dirname, '../data/location-info');
+    const dataDirPath = new URL('../data/location-info', import.meta.url);
     const testSetFileDirs = fs.readdirSync(dataDirPath);
     const tests = [];
 
-    testSetFileDirs.forEach(dirName => {
-        const dataFilePath = path.join(dataDirPath, dirName, 'data.html');
+    testSetFileDirs.forEach((dirName) => {
+        const dataFilePath = path.join(dataDirPath.pathname, dirName, 'data.html');
         const data = fs.readFileSync(dataFilePath).toString();
 
         tests.push({
             name: dirName,
-            data: normalizeNewLine(data)
+            data: normalizeNewLine(data),
         });
     });
 
     return tests;
 }
 
-module.exports = function generateLocationInfoParserTests(moduleExports, prefix, parse) {
-    generateTestsForEachTreeAdapter(moduleExports, (_test, treeAdapter) => {
-        loadParserLocationInfoTestData().forEach(test => {
+export function generateLocationInfoParserTests(name, prefix, parse) {
+    generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
+        loadParserLocationInfoTestData().forEach((test) => {
             const testName = `Location info (Parser) - ${test.name}`;
 
             //NOTE: How it works: we parse document with the location info.
             //Then for each node in the tree we run serializer and compare results with the substring
             //obtained via location info from the expected serialization results.
-            _test[testName] = async function() {
+            _test[testName] = async function () {
                 const serializerOpts = { treeAdapter: treeAdapter };
                 const html = escapeString(test.data);
                 const lines = html.split(/\r?\n/g);
 
                 const parserOpts = {
                     treeAdapter: treeAdapter,
-                    sourceCodeLocationInfo: true
+                    sourceCodeLocationInfo: true,
                 };
 
                 const parsingResult = await parse(html, parserOpts);
                 const document = parsingResult.node;
 
-                walkTree(document, treeAdapter, node => {
+                walkTree(document, treeAdapter, (node) => {
                     const location = treeAdapter.getNodeSourceCodeLocation(node);
 
                     if (location) {
@@ -139,7 +137,4 @@ module.exports = function generateLocationInfoParserTests(moduleExports, prefix,
             };
         });
     });
-};
-
-module.exports.assertStartTagLocation = assertStartTagLocation;
-module.exports.assertNodeLocation = assertNodeLocation;
+}

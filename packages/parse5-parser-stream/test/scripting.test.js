@@ -1,21 +1,20 @@
-'use strict';
-
-const path = require('path');
-const ParserStream = require('../lib');
-const generateParsingTests = require('../../../test/utils/generate-parsing-tests');
-const { makeChunks, generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
+import { ParserStream } from '../lib/index.js';
+import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
+import { makeChunks, generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
 
 function pause() {
-    return new Promise(resolve => setTimeout(resolve, 5));
+    return new Promise((resolve) => setTimeout(resolve, 5));
 }
 
+const suitePath = new URL('../../../test/data/tree-construction-scripting', import.meta.url);
+
 generateParsingTests(
-    module.exports,
+    'ParserStream - Scripting',
     'ParserStream - Scripting',
     {
         skipFragments: true,
         withoutErrors: true,
-        testSuite: [path.join(__dirname, '../../../test/data/tree-construction-scripting')]
+        testSuite: [suitePath.pathname],
     },
     async (test, opts) => {
         const chunks = makeChunks(test.input);
@@ -57,8 +56,8 @@ generateParsingTests(
     }
 );
 
-generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
-    _test['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function(done) {
+generateTestsForEachTreeAdapter('ParserStream', (_test, treeAdapter) => {
+    _test['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function (done) {
         const parser = new ParserStream({ treeAdapter: treeAdapter });
 
         parser.on('script', (el, docWrite, resume) => {
@@ -70,7 +69,7 @@ generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
         process.nextTick(done);
     };
 
-    _test['Regression - Parsing loop lock causes accidental hang ups (GH-101)'] = function(done) {
+    _test['Regression - Parsing loop lock causes accidental hang ups (GH-101)'] = function (done) {
         const parser = new ParserStream({ treeAdapter: treeAdapter });
 
         parser.once('finish', () => {

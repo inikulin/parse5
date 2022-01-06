@@ -1,5 +1,3 @@
-'use strict';
-
 class Edge {
     constructor(filter, node, parent, parentKey) {
         this.filter = filter;
@@ -9,7 +7,7 @@ class Edge {
     }
 }
 
-class Node {
+export class Node {
     constructor(data) {
         this.data = data;
         this.branches = null;
@@ -33,5 +31,3 @@ class Node {
         this.branches[key] = node;
     }
 }
-
-module.exports = Node;

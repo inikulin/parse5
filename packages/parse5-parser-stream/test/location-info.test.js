@@ -1,20 +1,20 @@
-const assert = require('assert');
-const generateLocationInfoParserTests = require('../../../test/utils/generate-location-info-parser-tests');
-const { generateTestsForEachTreeAdapter } = require('../../../test/utils/common');
-const parseChunked = require('./utils/parse-chunked');
+import assert from 'assert';
+import { generateLocationInfoParserTests } from '../../../test/utils/generate-location-info-parser-tests.js';
+import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
+import { parseChunked } from './utils/parse-chunked.js';
 
-generateLocationInfoParserTests(module.exports, 'ParserStream', (input, opts) =>
+generateLocationInfoParserTests('location-info', 'ParserStream', (input, opts) =>
     // NOTE: because of performance use bigger chunks here
     parseChunked(input, opts, 100, 400)
 );
 
-generateTestsForEachTreeAdapter(module.exports, (_test, treeAdapter) => {
-    _test['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function() {
+generateTestsForEachTreeAdapter('location-info', (_test, treeAdapter) => {
+    _test['Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)'] = function () {
         const html = '</head><div class="test"></div></body></html>';
 
         const opts = {
             treeAdapter: treeAdapter,
-            sourceCodeLocationInfo: true
+            sourceCodeLocationInfo: true,
         };
 
         const document = parseChunked(html, opts).node;

@@ -1,6 +1,4 @@
-'use strict';
-
-module.exports = {
+export const ERR = {
     controlCharacterInInputStream: 'control-character-in-input-stream',
     noncharacterInInputStream: 'noncharacter-in-input-stream',
     surrogateInInputStream: 'surrogate-in-input-stream',
@@ -61,5 +59,5 @@ module.exports = {
     abandonedHeadElementChild: 'abandoned-head-element-child',
     misplacedStartTagForHeadElement: 'misplaced-start-tag-for-head-element',
     nestedNoscriptInHead: 'nested-noscript-in-head',
-    eofInElementThatCanContainOnlyText: 'eof-in-element-that-can-contain-only-text'
+    eofInElementThatCanContainOnlyText: 'eof-in-element-that-can-contain-only-text',
 };
