@@ -18,7 +18,7 @@
     "scripts": {
         "build": "lerna run build",
         "format": "prettier --write \"{packages/*/{lib,test}/**/*.js,{bench,test,scripts}/**/*.js}\"",
-        "bootstrap": "lerna bootstrap",
+        "bootstrap": "lerna bootstrap --no-ci",
         "lint": "eslint --ext js .",
         "unit-tests": "mocha --ui tdd --reporter progress --timeout 20000 packages/**/test/*.test.js",
         "test": "npm run lint && npm run unit-tests",
