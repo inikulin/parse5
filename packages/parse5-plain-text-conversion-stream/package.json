@@ -19,7 +19,7 @@
         "plain text"
     ],
     "license": "MIT",
-    "main": "./lib/index.js",
+    "main": "dist/index.js",
     "dependencies": {
         "parse5": "^6.0.1",
         "parse5-parser-stream": "^6.0.1"

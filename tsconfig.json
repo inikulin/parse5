@@ -13,8 +13,14 @@
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
-        "allowJs": true,
 
-        "outDir": "build"
+        "outDir": "build",
+        "baseUrl": ".",
+        "paths": {
+            "parse5/dist/*": ["packages/parse5/lib/*"],
+            "parse5-sax-parser/dist/*": ["packages/parse5-sax-parser/lib/*"],
+            "parse5-htmlparser2-tree-adapter/dist/*": ["packages/parse5-htmlparser2-tree-adapter/lib/*"],
+            "parse5-parser-stream/dist/*": ["packages/parse5-parser-stream/lib/*"]
+        }
     }
 }

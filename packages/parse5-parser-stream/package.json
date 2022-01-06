@@ -16,7 +16,7 @@
         "streaming"
     ],
     "license": "MIT",
-    "main": "./lib/index.js",
+    "main": "dist/index.js",
     "dependencies": {
         "parse5": "^6.0.1"
     },

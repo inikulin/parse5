@@ -1,5 +1,5 @@
 import { Transform } from 'node:stream';
-import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
+import { Tokenizer } from 'parse5/dist/tokenizer/index.js';
 import {
     TokenType,
     Token,
@@ -9,7 +9,7 @@ import {
     CommentToken,
     Attribute,
     Location,
-} from 'parse5/lib/common/token.js';
+} from 'parse5/dist/common/token.js';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 

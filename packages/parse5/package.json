@@ -30,7 +30,7 @@
         "serialize"
     ],
     "license": "MIT",
-    "main": "./lib/index.js",
+    "main": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "git://github.com/parse5/parse5-fork.git"

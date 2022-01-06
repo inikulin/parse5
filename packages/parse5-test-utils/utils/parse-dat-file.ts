@@ -1,6 +1,6 @@
-import { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface';
-import type { TreeAdapter } from 'parse5/lib/tree-adapters/interface';
-import { NAMESPACES as NS } from 'parse5/lib/common/html.js';
+import { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface';
+import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface';
+import { NAMESPACES as NS } from 'parse5/dist/common/html.js';
 
 function createFragmentContext<T extends TreeAdapterTypeMap>(
     tagName: string | undefined,

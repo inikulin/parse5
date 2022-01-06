@@ -1,5 +1,5 @@
-import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
-import type { Token } from 'parse5/lib/common/token.js';
+import { Tokenizer } from 'parse5/dist/tokenizer/index.js';
+import type { Token } from 'parse5/dist/common/token.js';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { ParserFeedbackSimulator } from '../lib/parser-feedback-simulator.js';
 

@@ -1,5 +1,5 @@
-import type { ParserOptions } from 'parse5/lib/parser/index.js';
-import type { TreeAdapterTypeMap } from 'parse5/lib/tree-adapters/interface.js';
+import type { ParserOptions } from 'parse5/dist/parser/index.js';
+import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 import { ParserStream } from '../../lib/index.js';
 import { makeChunks } from 'parse5-test-utils/utils/common.js';
 
