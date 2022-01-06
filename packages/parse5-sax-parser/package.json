@@ -4,8 +4,8 @@
     "description": "Streaming SAX-style HTML parser.",
     "version": "6.0.1",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
-    "contributors": "https://github.com/parse5/parse5-fork/graphs/contributors",
-    "homepage": "https://github.com/parse5/parse5-fork",
+    "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
+    "homepage": "https://github.com/inikulin/parse5",
     "scripts": {
         "build": "rm -r dist; tsc"
     },
@@ -23,7 +23,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/parse5/parse5-fork.git"
+        "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
         "lib"

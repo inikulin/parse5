@@ -72,7 +72,7 @@ export class SAXParser extends Transform {
 
         // NOTE: always pipe stream to the /dev/null stream to avoid
         // `highWaterMark` hit even if we don't have consumers.
-        // (see: https://github.com/parse5/parse5-fork/issues/97#issuecomment-171940774)
+        // (see: https://github.com/inikulin/parse5/issues/97#issuecomment-171940774)
         this.pipe(new DevNullStream());
     }
 
