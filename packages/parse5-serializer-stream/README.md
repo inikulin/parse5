@@ -16,7 +16,7 @@
 <br>
 
 <p align="center">
-  📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/serializer-stream/docs/index.md"><b>Documentation</b></a> 📖
+  📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/parse5-serializer-stream/docs/index.md"><b>Documentation</b></a> 📖
 </p>
 
 ---

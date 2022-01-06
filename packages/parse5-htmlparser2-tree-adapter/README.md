@@ -16,7 +16,7 @@
 <br>
 
 <p align="center">
-  📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/htmlparser2-tree-adapter/docs/index.md"><b>Documentation</b></a> 📖
+  📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/parse5-htmlparser2-tree-adapter/docs/index.md"><b>Documentation</b></a> 📖
 </p>
 
 ---
