@@ -795,6 +795,7 @@ export class Parser {
             } else if (!last && tn === $.HEAD) {
                 this.insertionMode = IN_HEAD_MODE;
                 break;
+                // eslint-disable-next-line unicorn/prefer-switch
             } else if (tn === $.SELECT) {
                 this._resetInsertionModeForSelect(i);
                 break;

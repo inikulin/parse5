@@ -67,7 +67,7 @@ function collectParserTokens(html) {
 
     parser.parse(html);
 
-    return tokens.map(convertTokenToHtml5Lib);
+    return tokens.map((token) => convertTokenToHtml5Lib(token));
 }
 
 function generateParserFeedbackTest(parserTestFile) {

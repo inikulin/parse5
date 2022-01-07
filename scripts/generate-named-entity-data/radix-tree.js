@@ -12,10 +12,7 @@ export class RadixTree {
     }
 
     static _entityToCodePointsArray(entity) {
-        return entity
-            .replace(/^&/, '')
-            .split('')
-            .map((ch) => ch.charCodeAt(0));
+        return [...entity.replace(/^&/, '')].map((ch) => ch.charCodeAt(0));
     }
 
     static _decoupleSurrogatePair(cp) {

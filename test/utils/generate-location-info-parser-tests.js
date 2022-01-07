@@ -19,7 +19,7 @@ function walkTree(document, treeAdapter, handler) {
         handler(node);
 
         if (children && children.length > 0) {
-            stack = children.concat(stack);
+            stack.unshift(...children);
         }
     }
 }
