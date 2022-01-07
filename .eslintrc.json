@@ -30,7 +30,8 @@
         "unicorn/no-array-reduce": "off",
         "unicorn/no-for-loop": "off",
         "unicorn/consistent-destructuring": "off",
-        "unicorn/prefer-switch": ["error", { "emptyDefaultCase": "do-nothing-comment" }]
+        "unicorn/prefer-switch": ["error", { "emptyDefaultCase": "do-nothing-comment" }],
+        "unicorn/number-literal-case": "off"
     },
     "parserOptions": {
         "sourceType": "module"
