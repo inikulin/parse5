@@ -1,5 +1,3 @@
-'use strict';
-
 import * as doctype from 'parse5/lib/common/doctype.js';
 import { DOCUMENT_MODE } from 'parse5/lib/common/html.js';
 import { NodeWithChildren, Element, ProcessingInstruction, Comment, Text } from 'domhandler';
@@ -61,7 +59,7 @@ export function appendChild(parentNode, newNode) {
 
 export function insertBefore(parentNode, newNode, referenceNode) {
     const insertionIdx = parentNode.children.indexOf(referenceNode);
-    const prev = referenceNode.prev;
+    const { prev } = referenceNode;
 
     if (prev) {
         prev.next = newNode;
@@ -119,8 +117,8 @@ export function getDocumentMode(document) {
 export function detachNode(node) {
     if (node.parent) {
         const idx = node.parent.children.indexOf(node);
-        const prev = node.prev;
-        const next = node.next;
+        const { prev } = node;
+        const { next } = node;
 
         node.prev = null;
         node.next = null;
@@ -188,7 +186,7 @@ export function getAttrList(element) {
 
     for (const name in element.attribs) {
         attrList.push({
-            name: name,
+            name,
             value: element.attribs[name],
             namespace: element['x-attribsNamespace'][name],
             prefix: element['x-attribsPrefix'][name],

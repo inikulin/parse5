@@ -24,7 +24,7 @@ function getElementSerializedNamespaceURI(element, treeAdapter) {
 function serializeNodeList(nodes, indent, treeAdapter) {
     let str = '';
 
-    nodes.forEach((node) => {
+    for (let node of nodes) {
         str += getSerializedTreeIndent(indent);
 
         if (treeAdapter.isCommentNode(node)) {
@@ -50,7 +50,7 @@ function serializeNodeList(nodes, indent, treeAdapter) {
             let childrenIndent = indent + 2;
             const serializedAttrs = [];
 
-            treeAdapter.getAttrList(node).forEach((attr) => {
+            for (const attr of treeAdapter.getAttrList(node)) {
                 let attrStr = getSerializedTreeIndent(childrenIndent);
 
                 if (attr.prefix) {
@@ -60,7 +60,7 @@ function serializeNodeList(nodes, indent, treeAdapter) {
                 attrStr += `${attr.name}="${attr.value}"\n`;
 
                 serializedAttrs.push(attrStr);
-            });
+            }
 
             str += serializedAttrs.sort().join('');
 
@@ -72,7 +72,7 @@ function serializeNodeList(nodes, indent, treeAdapter) {
 
             str += serializeNodeList(treeAdapter.getChildNodes(node), childrenIndent, treeAdapter);
         }
-    });
+    }
 
     return str;
 }

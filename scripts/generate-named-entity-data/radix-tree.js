@@ -19,9 +19,9 @@ export class RadixTree {
     }
 
     static _decoupleSurrogatePair(cp) {
-        cp -= 0x10000;
+        cp -= 0x1_00_00;
 
-        return [((cp >>> 10) & 0x3ff) | 0xd800, 0xdc00 | (cp & 0x3ff)];
+        return [((cp >>> 10) & 0x3_ff) | 0xd8_00, 0xdc_00 | (cp & 0x3_ff)];
     }
 
     // Before:
@@ -40,7 +40,7 @@ export class RadixTree {
     static _appendNewDataBranch(node, key, filter, data) {
         const newNode = new Node(data);
 
-        if (filter.length) {
+        if (filter.length > 0) {
             node.addEdge(key, filter, newNode);
         } else {
             node.addNode(key, newNode);
@@ -63,7 +63,7 @@ export class RadixTree {
     static _shortenEdgeAndAddNewNode(edge, newFilter, data) {
         const newNode = new Node(data);
 
-        if (newFilter.length) {
+        if (newFilter.length > 0) {
             edge.filter = newFilter;
             edge.node = newNode;
         } else {
@@ -91,7 +91,7 @@ export class RadixTree {
     //
     //
     static _branchEdgeWithNewData(edge, commonPrefix, newDataKey, oldNodeKey, newDataSuffix, oldNodeSuffix, data) {
-        const node = edge.node;
+        const { node } = edge;
         const newDataNode = new Node(data);
         const branchNode = RadixTree._shortenEdgeAndAddNewNode(edge, commonPrefix, null);
 
@@ -113,7 +113,7 @@ export class RadixTree {
     //
     //
     static _splitEdgeWithNewData(edge, commonPrefix, oldNodeKey, oldNodeSuffix, data) {
-        const node = edge.node;
+        const { node } = edge;
         const splitNode = RadixTree._shortenEdgeAndAddNewNode(edge, commonPrefix, data);
 
         splitNode.addEdge(oldNodeKey, oldNodeSuffix, node);
@@ -121,7 +121,7 @@ export class RadixTree {
 
     static _tryAddDataIntoEdge(edge, cps, i, data) {
         const commonPrefix = [];
-        const filter = edge.filter;
+        const { filter } = edge;
 
         for (let j = 0; j < filter.length; j++, i++) {
             const filterCp = filter[j];
@@ -156,7 +156,7 @@ export class RadixTree {
     _addEntity(entity, data) {
         const cps = RadixTree._entityToCodePointsArray(entity);
 
-        if (data.length === 1 && data[0] > 0xffff) {
+        if (data.length === 1 && data[0] > 0xff_ff) {
             data = RadixTree._decoupleSurrogatePair(data[0]);
         }
 

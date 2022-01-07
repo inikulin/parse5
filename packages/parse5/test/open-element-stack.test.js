@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import * as HTML from '../lib/common/html.js';
 import { OpenElementStack } from '../lib/parser/open-element-stack.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';

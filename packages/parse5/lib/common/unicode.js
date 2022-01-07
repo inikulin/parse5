@@ -1,8 +1,9 @@
-const UNDEFINED_CODE_POINTS = [
-    0xfffe, 0xffff, 0x1fffe, 0x1ffff, 0x2fffe, 0x2ffff, 0x3fffe, 0x3ffff, 0x4fffe, 0x4ffff, 0x5fffe, 0x5ffff, 0x6fffe,
-    0x6ffff, 0x7fffe, 0x7ffff, 0x8fffe, 0x8ffff, 0x9fffe, 0x9ffff, 0xafffe, 0xaffff, 0xbfffe, 0xbffff, 0xcfffe, 0xcffff,
-    0xdfffe, 0xdffff, 0xefffe, 0xeffff, 0xffffe, 0xfffff, 0x10fffe, 0x10ffff,
-];
+const UNDEFINED_CODE_POINTS = new Set([
+    0xff_fe, 0xff_ff, 0x1_ff_fe, 0x1_ff_ff, 0x2_ff_fe, 0x2_ff_ff, 0x3_ff_fe, 0x3_ff_ff, 0x4_ff_fe, 0x4_ff_ff, 0x5_ff_fe,
+    0x5_ff_ff, 0x6_ff_fe, 0x6_ff_ff, 0x7_ff_fe, 0x7_ff_ff, 0x8_ff_fe, 0x8_ff_ff, 0x9_ff_fe, 0x9_ff_ff, 0xa_ff_fe,
+    0xa_ff_ff, 0xb_ff_fe, 0xb_ff_ff, 0xc_ff_fe, 0xc_ff_ff, 0xd_ff_fe, 0xd_ff_ff, 0xe_ff_fe, 0xe_ff_ff, 0xf_ff_fe,
+    0xf_ff_ff, 0x10_ff_fe, 0x10_ff_ff,
+]);
 
 export const REPLACEMENT_CHARACTER = '\uFFFD';
 
@@ -38,7 +39,7 @@ export const CODE_POINTS = {
     LATIN_SMALL_F: 0x66,
     LATIN_SMALL_X: 0x78,
     LATIN_SMALL_Z: 0x7a,
-    REPLACEMENT_CHARACTER: 0xfffd,
+    REPLACEMENT_CHARACTER: 0xff_fd,
 };
 
 export const CODE_POINT_SEQUENCES = {
@@ -52,15 +53,15 @@ export const CODE_POINT_SEQUENCES = {
 
 //Surrogates
 export function isSurrogate(cp) {
-    return cp >= 0xd800 && cp <= 0xdfff;
+    return cp >= 0xd8_00 && cp <= 0xdf_ff;
 }
 
 export function isSurrogatePair(cp) {
-    return cp >= 0xdc00 && cp <= 0xdfff;
+    return cp >= 0xdc_00 && cp <= 0xdf_ff;
 }
 
 export function getSurrogatePairCodePoint(cp1, cp2) {
-    return (cp1 - 0xd800) * 0x400 + 0x2400 + cp2;
+    return (cp1 - 0xd8_00) * 0x4_00 + 0x24_00 + cp2;
 }
 
 //NOTE: excluding NULL and ASCII whitespace
@@ -72,5 +73,5 @@ export function isControlCodePoint(cp) {
 }
 
 export function isUndefinedCodePoint(cp) {
-    return (cp >= 0xfdd0 && cp <= 0xfdef) || UNDEFINED_CODE_POINTS.indexOf(cp) > -1;
+    return (cp >= 0xfd_d0 && cp <= 0xfd_ef) || UNDEFINED_CODE_POINTS.has(cp);
 }

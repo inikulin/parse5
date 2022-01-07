@@ -1,4 +1,4 @@
-import { Writable } from 'stream';
+import { Writable } from 'node:stream';
 import { Parser } from 'parse5/lib/parser/index.js';
 
 export class ParserStream extends Writable {
@@ -48,7 +48,7 @@ export class ParserStream extends Writable {
             throw new Error('Parser was already resumed');
         }
 
-        while (this.pendingHtmlInsertions.length) {
+        while (this.pendingHtmlInsertions.length > 0) {
             const html = this.pendingHtmlInsertions.pop();
 
             this.parser.tokenizer.insertHtmlAtCurrentPos(html);

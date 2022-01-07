@@ -9,37 +9,37 @@ const $$ = unicode.CODE_POINT_SEQUENCES;
 
 //C1 Unicode control character reference replacements
 const C1_CONTROLS_REFERENCE_REPLACEMENTS = {
-    0x80: 0x20ac,
-    0x82: 0x201a,
-    0x83: 0x0192,
-    0x84: 0x201e,
-    0x85: 0x2026,
-    0x86: 0x2020,
-    0x87: 0x2021,
-    0x88: 0x02c6,
-    0x89: 0x2030,
-    0x8a: 0x0160,
-    0x8b: 0x2039,
-    0x8c: 0x0152,
-    0x8e: 0x017d,
-    0x91: 0x2018,
-    0x92: 0x2019,
-    0x93: 0x201c,
-    0x94: 0x201d,
-    0x95: 0x2022,
-    0x96: 0x2013,
-    0x97: 0x2014,
-    0x98: 0x02dc,
-    0x99: 0x2122,
-    0x9a: 0x0161,
-    0x9b: 0x203a,
-    0x9c: 0x0153,
-    0x9e: 0x017e,
-    0x9f: 0x0178,
+    0x80: 0x20_ac,
+    0x82: 0x20_1a,
+    0x83: 0x01_92,
+    0x84: 0x20_1e,
+    0x85: 0x20_26,
+    0x86: 0x20_20,
+    0x87: 0x20_21,
+    0x88: 0x02_c6,
+    0x89: 0x20_30,
+    0x8a: 0x01_60,
+    0x8b: 0x20_39,
+    0x8c: 0x01_52,
+    0x8e: 0x01_7d,
+    0x91: 0x20_18,
+    0x92: 0x20_19,
+    0x93: 0x20_1c,
+    0x94: 0x20_1d,
+    0x95: 0x20_22,
+    0x96: 0x20_13,
+    0x97: 0x20_14,
+    0x98: 0x02_dc,
+    0x99: 0x21_22,
+    0x9a: 0x01_61,
+    0x9b: 0x20_3a,
+    0x9c: 0x01_53,
+    0x9e: 0x01_7e,
+    0x9f: 0x01_78,
 };
 
 // Named entity tree flags
-const HAS_DATA_FLAG = 1 << 0;
+const HAS_DATA_FLAG = Math.trunc(1);
 const DATA_DUPLET_FLAG = 1 << 1;
 const HAS_BRANCHES_FLAG = 1 << 2;
 const MAX_BRANCH_MARKER_VALUE = HAS_DATA_FLAG | DATA_DUPLET_FLAG | HAS_BRANCHES_FLAG;
@@ -168,19 +168,19 @@ function isAsciiHexDigit(cp) {
 }
 
 function toAsciiLowerCodePoint(cp) {
-    return cp + 0x0020;
+    return cp + 0x00_20;
 }
 
 //NOTE: String.fromCharCode() function can handle only characters from BMP subset.
 //So, we need to workaround this manually.
 //(see: https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String/fromCharCode#Getting_it_to_work_with_higher_values)
 function toChar(cp) {
-    if (cp <= 0xffff) {
+    if (cp <= 0xff_ff) {
         return String.fromCharCode(cp);
     }
 
-    cp -= 0x10000;
-    return String.fromCharCode(((cp >>> 10) & 0x3ff) | 0xd800) + String.fromCharCode(0xdc00 | (cp & 0x3ff));
+    cp -= 0x1_00_00;
+    return String.fromCharCode(((cp >>> 10) & 0x3_ff) | 0xd8_00) + String.fromCharCode(0xdc_00 | (cp & 0x3_ff));
 }
 
 function toAsciiLowerChar(cp) {
@@ -245,7 +245,7 @@ export class Tokenizer {
 
     //API
     getNextToken() {
-        while (!this.tokenQueue.length && this.active) {
+        while (this.tokenQueue.length === 0 && this.active) {
             this.consumedAfterSnapshot = 0;
 
             const cp = this._consume();
@@ -390,7 +390,7 @@ export class Tokenizer {
 
     _createCharacterToken(type, ch) {
         this.currentCharacterToken = {
-            type: type,
+            type,
             chars: ch,
         };
     }
@@ -585,18 +585,32 @@ export class Tokenizer {
     [DATA_STATE](cp) {
         this.preprocessor.dropParsedChunk();
 
-        if (cp === $.LESS_THAN_SIGN) {
-            this.state = TAG_OPEN_STATE;
-        } else if (cp === $.AMPERSAND) {
-            this.returnState = DATA_STATE;
-            this.state = CHARACTER_REFERENCE_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._emitCodePoint(cp);
-        } else if (cp === $.EOF) {
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.LESS_THAN_SIGN: {
+                this.state = TAG_OPEN_STATE;
+
+                break;
+            }
+            case $.AMPERSAND: {
+                this.returnState = DATA_STATE;
+                this.state = CHARACTER_REFERENCE_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this._emitCodePoint(cp);
+
+                break;
+            }
+            case $.EOF: {
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -605,18 +619,32 @@ export class Tokenizer {
     [RCDATA_STATE](cp) {
         this.preprocessor.dropParsedChunk();
 
-        if (cp === $.AMPERSAND) {
-            this.returnState = RCDATA_STATE;
-            this.state = CHARACTER_REFERENCE_STATE;
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.state = RCDATA_LESS_THAN_SIGN_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.AMPERSAND: {
+                this.returnState = RCDATA_STATE;
+                this.state = CHARACTER_REFERENCE_STATE;
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.state = RCDATA_LESS_THAN_SIGN_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -625,15 +653,26 @@ export class Tokenizer {
     [RAWTEXT_STATE](cp) {
         this.preprocessor.dropParsedChunk();
 
-        if (cp === $.LESS_THAN_SIGN) {
-            this.state = RAWTEXT_LESS_THAN_SIGN_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.LESS_THAN_SIGN: {
+                this.state = RAWTEXT_LESS_THAN_SIGN_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -642,15 +681,26 @@ export class Tokenizer {
     [SCRIPT_DATA_STATE](cp) {
         this.preprocessor.dropParsedChunk();
 
-        if (cp === $.LESS_THAN_SIGN) {
-            this.state = SCRIPT_DATA_LESS_THAN_SIGN_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.LESS_THAN_SIGN: {
+                this.state = SCRIPT_DATA_LESS_THAN_SIGN_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -935,63 +985,108 @@ export class Tokenizer {
     // Script data escaped state
     //------------------------------------------------------------------
     [SCRIPT_DATA_ESCAPED_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = SCRIPT_DATA_ESCAPED_DASH_STATE;
-            this._emitChars('-');
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.state = SCRIPT_DATA_ESCAPED_LESS_THAN_SIGN_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInScriptHtmlCommentLikeText);
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = SCRIPT_DATA_ESCAPED_DASH_STATE;
+                this._emitChars('-');
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.state = SCRIPT_DATA_ESCAPED_LESS_THAN_SIGN_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInScriptHtmlCommentLikeText);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
     // Script data escaped dash state
     //------------------------------------------------------------------
     [SCRIPT_DATA_ESCAPED_DASH_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = SCRIPT_DATA_ESCAPED_DASH_DASH_STATE;
-            this._emitChars('-');
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.state = SCRIPT_DATA_ESCAPED_LESS_THAN_SIGN_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.state = SCRIPT_DATA_ESCAPED_STATE;
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInScriptHtmlCommentLikeText);
-            this._emitEOFToken();
-        } else {
-            this.state = SCRIPT_DATA_ESCAPED_STATE;
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = SCRIPT_DATA_ESCAPED_DASH_DASH_STATE;
+                this._emitChars('-');
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.state = SCRIPT_DATA_ESCAPED_LESS_THAN_SIGN_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.state = SCRIPT_DATA_ESCAPED_STATE;
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInScriptHtmlCommentLikeText);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.state = SCRIPT_DATA_ESCAPED_STATE;
+                this._emitCodePoint(cp);
+            }
         }
     }
 
     // Script data escaped dash dash state
     //------------------------------------------------------------------
     [SCRIPT_DATA_ESCAPED_DASH_DASH_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this._emitChars('-');
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.state = SCRIPT_DATA_ESCAPED_LESS_THAN_SIGN_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this.state = SCRIPT_DATA_STATE;
-            this._emitChars('>');
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.state = SCRIPT_DATA_ESCAPED_STATE;
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInScriptHtmlCommentLikeText);
-            this._emitEOFToken();
-        } else {
-            this.state = SCRIPT_DATA_ESCAPED_STATE;
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this._emitChars('-');
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.state = SCRIPT_DATA_ESCAPED_LESS_THAN_SIGN_STATE;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this.state = SCRIPT_DATA_STATE;
+                this._emitChars('>');
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.state = SCRIPT_DATA_ESCAPED_STATE;
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInScriptHtmlCommentLikeText);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.state = SCRIPT_DATA_ESCAPED_STATE;
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -1079,66 +1174,111 @@ export class Tokenizer {
     // Script data double escaped state
     //------------------------------------------------------------------
     [SCRIPT_DATA_DOUBLE_ESCAPED_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_DASH_STATE;
-            this._emitChars('-');
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_LESS_THAN_SIGN_STATE;
-            this._emitChars('<');
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInScriptHtmlCommentLikeText);
-            this._emitEOFToken();
-        } else {
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_DASH_STATE;
+                this._emitChars('-');
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_LESS_THAN_SIGN_STATE;
+                this._emitChars('<');
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInScriptHtmlCommentLikeText);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._emitCodePoint(cp);
+            }
         }
     }
 
     // Script data double escaped dash state
     //------------------------------------------------------------------
     [SCRIPT_DATA_DOUBLE_ESCAPED_DASH_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_DASH_DASH_STATE;
-            this._emitChars('-');
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_LESS_THAN_SIGN_STATE;
-            this._emitChars('<');
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInScriptHtmlCommentLikeText);
-            this._emitEOFToken();
-        } else {
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_DASH_DASH_STATE;
+                this._emitChars('-');
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_LESS_THAN_SIGN_STATE;
+                this._emitChars('<');
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInScriptHtmlCommentLikeText);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
+                this._emitCodePoint(cp);
+            }
         }
     }
 
     // Script data double escaped dash dash state
     //------------------------------------------------------------------
     [SCRIPT_DATA_DOUBLE_ESCAPED_DASH_DASH_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this._emitChars('-');
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_LESS_THAN_SIGN_STATE;
-            this._emitChars('<');
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this.state = SCRIPT_DATA_STATE;
-            this._emitChars('>');
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
-            this._emitChars(unicode.REPLACEMENT_CHARACTER);
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInScriptHtmlCommentLikeText);
-            this._emitEOFToken();
-        } else {
-            this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
-            this._emitCodePoint(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this._emitChars('-');
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_LESS_THAN_SIGN_STATE;
+                this._emitChars('<');
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this.state = SCRIPT_DATA_STATE;
+                this._emitChars('>');
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
+                this._emitChars(unicode.REPLACEMENT_CHARACTER);
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInScriptHtmlCommentLikeText);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.state = SCRIPT_DATA_DOUBLE_ESCAPED_STATE;
+                this._emitCodePoint(cp);
+            }
         }
     }
 
@@ -1221,19 +1361,33 @@ export class Tokenizer {
             return;
         }
 
-        if (cp === $.SOLIDUS) {
-            this.state = SELF_CLOSING_START_TAG_STATE;
-        } else if (cp === $.EQUALS_SIGN) {
-            this.state = BEFORE_ATTRIBUTE_VALUE_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInTag);
-            this._emitEOFToken();
-        } else {
-            this._createAttr('');
-            this._reconsumeInState(ATTRIBUTE_NAME_STATE);
+        switch (cp) {
+            case $.SOLIDUS: {
+                this.state = SELF_CLOSING_START_TAG_STATE;
+
+                break;
+            }
+            case $.EQUALS_SIGN: {
+                this.state = BEFORE_ATTRIBUTE_VALUE_STATE;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInTag);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._createAttr('');
+                this._reconsumeInState(ATTRIBUTE_NAME_STATE);
+            }
         }
     }
 
@@ -1244,54 +1398,93 @@ export class Tokenizer {
             return;
         }
 
-        if (cp === $.QUOTATION_MARK) {
-            this.state = ATTRIBUTE_VALUE_DOUBLE_QUOTED_STATE;
-        } else if (cp === $.APOSTROPHE) {
-            this.state = ATTRIBUTE_VALUE_SINGLE_QUOTED_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.missingAttributeValue);
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else {
-            this._reconsumeInState(ATTRIBUTE_VALUE_UNQUOTED_STATE);
+        switch (cp) {
+            case $.QUOTATION_MARK: {
+                this.state = ATTRIBUTE_VALUE_DOUBLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.APOSTROPHE: {
+                this.state = ATTRIBUTE_VALUE_SINGLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.missingAttributeValue);
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            default: {
+                this._reconsumeInState(ATTRIBUTE_VALUE_UNQUOTED_STATE);
+            }
         }
     }
 
     // Attribute value (double-quoted) state
     //------------------------------------------------------------------
     [ATTRIBUTE_VALUE_DOUBLE_QUOTED_STATE](cp) {
-        if (cp === $.QUOTATION_MARK) {
-            this.state = AFTER_ATTRIBUTE_VALUE_QUOTED_STATE;
-        } else if (cp === $.AMPERSAND) {
-            this.returnState = ATTRIBUTE_VALUE_DOUBLE_QUOTED_STATE;
-            this.state = CHARACTER_REFERENCE_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentAttr.value += unicode.REPLACEMENT_CHARACTER;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInTag);
-            this._emitEOFToken();
-        } else {
-            this.currentAttr.value += toChar(cp);
+        switch (cp) {
+            case $.QUOTATION_MARK: {
+                this.state = AFTER_ATTRIBUTE_VALUE_QUOTED_STATE;
+
+                break;
+            }
+            case $.AMPERSAND: {
+                this.returnState = ATTRIBUTE_VALUE_DOUBLE_QUOTED_STATE;
+                this.state = CHARACTER_REFERENCE_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentAttr.value += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInTag);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentAttr.value += toChar(cp);
+            }
         }
     }
 
     // Attribute value (single-quoted) state
     //------------------------------------------------------------------
     [ATTRIBUTE_VALUE_SINGLE_QUOTED_STATE](cp) {
-        if (cp === $.APOSTROPHE) {
-            this.state = AFTER_ATTRIBUTE_VALUE_QUOTED_STATE;
-        } else if (cp === $.AMPERSAND) {
-            this.returnState = ATTRIBUTE_VALUE_SINGLE_QUOTED_STATE;
-            this.state = CHARACTER_REFERENCE_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentAttr.value += unicode.REPLACEMENT_CHARACTER;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInTag);
-            this._emitEOFToken();
-        } else {
-            this.currentAttr.value += toChar(cp);
+        switch (cp) {
+            case $.APOSTROPHE: {
+                this.state = AFTER_ATTRIBUTE_VALUE_QUOTED_STATE;
+
+                break;
+            }
+            case $.AMPERSAND: {
+                this.returnState = ATTRIBUTE_VALUE_SINGLE_QUOTED_STATE;
+                this.state = CHARACTER_REFERENCE_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentAttr.value += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInTag);
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentAttr.value += toChar(cp);
+            }
         }
     }
 
@@ -1300,29 +1493,46 @@ export class Tokenizer {
     [ATTRIBUTE_VALUE_UNQUOTED_STATE](cp) {
         if (isWhitespace(cp)) {
             this._leaveAttrValue(BEFORE_ATTRIBUTE_NAME_STATE);
-        } else if (cp === $.AMPERSAND) {
-            this.returnState = ATTRIBUTE_VALUE_UNQUOTED_STATE;
-            this.state = CHARACTER_REFERENCE_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._leaveAttrValue(DATA_STATE);
-            this._emitCurrentToken();
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentAttr.value += unicode.REPLACEMENT_CHARACTER;
-        } else if (
-            cp === $.QUOTATION_MARK ||
-            cp === $.APOSTROPHE ||
-            cp === $.LESS_THAN_SIGN ||
-            cp === $.EQUALS_SIGN ||
-            cp === $.GRAVE_ACCENT
-        ) {
-            this._err(ERR.unexpectedCharacterInUnquotedAttributeValue);
-            this.currentAttr.value += toChar(cp);
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInTag);
-            this._emitEOFToken();
         } else {
-            this.currentAttr.value += toChar(cp);
+            switch (cp) {
+                case $.AMPERSAND: {
+                    this.returnState = ATTRIBUTE_VALUE_UNQUOTED_STATE;
+                    this.state = CHARACTER_REFERENCE_STATE;
+
+                    break;
+                }
+                case $.GREATER_THAN_SIGN: {
+                    this._leaveAttrValue(DATA_STATE);
+                    this._emitCurrentToken();
+
+                    break;
+                }
+                case $.NULL: {
+                    this._err(ERR.unexpectedNullCharacter);
+                    this.currentAttr.value += unicode.REPLACEMENT_CHARACTER;
+
+                    break;
+                }
+                case $.QUOTATION_MARK:
+                case $.APOSTROPHE:
+                case $.LESS_THAN_SIGN:
+                case $.EQUALS_SIGN:
+                case $.GRAVE_ACCENT: {
+                    this._err(ERR.unexpectedCharacterInUnquotedAttributeValue);
+                    this.currentAttr.value += toChar(cp);
+
+                    break;
+                }
+                case $.EOF: {
+                    this._err(ERR.eofInTag);
+                    this._emitEOFToken();
+
+                    break;
+                }
+                default: {
+                    this.currentAttr.value += toChar(cp);
+                }
+            }
         }
     }
 
@@ -1331,17 +1541,30 @@ export class Tokenizer {
     [AFTER_ATTRIBUTE_VALUE_QUOTED_STATE](cp) {
         if (isWhitespace(cp)) {
             this._leaveAttrValue(BEFORE_ATTRIBUTE_NAME_STATE);
-        } else if (cp === $.SOLIDUS) {
-            this._leaveAttrValue(SELF_CLOSING_START_TAG_STATE);
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._leaveAttrValue(DATA_STATE);
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInTag);
-            this._emitEOFToken();
         } else {
-            this._err(ERR.missingWhitespaceBetweenAttributes);
-            this._reconsumeInState(BEFORE_ATTRIBUTE_NAME_STATE);
+            switch (cp) {
+                case $.SOLIDUS: {
+                    this._leaveAttrValue(SELF_CLOSING_START_TAG_STATE);
+
+                    break;
+                }
+                case $.GREATER_THAN_SIGN: {
+                    this._leaveAttrValue(DATA_STATE);
+                    this._emitCurrentToken();
+
+                    break;
+                }
+                case $.EOF: {
+                    this._err(ERR.eofInTag);
+                    this._emitEOFToken();
+
+                    break;
+                }
+                default: {
+                    this._err(ERR.missingWhitespaceBetweenAttributes);
+                    this._reconsumeInState(BEFORE_ATTRIBUTE_NAME_STATE);
+                }
+            }
         }
     }
 
@@ -1364,17 +1587,28 @@ export class Tokenizer {
     // Bogus comment state
     //------------------------------------------------------------------
     [BOGUS_COMMENT_STATE](cp) {
-        if (cp === $.GREATER_THAN_SIGN) {
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentToken.data += unicode.REPLACEMENT_CHARACTER;
-        } else {
-            this.currentToken.data += toChar(cp);
+        switch (cp) {
+            case $.GREATER_THAN_SIGN: {
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            case $.EOF: {
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentToken.data += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            default: {
+                this.currentToken.data += toChar(cp);
+            }
         }
     }
 
@@ -1423,39 +1657,64 @@ export class Tokenizer {
     // Comment start dash state
     //------------------------------------------------------------------
     [COMMENT_START_DASH_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = COMMENT_END_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.abruptClosingOfEmptyComment);
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInComment);
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.data += '-';
-            this._reconsumeInState(COMMENT_STATE);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = COMMENT_END_STATE;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.abruptClosingOfEmptyComment);
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInComment);
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.data += '-';
+                this._reconsumeInState(COMMENT_STATE);
+            }
         }
     }
 
     // Comment state
     //------------------------------------------------------------------
     [COMMENT_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this.state = COMMENT_END_DASH_STATE;
-        } else if (cp === $.LESS_THAN_SIGN) {
-            this.currentToken.data += '<';
-            this.state = COMMENT_LESS_THAN_SIGN_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentToken.data += unicode.REPLACEMENT_CHARACTER;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInComment);
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.data += toChar(cp);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.state = COMMENT_END_DASH_STATE;
+
+                break;
+            }
+            case $.LESS_THAN_SIGN: {
+                this.currentToken.data += '<';
+                this.state = COMMENT_LESS_THAN_SIGN_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentToken.data += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInComment);
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.data += toChar(cp);
+            }
         }
     }
 
@@ -1520,40 +1779,65 @@ export class Tokenizer {
     // Comment end state
     //------------------------------------------------------------------
     [COMMENT_END_STATE](cp) {
-        if (cp === $.GREATER_THAN_SIGN) {
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EXCLAMATION_MARK) {
-            this.state = COMMENT_END_BANG_STATE;
-        } else if (cp === $.HYPHEN_MINUS) {
-            this.currentToken.data += '-';
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInComment);
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.data += '--';
-            this._reconsumeInState(COMMENT_STATE);
+        switch (cp) {
+            case $.GREATER_THAN_SIGN: {
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            case $.EXCLAMATION_MARK: {
+                this.state = COMMENT_END_BANG_STATE;
+
+                break;
+            }
+            case $.HYPHEN_MINUS: {
+                this.currentToken.data += '-';
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInComment);
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.data += '--';
+                this._reconsumeInState(COMMENT_STATE);
+            }
         }
     }
 
     // Comment end bang state
     //------------------------------------------------------------------
     [COMMENT_END_BANG_STATE](cp) {
-        if (cp === $.HYPHEN_MINUS) {
-            this.currentToken.data += '--!';
-            this.state = COMMENT_END_DASH_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.incorrectlyClosedComment);
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInComment);
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.data += '--!';
-            this._reconsumeInState(COMMENT_STATE);
+        switch (cp) {
+            case $.HYPHEN_MINUS: {
+                this.currentToken.data += '--!';
+                this.state = COMMENT_END_DASH_STATE;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.incorrectlyClosedComment);
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInComment);
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.data += '--!';
+                this._reconsumeInState(COMMENT_STATE);
+            }
         }
     }
 
@@ -1586,25 +1870,38 @@ export class Tokenizer {
         if (isAsciiUpper(cp)) {
             this._createDoctypeToken(toAsciiLowerChar(cp));
             this.state = DOCTYPE_NAME_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this._createDoctypeToken(unicode.REPLACEMENT_CHARACTER);
-            this.state = DOCTYPE_NAME_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.missingDoctypeName);
-            this._createDoctypeToken(null);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this.state = DATA_STATE;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this._createDoctypeToken(null);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
         } else {
-            this._createDoctypeToken(toChar(cp));
-            this.state = DOCTYPE_NAME_STATE;
+            switch (cp) {
+                case $.NULL: {
+                    this._err(ERR.unexpectedNullCharacter);
+                    this._createDoctypeToken(unicode.REPLACEMENT_CHARACTER);
+                    this.state = DOCTYPE_NAME_STATE;
+
+                    break;
+                }
+                case $.GREATER_THAN_SIGN: {
+                    this._err(ERR.missingDoctypeName);
+                    this._createDoctypeToken(null);
+                    this.currentToken.forceQuirks = true;
+                    this._emitCurrentToken();
+                    this.state = DATA_STATE;
+
+                    break;
+                }
+                case $.EOF: {
+                    this._err(ERR.eofInDoctype);
+                    this._createDoctypeToken(null);
+                    this.currentToken.forceQuirks = true;
+                    this._emitCurrentToken();
+                    this._emitEOFToken();
+
+                    break;
+                }
+                default: {
+                    this._createDoctypeToken(toChar(cp));
+                    this.state = DOCTYPE_NAME_STATE;
+                }
+            }
         }
     }
 
@@ -1665,28 +1962,44 @@ export class Tokenizer {
     [AFTER_DOCTYPE_PUBLIC_KEYWORD_STATE](cp) {
         if (isWhitespace(cp)) {
             this.state = BEFORE_DOCTYPE_PUBLIC_IDENTIFIER_STATE;
-        } else if (cp === $.QUOTATION_MARK) {
-            this._err(ERR.missingWhitespaceAfterDoctypePublicKeyword);
-            this.currentToken.publicId = '';
-            this.state = DOCTYPE_PUBLIC_IDENTIFIER_DOUBLE_QUOTED_STATE;
-        } else if (cp === $.APOSTROPHE) {
-            this._err(ERR.missingWhitespaceAfterDoctypePublicKeyword);
-            this.currentToken.publicId = '';
-            this.state = DOCTYPE_PUBLIC_IDENTIFIER_SINGLE_QUOTED_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.missingDoctypePublicIdentifier);
-            this.currentToken.forceQuirks = true;
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
         } else {
-            this._err(ERR.missingQuoteBeforeDoctypePublicIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+            switch (cp) {
+                case $.QUOTATION_MARK: {
+                    this._err(ERR.missingWhitespaceAfterDoctypePublicKeyword);
+                    this.currentToken.publicId = '';
+                    this.state = DOCTYPE_PUBLIC_IDENTIFIER_DOUBLE_QUOTED_STATE;
+
+                    break;
+                }
+                case $.APOSTROPHE: {
+                    this._err(ERR.missingWhitespaceAfterDoctypePublicKeyword);
+                    this.currentToken.publicId = '';
+                    this.state = DOCTYPE_PUBLIC_IDENTIFIER_SINGLE_QUOTED_STATE;
+
+                    break;
+                }
+                case $.GREATER_THAN_SIGN: {
+                    this._err(ERR.missingDoctypePublicIdentifier);
+                    this.currentToken.forceQuirks = true;
+                    this.state = DATA_STATE;
+                    this._emitCurrentToken();
+
+                    break;
+                }
+                case $.EOF: {
+                    this._err(ERR.eofInDoctype);
+                    this.currentToken.forceQuirks = true;
+                    this._emitCurrentToken();
+                    this._emitEOFToken();
+
+                    break;
+                }
+                default: {
+                    this._err(ERR.missingQuoteBeforeDoctypePublicIdentifier);
+                    this.currentToken.forceQuirks = true;
+                    this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+                }
+            }
         }
     }
 
@@ -1697,72 +2010,114 @@ export class Tokenizer {
             return;
         }
 
-        if (cp === $.QUOTATION_MARK) {
-            this.currentToken.publicId = '';
-            this.state = DOCTYPE_PUBLIC_IDENTIFIER_DOUBLE_QUOTED_STATE;
-        } else if (cp === $.APOSTROPHE) {
-            this.currentToken.publicId = '';
-            this.state = DOCTYPE_PUBLIC_IDENTIFIER_SINGLE_QUOTED_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.missingDoctypePublicIdentifier);
-            this.currentToken.forceQuirks = true;
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this._err(ERR.missingQuoteBeforeDoctypePublicIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+        switch (cp) {
+            case $.QUOTATION_MARK: {
+                this.currentToken.publicId = '';
+                this.state = DOCTYPE_PUBLIC_IDENTIFIER_DOUBLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.APOSTROPHE: {
+                this.currentToken.publicId = '';
+                this.state = DOCTYPE_PUBLIC_IDENTIFIER_SINGLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.missingDoctypePublicIdentifier);
+                this.currentToken.forceQuirks = true;
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInDoctype);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._err(ERR.missingQuoteBeforeDoctypePublicIdentifier);
+                this.currentToken.forceQuirks = true;
+                this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+            }
         }
     }
 
     // DOCTYPE public identifier (double-quoted) state
     //------------------------------------------------------------------
     [DOCTYPE_PUBLIC_IDENTIFIER_DOUBLE_QUOTED_STATE](cp) {
-        if (cp === $.QUOTATION_MARK) {
-            this.state = AFTER_DOCTYPE_PUBLIC_IDENTIFIER_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentToken.publicId += unicode.REPLACEMENT_CHARACTER;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.abruptDoctypePublicIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this.state = DATA_STATE;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.publicId += toChar(cp);
+        switch (cp) {
+            case $.QUOTATION_MARK: {
+                this.state = AFTER_DOCTYPE_PUBLIC_IDENTIFIER_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentToken.publicId += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.abruptDoctypePublicIdentifier);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this.state = DATA_STATE;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInDoctype);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.publicId += toChar(cp);
+            }
         }
     }
 
     // DOCTYPE public identifier (single-quoted) state
     //------------------------------------------------------------------
     [DOCTYPE_PUBLIC_IDENTIFIER_SINGLE_QUOTED_STATE](cp) {
-        if (cp === $.APOSTROPHE) {
-            this.state = AFTER_DOCTYPE_PUBLIC_IDENTIFIER_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentToken.publicId += unicode.REPLACEMENT_CHARACTER;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.abruptDoctypePublicIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this.state = DATA_STATE;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.publicId += toChar(cp);
+        switch (cp) {
+            case $.APOSTROPHE: {
+                this.state = AFTER_DOCTYPE_PUBLIC_IDENTIFIER_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentToken.publicId += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.abruptDoctypePublicIdentifier);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this.state = DATA_STATE;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInDoctype);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.publicId += toChar(cp);
+            }
         }
     }
 
@@ -1771,26 +2126,42 @@ export class Tokenizer {
     [AFTER_DOCTYPE_PUBLIC_IDENTIFIER_STATE](cp) {
         if (isWhitespace(cp)) {
             this.state = BETWEEN_DOCTYPE_PUBLIC_AND_SYSTEM_IDENTIFIERS_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.QUOTATION_MARK) {
-            this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSystemIdentifiers);
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
-        } else if (cp === $.APOSTROPHE) {
-            this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSystemIdentifiers);
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
         } else {
-            this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+            switch (cp) {
+                case $.GREATER_THAN_SIGN: {
+                    this.state = DATA_STATE;
+                    this._emitCurrentToken();
+
+                    break;
+                }
+                case $.QUOTATION_MARK: {
+                    this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSystemIdentifiers);
+                    this.currentToken.systemId = '';
+                    this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
+
+                    break;
+                }
+                case $.APOSTROPHE: {
+                    this._err(ERR.missingWhitespaceBetweenDoctypePublicAndSystemIdentifiers);
+                    this.currentToken.systemId = '';
+                    this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
+
+                    break;
+                }
+                case $.EOF: {
+                    this._err(ERR.eofInDoctype);
+                    this.currentToken.forceQuirks = true;
+                    this._emitCurrentToken();
+                    this._emitEOFToken();
+
+                    break;
+                }
+                default: {
+                    this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
+                    this.currentToken.forceQuirks = true;
+                    this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+                }
+            }
         }
     }
 
@@ -1801,24 +2172,38 @@ export class Tokenizer {
             return;
         }
 
-        if (cp === $.GREATER_THAN_SIGN) {
-            this._emitCurrentToken();
-            this.state = DATA_STATE;
-        } else if (cp === $.QUOTATION_MARK) {
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
-        } else if (cp === $.APOSTROPHE) {
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+        switch (cp) {
+            case $.GREATER_THAN_SIGN: {
+                this._emitCurrentToken();
+                this.state = DATA_STATE;
+
+                break;
+            }
+            case $.QUOTATION_MARK: {
+                this.currentToken.systemId = '';
+                this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.APOSTROPHE: {
+                this.currentToken.systemId = '';
+                this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInDoctype);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
+                this.currentToken.forceQuirks = true;
+                this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+            }
         }
     }
 
@@ -1827,28 +2212,44 @@ export class Tokenizer {
     [AFTER_DOCTYPE_SYSTEM_KEYWORD_STATE](cp) {
         if (isWhitespace(cp)) {
             this.state = BEFORE_DOCTYPE_SYSTEM_IDENTIFIER_STATE;
-        } else if (cp === $.QUOTATION_MARK) {
-            this._err(ERR.missingWhitespaceAfterDoctypeSystemKeyword);
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
-        } else if (cp === $.APOSTROPHE) {
-            this._err(ERR.missingWhitespaceAfterDoctypeSystemKeyword);
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.missingDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
         } else {
-            this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+            switch (cp) {
+                case $.QUOTATION_MARK: {
+                    this._err(ERR.missingWhitespaceAfterDoctypeSystemKeyword);
+                    this.currentToken.systemId = '';
+                    this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
+
+                    break;
+                }
+                case $.APOSTROPHE: {
+                    this._err(ERR.missingWhitespaceAfterDoctypeSystemKeyword);
+                    this.currentToken.systemId = '';
+                    this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
+
+                    break;
+                }
+                case $.GREATER_THAN_SIGN: {
+                    this._err(ERR.missingDoctypeSystemIdentifier);
+                    this.currentToken.forceQuirks = true;
+                    this.state = DATA_STATE;
+                    this._emitCurrentToken();
+
+                    break;
+                }
+                case $.EOF: {
+                    this._err(ERR.eofInDoctype);
+                    this.currentToken.forceQuirks = true;
+                    this._emitCurrentToken();
+                    this._emitEOFToken();
+
+                    break;
+                }
+                default: {
+                    this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
+                    this.currentToken.forceQuirks = true;
+                    this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+                }
+            }
         }
     }
 
@@ -1859,72 +2260,114 @@ export class Tokenizer {
             return;
         }
 
-        if (cp === $.QUOTATION_MARK) {
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
-        } else if (cp === $.APOSTROPHE) {
-            this.currentToken.systemId = '';
-            this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.missingDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this.state = DATA_STATE;
-            this._emitCurrentToken();
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+        switch (cp) {
+            case $.QUOTATION_MARK: {
+                this.currentToken.systemId = '';
+                this.state = DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.APOSTROPHE: {
+                this.currentToken.systemId = '';
+                this.state = DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.missingDoctypeSystemIdentifier);
+                this.currentToken.forceQuirks = true;
+                this.state = DATA_STATE;
+                this._emitCurrentToken();
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInDoctype);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this._err(ERR.missingQuoteBeforeDoctypeSystemIdentifier);
+                this.currentToken.forceQuirks = true;
+                this._reconsumeInState(BOGUS_DOCTYPE_STATE);
+            }
         }
     }
 
     // DOCTYPE system identifier (double-quoted) state
     //------------------------------------------------------------------
     [DOCTYPE_SYSTEM_IDENTIFIER_DOUBLE_QUOTED_STATE](cp) {
-        if (cp === $.QUOTATION_MARK) {
-            this.state = AFTER_DOCTYPE_SYSTEM_IDENTIFIER_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentToken.systemId += unicode.REPLACEMENT_CHARACTER;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.abruptDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this.state = DATA_STATE;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.systemId += toChar(cp);
+        switch (cp) {
+            case $.QUOTATION_MARK: {
+                this.state = AFTER_DOCTYPE_SYSTEM_IDENTIFIER_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentToken.systemId += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.abruptDoctypeSystemIdentifier);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this.state = DATA_STATE;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInDoctype);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.systemId += toChar(cp);
+            }
         }
     }
 
     // DOCTYPE system identifier (single-quoted) state
     //------------------------------------------------------------------
     [DOCTYPE_SYSTEM_IDENTIFIER_SINGLE_QUOTED_STATE](cp) {
-        if (cp === $.APOSTROPHE) {
-            this.state = AFTER_DOCTYPE_SYSTEM_IDENTIFIER_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-            this.currentToken.systemId += unicode.REPLACEMENT_CHARACTER;
-        } else if (cp === $.GREATER_THAN_SIGN) {
-            this._err(ERR.abruptDoctypeSystemIdentifier);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this.state = DATA_STATE;
-        } else if (cp === $.EOF) {
-            this._err(ERR.eofInDoctype);
-            this.currentToken.forceQuirks = true;
-            this._emitCurrentToken();
-            this._emitEOFToken();
-        } else {
-            this.currentToken.systemId += toChar(cp);
+        switch (cp) {
+            case $.APOSTROPHE: {
+                this.state = AFTER_DOCTYPE_SYSTEM_IDENTIFIER_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+                this.currentToken.systemId += unicode.REPLACEMENT_CHARACTER;
+
+                break;
+            }
+            case $.GREATER_THAN_SIGN: {
+                this._err(ERR.abruptDoctypeSystemIdentifier);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this.state = DATA_STATE;
+
+                break;
+            }
+            case $.EOF: {
+                this._err(ERR.eofInDoctype);
+                this.currentToken.forceQuirks = true;
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default: {
+                this.currentToken.systemId += toChar(cp);
+            }
         }
     }
 
@@ -1952,14 +2395,26 @@ export class Tokenizer {
     // Bogus DOCTYPE state
     //------------------------------------------------------------------
     [BOGUS_DOCTYPE_STATE](cp) {
-        if (cp === $.GREATER_THAN_SIGN) {
-            this._emitCurrentToken();
-            this.state = DATA_STATE;
-        } else if (cp === $.NULL) {
-            this._err(ERR.unexpectedNullCharacter);
-        } else if (cp === $.EOF) {
-            this._emitCurrentToken();
-            this._emitEOFToken();
+        switch (cp) {
+            case $.GREATER_THAN_SIGN: {
+                this._emitCurrentToken();
+                this.state = DATA_STATE;
+
+                break;
+            }
+            case $.NULL: {
+                this._err(ERR.unexpectedNullCharacter);
+
+                break;
+            }
+            case $.EOF: {
+                this._emitCurrentToken();
+                this._emitEOFToken();
+
+                break;
+            }
+            default:
+            // Do nothing
         }
     }
 
@@ -2135,7 +2590,7 @@ export class Tokenizer {
         if (this.charRefCode === $.NULL) {
             this._err(ERR.nullCharacterReference);
             this.charRefCode = $.REPLACEMENT_CHARACTER;
-        } else if (this.charRefCode > 0x10ffff) {
+        } else if (this.charRefCode > 0x10_ff_ff) {
             this._err(ERR.characterReferenceOutsideUnicodeRange);
             this.charRefCode = $.REPLACEMENT_CHARACTER;
         } else if (unicode.isSurrogate(this.charRefCode)) {

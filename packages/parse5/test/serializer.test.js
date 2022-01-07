@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import * as parse5 from '../lib/index.js';
 import { generateSeriliazerTests } from '../../../test/utils/generate-serializer-tests.js';
 import { treeAdapters } from '../../../test/utils/common.js';

@@ -19,7 +19,7 @@ generateParsingTests(
     async (test, opts) => {
         const chunks = makeChunks(test.input);
         const parser = new ParserStream(opts);
-        const document = parser.document;
+        const { document } = parser;
 
         const completionPromise = new Promise((resolve, reject) => {
             parser.once('finish', () => resolve({ node: document }));
@@ -38,8 +38,8 @@ generateParsingTests(
                     eval(script);
                     /* eslint-enable no-eval */
                     resume();
-                } catch (err) {
-                    reject(err);
+                } catch (error) {
+                    reject(error);
                 }
             });
         });
@@ -58,7 +58,7 @@ generateParsingTests(
 
 generateTestsForEachTreeAdapter('ParserStream', (_test, treeAdapter) => {
     _test['Regression - Synchronously calling resume() leads to crash (GH-98)'] = function (done) {
-        const parser = new ParserStream({ treeAdapter: treeAdapter });
+        const parser = new ParserStream({ treeAdapter });
 
         parser.on('script', (el, docWrite, resume) => {
             resume();
@@ -70,7 +70,7 @@ generateTestsForEachTreeAdapter('ParserStream', (_test, treeAdapter) => {
     };
 
     _test['Regression - Parsing loop lock causes accidental hang ups (GH-101)'] = function (done) {
-        const parser = new ParserStream({ treeAdapter: treeAdapter });
+        const parser = new ParserStream({ treeAdapter });
 
         parser.once('finish', () => {
             done();

@@ -9,5 +9,5 @@ async function main() {
 
     const after = process.memoryUsage().rss;
 
-    console.log('Initial memory consumption: ', format(after - before, { unit: 'B' }));
+    console.log('Initial memory consumption:', format(after - before, { unit: 'B' }));
 }

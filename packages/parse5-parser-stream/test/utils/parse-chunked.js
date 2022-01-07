@@ -10,7 +10,7 @@ export function parseChunked(html, opts, minChunkSize, maxChunkSize) {
 
     for (let i = 0; i < chunks.length - 1; i++) {
         if (typeof chunks[i] !== 'string') {
-            throw new TypeError();
+            throw new TypeError('Expected chunk to be a string');
         }
         parserStream.write(chunks[i]);
     }
@@ -19,6 +19,6 @@ export function parseChunked(html, opts, minChunkSize, maxChunkSize) {
 
     return {
         node: parserStream.document,
-        chunks: chunks,
+        chunks,
     };
 }

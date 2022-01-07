@@ -28,8 +28,8 @@ export class LocationInfoTokenizerMixin extends Mixin {
         this.currentAttrLocation.endCol = this.posTracker.col;
         this.currentAttrLocation.endOffset = this.posTracker.offset;
 
-        const currentToken = this.tokenizer.currentToken;
-        const currentAttr = this.tokenizer.currentAttr;
+        const { currentToken } = this.tokenizer;
+        const { currentAttr } = this.tokenizer;
 
         if (!currentToken.location.attrs) {
             currentToken.location.attrs = Object.create(null);
@@ -128,14 +128,14 @@ export class LocationInfoTokenizerMixin extends Mixin {
         };
 
         //NOTE: patch initial states for each mode to obtain token start position
-        Object.keys(Tokenizer.MODE).forEach((modeName) => {
+        for (const modeName of Object.keys(Tokenizer.MODE)) {
             const state = Tokenizer.MODE[modeName];
 
             methods[state] = function (cp) {
                 mxn.ctLoc = mxn._getCurrentLocation();
                 orig[state].call(this, cp);
             };
-        });
+        }
 
         return methods;
     }

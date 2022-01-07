@@ -1,5 +1,5 @@
-import { writeFile } from 'fs';
-import { promisify } from 'util';
+import { writeFile } from 'node:fs';
+import { promisify } from 'node:util';
 import r2 from 'r2';
 import { RadixTree } from './radix-tree.js';
 import { ArrayMappedRadixTree } from './array-mapped-radix-tree.js';

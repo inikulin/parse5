@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { generateLocationInfoParserTests } from '../../../test/utils/generate-location-info-parser-tests.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';
 import { parseChunked } from './utils/parse-chunked.js';
@@ -13,7 +13,7 @@ generateTestsForEachTreeAdapter('location-info', (_test, treeAdapter) => {
         const html = '</head><div class="test"></div></body></html>';
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 

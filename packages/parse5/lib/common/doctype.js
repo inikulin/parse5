@@ -63,22 +63,28 @@ const QUIRKS_MODE_PUBLIC_ID_PREFIXES = [
     '-//webtechs//dtd mozilla html//',
 ];
 
-const QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES = QUIRKS_MODE_PUBLIC_ID_PREFIXES.concat([
+const QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES = [
+    ...QUIRKS_MODE_PUBLIC_ID_PREFIXES,
     '-//w3c//dtd html 4.01 frameset//',
     '-//w3c//dtd html 4.01 transitional//',
-]);
+];
 
-const QUIRKS_MODE_PUBLIC_IDS = ['-//w3o//dtd w3 html strict 3.0//en//', '-/w3c/dtd html 4.0 transitional/en', 'html'];
+const QUIRKS_MODE_PUBLIC_IDS = new Set([
+    '-//w3o//dtd w3 html strict 3.0//en//',
+    '-/w3c/dtd html 4.0 transitional/en',
+    'html',
+]);
 const LIMITED_QUIRKS_PUBLIC_ID_PREFIXES = ['-//w3c//dtd xhtml 1.0 frameset//', '-//w3c//dtd xhtml 1.0 transitional//'];
 
-const LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES = LIMITED_QUIRKS_PUBLIC_ID_PREFIXES.concat([
+const LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES = [
+    ...LIMITED_QUIRKS_PUBLIC_ID_PREFIXES,
     '-//w3c//dtd html 4.01 frameset//',
     '-//w3c//dtd html 4.01 transitional//',
-]);
+];
 
 //Utils
 function enquoteDoctypeId(id) {
-    const quote = id.indexOf('"') !== -1 ? "'" : '"';
+    const quote = id.includes('"') ? "'" : '"';
 
     return quote + id + quote;
 }
@@ -107,18 +113,18 @@ export function getDocumentMode(token) {
         return DOCUMENT_MODE.QUIRKS;
     }
 
-    const systemId = token.systemId;
+    const { systemId } = token;
 
     if (systemId && systemId.toLowerCase() === QUIRKS_MODE_SYSTEM_ID) {
         return DOCUMENT_MODE.QUIRKS;
     }
 
-    let publicId = token.publicId;
+    let { publicId } = token;
 
     if (publicId !== null) {
         publicId = publicId.toLowerCase();
 
-        if (QUIRKS_MODE_PUBLIC_IDS.indexOf(publicId) > -1) {
+        if (QUIRKS_MODE_PUBLIC_IDS.has(publicId)) {
             return DOCUMENT_MODE.QUIRKS;
         }
 
@@ -147,13 +153,13 @@ export function serializeContent(name, publicId, systemId) {
     }
 
     if (publicId) {
-        str += ' PUBLIC ' + enquoteDoctypeId(publicId);
+        str += ` PUBLIC ${enquoteDoctypeId(publicId)}`;
     } else if (systemId) {
         str += ' SYSTEM';
     }
 
     if (systemId !== null) {
-        str += ' ' + enquoteDoctypeId(systemId);
+        str += ` ${enquoteDoctypeId(systemId)}`;
     }
 
     return str;

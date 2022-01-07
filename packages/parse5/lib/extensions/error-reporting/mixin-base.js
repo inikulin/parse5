@@ -16,7 +16,7 @@ export class ErrorReportingMixinBase extends Mixin {
 
     _reportError(code) {
         const err = {
-            code: code,
+            code,
             startLine: -1,
             startCol: -1,
             startOffset: -1,
