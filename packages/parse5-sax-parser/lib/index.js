@@ -1,4 +1,4 @@
-import { Transform } from 'stream';
+import { Transform } from 'node:stream';
 import { Tokenizer } from 'parse5/lib/tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from 'parse5/lib/extensions/location-info/tokenizer-mixin.js';
 import { Mixin } from 'parse5/lib/utils/mixin.js';

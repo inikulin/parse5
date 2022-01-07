@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { normalizeNewLine } from './common.js';
 
 export function loadSAXParserTestData() {
@@ -7,7 +7,7 @@ export function loadSAXParserTestData() {
     const testSetFileDirs = fs.readdirSync(dataDirPath);
     const tests = [];
 
-    testSetFileDirs.forEach((dirName) => {
+    for (const dirName of testSetFileDirs) {
         const srcFilePath = path.join(dataDirPath.pathname, dirName, 'src.html');
         const expectedFilePath = path.join(dataDirPath.pathname, dirName, 'expected.html');
         const src = fs.readFileSync(srcFilePath).toString();
@@ -18,7 +18,7 @@ export function loadSAXParserTestData() {
             src: normalizeNewLine(src),
             expected: normalizeNewLine(expected),
         });
-    });
+    }
 
     return tests;
 }

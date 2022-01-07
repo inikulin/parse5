@@ -19,9 +19,9 @@ export function createDocumentFragment() {
 export function createElement(tagName, namespaceURI, attrs) {
     return {
         nodeName: tagName,
-        tagName: tagName,
-        attrs: attrs,
-        namespaceURI: namespaceURI,
+        tagName,
+        attrs,
+        namespaceURI,
         childNodes: [],
         parentNode: null,
     };
@@ -30,7 +30,7 @@ export function createElement(tagName, namespaceURI, attrs) {
 export function createCommentNode(data) {
     return {
         nodeName: '#comment',
-        data: data,
+        data,
         parentNode: null,
     };
 }
@@ -38,7 +38,7 @@ export function createCommentNode(data) {
 const createTextNode = function (value) {
     return {
         nodeName: '#text',
-        value: value,
+        value,
         parentNode: null,
     };
 };
@@ -81,9 +81,9 @@ export function setDocumentType(document, name, publicId, systemId) {
     } else {
         appendChild(document, {
             nodeName: '#documentType',
-            name: name,
-            publicId: publicId,
-            systemId: systemId,
+            name,
+            publicId,
+            systemId,
         });
     }
 }
@@ -106,7 +106,7 @@ export function detachNode(node) {
 }
 
 export function insertText(parentNode, text) {
-    if (parentNode.childNodes.length) {
+    if (parentNode.childNodes.length > 0) {
         const prevNode = parentNode.childNodes[parentNode.childNodes.length - 1];
 
         if (prevNode.nodeName === '#text') {
@@ -136,7 +136,7 @@ export function adoptAttributes(recipient, attrs) {
     }
 
     for (let j = 0; j < attrs.length; j++) {
-        if (recipientAttrsMap.indexOf(attrs[j].name) === -1) {
+        if (!recipientAttrsMap.includes(attrs[j].name)) {
             recipient.attrs.push(attrs[j]);
         }
     }

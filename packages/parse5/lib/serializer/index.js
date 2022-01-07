@@ -14,7 +14,7 @@ const DEFAULT_OPTIONS = {
 
 //Escaping regexes
 const AMP_REGEX = /&/g;
-const NBSP_REGEX = /\u00a0/g;
+const NBSP_REGEX = /\u00A0/g;
 const DOUBLE_QUOTE_REGEX = /"/g;
 const LT_REGEX = /</g;
 const GT_REGEX = />/g;
@@ -61,7 +61,7 @@ export class Serializer {
         const tn = this.treeAdapter.getTagName(node);
         const ns = this.treeAdapter.getNamespaceURI(node);
 
-        this.html += '<' + tn;
+        this.html += `<${tn}`;
         this._serializeAttributes(node);
         this.html += '>';
 
@@ -89,7 +89,7 @@ export class Serializer {
                 tn === $.TEMPLATE && ns === NS.HTML ? this.treeAdapter.getTemplateContent(node) : node;
 
             this._serializeChildNodes(childNodesHolder);
-            this.html += '</' + tn + '>';
+            this.html += `</${tn}>`;
         }
     }
 
@@ -104,21 +104,34 @@ export class Serializer {
 
             if (!attr.namespace) {
                 this.html += attr.name;
-            } else if (attr.namespace === NS.XML) {
-                this.html += 'xml:' + attr.name;
-            } else if (attr.namespace === NS.XMLNS) {
-                if (attr.name !== 'xmlns') {
-                    this.html += 'xmlns:';
-                }
-
-                this.html += attr.name;
-            } else if (attr.namespace === NS.XLINK) {
-                this.html += 'xlink:' + attr.name;
             } else {
-                this.html += attr.prefix + ':' + attr.name;
+                switch (attr.namespace) {
+                    case NS.XML: {
+                        this.html += `xml:${attr.name}`;
+
+                        break;
+                    }
+                    case NS.XMLNS: {
+                        if (attr.name !== 'xmlns') {
+                            this.html += 'xmlns:';
+                        }
+
+                        this.html += attr.name;
+
+                        break;
+                    }
+                    case NS.XLINK: {
+                        this.html += `xlink:${attr.name}`;
+
+                        break;
+                    }
+                    default: {
+                        this.html += `${attr.prefix}:${attr.name}`;
+                    }
+                }
             }
 
-            this.html += '="' + value + '"';
+            this.html += `="${value}"`;
         }
     }
 
@@ -131,7 +144,7 @@ export class Serializer {
             parentTn = this.treeAdapter.getTagName(parent);
         }
 
-        if (
+        this.html +=
             parentTn === $.STYLE ||
             parentTn === $.SCRIPT ||
             parentTn === $.XMP ||
@@ -140,21 +153,18 @@ export class Serializer {
             parentTn === $.NOFRAMES ||
             parentTn === $.PLAINTEXT ||
             parentTn === $.NOSCRIPT
-        ) {
-            this.html += content;
-        } else {
-            this.html += escapeString(content, false);
-        }
+                ? content
+                : escapeString(content, false);
     }
 
     _serializeCommentNode(node) {
-        this.html += '<!--' + this.treeAdapter.getCommentNodeContent(node) + '-->';
+        this.html += `<!--${this.treeAdapter.getCommentNodeContent(node)}-->`;
     }
 
     _serializeDocumentTypeNode(node) {
         const name = this.treeAdapter.getDocumentTypeNodeName(node);
 
-        this.html += '<' + doctype.serializeContent(name, null, null) + '>';
+        this.html += `<${doctype.serializeContent(name, null, null)}>`;
     }
 }
 
@@ -162,11 +172,9 @@ export class Serializer {
 export function escapeString(str, attrMode) {
     str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
 
-    if (attrMode) {
-        str = str.replace(DOUBLE_QUOTE_REGEX, '&quot;');
-    } else {
-        str = str.replace(LT_REGEX, '&lt;').replace(GT_REGEX, '&gt;');
-    }
+    str = attrMode
+        ? str.replace(DOUBLE_QUOTE_REGEX, '&quot;')
+        : str.replace(LT_REGEX, '&lt;').replace(GT_REGEX, '&gt;');
 
     return str;
 }

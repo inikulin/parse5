@@ -15,7 +15,7 @@ import * as HTML from '../common/html.js';
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
-const ATTRS = HTML.ATTRS;
+const { ATTRS } = HTML;
 
 const DEFAULT_OPTIONS = {
     scriptingEnabled: true,
@@ -509,21 +509,35 @@ export class Parser {
         if (this.treeAdapter.getNamespaceURI(this.fragmentContext) === NS.HTML) {
             const tn = this.treeAdapter.getTagName(this.fragmentContext);
 
-            if (tn === $.TITLE || tn === $.TEXTAREA) {
-                this.tokenizer.state = Tokenizer.MODE.RCDATA;
-            } else if (
-                tn === $.STYLE ||
-                tn === $.XMP ||
-                tn === $.IFRAME ||
-                tn === $.NOEMBED ||
-                tn === $.NOFRAMES ||
-                tn === $.NOSCRIPT
-            ) {
-                this.tokenizer.state = Tokenizer.MODE.RAWTEXT;
-            } else if (tn === $.SCRIPT) {
-                this.tokenizer.state = Tokenizer.MODE.SCRIPT_DATA;
-            } else if (tn === $.PLAINTEXT) {
-                this.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
+            switch (tn) {
+                case $.TITLE:
+                case $.TEXTAREA: {
+                    this.tokenizer.state = Tokenizer.MODE.RCDATA;
+
+                    break;
+                }
+                case $.STYLE:
+                case $.XMP:
+                case $.IFRAME:
+                case $.NOEMBED:
+                case $.NOFRAMES:
+                case $.NOSCRIPT: {
+                    this.tokenizer.state = Tokenizer.MODE.RAWTEXT;
+
+                    break;
+                }
+                case $.SCRIPT: {
+                    this.tokenizer.state = Tokenizer.MODE.SCRIPT_DATA;
+
+                    break;
+                }
+                case $.PLAINTEXT: {
+                    this.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
+
+                    break;
+                }
+                default:
+                // Do nothing
             }
         }
     }
@@ -660,18 +674,39 @@ export class Parser {
     }
 
     _processTokenInForeignContent(token) {
-        if (token.type === Tokenizer.CHARACTER_TOKEN) {
-            characterInForeignContent(this, token);
-        } else if (token.type === Tokenizer.NULL_CHARACTER_TOKEN) {
-            nullCharacterInForeignContent(this, token);
-        } else if (token.type === Tokenizer.WHITESPACE_CHARACTER_TOKEN) {
-            insertCharacters(this, token);
-        } else if (token.type === Tokenizer.COMMENT_TOKEN) {
-            appendComment(this, token);
-        } else if (token.type === Tokenizer.START_TAG_TOKEN) {
-            startTagInForeignContent(this, token);
-        } else if (token.type === Tokenizer.END_TAG_TOKEN) {
-            endTagInForeignContent(this, token);
+        switch (token.type) {
+            case Tokenizer.CHARACTER_TOKEN: {
+                characterInForeignContent(this, token);
+
+                break;
+            }
+            case Tokenizer.NULL_CHARACTER_TOKEN: {
+                nullCharacterInForeignContent(this, token);
+
+                break;
+            }
+            case Tokenizer.WHITESPACE_CHARACTER_TOKEN: {
+                insertCharacters(this, token);
+
+                break;
+            }
+            case Tokenizer.COMMENT_TOKEN: {
+                appendComment(this, token);
+
+                break;
+            }
+            case Tokenizer.START_TAG_TOKEN: {
+                startTagInForeignContent(this, token);
+
+                break;
+            }
+            case Tokenizer.END_TAG_TOKEN: {
+                endTagInForeignContent(this, token);
+
+                break;
+            }
+            default:
+            // Do nothing
         }
     }
 
@@ -760,6 +795,7 @@ export class Parser {
             } else if (!last && tn === $.HEAD) {
                 this.insertionMode = IN_HEAD_MODE;
                 break;
+                // eslint-disable-next-line unicorn/prefer-switch
             } else if (tn === $.SELECT) {
                 this._resetInsertionModeForSelect(i);
                 break;
@@ -991,7 +1027,7 @@ function aaInsertLastNodeInCommonAncestor(p, commonAncestor, lastElement) {
 //Steps 15-19 of the algorithm
 function aaReplaceFormattingElement(p, furthestBlock, formattingElementEntry) {
     const ns = p.treeAdapter.getNamespaceURI(formattingElementEntry.element);
-    const token = formattingElementEntry.token;
+    const { token } = formattingElementEntry;
     const newElement = p.treeAdapter.createElement(token.tagName, ns, token.attrs);
 
     p._adoptNodes(furthestBlock, newElement);
@@ -1148,62 +1184,106 @@ function tokenBeforeHead(p, token) {
 function startTagInHead(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.BASE || tn === $.BASEFONT || tn === $.BGSOUND || tn === $.LINK || tn === $.META) {
-        p._appendElement(token, NS.HTML);
-        token.ackSelfClosing = true;
-    } else if (tn === $.TITLE) {
-        p._switchToTextParsing(token, Tokenizer.MODE.RCDATA);
-    } else if (tn === $.NOSCRIPT) {
-        if (p.options.scriptingEnabled) {
-            p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
-        } else {
-            p._insertElement(token, NS.HTML);
-            p.insertionMode = IN_HEAD_NO_SCRIPT_MODE;
+    switch (tn) {
+        case $.HTML: {
+            startTagInBody(p, token);
+
+            break;
         }
-    } else if (tn === $.NOFRAMES || tn === $.STYLE) {
-        p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
-    } else if (tn === $.SCRIPT) {
-        p._switchToTextParsing(token, Tokenizer.MODE.SCRIPT_DATA);
-    } else if (tn === $.TEMPLATE) {
-        p._insertTemplate(token, NS.HTML);
-        p.activeFormattingElements.insertMarker();
-        p.framesetOk = false;
-        p.insertionMode = IN_TEMPLATE_MODE;
-        p._pushTmplInsertionMode(IN_TEMPLATE_MODE);
-    } else if (tn === $.HEAD) {
-        p._err(ERR.misplacedStartTagForHeadElement);
-    } else {
-        tokenInHead(p, token);
+        case $.BASE:
+        case $.BASEFONT:
+        case $.BGSOUND:
+        case $.LINK:
+        case $.META: {
+            p._appendElement(token, NS.HTML);
+            token.ackSelfClosing = true;
+
+            break;
+        }
+        case $.TITLE: {
+            p._switchToTextParsing(token, Tokenizer.MODE.RCDATA);
+
+            break;
+        }
+        case $.NOSCRIPT: {
+            if (p.options.scriptingEnabled) {
+                p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
+            } else {
+                p._insertElement(token, NS.HTML);
+                p.insertionMode = IN_HEAD_NO_SCRIPT_MODE;
+            }
+
+            break;
+        }
+        case $.NOFRAMES:
+        case $.STYLE: {
+            p._switchToTextParsing(token, Tokenizer.MODE.RAWTEXT);
+
+            break;
+        }
+        case $.SCRIPT: {
+            p._switchToTextParsing(token, Tokenizer.MODE.SCRIPT_DATA);
+
+            break;
+        }
+        case $.TEMPLATE: {
+            p._insertTemplate(token, NS.HTML);
+            p.activeFormattingElements.insertMarker();
+            p.framesetOk = false;
+            p.insertionMode = IN_TEMPLATE_MODE;
+            p._pushTmplInsertionMode(IN_TEMPLATE_MODE);
+
+            break;
+        }
+        case $.HEAD: {
+            p._err(ERR.misplacedStartTagForHeadElement);
+
+            break;
+        }
+        default: {
+            tokenInHead(p, token);
+        }
     }
 }
 
 function endTagInHead(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.HEAD) {
-        p.openElements.pop();
-        p.insertionMode = AFTER_HEAD_MODE;
-    } else if (tn === $.BODY || tn === $.BR || tn === $.HTML) {
-        tokenInHead(p, token);
-    } else if (tn === $.TEMPLATE) {
-        if (p.openElements.tmplCount > 0) {
-            p.openElements.generateImpliedEndTagsThoroughly();
+    switch (tn) {
+        case $.HEAD: {
+            p.openElements.pop();
+            p.insertionMode = AFTER_HEAD_MODE;
 
-            if (p.openElements.currentTagName !== $.TEMPLATE) {
-                p._err(ERR.closingOfElementWithOpenChildElements);
+            break;
+        }
+        case $.BODY:
+        case $.BR:
+        case $.HTML: {
+            tokenInHead(p, token);
+
+            break;
+        }
+        case $.TEMPLATE: {
+            if (p.openElements.tmplCount > 0) {
+                p.openElements.generateImpliedEndTagsThoroughly();
+
+                if (p.openElements.currentTagName !== $.TEMPLATE) {
+                    p._err(ERR.closingOfElementWithOpenChildElements);
+                }
+
+                p.openElements.popUntilTagNamePopped($.TEMPLATE);
+                p.activeFormattingElements.clearToLastMarker();
+                p._popTmplInsertionMode();
+                p._resetInsertionMode();
+            } else {
+                p._err(ERR.endTagWithoutMatchingOpenElement);
             }
 
-            p.openElements.popUntilTagNamePopped($.TEMPLATE);
-            p.activeFormattingElements.clearToLastMarker();
-            p._popTmplInsertionMode();
-            p._resetInsertionMode();
-        } else {
+            break;
+        }
+        default: {
             p._err(ERR.endTagWithoutMatchingOpenElement);
         }
-    } else {
-        p._err(ERR.endTagWithoutMatchingOpenElement);
     }
 }
 
@@ -1218,22 +1298,31 @@ function tokenInHead(p, token) {
 function startTagInHeadNoScript(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (
-        tn === $.BASEFONT ||
-        tn === $.BGSOUND ||
-        tn === $.HEAD ||
-        tn === $.LINK ||
-        tn === $.META ||
-        tn === $.NOFRAMES ||
-        tn === $.STYLE
-    ) {
-        startTagInHead(p, token);
-    } else if (tn === $.NOSCRIPT) {
-        p._err(ERR.nestedNoscriptInHead);
-    } else {
-        tokenInHeadNoScript(p, token);
+    switch (tn) {
+        case $.HTML: {
+            startTagInBody(p, token);
+
+            break;
+        }
+        case $.BASEFONT:
+        case $.BGSOUND:
+        case $.HEAD:
+        case $.LINK:
+        case $.META:
+        case $.NOFRAMES:
+        case $.STYLE: {
+            startTagInHead(p, token);
+
+            break;
+        }
+        case $.NOSCRIPT: {
+            p._err(ERR.nestedNoscriptInHead);
+
+            break;
+        }
+        default: {
+            tokenInHeadNoScript(p, token);
+        }
     }
 }
 
@@ -1265,35 +1354,50 @@ function tokenInHeadNoScript(p, token) {
 function startTagAfterHead(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.BODY) {
-        p._insertElement(token, NS.HTML);
-        p.framesetOk = false;
-        p.insertionMode = IN_BODY_MODE;
-    } else if (tn === $.FRAMESET) {
-        p._insertElement(token, NS.HTML);
-        p.insertionMode = IN_FRAMESET_MODE;
-    } else if (
-        tn === $.BASE ||
-        tn === $.BASEFONT ||
-        tn === $.BGSOUND ||
-        tn === $.LINK ||
-        tn === $.META ||
-        tn === $.NOFRAMES ||
-        tn === $.SCRIPT ||
-        tn === $.STYLE ||
-        tn === $.TEMPLATE ||
-        tn === $.TITLE
-    ) {
-        p._err(ERR.abandonedHeadElementChild);
-        p.openElements.push(p.headElement);
-        startTagInHead(p, token);
-        p.openElements.remove(p.headElement);
-    } else if (tn === $.HEAD) {
-        p._err(ERR.misplacedStartTagForHeadElement);
-    } else {
-        tokenAfterHead(p, token);
+    switch (tn) {
+        case $.HTML: {
+            startTagInBody(p, token);
+
+            break;
+        }
+        case $.BODY: {
+            p._insertElement(token, NS.HTML);
+            p.framesetOk = false;
+            p.insertionMode = IN_BODY_MODE;
+
+            break;
+        }
+        case $.FRAMESET: {
+            p._insertElement(token, NS.HTML);
+            p.insertionMode = IN_FRAMESET_MODE;
+
+            break;
+        }
+        case $.BASE:
+        case $.BASEFONT:
+        case $.BGSOUND:
+        case $.LINK:
+        case $.META:
+        case $.NOFRAMES:
+        case $.SCRIPT:
+        case $.STYLE:
+        case $.TEMPLATE:
+        case $.TITLE: {
+            p._err(ERR.abandonedHeadElementChild);
+            p.openElements.push(p.headElement);
+            startTagInHead(p, token);
+            p.openElements.remove(p.headElement);
+
+            break;
+        }
+        case $.HEAD: {
+            p._err(ERR.misplacedStartTagForHeadElement);
+
+            break;
+        }
+        default: {
+            tokenAfterHead(p, token);
+        }
     }
 }
 
@@ -1587,17 +1691,14 @@ function selectStartTagInBody(p, token) {
     p._insertElement(token, NS.HTML);
     p.framesetOk = false;
 
-    if (
+    p.insertionMode =
         p.insertionMode === IN_TABLE_MODE ||
         p.insertionMode === IN_CAPTION_MODE ||
         p.insertionMode === IN_TABLE_BODY_MODE ||
         p.insertionMode === IN_ROW_MODE ||
         p.insertionMode === IN_CELL_MODE
-    ) {
-        p.insertionMode = IN_SELECT_IN_TABLE_MODE;
-    } else {
-        p.insertionMode = IN_SELECT_MODE;
-    }
+            ? IN_SELECT_IN_TABLE_MODE
+            : IN_SELECT_MODE;
 }
 
 function optgroupStartTagInBody(p, token) {
@@ -1667,188 +1768,402 @@ function startTagInBody(p, token) {
 
     switch (tn.length) {
         case 1:
-            if (tn === $.I || tn === $.S || tn === $.B || tn === $.U) {
-                bStartTagInBody(p, token);
-            } else if (tn === $.P) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.A) {
-                aStartTagInBody(p, token);
-            } else {
-                genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.I:
+                case $.S:
+                case $.B:
+                case $.U: {
+                    bStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.P: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.A: {
+                    aStartTagInBody(p, token);
+
+                    break;
+                }
+                default: {
+                    genericStartTagInBody(p, token);
+                }
             }
 
             break;
 
         case 2:
-            if (tn === $.DL || tn === $.OL || tn === $.UL) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6) {
-                numberedHeaderStartTagInBody(p, token);
-            } else if (tn === $.LI || tn === $.DD || tn === $.DT) {
-                listItemStartTagInBody(p, token);
-            } else if (tn === $.EM || tn === $.TT) {
-                bStartTagInBody(p, token);
-            } else if (tn === $.BR) {
-                areaStartTagInBody(p, token);
-            } else if (tn === $.HR) {
-                hrStartTagInBody(p, token);
-            } else if (tn === $.RB) {
-                rbStartTagInBody(p, token);
-            } else if (tn === $.RT || tn === $.RP) {
-                rtStartTagInBody(p, token);
-            } else if (tn !== $.TH && tn !== $.TD && tn !== $.TR) {
-                genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.DL:
+                case $.OL:
+                case $.UL: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.H1:
+                case $.H2:
+                case $.H3:
+                case $.H4:
+                case $.H5:
+                case $.H6: {
+                    numberedHeaderStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.LI:
+                case $.DD:
+                case $.DT: {
+                    listItemStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.EM:
+                case $.TT: {
+                    bStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.BR: {
+                    areaStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.HR: {
+                    hrStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.RB: {
+                    rbStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.RT:
+                case $.RP: {
+                    rtStartTagInBody(p, token);
+
+                    break;
+                }
+                default:
+                    if (tn !== $.TH && tn !== $.TD && tn !== $.TR) {
+                        genericStartTagInBody(p, token);
+                    }
             }
 
             break;
 
         case 3:
-            if (tn === $.DIV || tn === $.DIR || tn === $.NAV) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.PRE) {
-                preStartTagInBody(p, token);
-            } else if (tn === $.BIG) {
-                bStartTagInBody(p, token);
-            } else if (tn === $.IMG || tn === $.WBR) {
-                areaStartTagInBody(p, token);
-            } else if (tn === $.XMP) {
-                xmpStartTagInBody(p, token);
-            } else if (tn === $.SVG) {
-                svgStartTagInBody(p, token);
-            } else if (tn === $.RTC) {
-                rbStartTagInBody(p, token);
-            } else if (tn !== $.COL) {
-                genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.DIV:
+                case $.DIR:
+                case $.NAV: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.PRE: {
+                    preStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.BIG: {
+                    bStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.IMG:
+                case $.WBR: {
+                    areaStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.XMP: {
+                    xmpStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.SVG: {
+                    svgStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.RTC: {
+                    rbStartTagInBody(p, token);
+
+                    break;
+                }
+                default:
+                    if (tn !== $.COL) {
+                        genericStartTagInBody(p, token);
+                    }
             }
 
             break;
 
         case 4:
-            if (tn === $.HTML) {
-                htmlStartTagInBody(p, token);
-            } else if (tn === $.BASE || tn === $.LINK || tn === $.META) {
-                startTagInHead(p, token);
-            } else if (tn === $.BODY) {
-                bodyStartTagInBody(p, token);
-            } else if (tn === $.MAIN || tn === $.MENU) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.FORM) {
-                formStartTagInBody(p, token);
-            } else if (tn === $.CODE || tn === $.FONT) {
-                bStartTagInBody(p, token);
-            } else if (tn === $.NOBR) {
-                nobrStartTagInBody(p, token);
-            } else if (tn === $.AREA) {
-                areaStartTagInBody(p, token);
-            } else if (tn === $.MATH) {
-                mathStartTagInBody(p, token);
-            } else if (tn !== $.HEAD) {
-                genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.HTML: {
+                    htmlStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.BASE:
+                case $.LINK:
+                case $.META: {
+                    startTagInHead(p, token);
+
+                    break;
+                }
+                case $.BODY: {
+                    bodyStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.MAIN:
+                case $.MENU: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.FORM: {
+                    formStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.CODE:
+                case $.FONT: {
+                    bStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.NOBR: {
+                    nobrStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.AREA: {
+                    areaStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.MATH: {
+                    mathStartTagInBody(p, token);
+
+                    break;
+                }
+                default:
+                    if (tn !== $.HEAD) {
+                        genericStartTagInBody(p, token);
+                    }
             }
 
             break;
 
         case 5:
-            if (tn === $.STYLE || tn === $.TITLE) {
-                startTagInHead(p, token);
-            } else if (tn === $.ASIDE) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.SMALL) {
-                bStartTagInBody(p, token);
-            } else if (tn === $.TABLE) {
-                tableStartTagInBody(p, token);
-            } else if (tn === $.EMBED) {
-                areaStartTagInBody(p, token);
-            } else if (tn === $.INPUT) {
-                inputStartTagInBody(p, token);
-            } else if (tn === $.PARAM || tn === $.TRACK) {
-                paramStartTagInBody(p, token);
-            } else if (tn === $.IMAGE) {
-                imageStartTagInBody(p, token);
-            } else if (tn !== $.FRAME && tn !== $.TBODY && tn !== $.TFOOT && tn !== $.THEAD) {
-                genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.STYLE:
+                case $.TITLE: {
+                    startTagInHead(p, token);
+
+                    break;
+                }
+                case $.ASIDE: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.SMALL: {
+                    bStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.TABLE: {
+                    tableStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.EMBED: {
+                    areaStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.INPUT: {
+                    inputStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.PARAM:
+                case $.TRACK: {
+                    paramStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.IMAGE: {
+                    imageStartTagInBody(p, token);
+
+                    break;
+                }
+                default:
+                    if (tn !== $.FRAME && tn !== $.TBODY && tn !== $.TFOOT && tn !== $.THEAD) {
+                        genericStartTagInBody(p, token);
+                    }
             }
 
             break;
 
         case 6:
-            if (tn === $.SCRIPT) {
-                startTagInHead(p, token);
-            } else if (
-                tn === $.CENTER ||
-                tn === $.FIGURE ||
-                tn === $.FOOTER ||
-                tn === $.HEADER ||
-                tn === $.HGROUP ||
-                tn === $.DIALOG
-            ) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.BUTTON) {
-                buttonStartTagInBody(p, token);
-            } else if (tn === $.STRIKE || tn === $.STRONG) {
-                bStartTagInBody(p, token);
-            } else if (tn === $.APPLET || tn === $.OBJECT) {
-                appletStartTagInBody(p, token);
-            } else if (tn === $.KEYGEN) {
-                areaStartTagInBody(p, token);
-            } else if (tn === $.SOURCE) {
-                paramStartTagInBody(p, token);
-            } else if (tn === $.IFRAME) {
-                iframeStartTagInBody(p, token);
-            } else if (tn === $.SELECT) {
-                selectStartTagInBody(p, token);
-            } else if (tn === $.OPTION) {
-                optgroupStartTagInBody(p, token);
-            } else {
-                genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.SCRIPT: {
+                    startTagInHead(p, token);
+
+                    break;
+                }
+                case $.CENTER:
+                case $.FIGURE:
+                case $.FOOTER:
+                case $.HEADER:
+                case $.HGROUP:
+                case $.DIALOG: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.BUTTON: {
+                    buttonStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.STRIKE:
+                case $.STRONG: {
+                    bStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.APPLET:
+                case $.OBJECT: {
+                    appletStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.KEYGEN: {
+                    areaStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.SOURCE: {
+                    paramStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.IFRAME: {
+                    iframeStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.SELECT: {
+                    selectStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.OPTION: {
+                    optgroupStartTagInBody(p, token);
+
+                    break;
+                }
+                default: {
+                    genericStartTagInBody(p, token);
+                }
             }
 
             break;
 
         case 7:
-            if (tn === $.BGSOUND) {
-                startTagInHead(p, token);
-            } else if (
-                tn === $.DETAILS ||
-                tn === $.ADDRESS ||
-                tn === $.ARTICLE ||
-                tn === $.SECTION ||
-                tn === $.SUMMARY
-            ) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.LISTING) {
-                preStartTagInBody(p, token);
-            } else if (tn === $.MARQUEE) {
-                appletStartTagInBody(p, token);
-            } else if (tn === $.NOEMBED) {
-                noembedStartTagInBody(p, token);
-            } else if (tn !== $.CAPTION) {
-                genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.BGSOUND: {
+                    startTagInHead(p, token);
+
+                    break;
+                }
+                case $.DETAILS:
+                case $.ADDRESS:
+                case $.ARTICLE:
+                case $.SECTION:
+                case $.SUMMARY: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.LISTING: {
+                    preStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.MARQUEE: {
+                    appletStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.NOEMBED: {
+                    noembedStartTagInBody(p, token);
+
+                    break;
+                }
+                default:
+                    if (tn !== $.CAPTION) {
+                        genericStartTagInBody(p, token);
+                    }
             }
 
             break;
 
         case 8:
-            if (tn === $.BASEFONT) {
-                startTagInHead(p, token);
-            } else if (tn === $.FRAMESET) {
-                framesetStartTagInBody(p, token);
-            } else if (tn === $.FIELDSET) {
-                addressStartTagInBody(p, token);
-            } else if (tn === $.TEXTAREA) {
-                textareaStartTagInBody(p, token);
-            } else if (tn === $.TEMPLATE) {
-                startTagInHead(p, token);
-            } else if (tn === $.NOSCRIPT) {
-                if (p.options.scriptingEnabled) {
-                    noembedStartTagInBody(p, token);
-                } else {
-                    genericStartTagInBody(p, token);
+            switch (tn) {
+                case $.BASEFONT: {
+                    startTagInHead(p, token);
+
+                    break;
                 }
-            } else if (tn === $.OPTGROUP) {
-                optgroupStartTagInBody(p, token);
-            } else if (tn !== $.COLGROUP) {
-                genericStartTagInBody(p, token);
+                case $.FRAMESET: {
+                    framesetStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.FIELDSET: {
+                    addressStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.TEXTAREA: {
+                    textareaStartTagInBody(p, token);
+
+                    break;
+                }
+                case $.TEMPLATE: {
+                    startTagInHead(p, token);
+
+                    break;
+                }
+                case $.NOSCRIPT: {
+                    if (p.options.scriptingEnabled) {
+                        noembedStartTagInBody(p, token);
+                    } else {
+                        genericStartTagInBody(p, token);
+                    }
+
+                    break;
+                }
+                case $.OPTGROUP: {
+                    optgroupStartTagInBody(p, token);
+
+                    break;
+                }
+                default:
+                    if (tn !== $.COLGROUP) {
+                        genericStartTagInBody(p, token);
+                    }
             }
 
             break;
@@ -1900,7 +2215,7 @@ function addressEndTagInBody(p, token) {
 
 function formEndTagInBody(p) {
     const inTemplate = p.openElements.tmplCount > 0;
-    const formElement = p.formElement;
+    const { formElement } = p;
 
     if (!inTemplate) {
         p.formElement = null;
@@ -2001,20 +2316,49 @@ function endTagInBody(p, token) {
             break;
 
         case 2:
-            if (tn === $.DL || tn === $.UL || tn === $.OL) {
-                addressEndTagInBody(p, token);
-            } else if (tn === $.LI) {
-                liEndTagInBody(p, token);
-            } else if (tn === $.DD || tn === $.DT) {
-                ddEndTagInBody(p, token);
-            } else if (tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6) {
-                numberedHeaderEndTagInBody(p, token);
-            } else if (tn === $.BR) {
-                brEndTagInBody(p, token);
-            } else if (tn === $.EM || tn === $.TT) {
-                callAdoptionAgency(p, token);
-            } else {
-                genericEndTagInBody(p, token);
+            switch (tn) {
+                case $.DL:
+                case $.UL:
+                case $.OL: {
+                    addressEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.LI: {
+                    liEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.DD:
+                case $.DT: {
+                    ddEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.H1:
+                case $.H2:
+                case $.H3:
+                case $.H4:
+                case $.H5:
+                case $.H6: {
+                    numberedHeaderEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.BR: {
+                    brEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.EM:
+                case $.TT: {
+                    callAdoptionAgency(p, token);
+
+                    break;
+                }
+                default: {
+                    genericEndTagInBody(p, token);
+                }
             }
 
             break;
@@ -2031,18 +2375,38 @@ function endTagInBody(p, token) {
             break;
 
         case 4:
-            if (tn === $.BODY) {
-                bodyEndTagInBody(p, token);
-            } else if (tn === $.HTML) {
-                htmlEndTagInBody(p, token);
-            } else if (tn === $.FORM) {
-                formEndTagInBody(p, token);
-            } else if (tn === $.CODE || tn === $.FONT || tn === $.NOBR) {
-                callAdoptionAgency(p, token);
-            } else if (tn === $.MAIN || tn === $.MENU) {
-                addressEndTagInBody(p, token);
-            } else {
-                genericEndTagInBody(p, token);
+            switch (tn) {
+                case $.BODY: {
+                    bodyEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.HTML: {
+                    htmlEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.FORM: {
+                    formEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.CODE:
+                case $.FONT:
+                case $.NOBR: {
+                    callAdoptionAgency(p, token);
+
+                    break;
+                }
+                case $.MAIN:
+                case $.MENU: {
+                    addressEndTagInBody(p, token);
+
+                    break;
+                }
+                default: {
+                    genericEndTagInBody(p, token);
+                }
             }
 
             break;
@@ -2059,21 +2423,32 @@ function endTagInBody(p, token) {
             break;
 
         case 6:
-            if (
-                tn === $.CENTER ||
-                tn === $.FIGURE ||
-                tn === $.FOOTER ||
-                tn === $.HEADER ||
-                tn === $.HGROUP ||
-                tn === $.DIALOG
-            ) {
-                addressEndTagInBody(p, token);
-            } else if (tn === $.APPLET || tn === $.OBJECT) {
-                appletEndTagInBody(p, token);
-            } else if (tn === $.STRIKE || tn === $.STRONG) {
-                callAdoptionAgency(p, token);
-            } else {
-                genericEndTagInBody(p, token);
+            switch (tn) {
+                case $.CENTER:
+                case $.FIGURE:
+                case $.FOOTER:
+                case $.HEADER:
+                case $.HGROUP:
+                case $.DIALOG: {
+                    addressEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.APPLET:
+                case $.OBJECT: {
+                    appletEndTagInBody(p, token);
+
+                    break;
+                }
+                case $.STRIKE:
+                case $.STRONG: {
+                    callAdoptionAgency(p, token);
+
+                    break;
+                }
+                default: {
+                    genericEndTagInBody(p, token);
+                }
             }
 
             break;
@@ -2256,16 +2631,32 @@ function startTagInTable(p, token) {
             break;
 
         case 5:
-            if (tn === $.TABLE) {
-                tableStartTagInTable(p, token);
-            } else if (tn === $.STYLE) {
-                startTagInHead(p, token);
-            } else if (tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD) {
-                tbodyStartTagInTable(p, token);
-            } else if (tn === $.INPUT) {
-                inputStartTagInTable(p, token);
-            } else {
-                tokenInTable(p, token);
+            switch (tn) {
+                case $.TABLE: {
+                    tableStartTagInTable(p, token);
+
+                    break;
+                }
+                case $.STYLE: {
+                    startTagInHead(p, token);
+
+                    break;
+                }
+                case $.TBODY:
+                case $.TFOOT:
+                case $.THEAD: {
+                    tbodyStartTagInTable(p, token);
+
+                    break;
+                }
+                case $.INPUT: {
+                    inputStartTagInTable(p, token);
+
+                    break;
+                }
+                default: {
+                    tokenInTable(p, token);
+                }
             }
 
             break;
@@ -2430,15 +2821,26 @@ function endTagInCaption(p, token) {
 function startTagInColumnGroup(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.COL) {
-        p._appendElement(token, NS.HTML);
-        token.ackSelfClosing = true;
-    } else if (tn === $.TEMPLATE) {
-        startTagInHead(p, token);
-    } else {
-        tokenInColumnGroup(p, token);
+    switch (tn) {
+        case $.HTML: {
+            startTagInBody(p, token);
+
+            break;
+        }
+        case $.COL: {
+            p._appendElement(token, NS.HTML);
+            token.ackSelfClosing = true;
+
+            break;
+        }
+        case $.TEMPLATE: {
+            startTagInHead(p, token);
+
+            break;
+        }
+        default: {
+            tokenInColumnGroup(p, token);
+        }
     }
 }
 
@@ -2470,31 +2872,41 @@ function tokenInColumnGroup(p, token) {
 function startTagInTableBody(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.TR) {
-        p.openElements.clearBackToTableBodyContext();
-        p._insertElement(token, NS.HTML);
-        p.insertionMode = IN_ROW_MODE;
-    } else if (tn === $.TH || tn === $.TD) {
-        p.openElements.clearBackToTableBodyContext();
-        p._insertFakeElement($.TR);
-        p.insertionMode = IN_ROW_MODE;
-        p._processToken(token);
-    } else if (
-        tn === $.CAPTION ||
-        tn === $.COL ||
-        tn === $.COLGROUP ||
-        tn === $.TBODY ||
-        tn === $.TFOOT ||
-        tn === $.THEAD
-    ) {
-        if (p.openElements.hasTableBodyContextInTableScope()) {
+    switch (tn) {
+        case $.TR: {
             p.openElements.clearBackToTableBodyContext();
-            p.openElements.pop();
-            p.insertionMode = IN_TABLE_MODE;
-            p._processToken(token);
+            p._insertElement(token, NS.HTML);
+            p.insertionMode = IN_ROW_MODE;
+
+            break;
         }
-    } else {
-        startTagInTable(p, token);
+        case $.TH:
+        case $.TD: {
+            p.openElements.clearBackToTableBodyContext();
+            p._insertFakeElement($.TR);
+            p.insertionMode = IN_ROW_MODE;
+            p._processToken(token);
+
+            break;
+        }
+        case $.CAPTION:
+        case $.COL:
+        case $.COLGROUP:
+        case $.TBODY:
+        case $.TFOOT:
+        case $.THEAD: {
+            if (p.openElements.hasTableBodyContextInTableScope()) {
+                p.openElements.clearBackToTableBodyContext();
+                p.openElements.pop();
+                p.insertionMode = IN_TABLE_MODE;
+                p._processToken(token);
+            }
+
+            break;
+        }
+        default: {
+            startTagInTable(p, token);
+        }
     }
 }
 
@@ -2555,31 +2967,45 @@ function startTagInRow(p, token) {
 function endTagInRow(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.TR) {
-        if (p.openElements.hasInTableScope($.TR)) {
-            p.openElements.clearBackToTableRowContext();
-            p.openElements.pop();
-            p.insertionMode = IN_TABLE_BODY_MODE;
+    switch (tn) {
+        case $.TR: {
+            if (p.openElements.hasInTableScope($.TR)) {
+                p.openElements.clearBackToTableRowContext();
+                p.openElements.pop();
+                p.insertionMode = IN_TABLE_BODY_MODE;
+            }
+
+            break;
         }
-    } else if (tn === $.TABLE) {
-        if (p.openElements.hasInTableScope($.TR)) {
-            p.openElements.clearBackToTableRowContext();
-            p.openElements.pop();
-            p.insertionMode = IN_TABLE_BODY_MODE;
-            p._processToken(token);
+        case $.TABLE: {
+            if (p.openElements.hasInTableScope($.TR)) {
+                p.openElements.clearBackToTableRowContext();
+                p.openElements.pop();
+                p.insertionMode = IN_TABLE_BODY_MODE;
+                p._processToken(token);
+            }
+
+            break;
         }
-    } else if (tn === $.TBODY || tn === $.TFOOT || tn === $.THEAD) {
-        if (p.openElements.hasInTableScope(tn) || p.openElements.hasInTableScope($.TR)) {
-            p.openElements.clearBackToTableRowContext();
-            p.openElements.pop();
-            p.insertionMode = IN_TABLE_BODY_MODE;
-            p._processToken(token);
+        case $.TBODY:
+        case $.TFOOT:
+        case $.THEAD: {
+            if (p.openElements.hasInTableScope(tn) || p.openElements.hasInTableScope($.TR)) {
+                p.openElements.clearBackToTableRowContext();
+                p.openElements.pop();
+                p.insertionMode = IN_TABLE_BODY_MODE;
+                p._processToken(token);
+            }
+
+            break;
         }
-    } else if (
-        (tn !== $.BODY && tn !== $.CAPTION && tn !== $.COL && tn !== $.COLGROUP) ||
-        (tn !== $.HTML && tn !== $.TD && tn !== $.TH)
-    ) {
-        endTagInTable(p, token);
+        default:
+            if (
+                (tn !== $.BODY && tn !== $.CAPTION && tn !== $.COL && tn !== $.COLGROUP) ||
+                (tn !== $.HTML && tn !== $.TD && tn !== $.TH)
+            ) {
+                endTagInTable(p, token);
+            }
     }
 }
 
@@ -2633,35 +3059,57 @@ function endTagInCell(p, token) {
 function startTagInSelect(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.OPTION) {
-        if (p.openElements.currentTagName === $.OPTION) {
-            p.openElements.pop();
+    switch (tn) {
+        case $.HTML: {
+            startTagInBody(p, token);
+
+            break;
         }
-
-        p._insertElement(token, NS.HTML);
-    } else if (tn === $.OPTGROUP) {
-        if (p.openElements.currentTagName === $.OPTION) {
-            p.openElements.pop();
-        }
-
-        if (p.openElements.currentTagName === $.OPTGROUP) {
-            p.openElements.pop();
-        }
-
-        p._insertElement(token, NS.HTML);
-    } else if (tn === $.INPUT || tn === $.KEYGEN || tn === $.TEXTAREA || tn === $.SELECT) {
-        if (p.openElements.hasInSelectScope($.SELECT)) {
-            p.openElements.popUntilTagNamePopped($.SELECT);
-            p._resetInsertionMode();
-
-            if (tn !== $.SELECT) {
-                p._processToken(token);
+        case $.OPTION: {
+            if (p.openElements.currentTagName === $.OPTION) {
+                p.openElements.pop();
             }
+
+            p._insertElement(token, NS.HTML);
+
+            break;
         }
-    } else if (tn === $.SCRIPT || tn === $.TEMPLATE) {
-        startTagInHead(p, token);
+        case $.OPTGROUP: {
+            if (p.openElements.currentTagName === $.OPTION) {
+                p.openElements.pop();
+            }
+
+            if (p.openElements.currentTagName === $.OPTGROUP) {
+                p.openElements.pop();
+            }
+
+            p._insertElement(token, NS.HTML);
+
+            break;
+        }
+        case $.INPUT:
+        case $.KEYGEN:
+        case $.TEXTAREA:
+        case $.SELECT: {
+            if (p.openElements.hasInSelectScope($.SELECT)) {
+                p.openElements.popUntilTagNamePopped($.SELECT);
+                p._resetInsertionMode();
+
+                if (tn !== $.SELECT) {
+                    p._processToken(token);
+                }
+            }
+
+            break;
+        }
+        case $.SCRIPT:
+        case $.TEMPLATE: {
+            startTagInHead(p, token);
+
+            break;
+        }
+        default:
+        // Do nothing
     }
 }
 
@@ -2813,15 +3261,30 @@ function tokenAfterBody(p, token) {
 function startTagInFrameset(p, token) {
     const tn = token.tagName;
 
-    if (tn === $.HTML) {
-        startTagInBody(p, token);
-    } else if (tn === $.FRAMESET) {
-        p._insertElement(token, NS.HTML);
-    } else if (tn === $.FRAME) {
-        p._appendElement(token, NS.HTML);
-        token.ackSelfClosing = true;
-    } else if (tn === $.NOFRAMES) {
-        startTagInHead(p, token);
+    switch (tn) {
+        case $.HTML: {
+            startTagInBody(p, token);
+
+            break;
+        }
+        case $.FRAMESET: {
+            p._insertElement(token, NS.HTML);
+
+            break;
+        }
+        case $.FRAME: {
+            p._appendElement(token, NS.HTML);
+            token.ackSelfClosing = true;
+
+            break;
+        }
+        case $.NOFRAMES: {
+            startTagInHead(p, token);
+
+            break;
+        }
+        default:
+        // Do nothing
     }
 }
 

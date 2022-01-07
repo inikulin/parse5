@@ -66,21 +66,35 @@ export class ParserFeedbackSimulator {
 
     //Token handlers
     _ensureTokenizerMode(tn) {
-        if (tn === $.TEXTAREA || tn === $.TITLE) {
-            this.tokenizer.state = Tokenizer.MODE.RCDATA;
-        } else if (tn === $.PLAINTEXT) {
-            this.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
-        } else if (tn === $.SCRIPT) {
-            this.tokenizer.state = Tokenizer.MODE.SCRIPT_DATA;
-        } else if (
-            tn === $.STYLE ||
-            tn === $.IFRAME ||
-            tn === $.XMP ||
-            tn === $.NOEMBED ||
-            tn === $.NOFRAMES ||
-            tn === $.NOSCRIPT
-        ) {
-            this.tokenizer.state = Tokenizer.MODE.RAWTEXT;
+        switch (tn) {
+            case $.TEXTAREA:
+            case $.TITLE: {
+                this.tokenizer.state = Tokenizer.MODE.RCDATA;
+
+                break;
+            }
+            case $.PLAINTEXT: {
+                this.tokenizer.state = Tokenizer.MODE.PLAINTEXT;
+
+                break;
+            }
+            case $.SCRIPT: {
+                this.tokenizer.state = Tokenizer.MODE.SCRIPT_DATA;
+
+                break;
+            }
+            case $.STYLE:
+            case $.IFRAME:
+            case $.XMP:
+            case $.NOEMBED:
+            case $.NOFRAMES:
+            case $.NOSCRIPT: {
+                this.tokenizer.state = Tokenizer.MODE.RAWTEXT;
+
+                break;
+            }
+            default:
+            // Do nothing
         }
     }
 

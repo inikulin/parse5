@@ -1,6 +1,6 @@
-import { readFile, writeFile } from 'fs';
-import { promisify } from 'util';
-import { basename } from 'path';
+import { readFile, writeFile } from 'node:fs';
+import { promisify } from 'node:util';
+import { basename } from 'node:path';
 import { Parser } from '../../packages/parse5/lib/parser.js';
 import { Tokenizer } from '../../packages/parse5/lib/tokenzer.js';
 import { defaultTreeAdapter } from '../../packages/parse5/lib/tree-adapters/default.js';
@@ -59,7 +59,7 @@ function collectParserTokens(html) {
         // NOTE: Needed to split attributes of duplicate <html> and <body>
         // which are otherwise merged as per tree constructor spec
         if (token.type === Tokenizer.START_TAG_TOKEN) {
-            token.attrs = token.attrs.slice();
+            token.attrs = [...token.attrs];
         }
 
         appendToken(tokens, token);
@@ -67,7 +67,7 @@ function collectParserTokens(html) {
 
     parser.parse(html);
 
-    return tokens.map(convertTokenToHtml5Lib);
+    return tokens.map((token) => convertTokenToHtml5Lib(token));
 }
 
 function generateParserFeedbackTest(parserTestFile) {
@@ -77,7 +77,7 @@ function generateParserFeedbackTest(parserTestFile) {
         tests: tests
             .filter((test) => !test.fragmentContext) // TODO
             .map((test) => {
-                const input = test.input;
+                const { input } = test;
 
                 return {
                     description: addSlashes(input),

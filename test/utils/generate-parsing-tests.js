@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import assert from 'assert';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import assert from 'node:assert';
 import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
 import { parseDatFile } from '../../test/utils/parse-dat-file.js';
@@ -8,29 +8,29 @@ import { parseDatFile } from '../../test/utils/parse-dat-file.js';
 export function loadTreeConstructionTestData(dataDirs, treeAdapter) {
     const tests = [];
 
-    dataDirs.forEach((dataDirPath) => {
+    for (const dataDirPath of dataDirs) {
         const testSetFileNames = fs.readdirSync(dataDirPath);
         const dirName = path.basename(dataDirPath);
 
-        testSetFileNames.forEach((fileName) => {
+        for (const fileName of testSetFileNames) {
             if (path.extname(fileName) !== '.dat') {
-                return;
+                continue;
             }
 
             const filePath = path.join(dataDirPath, fileName);
             const testSet = fs.readFileSync(filePath, 'utf-8');
             const setName = fileName.replace('.dat', '');
 
-            parseDatFile(testSet, treeAdapter).forEach((test) => {
+            for (const test of parseDatFile(testSet, treeAdapter)) {
                 tests.push({
                     ...test,
                     idx: tests.length,
-                    setName: setName,
-                    dirName: dirName,
+                    setName,
+                    dirName,
                 });
-            });
-        });
-    });
+            }
+        }
+    }
 
     return tests;
 }
@@ -39,10 +39,10 @@ function prettyPrintParserAssertionArgs(actual, expected, chunks) {
     let msg = '\nExpected:\n';
 
     msg += '-----------------\n';
-    msg += expected + '\n';
+    msg += `${expected}\n`;
     msg += '\nActual:\n';
     msg += '-----------------\n';
-    msg += actual + '\n';
+    msg += `${actual}\n`;
 
     if (chunks) {
         msg += 'Chunks:\n';
@@ -58,7 +58,7 @@ function createParsingTest(test, treeAdapter, parse, { withoutErrors }) {
 
         const opts = {
             scriptingEnabled: test.scriptingEnabled,
-            treeAdapter: treeAdapter,
+            treeAdapter,
 
             onParseError: (err) => {
                 let errStr = `(${err.startLine}:${err.startCol}`;
@@ -96,12 +96,12 @@ export function generateParsingTests(
     parse
 ) {
     generateTestsForEachTreeAdapter(name, (_test, treeAdapter) => {
-        loadTreeConstructionTestData(testSuite, treeAdapter).forEach((test) => {
+        for (const test of loadTreeConstructionTestData(testSuite, treeAdapter)) {
             if (!(test.fragmentContext && skipFragments)) {
                 const testName = `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`;
 
                 _test[testName] = createParsingTest(test, treeAdapter, parse, { withoutErrors });
             }
-        });
+        }
     });
 }

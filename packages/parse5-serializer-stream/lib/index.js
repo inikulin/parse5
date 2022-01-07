@@ -1,4 +1,4 @@
-import { Readable } from 'stream';
+import { Readable } from 'node:stream';
 import { Serializer } from 'parse5/lib/serializer/index.js';
 
 export class SerializerStream extends Readable {
@@ -10,7 +10,7 @@ export class SerializerStream extends Readable {
         Object.defineProperty(this.serializer, 'html', {
             //NOTE: To make `+=` concat operator work properly we define
             //getter which always returns empty string
-            get: function () {
+            get() {
                 return '';
             },
             set: this.push.bind(this),

@@ -1,5 +1,5 @@
-import assert from 'assert';
-import * as fs from 'fs';
+import assert from 'node:assert';
+import * as fs from 'node:fs';
 import { SAXParser } from '../lib/index.js';
 import { loadSAXParserTestData } from '../../../test/utils/load-sax-parser-test-data.js';
 import {
@@ -20,27 +20,27 @@ function createBasicTest(html, expected, options) {
         const parser = new SAXParser(options);
 
         parser.on('doctype', ({ name, publicId, systemId }) => {
-            actual += '<!DOCTYPE ' + name;
+            actual += `<!DOCTYPE ${name}`;
 
             if (publicId !== null) {
-                actual += ' PUBLIC "' + publicId + '"';
+                actual += ` PUBLIC "${publicId}"`;
             } else if (systemId !== null) {
                 actual += ' SYSTEM';
             }
 
             if (systemId !== null) {
-                actual += ' "' + systemId + '"';
+                actual += ` "${systemId}"`;
             }
 
             actual += '>';
         });
 
         parser.on('startTag', ({ tagName, attrs, selfClosing }) => {
-            actual += '<' + tagName;
+            actual += `<${tagName}`;
 
-            if (attrs.length) {
+            if (attrs.length > 0) {
                 for (let i = 0; i < attrs.length; i++) {
-                    actual += ' ' + attrs[i].name + '="' + attrs[i].value + '"';
+                    actual += ` ${attrs[i].name}="${attrs[i].value}"`;
                 }
             }
 
@@ -48,7 +48,7 @@ function createBasicTest(html, expected, options) {
         });
 
         parser.on('endTag', ({ tagName }) => {
-            actual += '</' + tagName + '>';
+            actual += `</${tagName}>`;
         });
 
         parser.on('text', ({ text }) => {
@@ -56,7 +56,7 @@ function createBasicTest(html, expected, options) {
         });
 
         parser.on('comment', ({ text }) => {
-            actual += '<!--' + text + '-->';
+            actual += `<!--${text}-->`;
         });
 
         parser.once('finish', () => {
@@ -75,9 +75,9 @@ const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.m
 
 suite('SAX parser', () => {
     //Basic tests
-    loadSAXParserTestData().forEach((data, idx) =>
-        test(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected, data.options))
-    );
+    for (const [idx, data] of loadSAXParserTestData().entries()) {
+        test(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected, data.options));
+    }
 
     test('Piping and .stop()', (done) => {
         const parser = new SAXParser();

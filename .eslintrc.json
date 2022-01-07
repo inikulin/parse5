@@ -4,16 +4,34 @@
         "node": true,
         "mocha": true
     },
-    "extends": ["eslint:recommended", "prettier"],
-    "plugins": ["prettier"],
+    "extends": ["eslint:recommended", "prettier", "plugin:unicorn/recommended"],
     "rules": {
-        "prettier/prettier": "error",
         "no-console": "error",
         "curly": ["error", "all"],
         "prefer-arrow-callback": "error",
         "one-var": ["error", "never"],
         "no-var": "error",
-        "prefer-const": "error"
+        "prefer-const": "error",
+        "object-shorthand": "error",
+        "prefer-destructuring": [
+            "error",
+            {
+                "object": true,
+                "array": false
+            }
+        ],
+        "prefer-template": "error",
+
+        "unicorn/no-null": "off",
+        "unicorn/prevent-abbreviations": "off",
+        "unicorn/prefer-string-slice": "off",
+        "unicorn/prefer-code-point": "off",
+        "unicorn/no-array-push-push": "off",
+        "unicorn/no-array-reduce": "off",
+        "unicorn/no-for-loop": "off",
+        "unicorn/consistent-destructuring": "off",
+        "unicorn/prefer-switch": ["error", { "emptyDefaultCase": "do-nothing-comment" }],
+        "unicorn/number-literal-case": "off"
     },
     "parserOptions": {
         "sourceType": "module"

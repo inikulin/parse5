@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import * as HTML from '../lib/common/html.js';
 import { FormattingElementList } from '../lib/parser/formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from '../../../test/utils/common.js';

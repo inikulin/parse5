@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { Tokenizer } from '../lib/tokenizer/index.js';
 import { LocationInfoTokenizerMixin } from '../lib/extensions/location-info/tokenizer-mixin.js';
 import { Mixin } from '../lib/utils/mixin.js';
@@ -80,7 +80,7 @@ test('Location Info (Tokenizer)', () => {
         },
     ];
 
-    testCases.forEach((testCase) => {
+    for (const testCase of testCases) {
         const html = testCase.htmlChunks.join('');
         const lines = html.split(/\r?\n/g);
         const tokenizer = new Tokenizer();
@@ -117,5 +117,5 @@ test('Location Info (Tokenizer)', () => {
             token = tokenizer.getNextToken();
             j++;
         }
-    });
+    }
 });

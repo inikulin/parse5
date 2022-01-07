@@ -1,7 +1,7 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { Node } from './tree-node.js';
 
-const HAS_DATA_FLAG = 1 << 0;
+const HAS_DATA_FLAG = Math.trunc(1);
 const DATA_DUPLET_FLAG = 1 << 1;
 const HAS_BRANCHES_FLAG = 1 << 2;
 
@@ -62,31 +62,31 @@ export class ArrayMappedRadixTree {
         // NOTE: allocate space for transition table
         this.arr.length += count * 2;
 
-        kvPairs
-            .sort((pair1, pair2) => pair1.key - pair2.key)
-            .forEach((pair, idx) => {
-                const keyIdx = transitionTableIdx + idx;
-                const branchIdx = keyIdx + count;
+        for (const [idx, pair] of kvPairs.sort((pair1, pair2) => pair1.key - pair2.key).entries()) {
+            const keyIdx = transitionTableIdx + idx;
+            const branchIdx = keyIdx + count;
 
-                this.arr[keyIdx] = pair.key;
-                this.arr[branchIdx] = this.arr.length;
+            this.arr[keyIdx] = pair.key;
+            this.arr[branchIdx] = this.arr.length;
 
-                if (pair.branch instanceof Node) {
-                    this._convertNode(pair.branch);
-                } else {
-                    this._convertEdge(pair.branch);
-                }
-            });
+            if (pair.branch instanceof Node) {
+                this._convertNode(pair.branch);
+            } else {
+                this._convertEdge(pair.branch);
+            }
+        }
     }
 
     _convertNode(node) {
-        const data = node.data;
-        const branches = node.branches;
+        const { data } = node;
+        const { branches } = node;
 
         this._writeNodeMarker(data, branches);
 
         if (data) {
-            data.forEach((cp) => this.arr.push(cp));
+            for (const cp of data) {
+                this.arr.push(cp);
+            }
         }
 
         if (branches) {

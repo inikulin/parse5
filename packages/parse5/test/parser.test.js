@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import * as parse5 from '../lib/index.js';
 import { Parser } from '../lib/parser/index.js';
 import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
@@ -24,8 +24,8 @@ suite('parser', () => {
         setup(() => {
             Parser.prototype.parseFragment = function (html, fragmentContext) {
                 return {
-                    html: html,
-                    fragmentContext: fragmentContext,
+                    html,
+                    fragmentContext,
                     options: this.options,
                 };
             };

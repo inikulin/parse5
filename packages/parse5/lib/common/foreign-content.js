@@ -4,7 +4,7 @@ import * as HTML from './html.js';
 //Aliases
 const $ = HTML.TAG_NAMES;
 const NS = HTML.NAMESPACES;
-const ATTRS = HTML.ATTRS;
+const { ATTRS } = HTML;
 
 //MIME types
 const MIME_TYPES = {

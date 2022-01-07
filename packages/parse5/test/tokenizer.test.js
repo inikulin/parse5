@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import * as parse5 from '../lib/index.js';
 import { Tokenizer } from '../lib/tokenizer/index.js';
 import { Mixin } from '../lib/utils/mixin.js';

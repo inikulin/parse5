@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from '../../../test/utils/generate-parsing-tests.js';
 import { parseChunked } from './utils/parse-chunked.js';

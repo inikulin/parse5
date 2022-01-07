@@ -35,28 +35,26 @@ export class LocationInfoParserMixin extends Mixin {
     _setEndLocation(element, closingToken) {
         const loc = this.treeAdapter.getNodeSourceCodeLocation(element);
 
-        if (loc) {
-            if (closingToken.location) {
-                const ctLoc = closingToken.location;
-                const tn = this.treeAdapter.getTagName(element);
+        if (loc && closingToken.location) {
+            const ctLoc = closingToken.location;
+            const tn = this.treeAdapter.getTagName(element);
 
-                // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
-                // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
-                const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
-                const endLoc = {};
-                if (isClosingEndTag) {
-                    endLoc.endTag = { ...ctLoc };
-                    endLoc.endLine = ctLoc.endLine;
-                    endLoc.endCol = ctLoc.endCol;
-                    endLoc.endOffset = ctLoc.endOffset;
-                } else {
-                    endLoc.endLine = ctLoc.startLine;
-                    endLoc.endCol = ctLoc.startCol;
-                    endLoc.endOffset = ctLoc.startOffset;
-                }
-
-                this.treeAdapter.updateNodeSourceCodeLocation(element, endLoc);
+            // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
+            // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
+            const isClosingEndTag = closingToken.type === Tokenizer.END_TAG_TOKEN && tn === closingToken.tagName;
+            const endLoc = {};
+            if (isClosingEndTag) {
+                endLoc.endTag = { ...ctLoc };
+                endLoc.endLine = ctLoc.endLine;
+                endLoc.endCol = ctLoc.endCol;
+                endLoc.endOffset = ctLoc.endOffset;
+            } else {
+                endLoc.endLine = ctLoc.startLine;
+                endLoc.endCol = ctLoc.startCol;
+                endLoc.endOffset = ctLoc.startOffset;
             }
+
+            this.treeAdapter.updateNodeSourceCodeLocation(element, endLoc);
         }
     }
 
@@ -74,7 +72,7 @@ export class LocationInfoParserMixin extends Mixin {
                 mxn.posTracker = tokenizerMixin.posTracker;
 
                 Mixin.install(this.openElements, LocationInfoOpenElementStackMixin, {
-                    onItemPop: function (element) {
+                    onItemPop(element) {
                         mxn._setEndLocation(element, mxn.currentToken);
                     },
                 });

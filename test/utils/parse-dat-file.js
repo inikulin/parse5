@@ -26,7 +26,7 @@ export function parseDatFile(testSet, treeAdapter) {
     let curDirective = '';
     let curDescr = null;
 
-    testSet.split(/\r?\n/).forEach((line, idx) => {
+    for (const [idx, line] of testSet.split(/\r?\n/).entries()) {
         if (line === '#data') {
             curDescr = { '#line': idx + 1 };
             testDescrs.push(curDescr);
@@ -38,7 +38,7 @@ export function parseDatFile(testSet, treeAdapter) {
         } else {
             curDescr[curDirective].push(line);
         }
-    });
+    }
 
     return testDescrs.map((descr) => {
         const fragmentContextTagName = descr['#document-fragment'] && descr['#document-fragment'][0];

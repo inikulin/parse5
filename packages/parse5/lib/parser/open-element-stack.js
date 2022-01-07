@@ -87,12 +87,18 @@ function isScopingElement(tn, ns) {
             break;
 
         case 5:
-            if (tn === $.TABLE) {
-                return ns === NS.HTML;
-            } else if (tn === $.MTEXT) {
-                return ns === NS.MATHML;
-            } else if (tn === $.TITLE) {
-                return ns === NS.SVG;
+            switch (tn) {
+                case $.TABLE: {
+                    return ns === NS.HTML;
+                }
+                case $.MTEXT: {
+                    return ns === NS.MATHML;
+                }
+                case $.TITLE: {
+                    return ns === NS.SVG;
+                }
+                default:
+                // Do nothing
             }
 
             break;

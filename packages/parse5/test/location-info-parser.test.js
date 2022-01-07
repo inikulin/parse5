@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import * as parse5 from '../lib/index.js';
 import { generateLocationInfoParserTests } from '../../../test/utils/generate-location-info-parser-tests.js';
 import { assertStartTagLocation, assertNodeLocation } from '../../../test/utils/generate-location-info-parser-tests.js';
@@ -13,7 +13,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const html = '<p>1<p class="2">3';
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 
@@ -28,7 +28,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const html = '<i>1</i>2';
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 
@@ -43,7 +43,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const html = '<html><head></head><body>foo</body></html>';
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 
@@ -57,7 +57,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const html = '<template>hello</template>';
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 
@@ -70,7 +70,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const html = '<div test-attr></div>';
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 
@@ -90,7 +90,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         ].join('\n');
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 
@@ -108,7 +108,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (_test, treeAdapter) => 
         const html = '<p>test';
 
         const opts = {
-            treeAdapter: treeAdapter,
+            treeAdapter,
             sourceCodeLocationInfo: true,
         };
 
@@ -127,22 +127,21 @@ suite('location-info-parser', () => {
     test('Updating node source code location (GH-314)', () => {
         const sourceCodeLocationSetter = {
             setNodeSourceCodeLocation(node, location) {
-                if (location === null) {
-                    node.sourceCodeLocation = null;
-                } else {
-                    node.sourceCodeLocation = {
-                        start: {
-                            line: location.startLine,
-                            column: location.startCol,
-                            offset: location.startOffset,
-                        },
-                        end: {
-                            line: location.endLine,
-                            column: location.endCol,
-                            offset: location.endOffset,
-                        },
-                    };
-                }
+                node.sourceCodeLocation =
+                    location === null
+                        ? null
+                        : {
+                              start: {
+                                  line: location.startLine,
+                                  column: location.startCol,
+                                  offset: location.startOffset,
+                              },
+                              end: {
+                                  line: location.endLine,
+                                  column: location.endCol,
+                                  offset: location.endOffset,
+                              },
+                          };
             },
             updateNodeSourceCodeLocation(node, endLocation) {
                 node.sourceCodeLocation = {
