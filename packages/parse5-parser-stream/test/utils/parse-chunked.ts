@@ -17,7 +17,7 @@ export function parseChunked(
 
     for (let i = 0; i < chunks.length - 1; i++) {
         if (typeof chunks[i] !== 'string') {
-            throw new TypeError('Expected string');
+            throw new TypeError('Expected chunk to be a string');
         }
         parserStream.write(chunks[i]);
     }
