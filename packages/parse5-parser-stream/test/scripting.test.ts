@@ -6,7 +6,7 @@ function pause(): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, 5));
 }
 
-const suitePath = new URL('../../parse5-test-utils/data/tree-construction-scripting', import.meta.url);
+const suitePath = new URL('../../../test/data/tree-construction-scripting', import.meta.url);
 
 generateParsingTests(
     'ParserStream - Scripting',

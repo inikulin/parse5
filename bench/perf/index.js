@@ -7,12 +7,9 @@ import * as parse5 from '../../packages/parse5/dist/index.js';
 import { ParserStream as parse5Stream } from '../../packages/parser-stream/lib/index.js';
 import * as parse5Upstream from 'parse5';
 
-const hugePagePath = new URL('../../packages/parse5-test-utils/data/huge-page/huge-page.html', import.meta.url);
-const treeConstructionPath = new URL(
-    '../../packages/parse5-test-utils/data/html5lib-tests/tree-construction',
-    import.meta.url
-);
-const saxPath = new URL('../../packages/parse5-test-utils/data/sax/', import.meta.url);
+const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
+const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);
+const saxPath = new URL('../../test/data/sax/', import.meta.url);
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */

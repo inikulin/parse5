@@ -68,7 +68,7 @@ function createBasicTest(html: string, expected: string, options?: SAXParserOpti
     };
 }
 
-const hugePage = new URL('../../parse5-test-utils/data/huge-page/huge-page.html', import.meta.url);
+const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.meta.url);
 
 describe('SAX parser', () => {
     //Basic tests

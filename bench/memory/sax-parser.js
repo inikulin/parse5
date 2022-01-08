@@ -35,7 +35,7 @@ async function main() {
 }
 
 async function parse() {
-    const data = readFile('../packages/parse5-test-utils/data/huge-page/huge-page.html', 'utf8');
+    const data = readFile('../test/data/huge-page/huge-page.html', 'utf8');
     let parsedDataSize = 0;
     const stream = new SAXParser();
 
