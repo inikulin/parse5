@@ -26,7 +26,7 @@
     },
     "scripts": {
         "build": "npm run build --workspaces --if-present",
-        "prettier": "prettier '**/*.{js,ts,md,json,yml}'",
+        "prettier": "prettier '**/*.{js,ts,md,json,yml}' --loglevel warn",
         "format": "npm run format:es && npm run format:prettier",
         "format:es": "npm run lint:es -- --fix",
         "format:prettier": "npm run prettier -- --write",
