@@ -5,4 +5,5 @@ node_modules
 docs/build
 docs/05_api_reference.md
 packages/*/dist/
+test/dist/
 .DS_Store
