@@ -7,7 +7,7 @@
     "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
     "homepage": "https://github.com/inikulin/parse5",
     "scripts": {
-        "build": "rm -r dist; tsc"
+        "build": "tsc --build --clean"
     },
     "dependencies": {
         "entities": "^3.0.1"

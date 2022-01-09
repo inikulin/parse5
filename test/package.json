@@ -4,6 +4,6 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "rm -r dist; tsc"
+        "build": "tsc --build --clean"
     }
 }
