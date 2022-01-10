@@ -264,7 +264,7 @@ export function getTagName(element: Element): string {
     return element.tagName;
 }
 
-export function getNamespaceURI(element: Element): string {
+export function getNamespaceURI(element: Element): NAMESPACES {
     return element.namespaceURI;
 }
 
