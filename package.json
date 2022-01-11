@@ -18,7 +18,6 @@
         "eslint-plugin-unicorn": "^40.0.0",
         "husky": "^7.0.4",
         "jest": "^27.4.7",
-        "lerna": "^4.0.0",
         "lint-staged": "^11.2.6",
         "prettier": "^2.5.0",
         "ts-jest": "^27.1.2",
@@ -41,7 +40,7 @@
         "bench-memory-sax": "cd bench && npm install && node memory/sax-parser.js",
         "preversion": "npm test",
         "pre-commit": "lint-staged",
-        "publish": "lerna publish",
+        "publish": "npm publish --workspaces",
         "prepare": "husky install",
         "prepublishOnly": "npm run build"
     },
