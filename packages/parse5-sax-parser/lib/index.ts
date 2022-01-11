@@ -48,7 +48,7 @@ export interface SAXParserOptions {
  *     });
  * ```
  */
-export class SAXParser extends Transform implements SaxEvents {
+export class SAXParser extends Transform {
     protected options: SAXParserOptions;
     protected tokenizer: Tokenizer;
     protected parserFeedbackSimulator: ParserFeedbackSimulator;
