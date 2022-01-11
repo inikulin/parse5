@@ -247,6 +247,7 @@ export function setNodeSourceCodeLocation(node: Node, location: ElementLocation 
         node.endIndex = location.endOffset;
     }
 
+    // TODO: Update types in `domhandler`
     node.sourceCodeLocation = location as any;
 }
 
@@ -257,6 +258,7 @@ export function getNodeSourceCodeLocation(node: Node): ElementLocation | null | 
 export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<ElementLocation>): void {
     if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
 
+    // TODO: Update types in `domhandler`
     node.sourceCodeLocation = {
         ...node.sourceCodeLocation,
         ...endLocation,
