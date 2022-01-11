@@ -112,8 +112,8 @@ export function setDocumentType(
 ): void {
     const data = doctype.serializeContent(name, publicId, systemId);
     let doctypeNode = document.children.find(
-        (node) => isDirective(node) && node.name === '!doctype'
-    ) as ProcessingInstruction;
+        (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype'
+    );
 
     if (doctypeNode) {
         doctypeNode.data = data ?? null;
