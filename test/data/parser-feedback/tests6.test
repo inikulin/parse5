@@ -134,8 +134,8 @@
             ]
         },
         {
-            "description": "<frameset></frameset>\\nfoo",
-            "input": "<frameset></frameset>\nfoo",
+            "description": "<frameset></frameset>\\r\\nfoo",
+            "input": "<frameset></frameset>\r\nfoo",
             "output": [
                 [
                     "StartTag",
@@ -153,8 +153,8 @@
             ]
         },
         {
-            "description": "<frameset></frameset>\\n<noframes>",
-            "input": "<frameset></frameset>\n<noframes>",
+            "description": "<frameset></frameset>\\r\\n<noframes>",
+            "input": "<frameset></frameset>\r\n<noframes>",
             "output": [
                 [
                     "StartTag",
@@ -177,8 +177,8 @@
             ]
         },
         {
-            "description": "<frameset></frameset>\\n<div>",
-            "input": "<frameset></frameset>\n<div>",
+            "description": "<frameset></frameset>\\r\\n<div>",
+            "input": "<frameset></frameset>\r\n<div>",
             "output": [
                 [
                     "StartTag",
@@ -201,8 +201,8 @@
             ]
         },
         {
-            "description": "<frameset></frameset>\\n</html>",
-            "input": "<frameset></frameset>\n</html>",
+            "description": "<frameset></frameset>\\r\\n</html>",
+            "input": "<frameset></frameset>\r\n</html>",
             "output": [
                 [
                     "StartTag",
@@ -224,8 +224,8 @@
             ]
         },
         {
-            "description": "<frameset></frameset>\\n</div>",
-            "input": "<frameset></frameset>\n</div>",
+            "description": "<frameset></frameset>\\r\\n</div>",
+            "input": "<frameset></frameset>\r\n</div>",
             "output": [
                 [
                     "StartTag",

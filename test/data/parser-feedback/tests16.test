@@ -2010,40 +2010,6 @@
             ]
         },
         {
-            "description": "<!doctype html><noscript><!--<noscript></noscript>--></noscript>",
-            "input": "<!doctype html><noscript><!--<noscript></noscript>--></noscript>",
-            "output": [
-                [
-                    "DOCTYPE",
-                    "html",
-                    null,
-                    null,
-                    true
-                ],
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "<!--<noscript>"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ],
-                [
-                    "Character",
-                    "-->"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ]
-            ]
-        },
-        {
             "description": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
             "input": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
             "output": [
@@ -2083,79 +2049,6 @@
                 [
                     "EndTag",
                     "noscript"
-                ]
-            ]
-        },
-        {
-            "description": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
-            "input": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
-            "output": [
-                [
-                    "DOCTYPE",
-                    "html",
-                    null,
-                    null,
-                    true
-                ],
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "<!--"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ],
-                [
-                    "Character",
-                    "X"
-                ],
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "-->"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ]
-            ]
-        },
-        {
-            "description": "<!doctype html><noscript><iframe></noscript>X",
-            "input": "<!doctype html><noscript><iframe></noscript>X",
-            "output": [
-                [
-                    "DOCTYPE",
-                    "html",
-                    null,
-                    null,
-                    true
-                ],
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "<iframe>"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ],
-                [
-                    "Character",
-                    "X"
                 ]
             ]
         },
@@ -3885,33 +3778,6 @@
             ]
         },
         {
-            "description": "<noscript><!--<noscript></noscript>--></noscript>",
-            "input": "<noscript><!--<noscript></noscript>--></noscript>",
-            "output": [
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "<!--<noscript>"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ],
-                [
-                    "Character",
-                    "-->"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ]
-            ]
-        },
-        {
             "description": "<noscript><!--</noscript>X<noscript>--></noscript>",
             "input": "<noscript><!--</noscript>X<noscript>--></noscript>",
             "output": [
@@ -3944,65 +3810,6 @@
                 [
                     "EndTag",
                     "noscript"
-                ]
-            ]
-        },
-        {
-            "description": "<noscript><!--</noscript>X<noscript>--></noscript>",
-            "input": "<noscript><!--</noscript>X<noscript>--></noscript>",
-            "output": [
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "<!--"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ],
-                [
-                    "Character",
-                    "X"
-                ],
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "-->"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ]
-            ]
-        },
-        {
-            "description": "<noscript><iframe></noscript>X",
-            "input": "<noscript><iframe></noscript>X",
-            "output": [
-                [
-                    "StartTag",
-                    "noscript",
-                    {}
-                ],
-                [
-                    "Character",
-                    "<iframe>"
-                ],
-                [
-                    "EndTag",
-                    "noscript"
-                ],
-                [
-                    "Character",
-                    "X"
                 ]
             ]
         },
@@ -4226,8 +4033,8 @@
             ]
         },
         {
-            "description": "<!doctype html><table>\\n",
-            "input": "<!doctype html><table>\n",
+            "description": "<!doctype html><table>\\r\\n",
+            "input": "<!doctype html><table>\r\n",
             "output": [
                 [
                     "DOCTYPE",
