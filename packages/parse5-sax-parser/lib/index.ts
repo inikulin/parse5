@@ -48,7 +48,7 @@ export interface SAXParserOptions {
  *     });
  * ```
  */
-export class SAXParser extends Transform {
+export class SAXParser extends Transform implements SaxEvents {
     protected options: SAXParserOptions;
     protected tokenizer: Tokenizer;
     protected parserFeedbackSimulator: ParserFeedbackSimulator;
@@ -288,3 +288,25 @@ const TOKEN_EMISSION_HELPERS = {
         reshapeToken: (): Record<string, never> => ({}),
     },
 };
+
+export interface SAXParser {
+    /** Raised when the parser encounters a start tag. */
+    on(
+        event: 'startTag',
+        listener: (startTag: StartTag) => void
+    ): this /** Raised when parser encounters an end tag. */;
+    on(event: 'endTag', listener: (endTag: EndTag) => void): this;
+    /** Raised when parser encounters a comment. */
+    on(event: 'comment', listener: (comment: CommentToken) => void): this;
+    /** Raised when parser encounters text content. */
+    on(event: 'text', listener: (text: Text) => void): this;
+    /** Raised when parser encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration) */
+    on(event: 'doctype', listener: (doctype: DoctypeToken) => void): this;
+    /**
+     * Base event handler.
+     *
+     * @param event Name of the event
+     * @param handler Event handler
+     */
+    on(event: string, handler: (...args: any[]) => void): this;
+}
