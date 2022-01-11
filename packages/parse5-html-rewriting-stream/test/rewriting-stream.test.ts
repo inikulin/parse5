@@ -1,10 +1,10 @@
 import * as assert from 'node:assert';
-import dedent from 'dedent';
+import { outdent } from 'outdent';
 import { RewritingStream } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
 import { getStringDiffMsg, writeChunkedToStream, WritableStreamStub } from 'parse5-test-utils/utils/common.js';
 
-const srcHtml = dedent`
+const srcHtml = outdent`
   <!DOCTYPE html "">
   <html>
       <!-- comment1 -->
@@ -62,7 +62,7 @@ describe('RewritingStream', () => {
         'rewrite start tags',
         createRewriterTest({
             src: srcHtml,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html "">
               <html>
                   <!-- comment1 -->
@@ -92,7 +92,7 @@ describe('RewritingStream', () => {
         'rewrite end tags',
         createRewriterTest({
             src: srcHtml,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html "">
               <html>
                   <!-- comment1 -->
@@ -118,7 +118,7 @@ describe('RewritingStream', () => {
         'rewrite text',
         createRewriterTest({
             src: srcHtml,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html "">
               <html>
                   <!-- comment1 -->
@@ -146,7 +146,7 @@ describe('RewritingStream', () => {
         'rewrite comment',
         createRewriterTest({
             src: srcHtml,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html "">
               <html>
                   <!--42-->
@@ -172,7 +172,7 @@ describe('RewritingStream', () => {
         'rewrite doctype',
         createRewriterTest({
             src: srcHtml,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html PUBLIC "42" "hey">
               <html>
                   <!-- comment1 -->
@@ -199,7 +199,7 @@ describe('RewritingStream', () => {
         'emit multiple',
         createRewriterTest({
             src: srcHtml,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html "">
               <wrap><html></wrap>
                   <!-- comment1 -->
@@ -225,7 +225,7 @@ describe('RewritingStream', () => {
         'rewrite raw',
         createRewriterTest({
             src: srcHtml,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html "">42
               <html>42
                   <!-- comment1 -->42
@@ -254,7 +254,7 @@ describe('RewritingStream', () => {
     it(
         'Should escape entities in attributes and text',
         createRewriterTest({
-            src: dedent`
+            src: outdent`
               <!DOCTYPE html "">
               <html>
                   <head foo='bar"baz"'>
@@ -264,7 +264,7 @@ describe('RewritingStream', () => {
                   </body>
               </html>
             `,
-            expected: dedent`
+            expected: outdent`
               <!DOCTYPE html "">
               <html>
                   <head foo="bar&quot;baz&quot;">

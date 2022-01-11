@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import dedent from 'dedent';
+import { outdent } from 'outdent';
 import * as parse5 from '../index.js';
 import {
     generateLocationInfoParserTests,
@@ -91,7 +91,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
     });
 
     test('Regression - location line incorrect when a character is unconsumed (GH-151)', () => {
-        const html = dedent`
+        const html = outdent`
           <html><body><script>
             var x = window.scrollY <
                 100;

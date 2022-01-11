@@ -12,7 +12,6 @@
         "noPropertyAccessFromIndexSignature": true,
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
-        "allowSyntheticDefaultImports": true,
 
         "outDir": "build",
         "baseUrl": ".",
