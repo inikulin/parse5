@@ -1,15 +1,6 @@
 import { Transform } from 'node:stream';
 import { Tokenizer } from 'parse5/dist/tokenizer/index.js';
-import {
-    TokenType,
-    Token,
-    CharacterToken,
-    TagToken,
-    DoctypeToken,
-    CommentToken,
-    Attribute,
-    Location,
-} from 'parse5/dist/common/token.js';
+import { TokenType, Token, CharacterToken, Attribute, Location } from 'parse5/dist/common/token.js';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
@@ -174,17 +165,62 @@ export class SAXParser extends Transform {
     }
 
     protected _handleToken(token: Token): boolean {
-        if (token.type === TokenType.EOF) {
-            return true;
+        switch (token.type) {
+            case TokenType.EOF:
+                return true;
+            case TokenType.START_TAG: {
+                const startTag: StartTag = {
+                    tagName: token.tagName,
+                    attrs: token.attrs,
+                    selfClosing: token.selfClosing,
+                    sourceCodeLocation: token.location,
+                };
+                return this._emitIfListenerExists('startTag', startTag);
+            }
+            case TokenType.END_TAG: {
+                const endTag: EndTag = {
+                    tagName: token.tagName,
+                    sourceCodeLocation: token.location,
+                };
+                return this._emitIfListenerExists('endTag', endTag);
+            }
+            case TokenType.COMMENT: {
+                const comment: Comment = {
+                    text: token.data,
+                    sourceCodeLocation: token.location,
+                };
+                return this._emitIfListenerExists('comment', comment);
+            }
+            case TokenType.DOCTYPE: {
+                const doctype: Doctype = {
+                    name: token.name,
+                    publicId: token.publicId,
+                    systemId: token.systemId,
+                    sourceCodeLocation: token.location,
+                };
+                return this._emitIfListenerExists('doctype', doctype);
+            }
+            case TokenType.CHARACTER:
+            case TokenType.NULL_CHARACTER:
+            case TokenType.WHITESPACE_CHARACTER: {
+                const text: Text = {
+                    text: token.chars,
+                    sourceCodeLocation: token.location,
+                };
+                return this._emitIfListenerExists('text', text);
+            }
+            case TokenType.HIBERNATION: {
+                return this._emitIfListenerExists('hibernation', {});
+            }
         }
+    }
 
-        const { eventName, reshapeToken } = TOKEN_EMISSION_HELPERS[token.type];
-
+    private _emitIfListenerExists(eventName: string, token: SaxToken): boolean {
         if (this.listenerCount(eventName) === 0) {
             return false;
         }
 
-        this._emitToken(eventName, reshapeToken(token as any));
+        this._emitToken(eventName, token);
 
         return true;
     }
@@ -238,56 +274,6 @@ export interface Doctype extends SaxToken {
     /** Document type system identifier. */
     systemId: string | null;
 }
-
-const TEXT_EMISSION_HELPER = {
-    eventName: 'text',
-    reshapeToken: (origToken: CharacterToken): Text => ({
-        text: origToken.chars,
-        sourceCodeLocation: origToken.location,
-    }),
-};
-
-const TOKEN_EMISSION_HELPERS = {
-    [TokenType.START_TAG]: {
-        eventName: 'startTag',
-        reshapeToken: (origToken: TagToken): StartTag => ({
-            tagName: origToken.tagName,
-            attrs: origToken.attrs,
-            selfClosing: origToken.selfClosing,
-            sourceCodeLocation: origToken.location,
-        }),
-    },
-    [TokenType.END_TAG]: {
-        eventName: 'endTag',
-        reshapeToken: (origToken: TagToken): EndTag => ({
-            tagName: origToken.tagName,
-            sourceCodeLocation: origToken.location,
-        }),
-    },
-    [TokenType.COMMENT]: {
-        eventName: 'comment',
-        reshapeToken: (origToken: CommentToken): Comment => ({
-            text: origToken.data,
-            sourceCodeLocation: origToken.location,
-        }),
-    },
-    [TokenType.DOCTYPE]: {
-        eventName: 'doctype',
-        reshapeToken: (origToken: DoctypeToken): Doctype => ({
-            name: origToken.name,
-            publicId: origToken.publicId,
-            systemId: origToken.systemId,
-            sourceCodeLocation: origToken.location,
-        }),
-    },
-    [TokenType.CHARACTER]: TEXT_EMISSION_HELPER,
-    [TokenType.NULL_CHARACTER]: TEXT_EMISSION_HELPER,
-    [TokenType.WHITESPACE_CHARACTER]: TEXT_EMISSION_HELPER,
-    [TokenType.HIBERNATION]: {
-        eventName: 'hibernation',
-        reshapeToken: (): Record<string, never> => ({}),
-    },
-};
 
 export interface SAXParser {
     /** Raised when the parser encounters a start tag. */
