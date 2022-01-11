@@ -297,11 +297,11 @@ export interface SAXParser {
     ): this /** Raised when parser encounters an end tag. */;
     on(event: 'endTag', listener: (endTag: EndTag) => void): this;
     /** Raised when parser encounters a comment. */
-    on(event: 'comment', listener: (comment: CommentToken) => void): this;
+    on(event: 'comment', listener: (comment: Comment) => void): this;
     /** Raised when parser encounters text content. */
     on(event: 'text', listener: (text: Text) => void): this;
     /** Raised when parser encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration) */
-    on(event: 'doctype', listener: (doctype: DoctypeToken) => void): this;
+    on(event: 'doctype', listener: (doctype: Doctype) => void): this;
     /**
      * Base event handler.
      *
