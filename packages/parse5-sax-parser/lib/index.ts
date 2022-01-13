@@ -166,8 +166,9 @@ export class SAXParser extends Transform {
 
     protected _handleToken(token: Token): boolean {
         switch (token.type) {
-            case TokenType.EOF:
+            case TokenType.EOF: {
                 return true;
+            }
             case TokenType.START_TAG: {
                 const startTag: StartTag = {
                     tagName: token.tagName,
@@ -277,10 +278,8 @@ export interface Doctype extends SaxToken {
 
 export interface SAXParser {
     /** Raised when the parser encounters a start tag. */
-    on(
-        event: 'startTag',
-        listener: (startTag: StartTag) => void
-    ): this /** Raised when parser encounters an end tag. */;
+    on(event: 'startTag', listener: (startTag: StartTag) => void): this;
+    /** Raised when parser encounters an end tag. */
     on(event: 'endTag', listener: (endTag: EndTag) => void): this;
     /** Raised when parser encounters a comment. */
     on(event: 'comment', listener: (comment: Comment) => void): this;
