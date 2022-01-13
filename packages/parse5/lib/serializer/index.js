@@ -36,6 +36,12 @@ export class Serializer {
         return this.html;
     }
 
+    serializeOuter() {
+        this._serializeElement(this.startNode);
+
+        return this.html;
+    }
+
     //Internals
     _serializeChildNodes(parentNode) {
         const childNodes = this.treeAdapter.getChildNodes(parentNode);

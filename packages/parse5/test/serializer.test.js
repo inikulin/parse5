@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import * as parse5 from '../lib/index.js';
 import { generateSeriliazerTests } from '../../../test/utils/generate-serializer-tests.js';
 import { treeAdapters } from '../../../test/utils/common.js';
+import { Serializer } from '../lib/serializer/index.js';
 
 generateSeriliazerTests('serializer', 'Serializer', parse5.serialize);
 
@@ -20,5 +21,17 @@ suite('serializer', () => {
 
             parse5.serialize(document, { treeAdapter });
         });
+    });
+
+    test('serializes outerHTML correctly', () => {
+        const document = parse5.parse('<div><button>Hello</button></div>');
+
+        const div = document.childNodes[0].childNodes[1].childNodes[0];
+
+        const serializer = new Serializer(div);
+
+        const html = serializer.serializeOuter();
+
+        assert.equal(html, '<div><button>Hello</button></div>');
     });
 });
