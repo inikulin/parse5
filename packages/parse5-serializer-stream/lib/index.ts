@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream';
 import { Serializer, SerializerOptions } from 'parse5/dist/serializer/index.js';
-import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface';
+import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 /**
  * Streaming AST node to an HTML serializer. A [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable).

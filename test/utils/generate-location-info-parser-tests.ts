@@ -1,6 +1,6 @@
 import { ParserOptions } from 'parse5/dist/parser/index';
-import { Location, ElementLocation } from 'parse5/dist/common/token';
-import { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface';
+import { Location, ElementLocation } from 'parse5/dist/common/token.js';
+import { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';

@@ -24,7 +24,7 @@
         "typescript": "^4.5.4"
     },
     "scripts": {
-        "build": "npm run build --workspaces --if-present",
+        "build": "tsc --build packages/* test",
         "prettier": "prettier '**/*.{js,ts,md,json,yml}' --loglevel warn",
         "format": "npm run format:es && npm run format:prettier",
         "format:es": "npm run lint:es -- --fix",
@@ -35,13 +35,13 @@
         "unit-tests": "NODE_OPTIONS=--experimental-vm-modules jest",
         "test": "npm run lint && npm run unit-tests",
         "generate-feedback-tests": "node --loader ts-node/esm scripts/generate-parser-feedback-test/index.ts test/data/html5lib-tests/tree-construction/*.dat test/data/tree-construction-regression/*.dat",
-        "bench-perf": "cd bench && npm install && node perf/index.js",
-        "bench-memory-sax": "cd bench && npm install && node memory/sax-parser.js",
+        "bench-perf": "npm run build && node bench/perf/index.js",
+        "bench-memory-sax": "npm run build && node bench/memory/sax-parser.js",
         "preversion": "npm test",
         "pre-commit": "lint-staged",
         "publish": "npm publish --workspaces",
         "prepare": "husky install",
-        "prepublishOnly": "npm run build"
+        "prepublish": "npm run build"
     },
     "lint-staged": {
         "*.{js,ts}": [
@@ -63,6 +63,7 @@
         },
         "moduleNameMapper": {
             "^(parse5[^/]*)/dist/(.*?)(?:\\.js)?$": "<rootDir>/packages/$1/lib/$2",
+            "^(parse5[^/]*)$": "<rootDir>/packages/$1/lib/index.ts",
             "^(.*)\\.js$": "$1"
         }
     }

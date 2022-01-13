@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import * as parse5 from 'parse5/dist/index.js';
+import * as parse5 from 'parse5';
 import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 import { generateTestsForEachTreeAdapter, getStringDiffMsg } from './common.js';
 

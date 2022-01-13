@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import * as parse5 from 'parse5/dist/index.js';
+import * as parse5 from 'parse5';
 import { PlainTextConversionStream } from '../lib/index.js';
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 

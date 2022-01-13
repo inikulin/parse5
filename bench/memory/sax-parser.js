@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import format from 'human-format';
 import promisifyEvent from 'promisify-event';
 import memwatch from '@airbnb/node-memwatch';
-import { SAXParser } from '../../packages/sax-parser/lib/index.js';
+import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
 
 main();
 
@@ -35,7 +35,7 @@ async function main() {
 }
 
 async function parse() {
-    const data = readFile('../test/data/huge-page/huge-page.html', 'utf8');
+    const data = await readFile(new URL('../../test/data/huge-page/huge-page.html', import.meta.url), 'utf8');
     let parsedDataSize = 0;
     const stream = new SAXParser();
 

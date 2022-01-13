@@ -5,8 +5,8 @@ import * as path from 'node:path';
 import * as assert from 'node:assert';
 import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
-import { parseDatFile, DatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface';
+import { parseDatFile, DatFile } from './parse-dat-file.js';
+import type { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile<T> {
     idx: number;

@@ -1,10 +1,10 @@
 import { readFileSync, createReadStream, readdirSync } from 'node:fs';
 import Benchmark from 'benchmark';
-import { loadTreeConstructionTestData } from 'parse5-test-utils/utils/generate-parsing-tests.js';
-import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
-import { treeAdapters, WritableStreamStub } from 'parse5-test-utils/utils/common.js';
+import { loadTreeConstructionTestData } from 'parse5-test-utils/dist/generate-parsing-tests.js';
+import { loadSAXParserTestData } from 'parse5-test-utils/dist/load-sax-parser-test-data.js';
+import { treeAdapters, WritableStreamStub } from 'parse5-test-utils/dist/common.js';
 import * as parse5 from '../../packages/parse5/dist/index.js';
-import { ParserStream as parse5Stream } from '../../packages/parser-stream/lib/index.js';
+import { ParserStream as parse5Stream } from '../../packages/parse5-parser-stream/dist/index.js';
 import * as parse5Upstream from 'parse5';
 
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
@@ -58,7 +58,11 @@ global.files = readdirSync(saxPath).map((dirName) => {
 
 // Utils
 function getHz(suite, testName) {
-    return suite.find((t) => t.name === testName).hz;
+    for (let i = 0; i < suite.length; i++) {
+        if (suite[i].name === testName) {
+            return suite[i].hz;
+        }
+    }
 }
 
 function runBench({ name, workingCopyFn, upstreamFn, defer = false }) {

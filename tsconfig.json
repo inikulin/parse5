@@ -2,7 +2,6 @@
     "compilerOptions": {
         "target": "es2019",
         "module": "esnext",
-        "declaration": true,
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -13,13 +12,9 @@
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
 
-        "outDir": "build",
-        "baseUrl": ".",
-        "paths": {
-            "parse5/dist/*": ["packages/parse5/lib/*"],
-            "parse5-sax-parser/dist/*": ["packages/parse5-sax-parser/lib/*"],
-            "parse5-htmlparser2-tree-adapter/dist/*": ["packages/parse5-htmlparser2-tree-adapter/lib/*"],
-            "parse5-parser-stream/dist/*": ["packages/parse5-parser-stream/lib/*"]
-        }
-    }
+        "composite": true,
+        "declarationMap": true,
+        "sourceMap": true
+    },
+    "references": [{ "path": "packages/parse5/tsconfig.json" }]
 }
