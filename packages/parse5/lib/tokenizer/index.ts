@@ -56,7 +56,7 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
 const HIBERNATION_TOKEN: Token = { type: TokenType.HIBERNATION, location: null };
 
 //States
-export enum State {
+const enum State {
     DATA,
     RCDATA,
     RAWTEXT,

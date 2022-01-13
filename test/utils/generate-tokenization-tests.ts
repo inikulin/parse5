@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { Tokenizer, TokenizerMode, State as TokenizerState } from 'parse5/dist/tokenizer/index.js';
+import { Tokenizer, TokenizerMode } from 'parse5/dist/tokenizer/index.js';
 import { makeChunks } from './common.js';
 import { TokenType, Token } from 'parse5/dist/common/token.js';
 
@@ -151,6 +151,7 @@ interface LoadedTest {
     input: string;
     expected: HtmlLibToken[];
     initialState: Tokenizer['state'];
+    initialStateName: string;
     lastStartTag: string;
     expectedErrors: string[];
 }
@@ -187,14 +188,15 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 
             const expected = descr.output;
 
-            for (const initialState of descr.initialStates) {
+            for (const initialStateName of descr.initialStates) {
                 tests.push({
                     idx: ++testIdx,
                     setName,
                     name: descr.description,
                     input: descr.input,
                     expected: concatCharacterTokens(expected),
-                    initialState: getTokenizerSuitableStateName(initialState),
+                    initialState: getTokenizerSuitableStateName(initialStateName),
+                    initialStateName,
                     lastStartTag: descr.lastStartTag,
                     expectedErrors: descr.errors || [],
                 });
@@ -212,16 +214,14 @@ export function generateTokenizationTests(
     createTokenSource: TokenSourceCreator
 ): void {
     for (const testData of loadTests(testSuite)) {
-        const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${
-            TokenizerState[testData.initialState]
-        }`;
+        const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${testData.initialStateName}`;
 
         it(testName, () => {
             const chunks = makeChunks(testData.input);
             const result = tokenize(
                 createTokenSource,
                 chunks,
-                testData.initialState as TokenizerState,
+                testData.initialState as Tokenizer['state'],
                 testData.lastStartTag
             );
 
@@ -234,7 +234,7 @@ export function generateTokenizationTests(
              */
             if (
                 testName ===
-                'Tokenizer - 57.entities - Undefined named entity in attribute value ending in semicolon and whose name starts with a known entity name. - Initial state: DATA'
+                'Tokenizer - 57.entities - Undefined named entity in attribute value ending in semicolon and whose name starts with a known entity name. - Initial state: Data state'
             ) {
                 assert.deepEqual(result.errors, [{ code: 'unknown-named-character-reference', col: 12, line: 1 }]);
             } else {
