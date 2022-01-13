@@ -791,7 +791,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     _closePElement(): void {
-        this.openElements.generateImpliedEndTagsWithExclusion(TN.P);
+        this.openElements.generateImpliedEndTagsWithExclusion($.P);
         this.openElements.popUntilTagNamePopped($.P);
     }
 
@@ -1726,20 +1726,13 @@ function listItemStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     const tn = token.tagID;
 
     for (let i = p.openElements.stackTop; i >= 0; i--) {
-        const element = p.openElements.items[i];
-        const elementTn = p.treeAdapter.getTagName(element);
-        let elementId = p.openElements.tagIDs[i];
-        let closeTn = null;
+        const elementId = p.openElements.tagIDs[i];
 
-        if (tn === $.LI && elementId === $.LI) {
-            closeTn = TN.LI;
-            elementId = $.LI;
-        } else if ((tn === $.DD || tn === $.DT) && (elementId === $.DD || elementId === $.DT)) {
-            closeTn = elementTn;
-        }
-
-        if (closeTn) {
-            p.openElements.generateImpliedEndTagsWithExclusion(closeTn);
+        if (
+            (tn === $.LI && elementId === $.LI) ||
+            ((tn === $.DD || tn === $.DT) && (elementId === $.DD || elementId === $.DT))
+        ) {
+            p.openElements.generateImpliedEndTagsWithExclusion(elementId);
             p.openElements.popUntilTagNamePopped(elementId);
             break;
         }
@@ -1748,7 +1741,7 @@ function listItemStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
             elementId !== $.ADDRESS &&
             elementId !== $.DIV &&
             elementId !== $.P &&
-            p._isSpecialElement(element, elementId)
+            p._isSpecialElement(p.openElements.items[i], elementId)
         ) {
             break;
         }
@@ -1941,7 +1934,7 @@ function rbStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 
 function rtStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInScope($.RUBY)) {
-        p.openElements.generateImpliedEndTagsWithExclusion(TN.RTC);
+        p.openElements.generateImpliedEndTagsWithExclusion($.RTC);
     }
 
     p._insertElement(token, NS.HTML);
@@ -2259,7 +2252,7 @@ function pEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
 
 function liEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     if (p.openElements.hasInListItemScope($.LI)) {
-        p.openElements.generateImpliedEndTagsWithExclusion(TN.LI);
+        p.openElements.generateImpliedEndTagsWithExclusion($.LI);
         p.openElements.popUntilTagNamePopped($.LI);
     }
 }
@@ -2268,7 +2261,7 @@ function ddEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
     const tn = token.tagID;
 
     if (p.openElements.hasInScope(tn)) {
-        p.openElements.generateImpliedEndTagsWithExclusion(token.tagName);
+        p.openElements.generateImpliedEndTagsWithExclusion(tn);
         p.openElements.popUntilTagNamePopped(tn);
     }
 }
@@ -2307,7 +2300,7 @@ function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 
         // Compare the tag name here, as the tag might not be a known tag with an ID.
         if (tid === elementId && (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)) {
-            p.openElements.generateImpliedEndTagsWithExclusion(tn);
+            p.openElements.generateImpliedEndTagsWithExclusion(tid);
             if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
             break;
         }

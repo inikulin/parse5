@@ -388,11 +388,8 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         }
     }
 
-    generateImpliedEndTagsWithExclusion(exclusionTagName: string): void {
-        while (
-            this.treeAdapter.getTagName(this.current) !== exclusionTagName &&
-            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)
-        ) {
+    generateImpliedEndTagsWithExclusion(exclusionId: $): void {
+        while (this.currentTagId !== exclusionId && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)) {
             this.pop();
         }
     }

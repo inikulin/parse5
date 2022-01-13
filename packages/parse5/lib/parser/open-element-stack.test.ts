@@ -439,7 +439,7 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
         stack.push(createElement(TN.OPTION), $.OPTION);
         stack.push(createElement(TN.P), $.P);
 
-        stack.generateImpliedEndTagsWithExclusion(TN.LI);
+        stack.generateImpliedEndTagsWithExclusion($.LI);
 
         assert.strictEqual(stack.stackTop, 3);
         assert.strictEqual(stack.currentTagId, $.LI);
