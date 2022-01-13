@@ -52,9 +52,7 @@ global.runPages = function (parser) {
 };
 
 // Stream data
-global.files = readdirSync(saxPath).map((dirName) => {
-    return new URL(`${dirName}/src.html`, saxPath).pathname;
-});
+global.files = readdirSync(saxPath).map((dirName) => new URL(`${dirName}/src.html`, saxPath).pathname);
 
 // Utils
 function getHz(suite, testName) {

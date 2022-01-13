@@ -21,6 +21,7 @@
             }
         ],
         "prefer-template": "error",
+        "arrow-body-style": ["error", "as-needed"],
 
         "unicorn/no-null": "off",
         "unicorn/prevent-abbreviations": "off",
