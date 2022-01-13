@@ -1,4 +1,4 @@
-import { ParserOptions } from 'parse5/dist/parser/index.js';
+import { ParserOptions } from 'parse5';
 import { ParserError } from 'parse5/dist/common/error-codes.js';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
