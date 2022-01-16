@@ -1,4 +1,3 @@
-import * as defaultTreeAdapter from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
@@ -48,117 +47,123 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
      *
      * @default `treeAdapters.default`
      */
-    treeAdapter?: TreeAdapter<T>;
+    treeAdapter: TreeAdapter<T>;
 }
 
 //Serializer
 export class Serializer<T extends TreeAdapterTypeMap> {
-    html = '';
-    treeAdapter: TreeAdapter<T>;
-
-    constructor(
-        private startNode: T['parentNode'],
-        { treeAdapter = defaultTreeAdapter as TreeAdapter<T> }: SerializerOptions<T>
-    ) {
-        this.treeAdapter = treeAdapter;
-    }
+    constructor(private startNode: T['parentNode'], private options: SerializerOptions<T>) {}
 
     //API
     serialize(): string {
-        this._serializeChildNodes(this.startNode);
-
-        return this.html;
+        return this._serializeChildNodes(this.startNode, this.options);
     }
 
     //Internals
-    private _serializeChildNodes(parentNode: T['parentNode']): void {
-        const childNodes = this.treeAdapter.getChildNodes(parentNode);
+    private _serializeChildNodes<T extends TreeAdapterTypeMap>(
+        parentNode: T['parentNode'],
+        options: SerializerOptions<T>
+    ): string {
+        let html = '';
+        const childNodes = options.treeAdapter.getChildNodes(parentNode);
 
         if (childNodes) {
             for (const currentNode of childNodes) {
-                if (this.treeAdapter.isElementNode(currentNode)) {
-                    this._serializeElement(currentNode);
-                } else if (this.treeAdapter.isTextNode(currentNode)) {
-                    this._serializeTextNode(currentNode);
-                } else if (this.treeAdapter.isCommentNode(currentNode)) {
-                    this._serializeCommentNode(currentNode);
-                } else if (this.treeAdapter.isDocumentTypeNode(currentNode)) {
-                    this._serializeDocumentTypeNode(currentNode);
+                if (options.treeAdapter.isElementNode(currentNode)) {
+                    html += this._serializeElement(currentNode, options);
+                } else if (options.treeAdapter.isTextNode(currentNode)) {
+                    html += this._serializeTextNode(currentNode, options);
+                } else if (options.treeAdapter.isCommentNode(currentNode)) {
+                    html += this._serializeCommentNode(currentNode, options);
+                } else if (options.treeAdapter.isDocumentTypeNode(currentNode)) {
+                    html += this._serializeDocumentTypeNode(currentNode, options);
                 }
             }
         }
+
+        return html;
     }
 
-    private _serializeElement(node: T['element']): void {
-        const tn = this.treeAdapter.getTagName(node);
-        const ns = this.treeAdapter.getNamespaceURI(node);
+    private _serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], options: SerializerOptions<T>): string {
+        const tn = options.treeAdapter.getTagName(node);
+        const ns = options.treeAdapter.getNamespaceURI(node);
 
-        this.html += `<${tn}`;
-        this._serializeAttributes(node);
-        this.html += '>';
-
-        if (!VOID_ELEMENTS.has(tn)) {
-            const childNodesHolder =
-                tn === $.TEMPLATE && ns === NS.HTML ? this.treeAdapter.getTemplateContent(node) : node;
-
-            this._serializeChildNodes(childNodesHolder);
-            this.html += `</${tn}>`;
-        }
+        return `<${tn}${this._serializeAttributes(node, options)}>${
+            VOID_ELEMENTS.has(tn)
+                ? ''
+                : `${this._serializeChildNodes(
+                      // Get container of the child nodes
+                      tn === $.TEMPLATE && ns === NS.HTML ? options.treeAdapter.getTemplateContent(node) : node,
+                      options
+                  )}</${tn}>`
+        }`;
     }
 
-    private _serializeAttributes(node: T['element']): void {
-        for (const attr of this.treeAdapter.getAttrList(node)) {
-            const value = escapeString(attr.value, true);
-
-            this.html += ' ';
+    private _serializeAttributes<T extends TreeAdapterTypeMap>(
+        node: T['element'],
+        { treeAdapter }: SerializerOptions<T>
+    ): string {
+        let html = '';
+        for (const attr of treeAdapter.getAttrList(node)) {
+            html += ' ';
 
             if (!attr.namespace) {
-                this.html += attr.name;
+                html += attr.name;
             } else
                 switch (attr.namespace) {
                     case NS.XML: {
-                        this.html += `xml:${attr.name}`;
+                        html += `xml:${attr.name}`;
                         break;
                     }
                     case NS.XMLNS: {
                         if (attr.name !== 'xmlns') {
-                            this.html += 'xmlns:';
+                            html += 'xmlns:';
                         }
 
-                        this.html += attr.name;
+                        html += attr.name;
                         break;
                     }
                     case NS.XLINK: {
-                        this.html += `xlink:${attr.name}`;
+                        html += `xlink:${attr.name}`;
                         break;
                     }
                     default: {
-                        this.html += `${attr.prefix}:${attr.name}`;
+                        html += `${attr.prefix}:${attr.name}`;
                     }
                 }
 
-            this.html += `="${value}"`;
+            html += `="${escapeString(attr.value, true)}"`;
         }
+
+        return html;
     }
 
-    private _serializeTextNode(node: T['textNode']): void {
-        const content = this.treeAdapter.getTextNodeContent(node);
-        const parent = this.treeAdapter.getParentNode(node);
+    private _serializeTextNode<T extends TreeAdapterTypeMap>(
+        node: T['textNode'],
+        { treeAdapter }: SerializerOptions<T>
+    ): string {
+        const content = treeAdapter.getTextNodeContent(node);
+        const parent = treeAdapter.getParentNode(node);
 
-        this.html +=
-            parent && this.treeAdapter.isElementNode(parent) && UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent))
-                ? content
-                : escapeString(content, false);
+        return parent && treeAdapter.isElementNode(parent) && UNESCAPED_TEXT.has(treeAdapter.getTagName(parent))
+            ? content
+            : escapeString(content, false);
     }
 
-    private _serializeCommentNode(node: T['commentNode']): void {
-        this.html += `<!--${this.treeAdapter.getCommentNodeContent(node)}-->`;
+    private _serializeCommentNode<T extends TreeAdapterTypeMap>(
+        node: T['commentNode'],
+        { treeAdapter }: SerializerOptions<T>
+    ): string {
+        return `<!--${treeAdapter.getCommentNodeContent(node)}-->`;
     }
 
-    private _serializeDocumentTypeNode(node: T['documentType']): void {
-        const name = this.treeAdapter.getDocumentTypeNodeName(node);
+    private _serializeDocumentTypeNode<T extends TreeAdapterTypeMap>(
+        node: T['documentType'],
+        { treeAdapter }: SerializerOptions<T>
+    ): string {
+        const name = treeAdapter.getDocumentTypeNodeName(node);
 
-        this.html += `<${doctype.serializeContent(name, null, null)}>`;
+        return `<${doctype.serializeContent(name, null, null)}>`;
     }
 }
 

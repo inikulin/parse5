@@ -34,20 +34,11 @@ export class SerializerStream<T extends TreeAdapterTypeMap> extends Readable {
         super({ encoding: 'utf8' });
 
         this.serializer = new Serializer(node, options);
-
-        Object.defineProperty(this.serializer, 'html', {
-            //NOTE: To make `+=` concat operator work properly we define
-            //getter which always returns empty string
-            get() {
-                return '';
-            },
-            set: (data: string) => this.push(data),
-        });
     }
 
     //Readable stream implementation
     override _read(): void {
-        this.serializer.serialize();
+        this.push(this.serializer.serialize());
         this.push(null);
     }
 }
