@@ -1,4 +1,3 @@
-import * as doctype from '../common/doctype.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 
@@ -155,9 +154,7 @@ function serializeDocumentTypeNode<T extends TreeAdapterTypeMap>(
     node: T['documentType'],
     { treeAdapter }: SerializerOptions<T>
 ): string {
-    const name = treeAdapter.getDocumentTypeNodeName(node);
-
-    return `<${doctype.serializeContent(name, null, null)}>`;
+    return `<!DOCTYPE ${treeAdapter.getDocumentTypeNodeName(node)}>`;
 }
 
 // NOTE: used in tests and by rewriting stream
