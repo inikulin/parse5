@@ -79,14 +79,15 @@ export function serializeElement<T extends TreeAdapterTypeMap>(
     options: SerializerOptions<T>
 ): string {
     const tn = options.treeAdapter.getTagName(node);
-    const ns = options.treeAdapter.getNamespaceURI(node);
 
     return `<${tn}${serializeAttributes(node, options)}>${
         VOID_ELEMENTS.has(tn)
             ? ''
             : `${serializeChildNodes(
                   // Get container of the child nodes
-                  tn === $.TEMPLATE && ns === NS.HTML ? options.treeAdapter.getTemplateContent(node) : node,
+                  tn === $.TEMPLATE && options.treeAdapter.getNamespaceURI(node) === NS.HTML
+                      ? options.treeAdapter.getTemplateContent(node)
+                      : node,
                   options
               )}</${tn}>`
     }`;
