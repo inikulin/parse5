@@ -1,5 +1,6 @@
 import * as assert from 'node:assert';
 import * as parse5 from 'parse5';
+import outdent from 'outdent';
 import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import type { Element } from 'parse5/dist/tree-adapters/default';
@@ -32,6 +33,20 @@ describe('serializer', () => {
             expect(parse5.serialize(document, { scriptingEnabled: true })).toBe(
                 '<html><head></head><body>&amp;<noscript>&amp;</noscript></body></html>'
             );
+        });
+    });
+
+    describe('Mixed content (GH-333)', () => {
+        it('should serialize mixed content', () => {
+            const input = outdent`
+              <svg><style>&lt;</style></svg>
+              <style>&lt;</style>
+
+              <svg><script>&lt;</script></svg>
+              <script>&lt;</script>
+            `;
+            const document = parse5.parse(input);
+            expect(parse5.serialize(document)).toContain(input);
         });
     });
 });

@@ -74,7 +74,7 @@ type InternalOptions<T extends TreeAdapterTypeMap> = Required<SerializerOptions<
  */
 export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
     node: T['parentNode'],
-    options: SerializerOptions<T>
+    options?: SerializerOptions<T>
 ): string {
     const opts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true, ...options };
     return serializeChildNodes(node, opts);
@@ -108,7 +108,7 @@ function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], opti
     const tn = options.treeAdapter.getTagName(node);
 
     return `<${tn}${serializeAttributes(node, options)}>${
-        VOID_ELEMENTS.has(tn)
+        options.treeAdapter.getNamespaceURI(node) === NS.HTML && VOID_ELEMENTS.has(tn)
             ? ''
             : `${serializeChildNodes(
                   // Get container of the child nodes
@@ -165,7 +165,9 @@ function serializeTextNode<T extends TreeAdapterTypeMap>(node: T['textNode'], op
     const parent = treeAdapter.getParentNode(node);
     const parentTn = parent && treeAdapter.isElementNode(parent) && treeAdapter.getTagName(parent);
 
-    return parentTn && (UNESCAPED_TEXT.has(parentTn) || (options.scriptingEnabled && parentTn === $.NOSCRIPT))
+    return parentTn &&
+        treeAdapter.getNamespaceURI(parent) === NS.HTML &&
+        (UNESCAPED_TEXT.has(parentTn) || (options.scriptingEnabled && parentTn === $.NOSCRIPT))
         ? content
         : escapeString(content, false);
 }
