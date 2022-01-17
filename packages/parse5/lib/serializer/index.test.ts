@@ -22,4 +22,16 @@ describe('serializer', () => {
             parse5.serialize(document, { treeAdapter });
         });
     });
+
+    describe('Scripting flag (GH-332)', () => {
+        it('should serialize with the scripting flag', () => {
+            const document = parse5.parse('&amp;<noscript>&amp;</noscript>');
+            expect(parse5.serialize(document, { scriptingEnabled: false })).toBe(
+                '<html><head></head><body>&amp;<noscript>&amp;amp;</noscript></body></html>'
+            );
+            expect(parse5.serialize(document, { scriptingEnabled: true })).toBe(
+                '<html><head></head><body>&amp;<noscript>&amp;</noscript></body></html>'
+            );
+        });
+    });
 });
