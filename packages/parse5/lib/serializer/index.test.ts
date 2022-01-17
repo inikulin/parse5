@@ -3,7 +3,7 @@ import * as parse5 from 'parse5';
 import outdent from 'outdent';
 import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
-import type { Element } from 'parse5/dist/tree-adapters/default';
+import { type Element, isElementNode } from 'parse5/dist/tree-adapters/default';
 
 generateSerializerTests('serializer', 'Serializer', parse5.serialize);
 
@@ -47,6 +47,17 @@ describe('serializer', () => {
             `;
             const document = parse5.parse(input);
             expect(parse5.serialize(document)).toContain(input);
+        });
+    });
+
+    describe('serializeOuter', () => {
+        it('serializes outerHTML correctly', () => {
+            const document = parse5.parseFragment('<div><button>Hello</button></div>');
+            const div = document.childNodes[0];
+            assert.ok(isElementNode(div));
+            const html = parse5.serializeOuter(div);
+
+            assert.equal(html, '<div><button>Hello</button></div>');
         });
     });
 });

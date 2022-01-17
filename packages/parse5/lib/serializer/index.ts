@@ -50,6 +50,8 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
 
 type InternalOptions<T extends TreeAdapterTypeMap> = Required<SerializerOptions<T>>;
 
+const defaultOpts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true };
+
 /**
  * Serializes an AST node to an HTML string.
  *
@@ -76,8 +78,35 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.Defa
     node: T['parentNode'],
     options?: SerializerOptions<T>
 ): string {
-    const opts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true, ...options };
+    const opts = { ...defaultOpts, ...options };
     return serializeChildNodes(node, opts);
+}
+
+/**
+ * Serializes an AST element node to an HTML string, including the element node.
+ *
+ * @example
+ *
+ * ```js
+ * const parse5 = require('parse5');
+ *
+ * const document = parse5.parseFragment('<div>Hello, <b>world</b>!</div>');
+ *
+ * // Serializes the <div> element.
+ * const html = parse5.serializeOuter(document.childNodes[0]);
+ *
+ * console.log(str); //> '<div>Hello, <b>world</b>!</div>'
+ * ```
+ *
+ * @param node Node to serialize.
+ * @param options Serialization options.
+ */
+export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
+    node: T['element'],
+    options?: SerializerOptions<T>
+): string {
+    const opts = { ...defaultOpts, ...options };
+    return serializeElement(node, opts);
 }
 
 function serializeChildNodes<T extends TreeAdapterTypeMap>(

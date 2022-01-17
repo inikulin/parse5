@@ -4,7 +4,7 @@ import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
 export { ParserOptions } from './parser/index.js';
-export { serialize, SerializerOptions } from './serializer/index.js';
+export { serialize, serializeOuter, SerializerOptions } from './serializer/index.js';
 
 // Shorthands
 
