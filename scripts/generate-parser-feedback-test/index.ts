@@ -6,6 +6,7 @@ import { convertTokenToHtml5Lib } from 'parse5-test-utils/utils/generate-tokeniz
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
 import { TokenType, Token } from '../../packages/parse5/dist/common/token.js';
+import type { TreeAdapterTypeMap } from '../../packages/parse5/dist/tree-adapters/interface.js';
 
 // eslint-disable-next-line no-console
 main().catch(console.error);
@@ -42,21 +43,22 @@ function appendToken(dest: Token[], token: Token): void {
 
 function collectParserTokens(html: string): ReturnType<typeof convertTokenToHtml5Lib>[] {
     const tokens: Token[] = [];
-    const parser = new Parser();
 
-    parser._processInputToken = function (token): void {
-        Parser.prototype._processInputToken.call(this, token);
+    class ExtendedParser<T extends TreeAdapterTypeMap> extends Parser<T> {
+        override _processInputToken(token: Token): void {
+            super._processInputToken(token);
 
-        // NOTE: Needed to split attributes of duplicate <html> and <body>
-        // which are otherwise merged as per tree constructor spec
-        if (token.type === TokenType.START_TAG) {
-            token.attrs = [...token.attrs];
+            // NOTE: Needed to split attributes of duplicate <html> and <body>
+            // which are otherwise merged as per tree constructor spec
+            if (token.type === TokenType.START_TAG) {
+                token.attrs = [...token.attrs];
+            }
+
+            appendToken(tokens, token);
         }
+    }
 
-        appendToken(tokens, token);
-    };
-
-    parser.parse(html);
+    ExtendedParser.parse(html);
 
     return tokens.map((token) => convertTokenToHtml5Lib(token));
 }
