@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream';
-import { serializeChildNodes, SerializerOptions } from 'parse5/dist/serializer/index.js';
+import { serialize, type SerializerOptions } from 'parse5/dist/serializer/index.js';
 import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 /**
@@ -34,7 +34,7 @@ export class SerializerStream<T extends TreeAdapterTypeMap> extends Readable {
 
     //Readable stream implementation
     override _read(): void {
-        this.push(serializeChildNodes(this.node, this.options));
+        this.push(serialize(this.node, this.options));
         this.push(null);
     }
 }
