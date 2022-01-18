@@ -1,10 +1,12 @@
 import * as assert from 'node:assert';
 import * as parse5 from 'parse5';
+import { jest } from '@jest/globals';
 import { Parser, ParserOptions } from './index.js';
 import type { TreeAdapterTypeMap } from './../tree-adapters/interface.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import { NAMESPACES as NS } from '../common/html.js';
+import { isElementNode } from '../tree-adapters/default.js';
 
 const origParseFragment = Parser.prototype.parseFragment;
 
@@ -97,5 +99,27 @@ describe('parser', () => {
         expect(doctype).toHaveProperty('name', '');
         expect(doctype).toHaveProperty('publicId', '');
         expect(doctype).toHaveProperty('systemId', '');
+    });
+
+    describe('Options', () => {
+        it('should support onItemPush and onItemPop', () => {
+            const onItemPush = jest.fn();
+            const onItemPop = jest.fn();
+            const document = parse5.parse('<p><p>', {
+                onItemPush,
+                onItemPop,
+            });
+
+            const htmlElement = document.childNodes[0];
+            assert.ok(isElementNode(htmlElement));
+            const bodyElement = htmlElement.childNodes[1];
+            assert.ok(isElementNode(bodyElement));
+            expect(onItemPush).toHaveBeenCalledTimes(5);
+            expect(onItemPush).toHaveBeenNthCalledWith(1, htmlElement);
+            expect(onItemPush).toHaveBeenNthCalledWith(3, bodyElement);
+            expect(onItemPush).toHaveBeenLastCalledWith(bodyElement.childNodes[1]);
+            expect(onItemPop).toHaveBeenCalledTimes(2);
+            expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0]);
+        });
     });
 });
