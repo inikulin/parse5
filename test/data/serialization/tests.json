@@ -141,7 +141,7 @@
         "expected": "<html><head></head><body><pre>1</pre><pre>\n2</pre><textarea>3</textarea><textarea>\n4</textarea><listing>5</listing><listing>\n6</listing></body></html>"
     },
     {
-        "name": "Mixed content",
+        "name": "Mixed content (GH-333)",
         "input": "<svg><style>&lt;</style></svg><style>&lt;</style><svg><script>&lt;</script></svg><script>&lt;</script>",
         "expected": "<html><head></head><body><svg><style>&lt;</style></svg><style>&lt;</style><svg><script>&lt;</script></svg><script>&lt;</script></body></html>"
     }
