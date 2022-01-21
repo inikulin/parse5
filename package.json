@@ -14,7 +14,7 @@
         "mocha": "^9.1.4",
         "prettier": "^2.3.2",
         "r2": "^2.0.1",
-        "typescript": "^4.3.5"
+        "typescript": "^4.5.5"
     },
     "scripts": {
         "build": "lerna run build",
