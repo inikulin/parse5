@@ -386,18 +386,6 @@ export class CbTokenizer {
         };
     }
 
-    private _createEOFToken(): void {
-        const ctLoc = this._getCurrentLocation();
-
-        if (ctLoc) {
-            ctLoc.endLine = ctLoc.startLine;
-            ctLoc.endCol = ctLoc.startCol;
-            ctLoc.endOffset = ctLoc.startOffset;
-        }
-
-        this.currentToken = { type: TokenType.EOF, location: ctLoc };
-    }
-
     //Tag attributes
     private _createAttr(attrNameFirstCh: string): void {
         this.currentAttr = {
@@ -441,7 +429,7 @@ export class CbTokenizer {
 
         this.currentToken = null;
 
-        if (ct.location && ct.type !== TokenType.EOF) {
+        if (ct.location) {
             ct.location.endLine = this.preprocessor.line;
             ct.location.endCol = this.preprocessor.col + 1;
             ct.location.endOffset = this.preprocessor.offset + 1;
@@ -475,10 +463,6 @@ export class CbTokenizer {
             }
             case TokenType.DOCTYPE: {
                 this.handler.onDoctypeToken(ct);
-                break;
-            }
-            case TokenType.EOF: {
-                this.handler.onEofToken(ct);
                 break;
             }
         }
@@ -518,8 +502,18 @@ export class CbTokenizer {
     }
 
     private _emitEOFToken(): void {
-        this._createEOFToken();
-        this._emitCurrentToken();
+        this._emitCurrentCharacterToken();
+        const ctLoc = this._getCurrentLocation();
+
+        if (ctLoc) {
+            ctLoc.endLine = ctLoc.startLine;
+            ctLoc.endCol = ctLoc.startCol;
+            ctLoc.endOffset = ctLoc.startOffset;
+        }
+
+        const token: EOFToken = { type: TokenType.EOF, location: ctLoc };
+        this.handler.onEofToken(token);
+        this.hasEmitted = true;
     }
 
     //Characters emission
@@ -3138,12 +3132,12 @@ export class Tokenizer implements TokenHandler {
     }
 
     public getNextToken(): Token {
-        if (this.tokenQueue.length === 0) {
+        if (this.tokenQueue.length === 0 && this.active) {
             this.tokenizer.getNextToken();
-        }
 
-        if (this.tokenQueue.length === 0 && !this.tokenizer.active) {
-            return HIBERNATION_TOKEN;
+            if (!this.active) {
+                this.tokenQueue.push(HIBERNATION_TOKEN);
+            }
         }
 
         return this.tokenQueue.shift()!;
