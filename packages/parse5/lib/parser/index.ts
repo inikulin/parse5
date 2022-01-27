@@ -269,6 +269,10 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
             this._processToken(token);
 
+            if (token.type === TokenType.START_TAG && token.selfClosing && !token.ackSelfClosing) {
+                this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
+            }
+
             if (token.type === TokenType.HIBERNATION || (scriptHandler !== null && this.pendingScript)) {
                 break;
             }
@@ -952,10 +956,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
             startTagInForeignContent(this, token);
         } else {
             this._startTagOutsideForeignContent(token);
-        }
-
-        if (token.type === TokenType.START_TAG && token.selfClosing && !token.ackSelfClosing) {
-            this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
         }
     }
     _startTagOutsideForeignContent(token: TagToken): void {
