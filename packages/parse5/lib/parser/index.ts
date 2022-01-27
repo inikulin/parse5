@@ -1220,6 +1220,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 //Adoption agency algorithm
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#adoptionAgency)
 //------------------------------------------------------------------
+
 //Steps 5-8 of the algorithm
 function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
@@ -1597,7 +1598,7 @@ function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
 function tokenInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p.openElements.pop();
     p.insertionMode = InsertionMode.AFTER_HEAD;
-    tokenAfterHead(p, token);
+    p._processToken(token);
 }
 
 // The "in head no script" insertion mode
@@ -1720,7 +1721,7 @@ function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p._insertFakeElement(TN.BODY, $.BODY);
     p.insertionMode = InsertionMode.IN_BODY;
-    p._processToken(token);
+    modeInBody(p, token);
 }
 
 // The "in body" insertion mode
@@ -3038,7 +3039,7 @@ function startTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
     if (TABLE_VOID_ELEMENTS.has(tn)) {
         if (p.openElements.hasInTableScope($.TD) || p.openElements.hasInTableScope($.TH)) {
             p._closeTableCell();
-            p.onStartTagToken(token);
+            startTagInRow(p, token);
         }
     } else {
         startTagInBody(p, token);
@@ -3066,7 +3067,7 @@ function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         case $.TR: {
             if (p.openElements.hasInTableScope(tn)) {
                 p._closeTableCell();
-                p.onEndTagToken(token);
+                endTagInRow(p, token);
             }
             break;
         }
