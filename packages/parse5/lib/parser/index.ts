@@ -572,20 +572,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
             : !this._isIntegrationPoint(currentTagId, current);
     }
 
-    private shouldProcessTextInForeignContent(): boolean {
-        let current: T['parentNode'];
-        let currentTagId: number;
-
-        if (this.openElements.stackTop === 0 && this.fragmentContext) {
-            current = this.fragmentContext;
-            currentTagId = this.fragmentContextID;
-        } else {
-            ({ current, currentTagId } = this.openElements);
-        }
-
-        return !this._isIntegrationPoint(currentTagId, current);
-    }
-
     _processToken(token: Token): void {
         switch (token.type) {
             case TokenType.CHARACTER: {
@@ -791,7 +777,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     onCharacterToken(token: CharacterToken): void {
         this.skipNextNewLine = false;
-        if (this._considerForeignContent && this.shouldProcessTextInForeignContent()) {
+
+        if (this.tokenizer.allowCDATA) {
             characterInForeignContent(this, token);
             return;
         }
@@ -849,7 +836,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
     onNullCharacterToken(token: CharacterToken): void {
         this.skipNextNewLine = false;
-        if (this._considerForeignContent && this.shouldProcessTextInForeignContent()) {
+
+        if (this.tokenizer.allowCDATA) {
             nullCharacterInForeignContent(this, token);
             return;
         }
@@ -896,6 +884,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
     onCommentToken(token: CommentToken): void {
         this.skipNextNewLine = false;
+
         if (this._considerForeignContent) {
             appendComment(this, token);
             return;
@@ -1188,7 +1177,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             }
         }
 
-        if (this._considerForeignContent && this.shouldProcessTextInForeignContent()) {
+        if (this.tokenizer.allowCDATA) {
             this._insertCharacters(token);
             return;
         }
