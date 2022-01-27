@@ -267,30 +267,9 @@ export class Parser<T extends TreeAdapterTypeMap> {
         while (!this.stopped) {
             const token = this.tokenizer.getNextToken();
 
-            if (token.type === TokenType.HIBERNATION) {
-                break;
-            }
+            this._processToken(token);
 
-            if (this.skipNextNewLine) {
-                this.skipNextNewLine = false;
-
-                if (
-                    token.type === TokenType.WHITESPACE_CHARACTER &&
-                    token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED
-                ) {
-                    if (token.chars.length === 1) {
-                        continue;
-                    }
-
-                    token.chars = token.chars.substr(1);
-                }
-            }
-
-            this.currentToken = token;
-
-            this._processInputToken(token);
-
-            if (scriptHandler !== null && this.pendingScript) {
+            if (token.type === TokenType.HIBERNATION || (scriptHandler !== null && this.pendingScript)) {
                 break;
             }
         }
@@ -567,7 +546,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     }
 
     //Token processing
-    private _shouldProcessTokenInForeignContent(token: Token): boolean {
+    private shouldProcessStartTagTokenInForeignContent(token: TagToken): boolean {
         let current: T['parentNode'];
         let currentTagId: number;
 
@@ -578,180 +557,69 @@ export class Parser<T extends TreeAdapterTypeMap> {
             ({ current, currentTagId } = this.openElements);
         }
 
-        const ns = this.treeAdapter.getNamespaceURI(current);
-
         //NOTE: We won't get here with current === document, or ns === NS.HTML
 
         if (
-            token.type === TokenType.START_TAG &&
             token.tagID === $.SVG &&
             this.treeAdapter.getTagName(current) === TN.ANNOTATION_XML &&
-            ns === NS.MATHML
+            this.treeAdapter.getNamespaceURI(current) === NS.MATHML
         ) {
             return false;
         }
 
-        const isCharacterToken =
-            token.type === TokenType.CHARACTER ||
-            token.type === TokenType.NULL_CHARACTER ||
-            token.type === TokenType.WHITESPACE_CHARACTER;
+        return token.tagID === $.MGLYPH || token.tagID === $.MALIGNMARK
+            ? !this._isIntegrationPoint(currentTagId, current, NS.HTML)
+            : !this._isIntegrationPoint(currentTagId, current);
+    }
 
-        const isMathMLTextStartTag =
-            token.type === TokenType.START_TAG && token.tagID !== $.MGLYPH && token.tagID !== $.MALIGNMARK;
+    private shouldProcessTextInForeignContent(): boolean {
+        let current: T['parentNode'];
+        let currentTagId: number;
 
-        if ((isMathMLTextStartTag || isCharacterToken) && this._isIntegrationPoint(currentTagId, current, NS.MATHML)) {
-            return false;
+        if (this.openElements.stackTop === 0 && this.fragmentContext) {
+            current = this.fragmentContext;
+            currentTagId = this.fragmentContextID;
+        } else {
+            ({ current, currentTagId } = this.openElements);
         }
 
-        if (
-            (token.type === TokenType.START_TAG || isCharacterToken) &&
-            this._isIntegrationPoint(currentTagId, current, NS.HTML)
-        ) {
-            return false;
-        }
-
-        return token.type !== TokenType.EOF;
+        return !this._isIntegrationPoint(currentTagId, current);
     }
 
     _processToken(token: Token): void {
-        switch (this.insertionMode) {
-            case InsertionMode.INITIAL: {
-                modeInitial(this, token);
-                break;
-            }
-            case InsertionMode.BEFORE_HTML: {
-                modeBeforeHtml(this, token);
-                break;
-            }
-            case InsertionMode.BEFORE_HEAD: {
-                modeBeforeHead(this, token);
-                break;
-            }
-            case InsertionMode.IN_HEAD: {
-                modeInHead(this, token);
-                break;
-            }
-            case InsertionMode.IN_HEAD_NO_SCRIPT: {
-                modeInHeadNoScript(this, token);
-                break;
-            }
-            case InsertionMode.AFTER_HEAD: {
-                modeAfterHead(this, token);
-                break;
-            }
-            case InsertionMode.IN_BODY: {
-                modeInBody(this, token);
-                break;
-            }
-            case InsertionMode.TEXT: {
-                modeText(this, token);
-                break;
-            }
-            case InsertionMode.IN_TABLE: {
-                modeInTable(this, token);
-                break;
-            }
-            case InsertionMode.IN_TABLE_TEXT: {
-                modeInTableText(this, token);
-                break;
-            }
-            case InsertionMode.IN_CAPTION: {
-                modeInCaption(this, token);
-                break;
-            }
-            case InsertionMode.IN_COLUMN_GROUP: {
-                modeInColumnGroup(this, token);
-                break;
-            }
-            case InsertionMode.IN_TABLE_BODY: {
-                modeInTableBody(this, token);
-                break;
-            }
-            case InsertionMode.IN_ROW: {
-                modeInRow(this, token);
-                break;
-            }
-            case InsertionMode.IN_CELL: {
-                modeInCell(this, token);
-                break;
-            }
-            case InsertionMode.IN_SELECT: {
-                modeInSelect(this, token);
-                break;
-            }
-            case InsertionMode.IN_SELECT_IN_TABLE: {
-                modeInSelectInTable(this, token);
-                break;
-            }
-            case InsertionMode.IN_TEMPLATE: {
-                modeInTemplate(this, token);
-                break;
-            }
-            case InsertionMode.AFTER_BODY: {
-                modeAfterBody(this, token);
-                break;
-            }
-            case InsertionMode.IN_FRAMESET: {
-                modeInFrameset(this, token);
-                break;
-            }
-            case InsertionMode.AFTER_FRAMESET: {
-                modeAfterFrameset(this, token);
-                break;
-            }
-            case InsertionMode.AFTER_AFTER_BODY: {
-                modeAfterAfterBody(this, token);
-                break;
-            }
-            case InsertionMode.AFTER_AFTER_FRAMESET: {
-                modeAfterAfterFrameset(this, token);
-                break;
-            }
-            default:
-            // Do nothing
-        }
-    }
-
-    _processTokenInForeignContent(token: Token): void {
         switch (token.type) {
             case TokenType.CHARACTER: {
-                characterInForeignContent(this, token);
+                this.onCharacterToken(token);
                 break;
             }
             case TokenType.NULL_CHARACTER: {
-                nullCharacterInForeignContent(this, token);
-                break;
-            }
-            case TokenType.WHITESPACE_CHARACTER: {
-                this._insertCharacters(token);
+                this.onNullCharacterToken(token);
                 break;
             }
             case TokenType.COMMENT: {
-                appendComment(this, token);
+                this.onCommentToken(token);
+                break;
+            }
+            case TokenType.DOCTYPE: {
+                this.onDoctypeToken(token);
                 break;
             }
             case TokenType.START_TAG: {
-                startTagInForeignContent(this, token);
+                this.onStartTagToken(token);
                 break;
             }
             case TokenType.END_TAG: {
-                endTagInForeignContent(this, token);
+                this.onEndTagToken(token);
                 break;
             }
-            default:
-            // Do nothing
-        }
-    }
-
-    _processInputToken(token: Token): void {
-        if (this._considerForeignContent && this._shouldProcessTokenInForeignContent(token)) {
-            this._processTokenInForeignContent(token);
-        } else {
-            this._processToken(token);
-        }
-
-        if (token.type === TokenType.START_TAG && token.selfClosing && !token.ackSelfClosing) {
-            this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
+            case TokenType.EOF: {
+                this.onEofToken(token);
+                break;
+            }
+            case TokenType.WHITESPACE_CHARACTER: {
+                this.onWhitespaceCharacterToken(token);
+                break;
+            }
         }
     }
 
@@ -920,12 +788,449 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         return SPECIAL_ELEMENTS[ns].has(id);
     }
+
+    onCharacterToken(token: CharacterToken): void {
+        this.skipNextNewLine = false;
+        if (this._considerForeignContent && this.shouldProcessTextInForeignContent()) {
+            characterInForeignContent(this, token);
+            return;
+        }
+
+        switch (this.insertionMode) {
+            case InsertionMode.INITIAL:
+                tokenInInitialMode(this, token);
+                break;
+            case InsertionMode.BEFORE_HTML:
+                tokenBeforeHtml(this, token);
+                break;
+            case InsertionMode.BEFORE_HEAD:
+                tokenBeforeHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD:
+                tokenInHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+                tokenInHeadNoScript(this, token);
+                break;
+            case InsertionMode.AFTER_HEAD:
+                tokenAfterHead(this, token);
+                break;
+            case InsertionMode.IN_BODY:
+            case InsertionMode.IN_CAPTION:
+            case InsertionMode.IN_CELL:
+            case InsertionMode.IN_TEMPLATE:
+                characterInBody(this, token);
+                break;
+            case InsertionMode.TEXT:
+            case InsertionMode.IN_SELECT:
+            case InsertionMode.IN_SELECT_IN_TABLE:
+                this._insertCharacters(token);
+                break;
+            case InsertionMode.IN_TABLE:
+            case InsertionMode.IN_TABLE_BODY:
+            case InsertionMode.IN_ROW:
+                characterInTable(this, token);
+                break;
+            case InsertionMode.IN_TABLE_TEXT:
+                characterInTableText(this, token);
+                break;
+            case InsertionMode.IN_COLUMN_GROUP:
+                tokenInColumnGroup(this, token);
+                break;
+            case InsertionMode.AFTER_BODY:
+                tokenAfterBody(this, token);
+                break;
+            case InsertionMode.AFTER_AFTER_BODY:
+                tokenAfterAfterBody(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
+    onNullCharacterToken(token: CharacterToken): void {
+        this.skipNextNewLine = false;
+        if (this._considerForeignContent && this.shouldProcessTextInForeignContent()) {
+            nullCharacterInForeignContent(this, token);
+            return;
+        }
+
+        switch (this.insertionMode) {
+            case InsertionMode.INITIAL:
+                tokenInInitialMode(this, token);
+                break;
+            case InsertionMode.BEFORE_HTML:
+                tokenBeforeHtml(this, token);
+                break;
+            case InsertionMode.BEFORE_HEAD:
+                tokenBeforeHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD:
+                tokenInHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+                tokenInHeadNoScript(this, token);
+                break;
+            case InsertionMode.AFTER_HEAD:
+                tokenAfterHead(this, token);
+                break;
+            case InsertionMode.TEXT:
+                this._insertCharacters(token);
+                break;
+            case InsertionMode.IN_TABLE:
+            case InsertionMode.IN_TABLE_BODY:
+            case InsertionMode.IN_ROW:
+                characterInTable(this, token);
+                break;
+            case InsertionMode.IN_COLUMN_GROUP:
+                tokenInColumnGroup(this, token);
+                break;
+            case InsertionMode.AFTER_BODY:
+                tokenAfterBody(this, token);
+                break;
+            case InsertionMode.AFTER_AFTER_BODY:
+                tokenAfterAfterBody(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
+    onCommentToken(token: CommentToken): void {
+        this.skipNextNewLine = false;
+        if (this._considerForeignContent) {
+            appendComment(this, token);
+            return;
+        }
+
+        switch (this.insertionMode) {
+            case InsertionMode.INITIAL:
+            case InsertionMode.BEFORE_HTML:
+            case InsertionMode.BEFORE_HEAD:
+            case InsertionMode.IN_HEAD:
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+            case InsertionMode.AFTER_HEAD:
+            case InsertionMode.IN_BODY:
+            case InsertionMode.IN_TABLE:
+            case InsertionMode.IN_CAPTION:
+            case InsertionMode.IN_COLUMN_GROUP:
+            case InsertionMode.IN_TABLE_BODY:
+            case InsertionMode.IN_ROW:
+            case InsertionMode.IN_CELL:
+            case InsertionMode.IN_SELECT:
+            case InsertionMode.IN_SELECT_IN_TABLE:
+            case InsertionMode.IN_TEMPLATE:
+            case InsertionMode.IN_FRAMESET:
+            case InsertionMode.AFTER_FRAMESET:
+                appendComment(this, token);
+                break;
+            case InsertionMode.IN_TABLE_TEXT:
+                tokenInTableText(this, token);
+                break;
+            case InsertionMode.AFTER_BODY:
+                appendCommentToRootHtmlElement(this, token);
+                break;
+            case InsertionMode.AFTER_AFTER_BODY:
+            case InsertionMode.AFTER_AFTER_FRAMESET:
+                appendCommentToDocument(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
+    onDoctypeToken(token: DoctypeToken): void {
+        this.skipNextNewLine = false;
+        switch (this.insertionMode) {
+            case InsertionMode.INITIAL:
+                doctypeInInitialMode(this, token);
+                break;
+            case InsertionMode.BEFORE_HEAD:
+            case InsertionMode.IN_HEAD:
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+            case InsertionMode.AFTER_HEAD:
+                this._err(token, ERR.misplacedDoctype);
+                break;
+            case InsertionMode.IN_TABLE_TEXT:
+                tokenInTableText(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
+    onStartTagToken(token: TagToken): void {
+        this.skipNextNewLine = false;
+        this.currentToken = token;
+
+        if (this._considerForeignContent && this.shouldProcessStartTagTokenInForeignContent(token)) {
+            startTagInForeignContent(this, token);
+        } else {
+            this._startTagOutsideForeignContent(token);
+        }
+
+        if (token.type === TokenType.START_TAG && token.selfClosing && !token.ackSelfClosing) {
+            this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
+        }
+    }
+    _startTagOutsideForeignContent(token: TagToken): void {
+        switch (this.insertionMode) {
+            case InsertionMode.INITIAL:
+                tokenInInitialMode(this, token);
+                break;
+            case InsertionMode.BEFORE_HTML:
+                startTagBeforeHtml(this, token);
+                break;
+            case InsertionMode.BEFORE_HEAD:
+                startTagBeforeHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD:
+                startTagInHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+                startTagInHeadNoScript(this, token);
+                break;
+            case InsertionMode.AFTER_HEAD:
+                startTagAfterHead(this, token);
+                break;
+            case InsertionMode.IN_BODY:
+                startTagInBody(this, token);
+                break;
+            case InsertionMode.IN_TABLE:
+                startTagInTable(this, token);
+                break;
+            case InsertionMode.IN_TABLE_TEXT:
+                tokenInTableText(this, token);
+                break;
+            case InsertionMode.IN_CAPTION:
+                startTagInCaption(this, token);
+                break;
+            case InsertionMode.IN_COLUMN_GROUP:
+                startTagInColumnGroup(this, token);
+                break;
+            case InsertionMode.IN_TABLE_BODY:
+                startTagInTableBody(this, token);
+                break;
+            case InsertionMode.IN_ROW:
+                startTagInRow(this, token);
+                break;
+            case InsertionMode.IN_CELL:
+                startTagInCell(this, token);
+                break;
+            case InsertionMode.IN_SELECT:
+                startTagInSelect(this, token);
+                break;
+            case InsertionMode.IN_SELECT_IN_TABLE:
+                startTagInSelectInTable(this, token);
+                break;
+            case InsertionMode.IN_TEMPLATE:
+                startTagInTemplate(this, token);
+                break;
+            case InsertionMode.AFTER_BODY:
+                startTagAfterBody(this, token);
+                break;
+            case InsertionMode.IN_FRAMESET:
+                startTagInFrameset(this, token);
+                break;
+            case InsertionMode.AFTER_FRAMESET:
+                startTagAfterFrameset(this, token);
+                break;
+            case InsertionMode.AFTER_AFTER_BODY:
+                startTagAfterAfterBody(this, token);
+                break;
+            case InsertionMode.AFTER_AFTER_FRAMESET:
+                startTagAfterAfterFrameset(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
+    onEndTagToken(token: TagToken): void {
+        this.skipNextNewLine = false;
+        this.currentToken = token;
+
+        if (this._considerForeignContent) {
+            endTagInForeignContent(this, token);
+        } else {
+            this._endTagOutsideForeignContent(token);
+        }
+    }
+    _endTagOutsideForeignContent(token: TagToken): void {
+        switch (this.insertionMode) {
+            case InsertionMode.INITIAL:
+                tokenInInitialMode(this, token);
+                break;
+            case InsertionMode.BEFORE_HTML:
+                endTagBeforeHtml(this, token);
+                break;
+            case InsertionMode.BEFORE_HEAD:
+                endTagBeforeHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD:
+                endTagInHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+                endTagInHeadNoScript(this, token);
+                break;
+            case InsertionMode.AFTER_HEAD:
+                endTagAfterHead(this, token);
+                break;
+            case InsertionMode.IN_BODY:
+                endTagInBody(this, token);
+                break;
+            case InsertionMode.TEXT:
+                endTagInText(this, token);
+                break;
+            case InsertionMode.IN_TABLE:
+                endTagInTable(this, token);
+                break;
+            case InsertionMode.IN_TABLE_TEXT:
+                tokenInTableText(this, token);
+                break;
+            case InsertionMode.IN_CAPTION:
+                endTagInCaption(this, token);
+                break;
+            case InsertionMode.IN_COLUMN_GROUP:
+                endTagInColumnGroup(this, token);
+                break;
+            case InsertionMode.IN_TABLE_BODY:
+                endTagInTableBody(this, token);
+                break;
+            case InsertionMode.IN_ROW:
+                endTagInRow(this, token);
+                break;
+            case InsertionMode.IN_CELL:
+                endTagInCell(this, token);
+                break;
+            case InsertionMode.IN_SELECT:
+                endTagInSelect(this, token);
+                break;
+            case InsertionMode.IN_SELECT_IN_TABLE:
+                endTagInSelectInTable(this, token);
+                break;
+            case InsertionMode.IN_TEMPLATE:
+                endTagInTemplate(this, token);
+                break;
+            case InsertionMode.AFTER_BODY:
+                endTagAfterBody(this, token);
+                break;
+            case InsertionMode.IN_FRAMESET:
+                endTagInFrameset(this, token);
+                break;
+            case InsertionMode.AFTER_FRAMESET:
+                endTagAfterFrameset(this, token);
+                break;
+            case InsertionMode.AFTER_AFTER_BODY:
+                tokenAfterAfterBody(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
+    onEofToken(token: EOFToken): void {
+        this.skipNextNewLine = false;
+        switch (this.insertionMode) {
+            case InsertionMode.INITIAL:
+                tokenInInitialMode(this, token);
+                break;
+            case InsertionMode.BEFORE_HTML:
+                tokenBeforeHtml(this, token);
+                break;
+            case InsertionMode.BEFORE_HEAD:
+                tokenBeforeHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD:
+                tokenInHead(this, token);
+                break;
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+                tokenInHeadNoScript(this, token);
+                break;
+            case InsertionMode.AFTER_HEAD:
+                tokenAfterHead(this, token);
+                break;
+            case InsertionMode.IN_BODY:
+            case InsertionMode.IN_TABLE:
+            case InsertionMode.IN_CAPTION:
+            case InsertionMode.IN_COLUMN_GROUP:
+            case InsertionMode.IN_TABLE_BODY:
+            case InsertionMode.IN_ROW:
+            case InsertionMode.IN_CELL:
+            case InsertionMode.IN_SELECT:
+            case InsertionMode.IN_SELECT_IN_TABLE:
+                eofInBody(this, token);
+                break;
+            case InsertionMode.TEXT:
+                eofInText(this, token);
+                break;
+            case InsertionMode.IN_TABLE_TEXT:
+                tokenInTableText(this, token);
+                break;
+            case InsertionMode.IN_TEMPLATE:
+                eofInTemplate(this, token);
+                break;
+            case InsertionMode.AFTER_BODY:
+            case InsertionMode.IN_FRAMESET:
+            case InsertionMode.AFTER_FRAMESET:
+            case InsertionMode.AFTER_AFTER_BODY:
+            case InsertionMode.AFTER_AFTER_FRAMESET:
+                stopParsing(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
+    onWhitespaceCharacterToken(token: CharacterToken): void {
+        if (this.skipNextNewLine) {
+            this.skipNextNewLine = false;
+
+            if (token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED) {
+                if (token.chars.length === 1) {
+                    return;
+                }
+
+                token.chars = token.chars.substr(1);
+            }
+        }
+
+        if (this._considerForeignContent && this.shouldProcessTextInForeignContent()) {
+            this._insertCharacters(token);
+            return;
+        }
+
+        switch (this.insertionMode) {
+            case InsertionMode.IN_HEAD:
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
+            case InsertionMode.AFTER_HEAD:
+            case InsertionMode.TEXT:
+            case InsertionMode.IN_COLUMN_GROUP:
+            case InsertionMode.IN_SELECT:
+            case InsertionMode.IN_SELECT_IN_TABLE:
+            case InsertionMode.IN_FRAMESET:
+            case InsertionMode.AFTER_FRAMESET:
+                this._insertCharacters(token);
+                break;
+            case InsertionMode.IN_BODY:
+            case InsertionMode.IN_CAPTION:
+            case InsertionMode.IN_CELL:
+            case InsertionMode.IN_TEMPLATE:
+            case InsertionMode.AFTER_BODY:
+            case InsertionMode.AFTER_AFTER_BODY:
+            case InsertionMode.AFTER_AFTER_FRAMESET:
+                whitespaceCharacterInBody(this, token);
+                break;
+            case InsertionMode.IN_TABLE:
+            case InsertionMode.IN_TABLE_BODY:
+            case InsertionMode.IN_ROW:
+                characterInTable(this, token);
+                break;
+            case InsertionMode.IN_TABLE_TEXT:
+                whitespaceCharacterInTableText(this, token);
+                break;
+            default:
+            // Do nothing
+        }
+    }
 }
 
 //Adoption agency algorithm
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html#adoptionAgency)
 //------------------------------------------------------------------
-
 //Steps 5-8 of the algorithm
 function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
@@ -1124,26 +1429,6 @@ function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken
 
 // The "initial" insertion mode
 //------------------------------------------------------------------
-function modeInitial<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.DOCTYPE: {
-            doctypeInInitialMode(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            // Ignore token
-            break;
-        }
-        default: {
-            tokenInInitialMode(p, token);
-        }
-    }
-}
-
 function doctypeInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: DoctypeToken): void {
     p._setDocumentType(token);
 
@@ -1162,36 +1447,11 @@ function tokenInInitialMode<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     p._err(token, ERR.missingDoctype, true);
     p.treeAdapter.setDocumentMode(p.document, DOCUMENT_MODE.QUIRKS);
     p.insertionMode = InsertionMode.BEFORE_HTML;
-    modeBeforeHtml(p, token);
+    p._processToken(token);
 }
 
 // The "before html" insertion mode
 //------------------------------------------------------------------
-function modeBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.EOF: {
-            tokenBeforeHtml(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagBeforeHtml(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagBeforeHtml(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         p._insertElement(token, NS.HTML);
@@ -1212,40 +1472,11 @@ function endTagBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 function tokenBeforeHtml<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p._insertFakeRootElement();
     p.insertionMode = InsertionMode.BEFORE_HEAD;
-    modeBeforeHead(p, token);
+    p._processToken(token);
 }
 
 // The "before head" insertion mode
 //------------------------------------------------------------------
-function modeBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.EOF: {
-            tokenBeforeHead(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.DOCTYPE: {
-            p._err(token, ERR.misplacedDoctype);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagBeforeHead(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagBeforeHead(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -1278,44 +1509,11 @@ function tokenBeforeHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Toke
     p._insertFakeElement(TN.HEAD, $.HEAD);
     p.headElement = p.openElements.current;
     p.insertionMode = InsertionMode.IN_HEAD;
-    modeInHead(p, token);
+    p._processToken(token);
 }
 
 // The "in head" insertion mode
 //------------------------------------------------------------------
-function modeInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.EOF: {
-            tokenInHead(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.DOCTYPE: {
-            p._err(token, ERR.misplacedDoctype);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInHead(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInHead(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -1410,44 +1608,11 @@ function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
 function tokenInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p.openElements.pop();
     p.insertionMode = InsertionMode.AFTER_HEAD;
-    modeAfterHead(p, token);
+    tokenAfterHead(p, token);
 }
 
 // The "in head no script" insertion mode
 //------------------------------------------------------------------
-function modeInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.EOF: {
-            tokenInHeadNoScript(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.DOCTYPE: {
-            p._err(token, ERR.misplacedDoctype);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInHeadNoScript(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInHeadNoScript(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -1497,44 +1662,11 @@ function tokenInHeadNoScript<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
     p._err(token, errCode);
     p.openElements.pop();
     p.insertionMode = InsertionMode.IN_HEAD;
-    modeInHead(p, token);
+    p._processToken(token);
 }
 
 // The "after head" insertion mode
 //------------------------------------------------------------------
-function modeAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.EOF: {
-            tokenAfterHead(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.DOCTYPE: {
-            p._err(token, ERR.misplacedDoctype);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagAfterHead(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagAfterHead(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -1599,7 +1731,7 @@ function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     p._insertFakeElement(TN.BODY, $.BODY);
     p.insertionMode = InsertionMode.IN_BODY;
-    modeInBody(p, token);
+    p._processToken(token);
 }
 
 // The "in body" insertion mode
@@ -2210,7 +2342,7 @@ function bodyEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 function htmlEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInScope($.BODY)) {
         p.insertionMode = InsertionMode.AFTER_BODY;
-        modeAfterBody(p, token);
+        endTagAfterBody(p, token);
     }
 }
 
@@ -2422,27 +2554,6 @@ function eofInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken):
 
 // The "text" insertion mode
 //------------------------------------------------------------------
-function modeText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInText(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInText(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function endTagInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.SCRIPT) {
         p.pendingScript = p.openElements.current;
@@ -2456,47 +2567,29 @@ function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken):
     p._err(token, ERR.eofInElementThatCanContainOnlyText);
     p.openElements.pop();
     p.insertionMode = p.originalInsertionMode;
-    p._processToken(token);
+    p.onEofToken(token);
 }
 
 // The "in table" insertion mode
 //------------------------------------------------------------------
-function modeInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.WHITESPACE_CHARACTER: {
-            characterInTable(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInTable(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInTable(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     if (TABLE_STRUCTURE_TAGS.has(p.openElements.currentTagId)) {
         p.pendingCharacterTokens = [];
         p.hasNonWhitespacePendingCharacterToken = false;
         p.originalInsertionMode = p.insertionMode;
         p.insertionMode = InsertionMode.IN_TABLE_TEXT;
-        modeInTableText(p, token);
+
+        switch (token.type) {
+            case TokenType.CHARACTER: {
+                characterInTableText(p, token);
+                break;
+            }
+            case TokenType.WHITESPACE_CHARACTER: {
+                whitespaceCharacterInTableText(p, token);
+                break;
+            }
+            // Ignore null
+        }
     } else {
         tokenInTable(p, token);
     }
@@ -2519,7 +2612,7 @@ function colStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     p.openElements.clearBackToTableContext();
     p._insertFakeElement(TN.COLGROUP, $.COLGROUP);
     p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
-    modeInColumnGroup(p, token);
+    startTagInColumnGroup(p, token);
 }
 
 function tbodyStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
@@ -2532,14 +2625,14 @@ function tdStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
     p.openElements.clearBackToTableContext();
     p._insertFakeElement(TN.TBODY, $.TBODY);
     p.insertionMode = InsertionMode.IN_TABLE_BODY;
-    modeInTableBody(p, token);
+    startTagInTableBody(p, token);
 }
 
 function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (p.openElements.hasInTableScope($.TABLE)) {
         p.openElements.popUntilTagNamePopped($.TABLE);
         p._resetInsertionMode();
-        p._processToken(token);
+        p.onStartTagToken(token);
     }
 }
 
@@ -2655,26 +2748,6 @@ function tokenInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token):
 
 // The "in table text" insertion mode
 //------------------------------------------------------------------
-function modeInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER: {
-            characterInTableText(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInTableText(p, token);
-            break;
-        }
-        case TokenType.NULL_CHARACTER: {
-            // Ignore token
-            break;
-        }
-        default: {
-            tokenInTableText(p, token);
-        }
-    }
-}
-
 function whitespaceCharacterInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     p.pendingCharacterTokens.push(token);
 }
@@ -2703,37 +2776,6 @@ function tokenInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tok
 
 // The "in caption" insertion mode
 //------------------------------------------------------------------
-function modeInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER: {
-            characterInBody(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInBody(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInCaption(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInCaption(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 const TABLE_VOID_ELEMENTS = new Set([$.CAPTION, $.COL, $.COLGROUP, $.TBODY, $.TD, $.TFOOT, $.TH, $.THEAD, $.TR]);
 
 function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
@@ -2745,7 +2787,7 @@ function startTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
             p.openElements.popUntilTagNamePopped($.CAPTION);
             p.activeFormattingElements.clearToLastMarker();
             p.insertionMode = InsertionMode.IN_TABLE;
-            modeInTable(p, token);
+            startTagInTable(p, token);
         }
     } else {
         startTagInBody(p, token);
@@ -2765,7 +2807,7 @@ function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
                 p.insertionMode = InsertionMode.IN_TABLE;
 
                 if (tn === $.TABLE) {
-                    modeInTable(p, token);
+                    endTagInTable(p, token);
                 }
             }
             break;
@@ -2791,38 +2833,6 @@ function endTagInCaption<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 
 // The "in column group" insertion mode
 //------------------------------------------------------------------
-function modeInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER: {
-            tokenInColumnGroup(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInColumnGroup(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInColumnGroup(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -2871,41 +2881,12 @@ function tokenInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
     if (p.openElements.currentTagId === $.COLGROUP) {
         p.openElements.pop();
         p.insertionMode = InsertionMode.IN_TABLE;
-        modeInTable(p, token);
+        p._processToken(token);
     }
 }
 
 // The "in table body" insertion mode
 //------------------------------------------------------------------
-function modeInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.WHITESPACE_CHARACTER: {
-            characterInTable(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInTableBody(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInTableBody(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.TR: {
@@ -2919,7 +2900,7 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
             p.openElements.clearBackToTableBodyContext();
             p._insertFakeElement(TN.TR, $.TR);
             p.insertionMode = InsertionMode.IN_ROW;
-            modeInRow(p, token);
+            startTagInRow(p, token);
             break;
         }
         case $.CAPTION:
@@ -2932,7 +2913,7 @@ function startTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
                 p.openElements.clearBackToTableBodyContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE;
-                modeInTable(p, token);
+                startTagInTable(p, token);
             }
             break;
         }
@@ -2961,7 +2942,7 @@ function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
                 p.openElements.clearBackToTableBodyContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE;
-                modeInTable(p, token);
+                endTagInTable(p, token);
             }
             break;
         }
@@ -2984,35 +2965,6 @@ function endTagInTableBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
 
 // The "in row" insertion mode
 //------------------------------------------------------------------
-function modeInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.WHITESPACE_CHARACTER: {
-            characterInTable(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInRow(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInRow(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.TH:
@@ -3034,7 +2986,7 @@ function startTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTok
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
-                modeInTableBody(p, token);
+                startTagInTableBody(p, token);
             }
             break;
         }
@@ -3059,7 +3011,7 @@ function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
-                modeInTableBody(p, token);
+                endTagInTableBody(p, token);
             }
             break;
         }
@@ -3070,7 +3022,7 @@ function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken
                 p.openElements.clearBackToTableRowContext();
                 p.openElements.pop();
                 p.insertionMode = InsertionMode.IN_TABLE_BODY;
-                modeInTableBody(p, token);
+                endTagInTableBody(p, token);
             }
             break;
         }
@@ -3091,44 +3043,13 @@ function endTagInRow<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken
 
 // The "in cell" insertion mode
 //------------------------------------------------------------------
-function modeInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER: {
-            characterInBody(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInBody(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInCell(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInCell(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
     if (TABLE_VOID_ELEMENTS.has(tn)) {
         if (p.openElements.hasInTableScope($.TD) || p.openElements.hasInTableScope($.TH)) {
             p._closeTableCell();
-            p._processToken(token);
+            p.onStartTagToken(token);
         }
     } else {
         startTagInBody(p, token);
@@ -3156,7 +3077,7 @@ function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         case $.TR: {
             if (p.openElements.hasInTableScope(tn)) {
                 p._closeTableCell();
-                p._processToken(token);
+                p.onEndTagToken(token);
             }
             break;
         }
@@ -3176,34 +3097,6 @@ function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
 
 // The "in select" insertion mode
 //------------------------------------------------------------------
-function modeInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInSelect(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInSelect(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -3239,7 +3132,7 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
                 p._resetInsertionMode();
 
                 if (token.tagID !== $.SELECT) {
-                    p._processToken(token);
+                    p.onStartTagToken(token);
                 }
             }
             break;
@@ -3294,34 +3187,6 @@ function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
 
 // The "in select in table" insertion mode
 //------------------------------------------------------------------
-function modeInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInSelectInTable(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInSelectInTable(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInBody(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     const tn = token.tagID;
 
@@ -3337,7 +3202,7 @@ function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, tok
     ) {
         p.openElements.popUntilTagNamePopped($.SELECT);
         p._resetInsertionMode();
-        p._processToken(token);
+        p.onStartTagToken(token);
     } else {
         startTagInSelect(p, token);
     }
@@ -3359,7 +3224,7 @@ function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token
         if (p.openElements.hasInTableScope(tn)) {
             p.openElements.popUntilTagNamePopped($.SELECT);
             p._resetInsertionMode();
-            p._processToken(token);
+            p.onEndTagToken(token);
         }
     } else {
         endTagInSelect(p, token);
@@ -3368,37 +3233,6 @@ function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token
 
 // The "in template" insertion mode
 //------------------------------------------------------------------
-function modeInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER: {
-            characterInBody(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInBody(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInTemplate(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInTemplate(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            eofInTemplate(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         // First, handle tags that can start without a mode change
@@ -3423,28 +3257,28 @@ function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
         case $.THEAD:
             p.tmplInsertionModeStack[0] = InsertionMode.IN_TABLE;
             p.insertionMode = InsertionMode.IN_TABLE;
-            modeInTable(p, token);
+            startTagInTable(p, token);
             break;
         case $.COL:
             p.tmplInsertionModeStack[0] = InsertionMode.IN_COLUMN_GROUP;
             p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
-            modeInColumnGroup(p, token);
+            startTagInColumnGroup(p, token);
             break;
         case $.TR:
             p.tmplInsertionModeStack[0] = InsertionMode.IN_TABLE_BODY;
             p.insertionMode = InsertionMode.IN_TABLE_BODY;
-            modeInTableBody(p, token);
+            startTagInTableBody(p, token);
             break;
         case $.TD:
         case $.TH:
             p.tmplInsertionModeStack[0] = InsertionMode.IN_ROW;
             p.insertionMode = InsertionMode.IN_ROW;
-            modeInRow(p, token);
+            startTagInRow(p, token);
             break;
         default:
             p.tmplInsertionModeStack[0] = InsertionMode.IN_BODY;
             p.insertionMode = InsertionMode.IN_BODY;
-            modeInBody(p, token);
+            startTagInBody(p, token);
     }
 }
 
@@ -3460,7 +3294,7 @@ function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFTok
         p.activeFormattingElements.clearToLastMarker();
         p.tmplInsertionModeStack.shift();
         p._resetInsertionMode();
-        p._processToken(token);
+        p.onEofToken(token);
     } else {
         stopParsing(p, token);
     }
@@ -3468,38 +3302,6 @@ function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFTok
 
 // The "after body" insertion mode
 //------------------------------------------------------------------
-function modeAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER: {
-            tokenAfterBody(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInBody(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendCommentToRootHtmlElement(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagAfterBody(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagAfterBody(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            stopParsing(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         startTagInBody(p, token);
@@ -3531,33 +3333,6 @@ function tokenAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
 
 // The "in frameset" insertion mode
 //------------------------------------------------------------------
-function modeInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagInFrameset(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagInFrameset(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            stopParsing(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -3594,33 +3369,6 @@ function endTagInFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 
 // The "after frameset" insertion mode
 //------------------------------------------------------------------
-function modeAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.WHITESPACE_CHARACTER: {
-            p._insertCharacters(token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendComment(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagAfterFrameset(p, token);
-            break;
-        }
-        case TokenType.END_TAG: {
-            endTagAfterFrameset(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            stopParsing(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -3644,35 +3392,6 @@ function endTagAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 
 // The "after after body" insertion mode
 //------------------------------------------------------------------
-function modeAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.CHARACTER:
-        case TokenType.NULL_CHARACTER:
-        case TokenType.END_TAG: {
-            tokenAfterAfterBody(p, token);
-            break;
-        }
-        case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInBody(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendCommentToDocument(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagAfterAfterBody(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            stopParsing(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.HTML) {
         startTagInBody(p, token);
@@ -3688,29 +3407,6 @@ function tokenAfterAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 
 // The "after after frameset" insertion mode
 //------------------------------------------------------------------
-function modeAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
-    switch (token.type) {
-        case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInBody(p, token);
-            break;
-        }
-        case TokenType.COMMENT: {
-            appendCommentToDocument(p, token);
-            break;
-        }
-        case TokenType.START_TAG: {
-            startTagAfterAfterFrameset(p, token);
-            break;
-        }
-        case TokenType.EOF: {
-            stopParsing(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
 function startTagAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     switch (token.tagID) {
         case $.HTML: {
@@ -3747,7 +3443,7 @@ function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, to
             p.openElements.pop();
         }
 
-        p._processToken(token);
+        p._startTagOutsideForeignContent(token);
     } else {
         const current = p._getAdjustedCurrentElement();
         const currentNs = p.treeAdapter.getNamespaceURI(current);
@@ -3776,7 +3472,7 @@ function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
         const element = p.openElements.items[i];
 
         if (p.treeAdapter.getNamespaceURI(element) === NS.HTML) {
-            p._processToken(token);
+            p._endTagOutsideForeignContent(token);
             break;
         }
 
