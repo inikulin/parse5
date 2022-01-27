@@ -1,15 +1,6 @@
 import { Transform } from 'node:stream';
 import type { Tokenizer, TokenHandler } from 'parse5/dist/tokenizer/index.js';
-import {
-    TokenType,
-    CharacterToken,
-    Attribute,
-    Location,
-    EOFToken,
-    TagToken,
-    CommentToken,
-    DoctypeToken,
-} from 'parse5/dist/common/token.js';
+import type { Attribute, Location, TagToken, CommentToken, DoctypeToken } from 'parse5/dist/common/token.js';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
@@ -51,7 +42,7 @@ export interface SAXParserOptions {
 export class SAXParser extends Transform implements TokenHandler {
     protected options: SAXParserOptions;
     protected parserFeedbackSimulator: ParserFeedbackSimulator;
-    private pendingText: CharacterToken | null = null;
+    private pendingText: Text | null = null;
     private lastChunkWritten = false;
     private stopped = false;
     protected tokenizer: Tokenizer;
@@ -142,17 +133,16 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onCharacterToken(token: CharacterToken): void {
+    onCharacterToken(chars: string, location: Location | null): void {
         if (this.pendingText === null) {
-            token.type = TokenType.CHARACTER;
-            this.pendingText = token;
+            this.pendingText = { text: chars, sourceCodeLocation: location };
         } else {
-            this.pendingText.chars += token.chars;
+            this.pendingText.text += chars;
 
-            if (token.location && this.pendingText.location) {
-                const { endLine, endCol, endOffset } = token.location;
-                this.pendingText.location = {
-                    ...this.pendingText.location,
+            if (location && this.pendingText.sourceCodeLocation) {
+                const { endLine, endCol, endOffset } = location;
+                this.pendingText.sourceCodeLocation = {
+                    ...this.pendingText.sourceCodeLocation,
                     endLine,
                     endCol,
                     endOffset,
@@ -162,17 +152,17 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacterToken(token: CharacterToken): void {
-        this.onCharacterToken(token);
+    onWhitespaceCharacterToken(chars: string, location: Location | null): void {
+        this.onCharacterToken(chars, location);
     }
 
     /** @internal */
-    onNullCharacterToken(token: CharacterToken): void {
-        this.onCharacterToken(token);
+    onNullCharacterToken(chars: string, location: Location | null): void {
+        this.onCharacterToken(chars, location);
     }
 
     /** @internal */
-    onEofToken(_token: EOFToken): void {
+    onEofToken(): void {
         this._emitPendingText();
         this.stopped = true;
     }
@@ -241,11 +231,7 @@ export class SAXParser extends Transform implements TokenHandler {
 
     private _emitPendingText(): void {
         if (this.pendingText !== null) {
-            const text: Text = {
-                text: this.pendingText.chars,
-                sourceCodeLocation: this.pendingText.location,
-            };
-            this.emitIfListenerExists('text', text);
+            this.emitIfListenerExists('text', this.pendingText);
             this.pendingText = null;
         }
     }

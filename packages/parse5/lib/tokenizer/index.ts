@@ -10,7 +10,6 @@ import {
 import {
     TokenType,
     Token,
-    EOFToken,
     CharacterToken,
     DoctypeToken,
     TagToken,
@@ -209,14 +208,14 @@ export interface TokenizerOptions {
     onParseError?: ParserErrorHandler | null;
 }
 export interface TokenHandler {
-    onCharacterToken(token: CharacterToken): void;
-    onNullCharacterToken(token: CharacterToken): void;
     onCommentToken(token: CommentToken): void;
     onDoctypeToken(token: DoctypeToken): void;
     onStartTagToken(token: TagToken): void;
     onEndTagToken(token: TagToken): void;
-    onEofToken(token: EOFToken): void;
-    onWhitespaceCharacterToken(token: CharacterToken): void;
+    onEofToken(location: Location | null): void;
+    onCharacterToken(chars: string, location: Location | null): void;
+    onNullCharacterToken(chars: string, location: Location | null): void;
+    onWhitespaceCharacterToken(chars: string, location: Location | null): void;
 }
 
 //Tokenizer
@@ -236,7 +235,9 @@ export class Tokenizer {
 
     private consumedAfterSnapshot = -1;
 
-    private currentCharacterToken: CharacterToken | null = null;
+    private currentCharacterType: CharacterToken['type'] = TokenType.CHARACTER;
+    private currentCharacterData = '';
+    private currentCharacterLocation: Location | null = null;
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
 
@@ -378,14 +379,6 @@ export class Tokenizer {
         };
     }
 
-    private _createCharacterToken(type: CharacterToken['type'], chars: string): void {
-        this.currentCharacterToken = {
-            type,
-            chars,
-            location: this.ctLoc,
-        };
-    }
-
     //Tag attributes
     private _createAttr(attrNameFirstCh: string): void {
         this.currentAttr = {
@@ -471,33 +464,32 @@ export class Tokenizer {
     }
 
     private _emitCurrentCharacterToken(): void {
-        const token = this.currentCharacterToken;
-        if (token) {
+        if (this.currentCharacterData.length > 0) {
             //NOTE: if we have pending character token make it's end location equal to the
             //current token's start location.
-            if (this.ctLoc && token.location) {
-                token.location.endLine = this.ctLoc.startLine;
-                token.location.endCol = this.ctLoc.startCol;
-                token.location.endOffset = this.ctLoc.startOffset;
+            if (this.ctLoc && this.currentCharacterLocation) {
+                this.currentCharacterLocation.endLine = this.ctLoc.startLine;
+                this.currentCharacterLocation.endCol = this.ctLoc.startCol;
+                this.currentCharacterLocation.endOffset = this.ctLoc.startOffset;
             }
 
-            switch (token.type) {
+            switch (this.currentCharacterType) {
                 case TokenType.CHARACTER: {
-                    this.handler.onCharacterToken(token);
+                    this.handler.onCharacterToken(this.currentCharacterData, this.currentCharacterLocation);
                     break;
                 }
                 case TokenType.NULL_CHARACTER: {
-                    this.handler.onNullCharacterToken(token);
+                    this.handler.onNullCharacterToken(this.currentCharacterData, this.currentCharacterLocation);
                     break;
                 }
                 case TokenType.WHITESPACE_CHARACTER: {
-                    this.handler.onWhitespaceCharacterToken(token);
+                    this.handler.onWhitespaceCharacterToken(this.currentCharacterData, this.currentCharacterLocation);
                     break;
                 }
             }
 
             this.hasEmitted = true;
-            this.currentCharacterToken = null;
+            this.currentCharacterData = '';
         }
     }
 
@@ -511,8 +503,7 @@ export class Tokenizer {
             ctLoc.endOffset = ctLoc.startOffset;
         }
 
-        const token: EOFToken = { type: TokenType.EOF, location: ctLoc };
-        this.handler.onEofToken(token);
+        this.handler.onEofToken(ctLoc);
         this.hasEmitted = true;
     }
 
@@ -527,15 +518,18 @@ export class Tokenizer {
     //2)TokenType.WHITESPACE_CHARACTER - any whitespace/new-line character sequences (e.g. '\n  \r\t   \f')
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
     private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
-        if (this.currentCharacterToken && this.currentCharacterToken.type !== type) {
-            this._emitCurrentCharacterToken();
+        if (this.currentCharacterData.length > 0) {
+            if (this.currentCharacterType !== type) {
+                this._emitCurrentCharacterToken();
+            } else {
+                this.currentCharacterData += ch;
+                return;
+            }
         }
 
-        if (this.currentCharacterToken) {
-            this.currentCharacterToken.chars += ch;
-        } else {
-            this._createCharacterToken(type, ch);
-        }
+        this.currentCharacterType = type;
+        this.currentCharacterData = ch;
+        this.currentCharacterLocation = this.ctLoc;
     }
 
     private _emitCodePoint(cp: number): void {
@@ -3068,14 +3062,14 @@ export class Tokenizer {
 export class QueuedHandler implements TokenHandler {
     private tokenQueue: Token[] = [];
 
-    onCharacterToken(token: CharacterToken): void {
-        this.tokenQueue.push(token);
+    onCharacterToken(chars: string, location: Location | null): void {
+        this.tokenQueue.push({ type: TokenType.CHARACTER, chars, location });
     }
-    onNullCharacterToken(token: CharacterToken): void {
-        this.tokenQueue.push(token);
+    onNullCharacterToken(chars: string, location: Location | null): void {
+        this.tokenQueue.push({ type: TokenType.NULL_CHARACTER, chars, location });
     }
-    onWhitespaceCharacterToken(token: CharacterToken): void {
-        this.tokenQueue.push(token);
+    onWhitespaceCharacterToken(chars: string, location: Location | null): void {
+        this.tokenQueue.push({ type: TokenType.WHITESPACE_CHARACTER, chars, location });
     }
     onCommentToken(token: CommentToken): void {
         this.tokenQueue.push(token);
@@ -3089,8 +3083,8 @@ export class QueuedHandler implements TokenHandler {
     onEndTagToken(token: TagToken): void {
         this.tokenQueue.push(token);
     }
-    onEofToken(token: EOFToken): void {
-        this.tokenQueue.push(token);
+    onEofToken(location: Location | null): void {
+        this.tokenQueue.push({ type: TokenType.EOF, location });
     }
 
     public getNextToken(tokenizer: Tokenizer): Token {
