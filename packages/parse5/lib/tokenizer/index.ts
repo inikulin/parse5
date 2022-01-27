@@ -10,6 +10,7 @@ import {
 import {
     TokenType,
     Token,
+    EOFToken,
     CharacterToken,
     DoctypeToken,
     TagToken,
@@ -203,11 +204,26 @@ function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
     return isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN;
 }
 
+export interface TokenizerOptions {
+    sourceCodeLocationInfo?: boolean;
+    onParseError?: ParserErrorHandler | null;
+}
+export interface TokenHandler {
+    onCharacterToken(token: CharacterToken): void;
+    onNullCharacterToken(token: CharacterToken): void;
+    onCommentToken(token: CommentToken): void;
+    onDoctypeToken(token: DoctypeToken): void;
+    onStartTagToken(token: TagToken): void;
+    onEndTagToken(token: TagToken): void;
+    onEofToken(token: EOFToken): void;
+    onWhitespaceCharacterToken(token: CharacterToken): void;
+}
+
 //Tokenizer
-export class Tokenizer {
+export class CbTokenizer {
     public preprocessor: Preprocessor;
 
-    private tokenQueue: Token[] = [];
+    private hasEmitted = false;
 
     public allowCDATA = false;
     public lastStartTagName = '';
@@ -224,24 +240,19 @@ export class Tokenizer {
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
 
-    private addLocationInfo;
-    private onParseError;
-
-    constructor(options: { sourceCodeLocationInfo?: boolean; onParseError?: ParserErrorHandler | null }) {
-        this.addLocationInfo = !!options.sourceCodeLocationInfo;
-        this.onParseError = options.onParseError ?? null;
+    constructor(private options: TokenizerOptions, private handler: TokenHandler) {
         this.preprocessor = new Preprocessor(options);
     }
 
     //Errors
     private _err(code: ERR): void {
-        this.onParseError?.(this.preprocessor.getError(code));
+        this.options.onParseError?.(this.preprocessor.getError(code));
     }
 
     private currentAttrLocation: Location | null = null;
     private ctLoc: Location | null = null;
     private _getCurrentLocation(): Location | null {
-        if (!this.addLocationInfo) {
+        if (!this.options.sourceCodeLocationInfo) {
             return null;
         }
 
@@ -256,8 +267,9 @@ export class Tokenizer {
     }
 
     //API
-    public getNextToken(): Token {
-        while (this.tokenQueue.length === 0 && this.active) {
+    public getNextToken(): void {
+        this.hasEmitted = false;
+        while (!this.hasEmitted && this.active) {
             this.consumedAfterSnapshot = 0;
 
             const cp = this._consume();
@@ -266,8 +278,6 @@ export class Tokenizer {
                 this._callState(cp);
             }
         }
-
-        return this.tokenQueue.shift()!;
     }
 
     public write(chunk: string, isLastChunk: boolean): void {
@@ -285,7 +295,6 @@ export class Tokenizer {
         if (this.preprocessor.endOfChunkHit) {
             this._unconsume(this.consumedAfterSnapshot);
             this.active = false;
-            this.tokenQueue.push(HIBERNATION_TOKEN);
 
             return true;
         }
@@ -432,11 +441,18 @@ export class Tokenizer {
 
         this.currentToken = null;
 
+        if (ct.location && ct.type !== TokenType.EOF) {
+            ct.location.endLine = this.preprocessor.line;
+            ct.location.endCol = this.preprocessor.col + 1;
+            ct.location.endOffset = this.preprocessor.offset + 1;
+        }
+
         //NOTE: store emited start tag's tagName to determine is the following end tag token is appropriate.
         switch (ct.type) {
             case TokenType.START_TAG: {
                 ct.tagID = getTagID(ct.tagName);
                 this.lastStartTagName = ct.tagName;
+                this.handler.onStartTagToken(ct);
                 break;
             }
             case TokenType.END_TAG: {
@@ -449,32 +465,54 @@ export class Tokenizer {
                 if (ct.selfClosing) {
                     this._err(ERR.endTagWithTrailingSolidus);
                 }
+
+                this.handler.onEndTagToken(ct);
                 break;
             }
-            default:
-            // Do nothing
+            case TokenType.COMMENT: {
+                this.handler.onCommentToken(ct);
+                break;
+            }
+            case TokenType.DOCTYPE: {
+                this.handler.onDoctypeToken(ct);
+                break;
+            }
+            case TokenType.EOF: {
+                this.handler.onEofToken(ct);
+                break;
+            }
         }
 
-        if (ct.location && ct.type !== TokenType.EOF) {
-            ct.location.endLine = this.preprocessor.line;
-            ct.location.endCol = this.preprocessor.col + 1;
-            ct.location.endOffset = this.preprocessor.offset + 1;
-        }
-
-        this.tokenQueue.push(ct);
+        this.hasEmitted = true;
     }
 
     private _emitCurrentCharacterToken(): void {
-        if (this.currentCharacterToken) {
+        const token = this.currentCharacterToken;
+        if (token) {
             //NOTE: if we have pending character token make it's end location equal to the
             //current token's start location.
-            if (this.ctLoc && this.currentCharacterToken.location) {
-                this.currentCharacterToken.location.endLine = this.ctLoc.startLine;
-                this.currentCharacterToken.location.endCol = this.ctLoc.startCol;
-                this.currentCharacterToken.location.endOffset = this.ctLoc.startOffset;
+            if (this.ctLoc && token.location) {
+                token.location.endLine = this.ctLoc.startLine;
+                token.location.endCol = this.ctLoc.startCol;
+                token.location.endOffset = this.ctLoc.startOffset;
             }
 
-            this.tokenQueue.push(this.currentCharacterToken);
+            switch (token.type) {
+                case TokenType.CHARACTER: {
+                    this.handler.onCharacterToken(token);
+                    break;
+                }
+                case TokenType.NULL_CHARACTER: {
+                    this.handler.onNullCharacterToken(token);
+                    break;
+                }
+                case TokenType.WHITESPACE_CHARACTER: {
+                    this.handler.onWhitespaceCharacterToken(token);
+                    break;
+                }
+            }
+
+            this.hasEmitted = true;
             this.currentCharacterToken = null;
         }
     }
@@ -3030,5 +3068,84 @@ export class Tokenizer {
 
         this._flushCodePointConsumedAsCharacterReference(this.charRefCode);
         this._reconsumeInState(this.returnState);
+    }
+}
+
+export class Tokenizer implements TokenHandler {
+    private tokenizer: CbTokenizer;
+    private tokenQueue: Token[] = [];
+
+    constructor(options: TokenizerOptions) {
+        this.tokenizer = new CbTokenizer(options, this);
+    }
+
+    get allowCDATA(): boolean {
+        return this.tokenizer.allowCDATA;
+    }
+    set allowCDATA(val: boolean) {
+        this.tokenizer.allowCDATA = val;
+    }
+
+    get preprocessor(): Preprocessor {
+        return this.tokenizer.preprocessor;
+    }
+    get active(): boolean {
+        return this.tokenizer.active;
+    }
+
+    get lastStartTagName(): string {
+        return this.tokenizer.lastStartTagName;
+    }
+    set lastStartTagName(val: string) {
+        this.tokenizer.lastStartTagName = val;
+    }
+
+    set state(val: State) {
+        this.tokenizer.state = val;
+    }
+
+    public write(chunk: string, isLastChunk: boolean): void {
+        this.tokenizer.write(chunk, isLastChunk);
+    }
+
+    public insertHtmlAtCurrentPos(str: string): void {
+        this.tokenizer.insertHtmlAtCurrentPos(str);
+    }
+
+    onCharacterToken(token: CharacterToken): void {
+        this.tokenQueue.push(token);
+    }
+    onNullCharacterToken(token: CharacterToken): void {
+        this.tokenQueue.push(token);
+    }
+    onWhitespaceCharacterToken(token: CharacterToken): void {
+        this.tokenQueue.push(token);
+    }
+    onCommentToken(token: CommentToken): void {
+        this.tokenQueue.push(token);
+    }
+    onDoctypeToken(token: DoctypeToken): void {
+        this.tokenQueue.push(token);
+    }
+    onStartTagToken(token: TagToken): void {
+        this.tokenQueue.push(token);
+    }
+    onEndTagToken(token: TagToken): void {
+        this.tokenQueue.push(token);
+    }
+    onEofToken(token: EOFToken): void {
+        this.tokenQueue.push(token);
+    }
+
+    public getNextToken(): Token {
+        if (this.tokenQueue.length === 0) {
+            this.tokenizer.getNextToken();
+        }
+
+        if (this.tokenQueue.length === 0 && !this.tokenizer.active) {
+            return HIBERNATION_TOKEN;
+        }
+
+        return this.tokenQueue.shift()!;
     }
 }
