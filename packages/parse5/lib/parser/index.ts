@@ -551,6 +551,9 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     //Token processing
     private shouldProcessStartTagTokenInForeignContent(token: TagToken): boolean {
+        // Check that neither current === document, or ns === NS.HTML
+        if (!this._considerForeignContent) return false;
+
         let current: T['parentNode'];
         let currentTagId: number;
 
@@ -561,8 +564,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
             ({ current, currentTagId } = this.openElements);
         }
 
-        //NOTE: We won't get here with current === document, or ns === NS.HTML
-
         if (
             token.tagID === $.SVG &&
             this.treeAdapter.getTagName(current) === TN.ANNOTATION_XML &&
@@ -571,9 +572,14 @@ export class Parser<T extends TreeAdapterTypeMap> {
             return false;
         }
 
-        return token.tagID === $.MGLYPH || token.tagID === $.MALIGNMARK
-            ? !this._isIntegrationPoint(currentTagId, current, NS.HTML)
-            : !this._isIntegrationPoint(currentTagId, current);
+        return (
+            // Check that `current` is not an integration point for HTML or MathML elements.
+            this.tokenizer.allowCDATA ||
+            // If it _is_ an integration point, then we might have to check that it is not an HTML
+            // integration point.
+            ((token.tagID === $.MGLYPH || token.tagID === $.MALIGNMARK) &&
+                !this._isIntegrationPoint(currentTagId, current, NS.HTML))
+        );
     }
 
     _processToken(token: Token): void {
@@ -952,7 +958,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.skipNextNewLine = false;
         this.currentToken = token;
 
-        if (this._considerForeignContent && this.shouldProcessStartTagTokenInForeignContent(token)) {
+        if (this.shouldProcessStartTagTokenInForeignContent(token)) {
             startTagInForeignContent(this, token);
         } else {
             this._startTagOutsideForeignContent(token);
