@@ -3065,12 +3065,57 @@ export class CbTokenizer {
     }
 }
 
-export class Tokenizer implements TokenHandler {
-    private tokenizer: CbTokenizer;
+export class QueuedHandler implements TokenHandler {
     private tokenQueue: Token[] = [];
 
+    onCharacterToken(token: CharacterToken): void {
+        this.tokenQueue.push(token);
+    }
+    onNullCharacterToken(token: CharacterToken): void {
+        this.tokenQueue.push(token);
+    }
+    onWhitespaceCharacterToken(token: CharacterToken): void {
+        this.tokenQueue.push(token);
+    }
+    onCommentToken(token: CommentToken): void {
+        this.tokenQueue.push(token);
+    }
+    onDoctypeToken(token: DoctypeToken): void {
+        this.tokenQueue.push(token);
+    }
+    onStartTagToken(token: TagToken): void {
+        this.tokenQueue.push(token);
+    }
+    onEndTagToken(token: TagToken): void {
+        this.tokenQueue.push(token);
+    }
+    onEofToken(token: EOFToken): void {
+        this.tokenQueue.push(token);
+    }
+
+    public getNextToken(tokenizer: CbTokenizer): Token {
+        while (this.tokenQueue.length === 0 && tokenizer.active) {
+            tokenizer.getNextToken();
+        }
+
+        if (this.tokenQueue.length === 0 && !tokenizer.active) {
+            this.tokenQueue.push(HIBERNATION_TOKEN);
+        }
+
+        return this.tokenQueue.shift()!;
+    }
+}
+
+/**
+ * Provides the same interface as the old tokenizer, while allowing users to
+ * read data one token at a time.
+ */
+export class Tokenizer {
+    private tokenizer: CbTokenizer;
+    private handler = new QueuedHandler();
+
     constructor(options: TokenizerOptions) {
-        this.tokenizer = new CbTokenizer(options, this);
+        this.tokenizer = new CbTokenizer(options, this.handler);
     }
 
     get allowCDATA(): boolean {
@@ -3106,40 +3151,7 @@ export class Tokenizer implements TokenHandler {
         this.tokenizer.insertHtmlAtCurrentPos(str);
     }
 
-    onCharacterToken(token: CharacterToken): void {
-        this.tokenQueue.push(token);
-    }
-    onNullCharacterToken(token: CharacterToken): void {
-        this.tokenQueue.push(token);
-    }
-    onWhitespaceCharacterToken(token: CharacterToken): void {
-        this.tokenQueue.push(token);
-    }
-    onCommentToken(token: CommentToken): void {
-        this.tokenQueue.push(token);
-    }
-    onDoctypeToken(token: DoctypeToken): void {
-        this.tokenQueue.push(token);
-    }
-    onStartTagToken(token: TagToken): void {
-        this.tokenQueue.push(token);
-    }
-    onEndTagToken(token: TagToken): void {
-        this.tokenQueue.push(token);
-    }
-    onEofToken(token: EOFToken): void {
-        this.tokenQueue.push(token);
-    }
-
     public getNextToken(): Token {
-        if (this.tokenQueue.length === 0 && this.active) {
-            this.tokenizer.getNextToken();
-
-            if (!this.active) {
-                this.tokenQueue.push(HIBERNATION_TOKEN);
-            }
-        }
-
-        return this.tokenQueue.shift()!;
+        return this.handler.getNextToken(this.tokenizer);
     }
 }

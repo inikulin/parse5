@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { Tokenizer, TokenizerMode } from 'parse5/dist/tokenizer/index.js';
+import { CbTokenizer, Tokenizer, TokenizerMode } from 'parse5/dist/tokenizer/index.js';
 import { makeChunks } from './common.js';
 import { TokenType, Token } from 'parse5/dist/common/token.js';
 
@@ -53,7 +53,7 @@ interface TokenSourceData {
 }
 
 type TokenSourceCreator = (data: TokenSourceData) => {
-    tokenizer: Tokenizer;
+    tokenizer: Tokenizer | CbTokenizer;
     getNextToken: () => Token;
 };
 
