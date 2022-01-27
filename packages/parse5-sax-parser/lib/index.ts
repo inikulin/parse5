@@ -133,7 +133,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onCharacterToken(chars: string, location: Location | null): void {
+    onCharacter(chars: string, location: Location | null): void {
         if (this.pendingText === null) {
             this.pendingText = { text: chars, sourceCodeLocation: location };
         } else {
@@ -152,23 +152,23 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacterToken(chars: string, location: Location | null): void {
-        this.onCharacterToken(chars, location);
+    onWhitespaceCharacter(chars: string, location: Location | null): void {
+        this.onCharacter(chars, location);
     }
 
     /** @internal */
-    onNullCharacterToken(chars: string, location: Location | null): void {
-        this.onCharacterToken(chars, location);
+    onNullCharacter(chars: string, location: Location | null): void {
+        this.onCharacter(chars, location);
     }
 
     /** @internal */
-    onEofToken(): void {
+    onEof(): void {
         this._emitPendingText();
         this.stopped = true;
     }
 
     /** @internal */
-    onStartTagToken(token: TagToken): void {
+    onStartTag(token: TagToken): void {
         this._emitPendingText();
 
         const startTag: StartTag = {
@@ -181,7 +181,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onEndTagToken(token: TagToken): void {
+    onEndTag(token: TagToken): void {
         this._emitPendingText();
 
         const endTag: EndTag = {
@@ -192,7 +192,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onDoctypeToken(token: DoctypeToken): void {
+    onDoctype(token: DoctypeToken): void {
         this._emitPendingText();
 
         const doctype: Doctype = {
@@ -205,7 +205,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onCommentToken(token: CommentToken): void {
+    onComment(token: CommentToken): void {
         this._emitPendingText();
 
         const comment: Comment = {

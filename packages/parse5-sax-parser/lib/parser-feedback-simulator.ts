@@ -18,18 +18,18 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onNullCharacterToken(chars: string, location: Location | null): void {
+    onNullCharacter(chars: string, location: Location | null): void {
         this.skipNextNewLine = false;
 
         if (this.inForeignContent) {
-            this.handler.onCharacterToken(unicode.REPLACEMENT_CHARACTER, location);
+            this.handler.onCharacter(unicode.REPLACEMENT_CHARACTER, location);
         } else {
-            this.handler.onNullCharacterToken(chars, location);
+            this.handler.onNullCharacter(chars, location);
         }
     }
 
     /** @internal */
-    onWhitespaceCharacterToken(chars: string, location: Location | null): void {
+    onWhitespaceCharacter(chars: string, location: Location | null): void {
         if (this.skipNextNewLine && chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED) {
             this.skipNextNewLine = false;
 
@@ -40,31 +40,31 @@ export class ParserFeedbackSimulator implements TokenHandler {
             chars = chars.substr(1);
         }
 
-        this.handler.onWhitespaceCharacterToken(chars, location);
+        this.handler.onWhitespaceCharacter(chars, location);
     }
 
     /** @internal */
-    onCharacterToken(chars: string, location: Location | null): void {
+    onCharacter(chars: string, location: Location | null): void {
         this.skipNextNewLine = false;
-        this.handler.onCharacterToken(chars, location);
+        this.handler.onCharacter(chars, location);
     }
 
     /** @internal */
-    onCommentToken(token: CommentToken): void {
+    onComment(token: CommentToken): void {
         this.skipNextNewLine = false;
-        this.handler.onCommentToken(token);
+        this.handler.onComment(token);
     }
 
     /** @internal */
-    onDoctypeToken(token: DoctypeToken): void {
+    onDoctype(token: DoctypeToken): void {
         this.skipNextNewLine = false;
-        this.handler.onDoctypeToken(token);
+        this.handler.onDoctype(token);
     }
 
     /** @internal */
-    onEofToken(location: Location | null): void {
+    onEof(location: Location | null): void {
         this.skipNextNewLine = false;
-        this.handler.onEofToken(location);
+        this.handler.onEof(location);
     }
 
     //Namespace stack mutations
@@ -111,7 +111,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onStartTagToken(token: TagToken): void {
+    onStartTag(token: TagToken): void {
         let tn = token.tagID;
 
         switch (tn) {
@@ -168,11 +168,11 @@ export class ParserFeedbackSimulator implements TokenHandler {
             this._ensureTokenizerMode(tn);
         }
 
-        this.handler.onStartTagToken(token);
+        this.handler.onStartTag(token);
     }
 
     /** @internal */
-    onEndTagToken(token: TagToken): void {
+    onEndTag(token: TagToken): void {
         let tn = token.tagID;
 
         if (!this.inForeignContent) {
@@ -202,6 +202,6 @@ export class ParserFeedbackSimulator implements TokenHandler {
             foreignContent.adjustTokenSVGTagName(token);
         }
 
-        this.handler.onEndTagToken(token);
+        this.handler.onEndTag(token);
     }
 }

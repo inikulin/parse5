@@ -208,14 +208,14 @@ export interface TokenizerOptions {
     onParseError?: ParserErrorHandler | null;
 }
 export interface TokenHandler {
-    onCommentToken(token: CommentToken): void;
-    onDoctypeToken(token: DoctypeToken): void;
-    onStartTagToken(token: TagToken): void;
-    onEndTagToken(token: TagToken): void;
-    onEofToken(location: Location | null): void;
-    onCharacterToken(chars: string, location: Location | null): void;
-    onNullCharacterToken(chars: string, location: Location | null): void;
-    onWhitespaceCharacterToken(chars: string, location: Location | null): void;
+    onComment(token: CommentToken): void;
+    onDoctype(token: DoctypeToken): void;
+    onStartTag(token: TagToken): void;
+    onEndTag(token: TagToken): void;
+    onEof(location: Location | null): void;
+    onCharacter(chars: string, location: Location | null): void;
+    onNullCharacter(chars: string, location: Location | null): void;
+    onWhitespaceCharacter(chars: string, location: Location | null): void;
 }
 
 //Tokenizer
@@ -433,7 +433,7 @@ export class Tokenizer {
             case TokenType.START_TAG: {
                 ct.tagID = getTagID(ct.tagName);
                 this.lastStartTagName = ct.tagName;
-                this.handler.onStartTagToken(ct);
+                this.handler.onStartTag(ct);
                 break;
             }
             case TokenType.END_TAG: {
@@ -447,15 +447,15 @@ export class Tokenizer {
                     this._err(ERR.endTagWithTrailingSolidus);
                 }
 
-                this.handler.onEndTagToken(ct);
+                this.handler.onEndTag(ct);
                 break;
             }
             case TokenType.COMMENT: {
-                this.handler.onCommentToken(ct);
+                this.handler.onComment(ct);
                 break;
             }
             case TokenType.DOCTYPE: {
-                this.handler.onDoctypeToken(ct);
+                this.handler.onDoctype(ct);
                 break;
             }
         }
@@ -475,15 +475,15 @@ export class Tokenizer {
 
             switch (this.currentCharacterType) {
                 case TokenType.CHARACTER: {
-                    this.handler.onCharacterToken(this.currentCharacterData, this.currentCharacterLocation);
+                    this.handler.onCharacter(this.currentCharacterData, this.currentCharacterLocation);
                     break;
                 }
                 case TokenType.NULL_CHARACTER: {
-                    this.handler.onNullCharacterToken(this.currentCharacterData, this.currentCharacterLocation);
+                    this.handler.onNullCharacter(this.currentCharacterData, this.currentCharacterLocation);
                     break;
                 }
                 case TokenType.WHITESPACE_CHARACTER: {
-                    this.handler.onWhitespaceCharacterToken(this.currentCharacterData, this.currentCharacterLocation);
+                    this.handler.onWhitespaceCharacter(this.currentCharacterData, this.currentCharacterLocation);
                     break;
                 }
             }
@@ -503,7 +503,7 @@ export class Tokenizer {
             ctLoc.endOffset = ctLoc.startOffset;
         }
 
-        this.handler.onEofToken(ctLoc);
+        this.handler.onEof(ctLoc);
         this.hasEmitted = true;
     }
 
@@ -3062,28 +3062,28 @@ export class Tokenizer {
 export class QueuedHandler implements TokenHandler {
     private tokenQueue: Token[] = [];
 
-    onCharacterToken(chars: string, location: Location | null): void {
+    onCharacter(chars: string, location: Location | null): void {
         this.tokenQueue.push({ type: TokenType.CHARACTER, chars, location });
     }
-    onNullCharacterToken(chars: string, location: Location | null): void {
+    onNullCharacter(chars: string, location: Location | null): void {
         this.tokenQueue.push({ type: TokenType.NULL_CHARACTER, chars, location });
     }
-    onWhitespaceCharacterToken(chars: string, location: Location | null): void {
+    onWhitespaceCharacter(chars: string, location: Location | null): void {
         this.tokenQueue.push({ type: TokenType.WHITESPACE_CHARACTER, chars, location });
     }
-    onCommentToken(token: CommentToken): void {
+    onComment(token: CommentToken): void {
         this.tokenQueue.push(token);
     }
-    onDoctypeToken(token: DoctypeToken): void {
+    onDoctype(token: DoctypeToken): void {
         this.tokenQueue.push(token);
     }
-    onStartTagToken(token: TagToken): void {
+    onStartTag(token: TagToken): void {
         this.tokenQueue.push(token);
     }
-    onEndTagToken(token: TagToken): void {
+    onEndTag(token: TagToken): void {
         this.tokenQueue.push(token);
     }
-    onEofToken(location: Location | null): void {
+    onEof(location: Location | null): void {
         this.tokenQueue.push({ type: TokenType.EOF, location });
     }
 
