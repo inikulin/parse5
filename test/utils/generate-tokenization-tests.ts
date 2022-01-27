@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { CbTokenizer, Tokenizer, TokenizerMode } from 'parse5/dist/tokenizer/index.js';
+import { Tokenizer, QueuedTokenizer, TokenizerMode } from 'parse5/dist/tokenizer/index.js';
 import { makeChunks } from './common.js';
 import { TokenType, Token } from 'parse5/dist/common/token.js';
 
@@ -53,14 +53,14 @@ interface TokenSourceData {
 }
 
 type TokenSourceCreator = (data: TokenSourceData) => {
-    tokenizer: Tokenizer | CbTokenizer;
+    tokenizer: QueuedTokenizer | Tokenizer;
     getNextToken: () => Token;
 };
 
 function tokenize(
     createTokenSource: TokenSourceCreator,
     chunks: string | string[],
-    initialState: Tokenizer['state'],
+    initialState: QueuedTokenizer['state'],
     lastStartTag: string | null
 ): TokenSourceData {
     const result: TokenSourceData = { tokens: [], errors: [] };
@@ -129,7 +129,7 @@ function concatCharacterTokens(tokenEntries: HtmlLibToken[]): HtmlLibToken[] {
     return result;
 }
 
-function getTokenizerSuitableStateName(testDataStateName: string): Tokenizer['state'] {
+function getTokenizerSuitableStateName(testDataStateName: string): QueuedTokenizer['state'] {
     const name = testDataStateName.slice(0, -6).replace(' ', '_').toUpperCase();
     return TokenizerMode[name as keyof typeof TokenizerMode];
 }
@@ -150,7 +150,7 @@ interface LoadedTest {
     name: string;
     input: string;
     expected: HtmlLibToken[];
-    initialState: Tokenizer['state'];
+    initialState: QueuedTokenizer['state'];
     initialStateName: string;
     lastStartTag: string;
     expectedErrors: string[];
@@ -221,7 +221,7 @@ export function generateTokenizationTests(
             const result = tokenize(
                 createTokenSource,
                 chunks,
-                testData.initialState as Tokenizer['state'],
+                testData.initialState as QueuedTokenizer['state'],
                 testData.lastStartTag
             );
 

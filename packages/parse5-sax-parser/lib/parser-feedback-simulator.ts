@@ -1,4 +1,4 @@
-import { CbTokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from 'parse5/dist/tokenizer/index.js';
+import { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from 'parse5/dist/tokenizer/index.js';
 import { TokenType, TagToken, CharacterToken, CommentToken, DoctypeToken, EOFToken } from 'parse5/dist/common/token.js';
 import * as foreignContent from 'parse5/dist/common/foreign-content.js';
 import * as unicode from 'parse5/dist/common/unicode.js';
@@ -10,10 +10,10 @@ export class ParserFeedbackSimulator implements TokenHandler {
     private namespaceStack: NS[] = [];
     private inForeignContent = false;
     public skipNextNewLine = false;
-    public tokenizer: CbTokenizer;
+    public tokenizer: Tokenizer;
 
     constructor(options: TokenizerOptions, private handler: TokenHandler) {
-        this.tokenizer = new CbTokenizer(options, this);
+        this.tokenizer = new Tokenizer(options, this);
         this._enterNamespace(NS.HTML);
     }
 

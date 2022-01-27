@@ -1,4 +1,4 @@
-import { Tokenizer, TokenizerMode } from '../tokenizer/index.js';
+import { QueuedTokenizer, TokenizerMode } from '../tokenizer/index.js';
 import { OpenElementStack } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
@@ -176,7 +176,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return fragment;
     }
 
-    tokenizer!: Tokenizer;
+    tokenizer!: QueuedTokenizer;
     stopped = false;
     insertionMode = InsertionMode.INITIAL;
     originalInsertionMode = InsertionMode.INITIAL;
@@ -208,7 +208,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     //Bootstrap parser
     _bootstrap(document: T['document'], fragmentContext: T['element'] | null): void {
-        this.tokenizer = new Tokenizer(this.options);
+        this.tokenizer = new QueuedTokenizer(this.options);
 
         this.stopped = false;
 

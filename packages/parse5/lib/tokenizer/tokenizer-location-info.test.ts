@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import { Tokenizer, TokenizerMode } from './index.js';
+import { QueuedTokenizer, TokenizerMode } from './index.js';
 import { TokenType } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
@@ -82,7 +82,7 @@ it('Location Info (Tokenizer)', () => {
     for (const testCase of testCases) {
         const html = testCase.htmlChunks.join('');
         const lines = html.split(/\r?\n/g);
-        const tokenizer = new Tokenizer({ sourceCodeLocationInfo: true });
+        const tokenizer = new QueuedTokenizer({ sourceCodeLocationInfo: true });
         const lastChunkIdx = testCase.htmlChunks.length - 1;
 
         for (let i = 0; i < testCase.htmlChunks.length; i++) {

@@ -1,12 +1,12 @@
 import * as parse5 from 'parse5';
-import { Tokenizer } from 'parse5/dist/tokenizer/index.js';
+import { QueuedTokenizer } from 'parse5/dist/tokenizer/index.js';
 import type { Token } from 'parse5/dist/common/token';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 
 const dataPath = new URL('../../../../test/data/html5lib-tests/tokenizer', import.meta.url);
 
 generateTokenizationTests('tokenizer', 'Tokenizer', dataPath.pathname, ({ errors }) => {
-    const tokenizer = new Tokenizer({
+    const tokenizer = new QueuedTokenizer({
         sourceCodeLocationInfo: true,
         onParseError(err): void {
             errors.push({

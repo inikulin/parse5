@@ -1,5 +1,5 @@
 import { Transform } from 'node:stream';
-import type { CbTokenizer, TokenHandler } from 'parse5/dist/tokenizer/index.js';
+import type { Tokenizer, TokenHandler } from 'parse5/dist/tokenizer/index.js';
 import {
     TokenType,
     CharacterToken,
@@ -54,7 +54,7 @@ export class SAXParser extends Transform implements TokenHandler {
     private pendingText: CharacterToken | null = null;
     private lastChunkWritten = false;
     private stopped = false;
-    protected tokenizer: CbTokenizer;
+    protected tokenizer: Tokenizer;
 
     /**
      * @param options Parsing options.

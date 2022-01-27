@@ -220,7 +220,7 @@ export interface TokenHandler {
 }
 
 //Tokenizer
-export class CbTokenizer {
+export class Tokenizer {
     public preprocessor: Preprocessor;
 
     private hasEmitted = false;
@@ -3093,7 +3093,7 @@ export class QueuedHandler implements TokenHandler {
         this.tokenQueue.push(token);
     }
 
-    public getNextToken(tokenizer: CbTokenizer): Token {
+    public getNextToken(tokenizer: Tokenizer): Token {
         while (this.tokenQueue.length === 0 && tokenizer.active) {
             tokenizer.getNextToken();
         }
@@ -3110,12 +3110,12 @@ export class QueuedHandler implements TokenHandler {
  * Provides the same interface as the old tokenizer, while allowing users to
  * read data one token at a time.
  */
-export class Tokenizer {
-    private tokenizer: CbTokenizer;
+export class QueuedTokenizer {
+    private tokenizer: Tokenizer;
     private handler = new QueuedHandler();
 
     constructor(options: TokenizerOptions) {
-        this.tokenizer = new CbTokenizer(options, this.handler);
+        this.tokenizer = new Tokenizer(options, this.handler);
     }
 
     get allowCDATA(): boolean {
