@@ -579,35 +579,35 @@ export class Parser<T extends TreeAdapterTypeMap> {
     _processToken(token: Token): void {
         switch (token.type) {
             case TokenType.CHARACTER: {
-                this.onCharacterToken(token);
+                this.onCharacter(token);
                 break;
             }
             case TokenType.NULL_CHARACTER: {
-                this.onNullCharacterToken(token);
+                this.onNullCharacter(token);
                 break;
             }
             case TokenType.COMMENT: {
-                this.onCommentToken(token);
+                this.onComment(token);
                 break;
             }
             case TokenType.DOCTYPE: {
-                this.onDoctypeToken(token);
+                this.onDoctype(token);
                 break;
             }
             case TokenType.START_TAG: {
-                this.onStartTagToken(token);
+                this.onStartTag(token);
                 break;
             }
             case TokenType.END_TAG: {
-                this.onEndTagToken(token);
+                this.onEndTag(token);
                 break;
             }
             case TokenType.EOF: {
-                this.onEofToken(token);
+                this.onEof(token);
                 break;
             }
             case TokenType.WHITESPACE_CHARACTER: {
-                this.onWhitespaceCharacterToken(token);
+                this.onWhitespaceCharacter(token);
                 break;
             }
         }
@@ -779,7 +779,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return SPECIAL_ELEMENTS[ns].has(id);
     }
 
-    onCharacterToken(token: CharacterToken): void {
+    onCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.tokenizer.allowCDATA) {
@@ -838,7 +838,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             // Do nothing
         }
     }
-    onNullCharacterToken(token: CharacterToken): void {
+    onNullCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.tokenizer.allowCDATA) {
@@ -886,7 +886,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             // Do nothing
         }
     }
-    onCommentToken(token: CommentToken): void {
+    onComment(token: CommentToken): void {
         this.skipNextNewLine = false;
 
         if (this._considerForeignContent) {
@@ -929,7 +929,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             // Do nothing
         }
     }
-    onDoctypeToken(token: DoctypeToken): void {
+    onDoctype(token: DoctypeToken): void {
         this.skipNextNewLine = false;
         switch (this.insertionMode) {
             case InsertionMode.INITIAL:
@@ -948,7 +948,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             // Do nothing
         }
     }
-    onStartTagToken(token: TagToken): void {
+    onStartTag(token: TagToken): void {
         this.skipNextNewLine = false;
         this.currentToken = token;
 
@@ -1030,7 +1030,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             // Do nothing
         }
     }
-    onEndTagToken(token: TagToken): void {
+    onEndTag(token: TagToken): void {
         this.skipNextNewLine = false;
         this.currentToken = token;
 
@@ -1112,7 +1112,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             // Do nothing
         }
     }
-    onEofToken(token: EOFToken): void {
+    onEof(token: EOFToken): void {
         this.skipNextNewLine = false;
         switch (this.insertionMode) {
             case InsertionMode.INITIAL:
@@ -1164,7 +1164,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             // Do nothing
         }
     }
-    onWhitespaceCharacterToken(token: CharacterToken): void {
+    onWhitespaceCharacter(token: CharacterToken): void {
         if (this.skipNextNewLine) {
             this.skipNextNewLine = false;
 
@@ -2557,7 +2557,7 @@ function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken):
     p._err(token, ERR.eofInElementThatCanContainOnlyText);
     p.openElements.pop();
     p.insertionMode = p.originalInsertionMode;
-    p.onEofToken(token);
+    p.onEof(token);
 }
 
 // The "in table" insertion mode
@@ -2622,7 +2622,7 @@ function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     if (p.openElements.hasInTableScope($.TABLE)) {
         p.openElements.popUntilTagNamePopped($.TABLE);
         p._resetInsertionMode();
-        p.onStartTagToken(token);
+        p.onStartTag(token);
     }
 }
 
@@ -3122,7 +3122,7 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
                 p._resetInsertionMode();
 
                 if (token.tagID !== $.SELECT) {
-                    p.onStartTagToken(token);
+                    p.onStartTag(token);
                 }
             }
             break;
@@ -3192,7 +3192,7 @@ function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, tok
     ) {
         p.openElements.popUntilTagNamePopped($.SELECT);
         p._resetInsertionMode();
-        p.onStartTagToken(token);
+        p.onStartTag(token);
     } else {
         startTagInSelect(p, token);
     }
@@ -3214,7 +3214,7 @@ function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token
         if (p.openElements.hasInTableScope(tn)) {
             p.openElements.popUntilTagNamePopped($.SELECT);
             p._resetInsertionMode();
-            p.onEndTagToken(token);
+            p.onEndTag(token);
         }
     } else {
         endTagInSelect(p, token);
@@ -3284,7 +3284,7 @@ function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFTok
         p.activeFormattingElements.clearToLastMarker();
         p.tmplInsertionModeStack.shift();
         p._resetInsertionMode();
-        p.onEofToken(token);
+        p.onEof(token);
     } else {
         stopParsing(p, token);
     }
