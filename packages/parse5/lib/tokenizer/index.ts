@@ -464,26 +464,28 @@ export class Tokenizer {
     }
 
     private _emitCurrentCharacterToken(): void {
-        if (this.currentCharacterData.length > 0) {
+        const data = this.currentCharacterData;
+        if (data.length > 0) {
+            const location = this.currentCharacterLocation;
             //NOTE: if we have pending character token make it's end location equal to the
             //current token's start location.
-            if (this.ctLoc && this.currentCharacterLocation) {
-                this.currentCharacterLocation.endLine = this.ctLoc.startLine;
-                this.currentCharacterLocation.endCol = this.ctLoc.startCol;
-                this.currentCharacterLocation.endOffset = this.ctLoc.startOffset;
+            if (this.ctLoc && location) {
+                location.endLine = this.ctLoc.startLine;
+                location.endCol = this.ctLoc.startCol;
+                location.endOffset = this.ctLoc.startOffset;
             }
 
             switch (this.currentCharacterType) {
                 case TokenType.CHARACTER: {
-                    this.handler.onCharacter(this.currentCharacterData, this.currentCharacterLocation);
+                    this.handler.onCharacter(data, location);
                     break;
                 }
                 case TokenType.NULL_CHARACTER: {
-                    this.handler.onNullCharacter(this.currentCharacterData, this.currentCharacterLocation);
+                    this.handler.onNullCharacter(data, location);
                     break;
                 }
                 case TokenType.WHITESPACE_CHARACTER: {
-                    this.handler.onWhitespaceCharacter(this.currentCharacterData, this.currentCharacterLocation);
+                    this.handler.onWhitespaceCharacter(data, location);
                     break;
                 }
             }
