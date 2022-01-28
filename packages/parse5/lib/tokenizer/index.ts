@@ -231,6 +231,7 @@ export class Tokenizer {
         this.addLocationInfo = !!options.sourceCodeLocationInfo;
         this.onParseError = options.onParseError ?? null;
         this.preprocessor = new Preprocessor(options);
+        this.ctLoc = this.getCurrentLocation();
     }
 
     //Errors
@@ -238,9 +239,13 @@ export class Tokenizer {
         this.onParseError?.(this.preprocessor.getError(code));
     }
 
+    // Locations
     private currentAttrLocation: Location | null = null;
-    private ctLoc: Location | null = null;
-    private _getCurrentLocation(): Location | null {
+
+    /** The start location of the current section. Object is updated; use `getStartLocation` to get a copy. */
+    private readonly ctLoc: Location | null;
+
+    private getCurrentLocation(): Location | null {
         if (!this.addLocationInfo) {
             return null;
         }
@@ -253,6 +258,18 @@ export class Tokenizer {
             endCol: -1,
             endOffset: -1,
         };
+    }
+
+    private updateStartLocation(): void {
+        if (this.ctLoc !== null) {
+            this.ctLoc.startLine = this.preprocessor.line;
+            this.ctLoc.startCol = this.preprocessor.col;
+            this.ctLoc.startOffset = this.preprocessor.offset;
+        }
+    }
+
+    private getStartLocation(): Location | null {
+        return this.ctLoc && { ...this.ctLoc };
     }
 
     //API
@@ -334,7 +351,7 @@ export class Tokenizer {
             selfClosing: false,
             ackSelfClosing: false,
             attrs: [],
-            location: this.ctLoc,
+            location: this.getStartLocation(),
         };
     }
 
@@ -346,7 +363,7 @@ export class Tokenizer {
             selfClosing: false,
             ackSelfClosing: false,
             attrs: [],
-            location: this.ctLoc,
+            location: this.getStartLocation(),
         };
     }
 
@@ -354,7 +371,7 @@ export class Tokenizer {
         this.currentToken = {
             type: TokenType.COMMENT,
             data: '',
-            location: this.ctLoc,
+            location: this.getStartLocation(),
         };
     }
 
@@ -365,7 +382,7 @@ export class Tokenizer {
             forceQuirks: false,
             publicId: null,
             systemId: null,
-            location: this.ctLoc,
+            location: this.getStartLocation(),
         };
     }
 
@@ -373,12 +390,12 @@ export class Tokenizer {
         this.currentCharacterToken = {
             type,
             chars,
-            location: this.ctLoc,
+            location: this.getStartLocation(),
         };
     }
 
     private _createEOFToken(): void {
-        const ctLoc = this._getCurrentLocation();
+        const ctLoc = this.getCurrentLocation();
 
         if (ctLoc) {
             ctLoc.endLine = ctLoc.startLine;
@@ -395,7 +412,7 @@ export class Tokenizer {
             name: attrNameFirstCh,
             value: '',
         };
-        this.currentAttrLocation = this._getCurrentLocation();
+        this.currentAttrLocation = this.getCurrentLocation();
     }
 
     private _leaveAttrName(): void {
@@ -925,7 +942,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateData(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
+        this.updateStartLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -956,7 +973,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRcdata(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
+        this.updateStartLocation();
 
         switch (cp) {
             case $.AMPERSAND: {
@@ -987,7 +1004,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRawtext(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
+        this.updateStartLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -1013,7 +1030,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptData(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
+        this.updateStartLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -1039,7 +1056,7 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _statePlaintext(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
+        this.updateStartLocation();
 
         switch (cp) {
             case $.NULL: {
