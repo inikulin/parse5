@@ -28,6 +28,7 @@ import {
     EOFToken,
     LocationWithAttributes,
     ElementLocation,
+    Location,
 } from '../common/token.js';
 
 //Misc constants
@@ -273,7 +274,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
                 this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
             }
 
-            if (token.type === TokenType.HIBERNATION || (scriptHandler !== null && this.pendingScript)) {
+            if (!this.tokenizer.active || (scriptHandler !== null && this.pendingScript)) {
                 break;
             }
         }
@@ -483,7 +484,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
 
-    _insertCharacters(token: CharacterToken): void {
+    _insertCharacters(chars: string, location: Location | null): void {
         let parent;
         let beforeElement;
 
@@ -491,17 +492,17 @@ export class Parser<T extends TreeAdapterTypeMap> {
             ({ parent, beforeElement } = this._findFosterParentingLocation());
 
             if (beforeElement) {
-                this.treeAdapter.insertTextBefore(parent, token.chars, beforeElement);
+                this.treeAdapter.insertTextBefore(parent, chars, beforeElement);
             } else {
-                this.treeAdapter.insertText(parent, token.chars);
+                this.treeAdapter.insertText(parent, chars);
             }
         } else {
             parent = this.openElements.currentTmplContentOrNode;
 
-            this.treeAdapter.insertText(parent, token.chars);
+            this.treeAdapter.insertText(parent, chars);
         }
 
-        if (!token.location) return;
+        if (!location) return;
 
         const siblings = this.treeAdapter.getChildNodes(parent);
         const textNodeIdx = beforeElement ? siblings.lastIndexOf(beforeElement) : siblings.length;
@@ -511,10 +512,10 @@ export class Parser<T extends TreeAdapterTypeMap> {
         const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
         if (tnLoc) {
-            const { endLine, endCol, endOffset } = token.location;
+            const { endLine, endCol, endOffset } = location;
             this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
         } else if (this.options.sourceCodeLocationInfo) {
-            this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
+            this.treeAdapter.setNodeSourceCodeLocation(textNode, location);
         }
     }
 
@@ -530,20 +531,21 @@ export class Parser<T extends TreeAdapterTypeMap> {
             const ctLoc = closingToken.location;
             const tn = this.treeAdapter.getTagName(element);
 
-            // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
-            // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
-            const isClosingEndTag = closingToken.type === TokenType.END_TAG && tn === closingToken.tagName;
-            const endLoc: Partial<ElementLocation> = {};
-            if (isClosingEndTag) {
-                endLoc.endTag = { ...ctLoc };
-                endLoc.endLine = ctLoc.endLine;
-                endLoc.endCol = ctLoc.endCol;
-                endLoc.endOffset = ctLoc.endOffset;
-            } else {
-                endLoc.endLine = ctLoc.startLine;
-                endLoc.endCol = ctLoc.startCol;
-                endLoc.endOffset = ctLoc.startOffset;
-            }
+            const endLoc: Partial<ElementLocation> =
+                // NOTE: For cases like <p> <p> </p> - First 'p' closes without a closing
+                // tag and for cases like <td> <p> </td> - 'p' closes without a closing tag.
+                closingToken.type === TokenType.END_TAG && tn === closingToken.tagName
+                    ? {
+                          endTag: { ...ctLoc },
+                          endLine: ctLoc.endLine,
+                          endCol: ctLoc.endCol,
+                          endOffset: ctLoc.endOffset,
+                      }
+                    : {
+                          endLine: ctLoc.startLine,
+                          endCol: ctLoc.startCol,
+                          endOffset: ctLoc.startOffset,
+                      };
 
             this.treeAdapter.updateNodeSourceCodeLocation(element, endLoc);
         }
@@ -789,7 +791,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.skipNextNewLine = false;
 
         if (this.tokenizer.allowCDATA) {
-            characterInForeignContent(this, token);
+            characterInForeignContent(this, token.chars, token.location);
             return;
         }
 
@@ -816,12 +818,12 @@ export class Parser<T extends TreeAdapterTypeMap> {
             case InsertionMode.IN_CAPTION:
             case InsertionMode.IN_CELL:
             case InsertionMode.IN_TEMPLATE:
-                characterInBody(this, token);
+                characterInBody(this, token.chars, token.location);
                 break;
             case InsertionMode.TEXT:
             case InsertionMode.IN_SELECT:
             case InsertionMode.IN_SELECT_IN_TABLE:
-                this._insertCharacters(token);
+                this._insertCharacters(token.chars, token.location);
                 break;
             case InsertionMode.IN_TABLE:
             case InsertionMode.IN_TABLE_BODY:
@@ -848,7 +850,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.skipNextNewLine = false;
 
         if (this.tokenizer.allowCDATA) {
-            nullCharacterInForeignContent(this, token);
+            nullCharacterInForeignContent(this, token.location);
             return;
         }
 
@@ -872,7 +874,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
                 tokenAfterHead(this, token);
                 break;
             case InsertionMode.TEXT:
-                this._insertCharacters(token);
+                this._insertCharacters(token.chars, token.location);
                 break;
             case InsertionMode.IN_TABLE:
             case InsertionMode.IN_TABLE_BODY:
@@ -1184,7 +1186,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
 
         if (this.tokenizer.allowCDATA) {
-            this._insertCharacters(token);
+            this._insertCharacters(token.chars, token.location);
             return;
         }
 
@@ -1198,7 +1200,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             case InsertionMode.IN_SELECT_IN_TABLE:
             case InsertionMode.IN_FRAMESET:
             case InsertionMode.AFTER_FRAMESET:
-                this._insertCharacters(token);
+                this._insertCharacters(token.chars, token.location);
                 break;
             case InsertionMode.IN_BODY:
             case InsertionMode.IN_CAPTION:
@@ -1207,7 +1209,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             case InsertionMode.AFTER_BODY:
             case InsertionMode.AFTER_AFTER_BODY:
             case InsertionMode.AFTER_AFTER_FRAMESET:
-                whitespaceCharacterInBody(this, token);
+                whitespaceCharacterInBody(this, token.chars, token.location);
                 break;
             case InsertionMode.IN_TABLE:
             case InsertionMode.IN_TABLE_BODY:
@@ -1735,11 +1737,11 @@ function tokenAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token
 function modeInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): void {
     switch (token.type) {
         case TokenType.CHARACTER: {
-            characterInBody(p, token);
+            characterInBody(p, token.chars, token.location);
             break;
         }
         case TokenType.WHITESPACE_CHARACTER: {
-            whitespaceCharacterInBody(p, token);
+            whitespaceCharacterInBody(p, token.chars, token.location);
             break;
         }
         case TokenType.COMMENT: {
@@ -1763,14 +1765,18 @@ function modeInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Token): v
     }
 }
 
-function whitespaceCharacterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
+function whitespaceCharacterInBody<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    chars: string,
+    location: Location | null
+): void {
     p._reconstructActiveFormattingElements();
-    p._insertCharacters(token);
+    p._insertCharacters(chars, location);
 }
 
-function characterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
+function characterInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, chars: string, location: Location | null): void {
     p._reconstructActiveFormattingElements();
-    p._insertCharacters(token);
+    p._insertCharacters(chars, location);
     p.framesetOk = false;
 }
 
@@ -2570,7 +2576,7 @@ function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken):
 //------------------------------------------------------------------
 function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
     if (TABLE_STRUCTURE_TAGS.has(p.openElements.currentTagId)) {
-        p.pendingCharacterTokens = [];
+        p.pendingCharacterTokens.length = 0;
         p.hasNonWhitespacePendingCharacterToken = false;
         p.originalInsertionMode = p.insertionMode;
         p.insertionMode = InsertionMode.IN_TABLE_TEXT;
@@ -2762,7 +2768,8 @@ function tokenInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tok
         }
     } else {
         for (; i < p.pendingCharacterTokens.length; i++) {
-            p._insertCharacters(p.pendingCharacterTokens[i]);
+            const { chars, location } = p.pendingCharacterTokens[i];
+            p._insertCharacters(chars, location);
         }
     }
 
@@ -3420,13 +3427,16 @@ function startTagAfterAfterFrameset<T extends TreeAdapterTypeMap>(p: Parser<T>, 
 
 // The rules for parsing tokens in foreign content
 //------------------------------------------------------------------
-function nullCharacterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
-    token.chars = unicode.REPLACEMENT_CHARACTER;
-    p._insertCharacters(token);
+function nullCharacterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, location: Location | null): void {
+    p._insertCharacters(unicode.REPLACEMENT_CHARACTER, location);
 }
 
-function characterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
-    p._insertCharacters(token);
+function characterInForeignContent<T extends TreeAdapterTypeMap>(
+    p: Parser<T>,
+    chars: string,
+    location: Location | null
+): void {
+    p._insertCharacters(chars, location);
     p.framesetOk = false;
 }
 
