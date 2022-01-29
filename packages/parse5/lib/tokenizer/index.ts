@@ -269,7 +269,18 @@ export class Tokenizer {
     }
 
     private getStartLocation(): Location | null {
-        return this.ctLoc && { ...this.ctLoc };
+        if (this.ctLoc === null) {
+            return null;
+        }
+
+        return {
+            startLine: this.ctLoc.startLine,
+            startCol: this.ctLoc.startCol,
+            startOffset: this.ctLoc.startOffset,
+            endLine: -1,
+            endCol: -1,
+            endOffset: -1,
+        };
     }
 
     //API
