@@ -205,8 +205,8 @@ function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
 
 export interface TokenizerOptions {
     sourceCodeLocationInfo?: boolean;
-    onParseError?: ParserErrorHandler | null;
 }
+
 export interface TokenHandler {
     onComment(token: CommentToken): void;
     onDoctype(token: DoctypeToken): void;
@@ -216,6 +216,8 @@ export interface TokenHandler {
     onCharacter(chars: string, location: Location | null): void;
     onNullCharacter(chars: string, location: Location | null): void;
     onWhitespaceCharacter(chars: string, location: Location | null): void;
+
+    onParseError?: ParserErrorHandler | null;
 }
 
 //Tokenizer
@@ -242,12 +244,12 @@ export class Tokenizer {
     private currentAttr: Attribute = { name: '', value: '' };
 
     constructor(private options: TokenizerOptions, private handler: TokenHandler) {
-        this.preprocessor = new Preprocessor(options);
+        this.preprocessor = new Preprocessor(handler);
     }
 
     //Errors
     private _err(code: ERR): void {
-        this.options.onParseError?.(this.preprocessor.getError(code));
+        this.handler.onParseError?.(this.preprocessor.getError(code));
     }
 
     private currentAttrLocation: Location | null = null;
@@ -3061,8 +3063,10 @@ export class Tokenizer {
     }
 }
 
-export class QueuedHandler implements TokenHandler {
+class QueuedHandler implements TokenHandler {
     private tokenQueue: Token[] = [];
+
+    constructor(public onParseError: ParserErrorHandler | null) {}
 
     onCharacter(chars: string, location: Location | null): void {
         this.tokenQueue.push({ type: TokenType.CHARACTER, chars, location });
@@ -3102,15 +3106,20 @@ export class QueuedHandler implements TokenHandler {
     }
 }
 
+export interface QueuedTokenizerOptions extends TokenizerOptions {
+    onParseError?: ParserErrorHandler | null;
+}
+
 /**
  * Provides the same interface as the old tokenizer, while allowing users to
  * read data one token at a time.
  */
 export class QueuedTokenizer {
     private tokenizer: Tokenizer;
-    private handler = new QueuedHandler();
+    private handler: QueuedHandler;
 
-    constructor(options: TokenizerOptions) {
+    constructor(options: QueuedTokenizerOptions) {
+        this.handler = new QueuedHandler(options.onParseError ?? null);
         this.tokenizer = new Tokenizer(options, this.handler);
     }
 
