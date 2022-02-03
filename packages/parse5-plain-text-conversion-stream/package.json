@@ -26,6 +26,6 @@
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
-        "lib"
+        "dist"
     ]
 }
