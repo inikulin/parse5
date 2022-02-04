@@ -1,7 +1,73 @@
 import * as assert from 'node:assert';
-import { QueuedTokenizer, TokenizerMode } from './index.js';
-import { TokenType } from '../common/token.js';
+import { Tokenizer, TokenHandler, TokenizerMode } from './index.js';
+import { CommentToken, DoctypeToken, Location, TagToken } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
+
+interface LocationInfoTestCase {
+    initialMode: typeof TokenizerMode[keyof typeof TokenizerMode];
+    lastStartTagName: string;
+    htmlChunks: string[];
+}
+
+class LocationInfoHandler implements TokenHandler {
+    public sawEof = false;
+    private idx = 0;
+    private lines: string[];
+
+    constructor(private testCase: LocationInfoTestCase, private html: string) {
+        this.lines = html.split(/\r?\n/g);
+    }
+
+    private validateLocation(location: Location | null): void {
+        assert.ok(location);
+
+        //Offsets
+        const actual = this.html.substring(location.startOffset, location.endOffset);
+        const chunk = this.testCase.htmlChunks[this.idx];
+
+        assert.strictEqual(actual, chunk);
+
+        //Line/col
+        const line = getSubstringByLineCol(this.lines, location);
+        const expected = normalizeNewLine(chunk);
+
+        assert.strictEqual(line, expected);
+
+        this.idx += 1;
+    }
+
+    onComment(token: CommentToken): void {
+        this.validateLocation(token.location);
+    }
+    onDoctype(token: DoctypeToken): void {
+        this.validateLocation(token.location);
+    }
+    onStartTag(token: TagToken): void {
+        this.validateLocation(token.location);
+    }
+    onEndTag(token: TagToken): void {
+        this.validateLocation(token.location);
+    }
+    onCharacter(_chars: string, location: Location | null): void {
+        this.validateLocation(location);
+    }
+    onNullCharacter(_chars: string, location: Location | null): void {
+        this.validateLocation(location);
+    }
+    onWhitespaceCharacter(_chars: string, location: Location | null): void {
+        this.validateLocation(location);
+    }
+
+    onEof(location: Location | null): void {
+        assert.ok(location);
+        assert.strictEqual(location.endOffset, location.startOffset);
+        assert.strictEqual(location.endOffset, this.html.length);
+
+        assert.strictEqual(this.idx, this.testCase.htmlChunks.length);
+
+        this.sawEof = true;
+    }
+}
 
 it('Location Info (Tokenizer)', () => {
     const testCases = [
@@ -81,8 +147,8 @@ it('Location Info (Tokenizer)', () => {
 
     for (const testCase of testCases) {
         const html = testCase.htmlChunks.join('');
-        const lines = html.split(/\r?\n/g);
-        const tokenizer = new QueuedTokenizer({ sourceCodeLocationInfo: true });
+        const handler = new LocationInfoHandler(testCase, html);
+        const tokenizer = new Tokenizer({ sourceCodeLocationInfo: true }, handler);
         const lastChunkIdx = testCase.htmlChunks.length - 1;
 
         for (let i = 0; i < testCase.htmlChunks.length; i++) {
@@ -94,27 +160,8 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
 
-        for (let token = tokenizer.getNextToken(), j = 0; token.type !== TokenType.EOF; ) {
-            if (token.type === TokenType.HIBERNATION) {
-                continue;
-            }
-
-            assert.ok(token.location);
-
-            //Offsets
-            let actual = html.substring(token.location.startOffset, token.location.endOffset);
-
-            assert.strictEqual(actual, testCase.htmlChunks[j]);
-
-            //Line/col
-            actual = getSubstringByLineCol(lines, token.location);
-
-            const expected = normalizeNewLine(testCase.htmlChunks[j]);
-
-            assert.strictEqual(actual, expected);
-
-            token = tokenizer.getNextToken();
-            j++;
+        while (!handler.sawEof) {
+            tokenizer.getNextToken();
         }
     }
 });
