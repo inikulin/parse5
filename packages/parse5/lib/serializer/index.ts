@@ -54,7 +54,7 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
 //Serializer
 export class Serializer<T extends TreeAdapterTypeMap> {
     html = '';
-    treeAdapter: TreeAdapter;
+    treeAdapter: TreeAdapter<T>;
 
     constructor(
         private startNode: T['parentNode'],

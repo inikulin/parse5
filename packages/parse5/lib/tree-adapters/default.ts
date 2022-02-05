@@ -247,7 +247,7 @@ export function getFirstChild(node: ParentNode): null | ChildNode {
     return node.childNodes[0];
 }
 
-export function getChildNodes(node: ParentNode): Node[] {
+export function getChildNodes(node: ParentNode): ChildNode[] {
     return node.childNodes;
 }
 

@@ -100,8 +100,8 @@ export function setTemplateContent(templateElement: Element, contentElement: Doc
     appendChild(templateElement, contentElement);
 }
 
-export function getTemplateContent(templateElement: Element): Node {
-    return templateElement.children[0];
+export function getTemplateContent(templateElement: Element): Document {
+    return templateElement.children[0] as Document;
 }
 
 export function setDocumentType(
@@ -222,16 +222,16 @@ export function getCommentNodeContent(commentNode: Comment): string {
     return commentNode.data;
 }
 
-export function getDocumentTypeNodeName(doctypeNode: ProcessingInstruction): string | null {
-    return doctypeNode['x-name'] ?? null;
+export function getDocumentTypeNodeName(doctypeNode: ProcessingInstruction): string {
+    return doctypeNode['x-name'] ?? '';
 }
 
-export function getDocumentTypeNodePublicId(doctypeNode: ProcessingInstruction): string | null {
-    return doctypeNode['x-publicId'] ?? null;
+export function getDocumentTypeNodePublicId(doctypeNode: ProcessingInstruction): string {
+    return doctypeNode['x-publicId'] ?? '';
 }
 
-export function getDocumentTypeNodeSystemId(doctypeNode: ProcessingInstruction): string | null {
-    return doctypeNode['x-systemId'] ?? null;
+export function getDocumentTypeNodeSystemId(doctypeNode: ProcessingInstruction): string {
+    return doctypeNode['x-systemId'] ?? '';
 }
 
 //Node types

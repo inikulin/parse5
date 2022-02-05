@@ -5,10 +5,13 @@ import * as defaultTreeAdapter from 'parse5/dist/tree-adapters/default.js';
 import * as htmlTreeAdapter from 'parse5-htmlparser2-tree-adapter';
 import type { Location } from 'parse5/dist/common/token.js';
 
+const defaultAdapter: TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap> = defaultTreeAdapter;
+const htmlparser2Adapter: TreeAdapter<htmlTreeAdapter.Htmlparser2TreeAdapterMap> = htmlTreeAdapter;
+
 // Ensure the default tree adapter matches the expected type.
 export const treeAdapters = {
-    default: defaultTreeAdapter as TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap>,
-    htmlparser2: htmlTreeAdapter as TreeAdapter<htmlTreeAdapter.Htmlparser2TreeAdapterMap>,
+    default: defaultAdapter,
+    htmlparser2: htmlparser2Adapter,
 } as const;
 
 export function addSlashes(str: string): string {
