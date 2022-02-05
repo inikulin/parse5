@@ -109,22 +109,6 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
      * @default `null`
      */
     onParseError?: ParserErrorHandler | null;
-
-    /**
-     * Callback for elements being pushed to the stack of open elements.
-     *
-     * @default `null`
-     * @param element The element being pushed to the stack of open elements.
-     */
-    onItemPush?: ((item: T['element']) => void) | null;
-
-    /**
-     * Callback for elements being popped from the stack of open elements.
-     *
-     * @default `null`
-     * @param item The element being popped.
-     */
-    onItemPop?: ((item: T['element']) => void) | null;
 }
 
 //Parser
@@ -333,7 +317,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     //Text parsing
     private onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
-        this.options.onItemPush?.(node);
+        this.treeAdapter.onItemPush?.(node);
         if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
     }
 
@@ -342,7 +326,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             this._setEndLocation(node, this.currentToken!);
         }
 
-        this.options.onItemPop?.(node);
+        this.treeAdapter.onItemPop?.(node);
 
         if (isTop) {
             let current;

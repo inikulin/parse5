@@ -101,13 +101,16 @@ describe('parser', () => {
         expect(doctype).toHaveProperty('systemId', '');
     });
 
-    describe('Options', () => {
+    describe('Tree adapters', () => {
         it('should support onItemPush and onItemPop', () => {
             const onItemPush = jest.fn();
             const onItemPop = jest.fn();
             const document = parse5.parse('<p><p>', {
-                onItemPush,
-                onItemPop,
+                treeAdapter: {
+                    ...treeAdapters.default,
+                    onItemPush,
+                    onItemPop,
+                },
             });
 
             const htmlElement = document.childNodes[0];
