@@ -33,4 +33,13 @@ describe('serializer', () => {
             assert.equal(html, '<div><button>Hello</button></div>');
         });
     });
+
+    it('serializes <template> elements inner content', () => {
+        const document = parse5.parseFragment('<template><button>Hello</button></template>');
+        const template = document.childNodes[0];
+        assert.ok(isElementNode(template));
+        const html = parse5.serialize(template);
+
+        assert.equal(html, '<button>Hello</button>');
+    });
 });

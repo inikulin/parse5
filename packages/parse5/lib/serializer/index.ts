@@ -114,7 +114,14 @@ function serializeChildNodes<T extends TreeAdapterTypeMap>(
     options: InternalOptions<T>
 ): string {
     let html = '';
-    const childNodes = options.treeAdapter.getChildNodes(parentNode);
+    // Get container of the child nodes
+    const container =
+        options.treeAdapter.isElementNode(parentNode) &&
+        options.treeAdapter.getTagName(parentNode) === $.TEMPLATE &&
+        options.treeAdapter.getNamespaceURI(parentNode) === NS.HTML
+            ? options.treeAdapter.getTemplateContent(parentNode)
+            : parentNode;
+    const childNodes = options.treeAdapter.getChildNodes(container);
 
     if (childNodes) {
         for (const currentNode of childNodes) {
@@ -139,13 +146,7 @@ function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], opti
     return `<${tn}${serializeAttributes(node, options)}>${
         options.treeAdapter.getNamespaceURI(node) === NS.HTML && VOID_ELEMENTS.has(tn)
             ? ''
-            : `${serializeChildNodes(
-                  // Get container of the child nodes
-                  tn === $.TEMPLATE && options.treeAdapter.getNamespaceURI(node) === NS.HTML
-                      ? options.treeAdapter.getTemplateContent(node)
-                      : node,
-                  options
-              )}</${tn}>`
+            : `${serializeChildNodes(node, options)}</${tn}>`
     }`;
 }
 
