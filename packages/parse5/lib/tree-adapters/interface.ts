@@ -292,5 +292,5 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param item The element being popped.
      */
-    onItemPop?: (item: T['element']) => void;
+    onItemPop?: (item: T['element'], newTop: T['parentNode']) => void;
 }

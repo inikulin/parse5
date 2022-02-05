@@ -122,7 +122,7 @@ describe('parser', () => {
             expect(onItemPush).toHaveBeenNthCalledWith(3, bodyElement);
             expect(onItemPush).toHaveBeenLastCalledWith(bodyElement.childNodes[1]);
             expect(onItemPop).toHaveBeenCalledTimes(2);
-            expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0]);
+            expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0], bodyElement);
         });
     });
 });

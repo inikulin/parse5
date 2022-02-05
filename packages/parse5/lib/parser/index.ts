@@ -326,7 +326,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             this._setEndLocation(node, this.currentToken!);
         }
 
-        this.treeAdapter.onItemPop?.(node);
+        this.treeAdapter.onItemPop?.(node, this.openElements.current);
 
         if (isTop) {
             let current;
