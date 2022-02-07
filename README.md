@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://travis-ci.org/inikulin/parse5"><img alt="Build Status" src="https://api.travis-ci.org/inikulin/parse5.svg"></a>
+  <a href="https://github.com/inikulin/parse5/actions/workflows/nodejs-test.yml"><img alt="Build Status" src="https://img.shields.io/github/workflow/status/inikulin/parse5/Node.js%20CI?label=tests&style=flat"></a>
   <a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
   <a href="https://npmjs.org/package/parse5"><img alt="Downloads" src="http://img.shields.io/npm/dm/parse5.svg"></a>
   <a href="https://npmjs.org/package/parse5"><img alt="Downloads total" src="http://img.shields.io/npm/dt/parse5.svg"></a>

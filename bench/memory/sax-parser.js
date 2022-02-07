@@ -1,8 +1,8 @@
-import * as fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import format from 'human-format';
 import promisifyEvent from 'promisify-event';
 import memwatch from '@airbnb/node-memwatch';
-import SAXParser from '../../packages/parse5-sax-parser/lib/index.js';
+import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
 
 main();
 
@@ -15,7 +15,7 @@ async function main() {
     let heapDiff = null;
 
     memwatch.on('stats', (stats) => {
-        maxMemUsage = Math.max(maxMemUsage, stats['current_base']);
+        maxMemUsage = Math.max(maxMemUsage, stats.used_heap_size);
     });
 
     startDate = new Date();
@@ -35,7 +35,7 @@ async function main() {
 }
 
 async function parse() {
-    const data = fs.readFileSync('../test/data/huge-page/huge-page.html', 'utf8');
+    const data = await readFile(new URL('../../test/data/huge-page/huge-page.html', import.meta.url), 'utf8');
     let parsedDataSize = 0;
     const stream = new SAXParser();
 

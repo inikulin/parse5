@@ -1,18 +1,20 @@
 {
     "compilerOptions": {
-        "target": "es2020",
-        "module": "es2020",
-        "declaration": true,
-        "importHelpers": true,
+        "target": "es2019",
+        "module": "esnext",
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-        "noUncheckedIndexedAccess": true,
         "noImplicitOverride": true,
         "noPropertyAccessFromIndexSignature": true,
         "moduleResolution": "node",
-        "forceConsistentCasingInFileNames": true
-    }
+        "forceConsistentCasingInFileNames": true,
+
+        "composite": true,
+        "declarationMap": true,
+        "sourceMap": true
+    },
+    "references": [{ "path": "packages/parse5/tsconfig.json" }]
 }

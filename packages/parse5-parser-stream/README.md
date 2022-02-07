@@ -15,7 +15,6 @@
 </div>
 <br>
 
-
 <p align="center">
   📖 <a href="https://github.com/inikulin/parse5/tree/master/packages/parse5-parser-stream/docs/index.md"><b>Documentation</b></a> 📖
 </p>

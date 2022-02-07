@@ -15,7 +15,7 @@
         "serialiser"
     ],
     "license": "MIT",
-    "main": "./lib/index.js",
+    "main": "dist/index.js",
     "dependencies": {
         "parse5": "^6.0.1"
     },
@@ -24,6 +24,6 @@
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
-        "lib"
+        "dist"
     ]
 }

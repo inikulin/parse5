@@ -6,6 +6,9 @@
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
     "homepage": "https://github.com/inikulin/parse5",
+    "dependencies": {
+        "entities": "^3.0.1"
+    },
     "keywords": [
         "html",
         "parser",
@@ -24,12 +27,12 @@
         "serialize"
     ],
     "license": "MIT",
-    "main": "./lib/index.js",
+    "main": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
-        "lib"
+        "dist"
     ]
 }

@@ -2,7 +2,7 @@
     "env": {
         "es2020": true,
         "node": true,
-        "mocha": true
+        "jest": true
     },
     "extends": ["eslint:recommended", "prettier", "plugin:unicorn/recommended"],
     "rules": {
@@ -21,6 +21,7 @@
             }
         ],
         "prefer-template": "error",
+        "arrow-body-style": ["error", "as-needed"],
 
         "unicorn/no-null": "off",
         "unicorn/prevent-abbreviations": "off",
@@ -30,10 +31,26 @@
         "unicorn/no-array-reduce": "off",
         "unicorn/no-for-loop": "off",
         "unicorn/consistent-destructuring": "off",
-        "unicorn/prefer-switch": ["error", { "emptyDefaultCase": "do-nothing-comment" }],
-        "unicorn/number-literal-case": "off"
+        "unicorn/prefer-switch": ["error", { "emptyDefaultCase": "do-nothing-comment" }]
     },
     "parserOptions": {
         "sourceType": "module"
-    }
+    },
+    "overrides": [
+        {
+            "files": "*.ts",
+            "extends": [
+                "plugin:@typescript-eslint/eslint-recommended",
+                "plugin:@typescript-eslint/recommended",
+                "prettier"
+            ],
+            "rules": {
+                "@typescript-eslint/no-non-null-assertion": "warn",
+                "@typescript-eslint/no-explicit-any": "warn",
+                "@typescript-eslint/explicit-function-return-type": "error",
+
+                "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+            }
+        }
+    ]
 }
