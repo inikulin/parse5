@@ -174,7 +174,9 @@ export function getTemplateContent(templateElement: Template): DocumentFragment 
 }
 
 export function setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
-    const doctypeNode = document.childNodes.find((node) => node.nodeName === NodeType.DocumentType) as DocumentType;
+    const doctypeNode = document.childNodes.find(
+        (node): node is DocumentType => node.nodeName === NodeType.DocumentType
+    );
 
     if (doctypeNode) {
         doctypeNode.name = name;

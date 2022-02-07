@@ -146,9 +146,9 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         return entry && entry.type === EntryType.Element ? entry : null;
     }
 
-    getElementEntry(element: T['element']): ElementEntry<T> | null {
+    getElementEntry(element: T['element']): ElementEntry<T> | undefined {
         return this.entries.find(
-            (entry) => entry.type === EntryType.Element && entry.element === element
-        ) as ElementEntry<T> | null;
+            (entry): entry is ElementEntry<T> => entry.type === EntryType.Element && entry.element === element
+        );
     }
 }
