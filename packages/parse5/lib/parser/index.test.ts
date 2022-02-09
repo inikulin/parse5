@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import * as parse5 from 'parse5';
+import * as parse5 from 'parse5/dist/index.js';
 import { jest } from '@jest/globals';
 import { Parser, ParserOptions } from './index.js';
 import type { TreeAdapterTypeMap } from './../tree-adapters/interface.js';
