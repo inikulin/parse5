@@ -15,7 +15,7 @@
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-unicorn": "^40.1.0",
         "husky": "^7.0.4",
-        "jest": "^27.5.0",
+        "jest": "^27.5.1",
         "lint-staged": "^12.3.3",
         "outdent": "^0.8.0",
         "prettier": "^2.5.0",
