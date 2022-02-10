@@ -117,11 +117,15 @@ describe('parser', () => {
             assert.ok(isElementNode(htmlElement));
             const bodyElement = htmlElement.childNodes[1];
             assert.ok(isElementNode(bodyElement));
+            // Expect 5 opened elements; in order: html, head, body, and 2x p
             expect(onItemPush).toHaveBeenCalledTimes(5);
             expect(onItemPush).toHaveBeenNthCalledWith(1, htmlElement);
             expect(onItemPush).toHaveBeenNthCalledWith(3, bodyElement);
+            // The last opened element is the second p
             expect(onItemPush).toHaveBeenLastCalledWith(bodyElement.childNodes[1]);
+            // The second p isn't closed, plus we never pop body and html. Alas, only 2 pop events (head and p).
             expect(onItemPop).toHaveBeenCalledTimes(2);
+            // The last pop event should be the first p.
             expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0], bodyElement);
         });
     });
