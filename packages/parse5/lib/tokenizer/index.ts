@@ -225,9 +225,6 @@ export class Tokenizer {
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
 
-    // NOTE: Doctypes tokens are created with several different offset. We keep track of the moment a doctype *might* start here.
-    private doctypeStartLoc: Location | null = null;
-
     private addLocationInfo;
     private onParseError;
 
@@ -370,7 +367,7 @@ export class Tokenizer {
             forceQuirks: false,
             publicId: null,
             systemId: null,
-            location: this.doctypeStartLoc,
+            location: this.ctLoc,
         };
     }
 
@@ -1961,7 +1958,8 @@ export class Tokenizer {
             this._createCommentToken($$.DASH_DASH.length + 1);
             this.state = State.COMMENT_START;
         } else if (this._consumeSequenceIfMatch($$.DOCTYPE, false)) {
-            this.doctypeStartLoc = this.getCurrentLocation($$.DOCTYPE.length + 1);
+            // NOTE: Doctypes tokens are created without fixed offsets. We keep track of the moment a doctype *might* start here.
+            this.ctLoc = this.getCurrentLocation($$.DOCTYPE.length + 1);
             this.state = State.DOCTYPE;
         } else if (this._consumeSequenceIfMatch($$.CDATA_START, true)) {
             if (this.allowCDATA) {
