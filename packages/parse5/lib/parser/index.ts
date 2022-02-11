@@ -1120,7 +1120,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
         }
     }
     onEof(token: EOFToken): void {
-        this.skipNextNewLine = false;
         switch (this.insertionMode) {
             case InsertionMode.INITIAL:
                 tokenInInitialMode(this, token);
