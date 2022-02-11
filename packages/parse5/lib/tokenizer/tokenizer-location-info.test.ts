@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
-import { Tokenizer, TokenHandler, TokenizerMode } from './index.js';
-import { CommentToken, DoctypeToken, Location, TagToken, CharacterToken, EOFToken } from '../common/token.js';
+import { Tokenizer, TokenizerMode, SinglePathHandler } from './index.js';
+import { Location, EOFToken, Token } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
 interface LocationInfoTestCase {
@@ -9,13 +9,18 @@ interface LocationInfoTestCase {
     htmlChunks: string[];
 }
 
-class LocationInfoHandler implements TokenHandler {
+class LocationInfoHandler extends SinglePathHandler {
     public sawEof = false;
     private idx = 0;
     private lines: string[];
 
     constructor(private testCase: LocationInfoTestCase, private html: string) {
+        super();
         this.lines = html.split(/\r?\n/g);
+    }
+
+    protected handleToken(token: Token): void {
+        this.validateLocation(token.location);
     }
 
     private validateLocation(location: Location | null): void {
@@ -36,29 +41,7 @@ class LocationInfoHandler implements TokenHandler {
         this.idx += 1;
     }
 
-    onComment(token: CommentToken): void {
-        this.validateLocation(token.location);
-    }
-    onDoctype(token: DoctypeToken): void {
-        this.validateLocation(token.location);
-    }
-    onStartTag(token: TagToken): void {
-        this.validateLocation(token.location);
-    }
-    onEndTag(token: TagToken): void {
-        this.validateLocation(token.location);
-    }
-    onCharacter(token: CharacterToken): void {
-        this.validateLocation(token.location);
-    }
-    onNullCharacter(token: CharacterToken): void {
-        this.validateLocation(token.location);
-    }
-    onWhitespaceCharacter(token: CharacterToken): void {
-        this.validateLocation(token.location);
-    }
-
-    onEof({ location }: EOFToken): void {
+    override onEof({ location }: EOFToken): void {
         assert.ok(location);
         assert.strictEqual(location.endOffset, location.startOffset);
         assert.strictEqual(location.endOffset, this.html.length);

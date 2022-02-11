@@ -213,7 +213,7 @@ export interface TokenHandler {
     onDoctype(token: DoctypeToken): void;
     onStartTag(token: TagToken): void;
     onEndTag(token: TagToken): void;
-    onEof(location: EOFToken): void;
+    onEof(token: EOFToken): void;
     onCharacter(token: CharacterToken): void;
     onNullCharacter(token: CharacterToken): void;
     onWhitespaceCharacter(token: CharacterToken): void;
@@ -3071,34 +3071,45 @@ export class Tokenizer {
     }
 }
 
-class QueuedHandler implements TokenHandler {
-    private tokenQueue: Token[] = [];
+/** A token handler implemnetation that calls the same function for all tokens. */
+export abstract class SinglePathHandler implements TokenHandler {
+    protected abstract handleToken(token: Token): void;
 
-    constructor(public onParseError: ParserErrorHandler | null) {}
-
-    onCharacter(token: CharacterToken): void {
-        this.tokenQueue.push(token);
-    }
-    onNullCharacter(token: CharacterToken): void {
-        this.tokenQueue.push(token);
-    }
-    onWhitespaceCharacter(token: CharacterToken): void {
-        this.tokenQueue.push(token);
-    }
     onComment(token: CommentToken): void {
-        this.tokenQueue.push(token);
+        this.handleToken(token);
     }
     onDoctype(token: DoctypeToken): void {
-        this.tokenQueue.push(token);
+        this.handleToken(token);
     }
     onStartTag(token: TagToken): void {
-        this.tokenQueue.push(token);
+        this.handleToken(token);
     }
     onEndTag(token: TagToken): void {
-        this.tokenQueue.push(token);
+        this.handleToken(token);
     }
     onEof(token: EOFToken): void {
+        this.handleToken(token);
+    }
+    onCharacter(token: CharacterToken): void {
+        this.handleToken(token);
+    }
+    onNullCharacter(token: CharacterToken): void {
+        this.handleToken(token);
+    }
+    onWhitespaceCharacter(token: CharacterToken): void {
+        this.handleToken(token);
+    }
+}
+
+class QueuedHandler extends SinglePathHandler {
+    private tokenQueue: Token[] = [];
+
+    protected handleToken(token: Token): void {
         this.tokenQueue.push(token);
+    }
+
+    constructor(public onParseError: ParserErrorHandler | null) {
+        super();
     }
 
     public getNextToken(tokenizer: Tokenizer): Token {
