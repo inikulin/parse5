@@ -191,7 +191,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     openElements!: OpenElementStack<T>;
     activeFormattingElements!: FormattingElementList<T>;
-    private _considerForeignContent = false;
+    /** Indicates that the current node is not an element in the HTML namespace */
+    private currentNotInHTML = false;
 
     /**
      * The template insertion mode stack is maintained from the left.
@@ -326,8 +327,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
     private _setContextModes(current: T['parentNode'], tid: number): void {
         const isHTML = current === this.document || this.treeAdapter.getNamespaceURI(current) === NS.HTML;
 
-        this._considerForeignContent = !isHTML;
-        this.tokenizer.allowCDATA = !isHTML && !this._isIntegrationPoint(tid, current);
+        this.currentNotInHTML = !isHTML;
+        this.tokenizer.inForeignNode = !isHTML && !this._isIntegrationPoint(tid, current);
     }
 
     _switchToTextParsing(
@@ -553,7 +554,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     //Token processing
     private shouldProcessStartTagTokenInForeignContent(token: TagToken): boolean {
         // Check that neither current === document, or ns === NS.HTML
-        if (!this._considerForeignContent) return false;
+        if (!this.currentNotInHTML) return false;
 
         let current: T['parentNode'];
         let currentTagId: number;
@@ -575,7 +576,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         return (
             // Check that `current` is not an integration point for HTML or MathML elements.
-            this.tokenizer.allowCDATA ||
+            this.tokenizer.inForeignNode ||
             // If it _is_ an integration point, then we might have to check that it is not an HTML
             // integration point.
             ((token.tagID === $.MGLYPH || token.tagID === $.MALIGNMARK) &&
@@ -789,7 +790,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     onCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
 
-        if (this.tokenizer.allowCDATA) {
+        if (this.tokenizer.inForeignNode) {
             characterInForeignContent(this, token);
             return;
         }
@@ -848,7 +849,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     onNullCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
 
-        if (this.tokenizer.allowCDATA) {
+        if (this.tokenizer.inForeignNode) {
             nullCharacterInForeignContent(this, token);
             return;
         }
@@ -896,7 +897,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     onComment(token: CommentToken): void {
         this.skipNextNewLine = false;
 
-        if (this._considerForeignContent) {
+        if (this.currentNotInHTML) {
             appendComment(this, token);
             return;
         }
@@ -1041,7 +1042,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         this.skipNextNewLine = false;
         this.currentToken = token;
 
-        if (this._considerForeignContent) {
+        if (this.currentNotInHTML) {
             endTagInForeignContent(this, token);
         } else {
             this._endTagOutsideForeignContent(token);
@@ -1183,7 +1184,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
             }
         }
 
-        if (this.tokenizer.allowCDATA) {
+        if (this.tokenizer.inForeignNode) {
             this._insertCharacters(token);
             return;
         }

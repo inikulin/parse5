@@ -209,7 +209,13 @@ export class Tokenizer {
 
     private tokenQueue: Token[] = [];
 
-    public allowCDATA = false;
+    /**
+     * Indicates that the current adjusted node exists, is not an element in the HTML namespace,
+     * and that it is not an integration point for either MathML or HTML.
+     *
+     * @see {@link https://html.spec.whatwg.org/#tree-construction}
+     */
+    public inForeignNode = false;
     public lastStartTagName = '';
     public active = false;
 
@@ -1961,7 +1967,7 @@ export class Tokenizer {
         } else if (this._consumeSequenceIfMatch($$.DOCTYPE, false)) {
             this.state = State.DOCTYPE;
         } else if (this._consumeSequenceIfMatch($$.CDATA_START, true)) {
-            if (this.allowCDATA) {
+            if (this.inForeignNode) {
                 this.state = State.CDATA_SECTION;
             } else {
                 this._err(ERR.cdataInHtmlContent);
