@@ -213,7 +213,7 @@ export class Tokenizer {
      * Indicates that the current adjusted node exists, is not an element in the HTML namespace,
      * and that it is not an integration point for either MathML or HTML.
      *
-     * @see {@link https://html.spec.whatwg.org/#tree-construction}
+     * @see {@link https://html.spec.whatwg.org/multipage/parsing.html#tree-construction}
      */
     public inForeignNode = false;
     public lastStartTagName = '';
