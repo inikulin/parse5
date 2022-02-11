@@ -223,6 +223,7 @@ export interface TokenHandler {
 export class Tokenizer {
     public preprocessor: Preprocessor;
 
+    /** Indicates that the next token has been emitted, and `getNextToken` should return. */
     private hasEmitted = false;
 
     public allowCDATA = false;
@@ -236,9 +237,7 @@ export class Tokenizer {
 
     private consumedAfterSnapshot = -1;
 
-    private currentCharacterType: CharacterToken['type'] = TokenType.CHARACTER;
-    private currentCharacterData = '';
-    private currentCharacterLocation: Location | null = null;
+    private currentCharacterToken: CharacterToken | null = null;
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
 
@@ -380,6 +379,14 @@ export class Tokenizer {
         };
     }
 
+    private _createCharacterToken(type: CharacterToken['type'], chars: string): void {
+        this.currentCharacterToken = {
+            type,
+            chars,
+            location: this.ctLoc,
+        };
+    }
+
     //Tag attributes
     private _createAttr(attrNameFirstCh: string): void {
         this.currentAttr = {
@@ -463,34 +470,32 @@ export class Tokenizer {
     }
 
     private _emitCurrentCharacterToken(): void {
-        const chars = this.currentCharacterData;
-        if (chars.length > 0) {
-            const location = this.currentCharacterLocation;
+        if (this.currentCharacterToken) {
             //NOTE: if we have pending character token make it's end location equal to the
             //current token's start location.
-            if (this.ctLoc && location) {
-                location.endLine = this.ctLoc.startLine;
-                location.endCol = this.ctLoc.startCol;
-                location.endOffset = this.ctLoc.startOffset;
+            if (this.ctLoc && this.currentCharacterToken.location) {
+                this.currentCharacterToken.location.endLine = this.ctLoc.startLine;
+                this.currentCharacterToken.location.endCol = this.ctLoc.startCol;
+                this.currentCharacterToken.location.endOffset = this.ctLoc.startOffset;
             }
 
-            switch (this.currentCharacterType) {
+            switch (this.currentCharacterToken.type) {
                 case TokenType.CHARACTER: {
-                    this.handler.onCharacter({ type: TokenType.CHARACTER, chars, location });
+                    this.handler.onCharacter(this.currentCharacterToken);
                     break;
                 }
                 case TokenType.NULL_CHARACTER: {
-                    this.handler.onNullCharacter({ type: TokenType.NULL_CHARACTER, chars, location });
+                    this.handler.onNullCharacter(this.currentCharacterToken);
                     break;
                 }
                 case TokenType.WHITESPACE_CHARACTER: {
-                    this.handler.onWhitespaceCharacter({ type: TokenType.WHITESPACE_CHARACTER, chars, location });
+                    this.handler.onWhitespaceCharacter(this.currentCharacterToken);
                     break;
                 }
             }
 
             this.hasEmitted = true;
-            this.currentCharacterData = '';
+            this.currentCharacterToken = null;
         }
     }
 
@@ -519,18 +524,16 @@ export class Tokenizer {
     //2)TokenType.WHITESPACE_CHARACTER - any whitespace/new-line character sequences (e.g. '\n  \r\t   \f')
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
     private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
-        if (this.currentCharacterData.length > 0) {
-            if (this.currentCharacterType !== type) {
+        if (this.currentCharacterToken) {
+            if (this.currentCharacterToken.type !== type) {
                 this._emitCurrentCharacterToken();
             } else {
-                this.currentCharacterData += ch;
+                this.currentCharacterToken.chars += ch;
                 return;
             }
         }
 
-        this.currentCharacterType = type;
-        this.currentCharacterData = ch;
-        this.currentCharacterLocation = this.ctLoc;
+        this._createCharacterToken(type, ch);
     }
 
     private _emitCodePoint(cp: number): void {
