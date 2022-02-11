@@ -10,9 +10,12 @@ interface LocationInfoTestCase {
     htmlChunks: string[];
 }
 
+/** Receives events and immediately compares them against the expected values. We check the entire output again at the end. */
 class LocationInfoHandler extends SinglePathHandler {
     public sawEof = false;
+    /** The index of the last html chunk. */
     private idx = 0;
+    /** All of the lines in the input. */
     private lines: string[];
 
     constructor(private testCase: LocationInfoTestCase, private html: string) {
