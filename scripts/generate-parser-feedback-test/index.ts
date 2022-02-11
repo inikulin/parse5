@@ -44,8 +44,8 @@ function collectParserTokens(html: string): ReturnType<typeof convertTokenToHtml
     const tokens: Token[] = [];
     const parser = new Parser();
 
-    parser._processInputToken = function (token): void {
-        Parser.prototype._processInputToken.call(this, token);
+    parser._processToken = function (token): void {
+        Parser.prototype._processToken.call(this, token);
 
         // NOTE: Needed to split attributes of duplicate <html> and <body>
         // which are otherwise merged as per tree constructor spec
