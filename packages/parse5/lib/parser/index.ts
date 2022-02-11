@@ -1,4 +1,5 @@
-import { QueuedTokenizer, TokenizerMode } from '../tokenizer/index.js';
+import { TokenizerMode } from '../tokenizer/index.js';
+import { QueuedTokenizer } from '../tokenizer/queued.js';
 import { OpenElementStack } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
 import * as defaultTreeAdapter from '../tree-adapters/default.js';

@@ -1,5 +1,6 @@
 import * as assert from 'node:assert';
-import { Tokenizer, TokenizerMode, SinglePathHandler } from './index.js';
+import { Tokenizer, TokenizerMode } from './index.js';
+import { SinglePathHandler } from './queued.js';
 import { Location, EOFToken, Token } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
