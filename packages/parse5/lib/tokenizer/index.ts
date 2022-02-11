@@ -220,9 +220,13 @@ export class Tokenizer {
 
     private consumedAfterSnapshot = -1;
 
+    private ctLoc: Location | null;
     private currentCharacterToken: CharacterToken | null = null;
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
+
+    // NOTE: Doctypes tokens are created with several different offset. We keep track of the moment a doctype *might* start here.
+    private doctypeStartLoc: Location | null = null;
 
     private addLocationInfo;
     private onParseError;
@@ -231,6 +235,7 @@ export class Tokenizer {
         this.addLocationInfo = !!options.sourceCodeLocationInfo;
         this.onParseError = options.onParseError ?? null;
         this.preprocessor = new Preprocessor(options);
+        this.ctLoc = this.getCurrentLocation(-1);
     }
 
     //Errors
@@ -239,16 +244,16 @@ export class Tokenizer {
     }
 
     private currentAttrLocation: Location | null = null;
-    private ctLoc: Location | null = null;
-    private _getCurrentLocation(): Location | null {
+
+    private getCurrentLocation(offset: number): Location | null {
         if (!this.addLocationInfo) {
             return null;
         }
 
         return {
             startLine: this.preprocessor.line,
-            startCol: this.preprocessor.col,
-            startOffset: this.preprocessor.offset,
+            startCol: this.preprocessor.col - offset,
+            startOffset: this.preprocessor.offset - offset,
             endLine: -1,
             endCol: -1,
             endOffset: -1,
@@ -334,7 +339,7 @@ export class Tokenizer {
             selfClosing: false,
             ackSelfClosing: false,
             attrs: [],
-            location: this.ctLoc,
+            location: this.getCurrentLocation(1),
         };
     }
 
@@ -346,15 +351,15 @@ export class Tokenizer {
             selfClosing: false,
             ackSelfClosing: false,
             attrs: [],
-            location: this.ctLoc,
+            location: this.getCurrentLocation(2),
         };
     }
 
-    private _createCommentToken(): void {
+    private _createCommentToken(offset: number): void {
         this.currentToken = {
             type: TokenType.COMMENT,
             data: '',
-            location: this.ctLoc,
+            location: this.getCurrentLocation(offset),
         };
     }
 
@@ -365,7 +370,7 @@ export class Tokenizer {
             forceQuirks: false,
             publicId: null,
             systemId: null,
-            location: this.ctLoc,
+            location: this.doctypeStartLoc,
         };
     }
 
@@ -378,15 +383,15 @@ export class Tokenizer {
     }
 
     private _createEOFToken(): void {
-        const ctLoc = this._getCurrentLocation();
+        const location = this.getCurrentLocation(0);
 
-        if (ctLoc) {
-            ctLoc.endLine = ctLoc.startLine;
-            ctLoc.endCol = ctLoc.startCol;
-            ctLoc.endOffset = ctLoc.startOffset;
+        if (location) {
+            location.endLine = location.startLine;
+            location.endCol = location.startCol;
+            location.endOffset = location.startOffset;
         }
 
-        this.currentToken = { type: TokenType.EOF, location: ctLoc };
+        this.currentToken = { type: TokenType.EOF, location };
     }
 
     //Tag attributes
@@ -395,7 +400,7 @@ export class Tokenizer {
             name: attrNameFirstCh,
             value: '',
         };
-        this.currentAttrLocation = this._getCurrentLocation();
+        this.currentAttrLocation = this.getCurrentLocation(0);
     }
 
     private _leaveAttrName(): void {
@@ -426,9 +431,9 @@ export class Tokenizer {
 
     //Token emission
     private _emitCurrentToken(): void {
-        this._emitCurrentCharacterToken();
-
         const ct = this.currentToken!;
+
+        this._emitCurrentCharacterToken(ct.location);
 
         this.currentToken = null;
 
@@ -462,16 +467,17 @@ export class Tokenizer {
         }
 
         this.tokenQueue.push(ct);
+        this.ctLoc = this.getCurrentLocation(-1);
     }
 
-    private _emitCurrentCharacterToken(): void {
+    private _emitCurrentCharacterToken(nextLocation: Location | null): void {
         if (this.currentCharacterToken) {
             //NOTE: if we have pending character token make it's end location equal to the
             //current token's start location.
-            if (this.ctLoc && this.currentCharacterToken.location) {
-                this.currentCharacterToken.location.endLine = this.ctLoc.startLine;
-                this.currentCharacterToken.location.endCol = this.ctLoc.startCol;
-                this.currentCharacterToken.location.endOffset = this.ctLoc.startOffset;
+            if (nextLocation && this.currentCharacterToken.location) {
+                this.currentCharacterToken.location.endLine = nextLocation.startLine;
+                this.currentCharacterToken.location.endCol = nextLocation.startCol;
+                this.currentCharacterToken.location.endOffset = nextLocation.startOffset;
             }
 
             this.tokenQueue.push(this.currentCharacterToken);
@@ -496,7 +502,8 @@ export class Tokenizer {
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
     private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
         if (this.currentCharacterToken && this.currentCharacterToken.type !== type) {
-            this._emitCurrentCharacterToken();
+            this.ctLoc = this.getCurrentLocation(0);
+            this._emitCurrentCharacterToken(this.ctLoc);
         }
 
         if (this.currentCharacterToken) {
@@ -925,7 +932,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateData(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -956,7 +962,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRcdata(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.AMPERSAND: {
@@ -987,7 +992,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateRawtext(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -1013,7 +1017,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateScriptData(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.LESS_THAN_SIGN: {
@@ -1039,7 +1042,6 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _statePlaintext(cp: number): void {
         this.preprocessor.dropParsedChunk();
-        this.ctLoc = this._getCurrentLocation();
 
         switch (cp) {
             case $.NULL: {
@@ -1076,7 +1078,7 @@ export class Tokenizer {
                 }
                 case $.QUESTION_MARK: {
                     this._err(ERR.unexpectedQuestionMarkInsteadOfTagName);
-                    this._createCommentToken();
+                    this._createCommentToken(1);
                     this.state = State.BOGUS_COMMENT;
                     this._stateBogusComment(cp);
                     break;
@@ -1118,7 +1120,7 @@ export class Tokenizer {
                 }
                 default: {
                     this._err(ERR.invalidFirstCharacterOfTagName);
-                    this._createCommentToken();
+                    this._createCommentToken(2);
                     this.state = State.BOGUS_COMMENT;
                     this._stateBogusComment(cp);
                 }
@@ -1956,16 +1958,17 @@ export class Tokenizer {
     //------------------------------------------------------------------
     private _stateMarkupDeclarationOpen(cp: number): void {
         if (this._consumeSequenceIfMatch($$.DASH_DASH, true)) {
-            this._createCommentToken();
+            this._createCommentToken($$.DASH_DASH.length + 1);
             this.state = State.COMMENT_START;
         } else if (this._consumeSequenceIfMatch($$.DOCTYPE, false)) {
+            this.doctypeStartLoc = this.getCurrentLocation($$.DOCTYPE.length + 1);
             this.state = State.DOCTYPE;
         } else if (this._consumeSequenceIfMatch($$.CDATA_START, true)) {
             if (this.allowCDATA) {
                 this.state = State.CDATA_SECTION;
             } else {
                 this._err(ERR.cdataInHtmlContent);
-                this._createCommentToken();
+                this._createCommentToken($$.CDATA_START.length + 1);
                 (this.currentToken as CommentToken).data = '[CDATA[';
                 this.state = State.BOGUS_COMMENT;
             }
@@ -1975,7 +1978,7 @@ export class Tokenizer {
         //results are no longer valid and we will need to start over.
         else if (!this._ensureHibernation()) {
             this._err(ERR.incorrectlyOpenedComment);
-            this._createCommentToken();
+            this._createCommentToken(2);
             this.state = State.BOGUS_COMMENT;
             this._stateBogusComment(cp);
         }
