@@ -3142,9 +3142,6 @@ export class QueuedTokenizer {
         this.tokenizer = new Tokenizer(options, this.handler);
     }
 
-    get allowCDATA(): boolean {
-        return this.tokenizer.allowCDATA;
-    }
     set allowCDATA(val: boolean) {
         this.tokenizer.allowCDATA = val;
     }
@@ -3154,13 +3151,6 @@ export class QueuedTokenizer {
     }
     get active(): boolean {
         return this.tokenizer.active;
-    }
-
-    get lastStartTagName(): string {
-        return this.tokenizer.lastStartTagName;
-    }
-    set lastStartTagName(val: string) {
-        this.tokenizer.lastStartTagName = val;
     }
 
     set state(val: State) {
