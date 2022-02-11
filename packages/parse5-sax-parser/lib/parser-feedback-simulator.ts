@@ -1,5 +1,5 @@
 import { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from 'parse5/dist/tokenizer/index.js';
-import type { TagToken, CommentToken, DoctypeToken, Location } from 'parse5/dist/common/token.js';
+import { TokenType, TagToken, CommentToken, DoctypeToken, CharacterToken, EOFToken } from 'parse5/dist/common/token.js';
 import * as foreignContent from 'parse5/dist/common/foreign-content.js';
 import * as unicode from 'parse5/dist/common/unicode.js';
 import { TAG_ID as $, TAG_NAMES as TN, NAMESPACES as NS, getTagID } from 'parse5/dist/common/html.js';
@@ -18,35 +18,39 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onNullCharacter(chars: string, location: Location | null): void {
+    onNullCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.inForeignContent) {
-            this.handler.onCharacter(unicode.REPLACEMENT_CHARACTER, location);
+            this.handler.onCharacter({
+                type: TokenType.CHARACTER,
+                chars: unicode.REPLACEMENT_CHARACTER,
+                location: token.location,
+            });
         } else {
-            this.handler.onNullCharacter(chars, location);
+            this.handler.onNullCharacter(token);
         }
     }
 
     /** @internal */
-    onWhitespaceCharacter(chars: string, location: Location | null): void {
-        if (this.skipNextNewLine && chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED) {
+    onWhitespaceCharacter(token: CharacterToken): void {
+        if (this.skipNextNewLine && token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED) {
             this.skipNextNewLine = false;
 
-            if (chars.length === 1) {
+            if (token.chars.length === 1) {
                 return;
             }
 
-            chars = chars.substr(1);
+            token.chars = token.chars.substr(1);
         }
 
-        this.handler.onWhitespaceCharacter(chars, location);
+        this.handler.onWhitespaceCharacter(token);
     }
 
     /** @internal */
-    onCharacter(chars: string, location: Location | null): void {
+    onCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
-        this.handler.onCharacter(chars, location);
+        this.handler.onCharacter(token);
     }
 
     /** @internal */
@@ -62,9 +66,9 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onEof(location: Location | null): void {
+    onEof(token: EOFToken): void {
         this.skipNextNewLine = false;
-        this.handler.onEof(location);
+        this.handler.onEof(token);
     }
 
     //Namespace stack mutations

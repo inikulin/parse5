@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5/dist/tokenizer/index.js';
 import { makeChunks } from './common.js';
-import type { CommentToken, DoctypeToken, TagToken } from 'parse5/dist/common/token.js';
+import type { CommentToken, DoctypeToken, TagToken, CharacterToken } from 'parse5/dist/common/token.js';
 import type { ParserError } from 'parse5/dist/common/error-codes.js';
 
 export type HtmlLibToken = [string, string | null, ...unknown[]];
@@ -65,13 +65,13 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
     onEof(): void {
         this.sawEof = true;
     }
-    onCharacter(chars: string): void {
+    onCharacter(token: CharacterToken): void {
         const lastEntry = this.tokens[this.tokens.length - 1];
 
         if (lastEntry && lastEntry[0] === 'Character' && lastEntry[1] != null) {
-            lastEntry[1] += chars;
+            lastEntry[1] += token.chars;
         } else {
-            this.tokens.push(['Character', chars]);
+            this.tokens.push(['Character', token.chars]);
         }
 
         const actual = this.tokens[this.tokens.length - 1];
@@ -80,11 +80,11 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
         assert.ok(typeof actual[1] === 'string');
         assert.ok(expected[1]?.startsWith(actual[1]));
     }
-    onNullCharacter(chars: string): void {
-        this.onCharacter(chars);
+    onNullCharacter(token: CharacterToken): void {
+        this.onCharacter(token);
     }
-    onWhitespaceCharacter(chars: string): void {
-        this.onCharacter(chars);
+    onWhitespaceCharacter(token: CharacterToken): void {
+        this.onCharacter(token);
     }
     onParseError(err: ParserError): void {
         assert.ok(

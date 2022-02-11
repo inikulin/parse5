@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { Tokenizer, TokenHandler, TokenizerMode } from './index.js';
-import { CommentToken, DoctypeToken, Location, TagToken } from '../common/token.js';
+import { CommentToken, DoctypeToken, Location, TagToken, CharacterToken, EOFToken } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
 interface LocationInfoTestCase {
@@ -48,17 +48,17 @@ class LocationInfoHandler implements TokenHandler {
     onEndTag(token: TagToken): void {
         this.validateLocation(token.location);
     }
-    onCharacter(_chars: string, location: Location | null): void {
-        this.validateLocation(location);
+    onCharacter(token: CharacterToken): void {
+        this.validateLocation(token.location);
     }
-    onNullCharacter(_chars: string, location: Location | null): void {
-        this.validateLocation(location);
+    onNullCharacter(token: CharacterToken): void {
+        this.validateLocation(token.location);
     }
-    onWhitespaceCharacter(_chars: string, location: Location | null): void {
-        this.validateLocation(location);
+    onWhitespaceCharacter(token: CharacterToken): void {
+        this.validateLocation(token.location);
     }
 
-    onEof(location: Location | null): void {
+    onEof({ location }: EOFToken): void {
         assert.ok(location);
         assert.strictEqual(location.endOffset, location.startOffset);
         assert.strictEqual(location.endOffset, this.html.length);

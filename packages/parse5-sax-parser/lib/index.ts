@@ -1,6 +1,13 @@
 import { Transform } from 'node:stream';
 import type { Tokenizer, TokenHandler } from 'parse5/dist/tokenizer/index.js';
-import type { Attribute, Location, TagToken, CommentToken, DoctypeToken } from 'parse5/dist/common/token.js';
+import type {
+    Attribute,
+    Location,
+    TagToken,
+    CommentToken,
+    DoctypeToken,
+    CharacterToken,
+} from 'parse5/dist/common/token.js';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
@@ -133,7 +140,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onCharacter(chars: string, location: Location | null): void {
+    onCharacter({ chars, location }: CharacterToken): void {
         if (this.pendingText === null) {
             this.pendingText = { text: chars, sourceCodeLocation: location };
         } else {
@@ -152,13 +159,13 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacter(chars: string, location: Location | null): void {
-        this.onCharacter(chars, location);
+    onWhitespaceCharacter(token: CharacterToken): void {
+        this.onCharacter(token);
     }
 
     /** @internal */
-    onNullCharacter(chars: string, location: Location | null): void {
-        this.onCharacter(chars, location);
+    onNullCharacter(token: CharacterToken): void {
+        this.onCharacter(token);
     }
 
     /** @internal */
