@@ -1,10 +1,12 @@
 import * as assert from 'node:assert';
 import * as parse5 from 'parse5';
+import { jest } from '@jest/globals';
 import { Parser, ParserOptions } from './index.js';
 import type { TreeAdapterTypeMap } from './../tree-adapters/interface.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import { NAMESPACES as NS } from '../common/html.js';
+import { isElementNode } from '../tree-adapters/default.js';
 
 const origParseFragment = Parser.prototype.parseFragment;
 
@@ -97,5 +99,34 @@ describe('parser', () => {
         expect(doctype).toHaveProperty('name', '');
         expect(doctype).toHaveProperty('publicId', '');
         expect(doctype).toHaveProperty('systemId', '');
+    });
+
+    describe('Tree adapters', () => {
+        it('should support onItemPush and onItemPop', () => {
+            const onItemPush = jest.fn();
+            const onItemPop = jest.fn();
+            const document = parse5.parse('<p><p>', {
+                treeAdapter: {
+                    ...treeAdapters.default,
+                    onItemPush,
+                    onItemPop,
+                },
+            });
+
+            const htmlElement = document.childNodes[0];
+            assert.ok(isElementNode(htmlElement));
+            const bodyElement = htmlElement.childNodes[1];
+            assert.ok(isElementNode(bodyElement));
+            // Expect 5 opened elements; in order: html, head, body, and 2x p
+            expect(onItemPush).toHaveBeenCalledTimes(5);
+            expect(onItemPush).toHaveBeenNthCalledWith(1, htmlElement);
+            expect(onItemPush).toHaveBeenNthCalledWith(3, bodyElement);
+            // The last opened element is the second p
+            expect(onItemPush).toHaveBeenLastCalledWith(bodyElement.childNodes[1]);
+            // The second p isn't closed, plus we never pop body and html. Alas, only 2 pop events (head and p).
+            expect(onItemPop).toHaveBeenCalledTimes(2);
+            // The last pop event should be the first p.
+            expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0], bodyElement);
+        });
     });
 });

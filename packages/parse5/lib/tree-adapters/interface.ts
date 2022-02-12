@@ -279,4 +279,18 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param contentElement -  Content element.
      */
     setTemplateContent(templateElement: T['template'], contentElement: T['documentFragment']): void;
+
+    /**
+     * Optional callback for elements being pushed to the stack of open elements.
+     *
+     * @param element The element being pushed to the stack of open elements.
+     */
+    onItemPush?: (item: T['element']) => void;
+
+    /**
+     * Optional callback for elements being popped from the stack of open elements.
+     *
+     * @param item The element being popped.
+     */
+    onItemPop?: (item: T['element'], newTop: T['parentNode']) => void;
 }

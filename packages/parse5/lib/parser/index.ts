@@ -317,6 +317,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     //Text parsing
     private onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
+        this.treeAdapter.onItemPush?.(node);
         if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
     }
 
@@ -324,6 +325,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
         if (this.options.sourceCodeLocationInfo) {
             this._setEndLocation(node, this.currentToken!);
         }
+
+        this.treeAdapter.onItemPop?.(node, this.openElements.current);
 
         if (isTop) {
             let current;
