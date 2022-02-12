@@ -242,6 +242,7 @@ export class Tokenizer {
 
     private currentAttrLocation: Location | null = null;
 
+    // NOTE: `offset` may never run across line boundaries.
     private getCurrentLocation(offset: number): Location | null {
         if (!this.addLocationInfo) {
             return null;
