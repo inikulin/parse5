@@ -1,5 +1,5 @@
 import { Writable } from 'node:stream';
-import { Parser, ParserOptions, defaultParserOptions } from 'parse5/dist/parser/index.js';
+import { Parser, ParserOptions } from 'parse5/dist/parser/index.js';
 import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 import type { DefaultTreeAdapterMap } from 'parse5/dist/tree-adapters/default.js';
 
@@ -42,8 +42,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     constructor(options?: ParserOptions<T>) {
         super({ decodeStrings: false });
 
-        const opts = { ...defaultParserOptions, ...options };
-        this.parser = new Parser(opts);
+        this.parser = new Parser(options);
         this.document = this.parser.document;
     }
 

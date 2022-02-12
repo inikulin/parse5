@@ -111,7 +111,7 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
     onParseError?: ParserErrorHandler | null;
 }
 
-export const defaultParserOptions = {
+const defaultParserOptions = {
     scriptingEnabled: true,
     sourceCodeLocationInfo: false,
     treeAdapter: defaultTreeAdapter,
@@ -123,25 +123,34 @@ export class Parser<T extends TreeAdapterTypeMap> {
     treeAdapter: TreeAdapter<T>;
     private onParseError: ParserErrorHandler | null;
     private currentToken: Token | null = null;
+    public options: Required<ParserOptions<T>>;
+    public document: T['document'];
 
     public constructor(
-        public options: Required<ParserOptions<T>>,
-        public document: T['document'] = options.treeAdapter.createDocument(),
+        options?: ParserOptions<T>,
+        document?: T['document'],
         public fragmentContext: T['element'] | null = null
     ) {
-        this.treeAdapter = this.options.treeAdapter ??= defaultTreeAdapter as TreeAdapter<T>;
-        this.onParseError = this.options.onParseError ??= null;
+        this.options = {
+            ...defaultParserOptions,
+            ...options,
+        };
+
+        this.treeAdapter = this.options.treeAdapter;
+        this.onParseError = this.options.onParseError;
 
         // Always enable location info if we report parse errors.
         if (this.onParseError) {
             this.options.sourceCodeLocationInfo = true;
         }
 
+        this.document = document ?? this.treeAdapter.createDocument();
+
         this.tokenizer = new Tokenizer(this.options);
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
         this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
-        this._setContextModes(fragmentContext ?? document, this.fragmentContextID);
+        this._setContextModes(fragmentContext ?? this.document, this.fragmentContextID);
 
         this.openElements = new OpenElementStack(
             this.document,
@@ -153,12 +162,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
     // API
     public static parse<T extends TreeAdapterTypeMap>(html: string, options?: ParserOptions<T>): T['document'] {
-        const opts = {
-            ...defaultParserOptions,
-            ...options,
-        };
-
-        const parser = new this(opts);
+        const parser = new this(options);
 
         parser.tokenizer.write(html, true);
         parser._runParsingLoop(null);
