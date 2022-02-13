@@ -4,6 +4,7 @@
 node_modules
 docs/build
 docs/05_api_reference.md
-package-lock.json
-bench/package-lock.json
+packages/*/dist/
+test/dist/
 .DS_Store
+tsconfig.tsbuildinfo
