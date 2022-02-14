@@ -16,7 +16,7 @@
         "eslint-plugin-unicorn": "^40.1.0",
         "husky": "^7.0.4",
         "jest": "^27.5.1",
-        "lint-staged": "^12.3.3",
+        "lint-staged": "^12.3.4",
         "outdent": "^0.8.0",
         "prettier": "^2.5.0",
         "ts-jest": "^27.1.3",
