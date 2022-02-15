@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "lib",
+        "outDir": "dist"
+    },
+    "include": ["**/*.ts"],
+    "exclude": ["**/*.test.ts", "dist"],
+    "references": [{ "path": "../parse5/tsconfig.json" }, { "path": "../parse5-sax-parser/tsconfig.json" }]
+}

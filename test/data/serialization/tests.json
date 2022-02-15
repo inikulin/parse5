@@ -100,6 +100,12 @@
         "expected": "<html><head></head><body><noscript>& ><</noscript></body></html>"
     },
     {
+        "name": "Text nodes escaping - <noscript> with scripting disabled (GH-332)",
+        "options": { "scriptingEnabled": false },
+        "input": "<body><noscript>& ><</noscript></body>",
+        "expected": "<html><head></head><body><noscript>&amp; &gt;&lt;</noscript></body></html>"
+    },
+    {
         "name": "Comment nodes",
         "input": "<!-- Hey --><html><head></head><!-- &\u00A0>< --><body><!-- 42 --></body></html>",
         "expected": "<!-- Hey --><html><head></head><!-- &\u00A0>< --><body><!-- 42 --></body></html>"
@@ -133,5 +139,10 @@
         "name": "<pre>, <textarea>, <listing> with initial LF (see: https://github.com/whatwg/html/pull/1815)",
         "input": "<pre>\n1</pre><pre>\n\n2</pre><textarea>\n3</textarea><textarea>\n\n4</textarea><listing>\n5</listing><listing>\n\n6</listing>",
         "expected": "<html><head></head><body><pre>1</pre><pre>\n2</pre><textarea>3</textarea><textarea>\n4</textarea><listing>5</listing><listing>\n6</listing></body></html>"
+    },
+    {
+        "name": "Mixed content (GH-333)",
+        "input": "<svg><style>&lt;</style></svg><style>&lt;</style><svg><script>&lt;</script></svg><script>&lt;</script>",
+        "expected": "<html><head></head><body><svg><style>&lt;</style></svg><style>&lt;</style><svg><script>&lt;</script></svg><script>&lt;</script></body></html>"
     }
 ]

@@ -1,5 +1,6 @@
 {
     "name": "parse5-html-rewriting-stream",
+    "type": "module",
     "description": "Streaming HTML rewriter.",
     "version": "6.0.1",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
@@ -15,7 +16,8 @@
         "HTML"
     ],
     "license": "MIT",
-    "main": "./lib/index.js",
+    "main": "dist/index.js",
+    "exports": "dist/index.js",
     "dependencies": {
         "parse5": "^6.0.1",
         "parse5-sax-parser": "^6.0.1"
@@ -25,6 +27,6 @@
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
-        "lib"
+        "dist"
     ]
 }

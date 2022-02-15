@@ -1,0 +1,16 @@
+version: 2
+updates:
+    - package-ecosystem: npm
+      directory: '/'
+      schedule:
+          interval: daily
+      open-pull-requests-limit: 10
+      versioning-strategy: increase
+    - package-ecosystem: 'github-actions'
+      directory: '/'
+      schedule:
+          interval: daily
+    - package-ecosystem: gitsubmodule
+      directory: '/'
+      schedule:
+          interval: daily

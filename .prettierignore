@@ -1,2 +1,4 @@
-packages/parse5/lib/tokenizer/named-entity-data.js
+packages/*/dist/
+test/dist/
 docs
+test/data/html5lib-tests
