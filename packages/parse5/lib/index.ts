@@ -1,10 +1,10 @@
 import { Parser, ParserOptions } from './parser/index.js';
-import { Serializer, SerializerOptions } from './serializer/index.js';
+
 import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
 export { ParserOptions } from './parser/index.js';
-export { SerializerOptions } from './serializer/index.js';
+export { serialize, serializeOuter, SerializerOptions } from './serializer/index.js';
 
 // Shorthands
 
@@ -80,35 +80,4 @@ export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterM
     const parser = new Parser(options);
 
     return parser.parseFragment(html as string, fragmentContext);
-}
-
-/**
- * Serializes an AST node to an HTML string.
- *
- * @example
- *
- * ```js
- * const parse5 = require('parse5');
- *
- * const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
- *
- * // Serializes a document.
- * const html = parse5.serialize(document);
- *
- * // Serializes the <html> element content.
- * const str = parse5.serialize(document.childNodes[1]);
- *
- * console.log(str); //> '<head></head><body>Hi there!</body>'
- * ```
- *
- * @param node Node to serialize.
- * @param options Serialization options.
- */
-export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
-    node: T['parentNode'],
-    options: SerializerOptions<T>
-): string {
-    const serializer = new Serializer(node, options);
-
-    return serializer.serialize();
 }
