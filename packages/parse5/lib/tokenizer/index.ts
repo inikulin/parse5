@@ -220,7 +220,7 @@ export class Tokenizer {
 
     private consumedAfterSnapshot = -1;
 
-    private ctLoc: Location | null;
+    private currentLocation: Location | null;
     private currentCharacterToken: CharacterToken | null = null;
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
@@ -232,15 +232,13 @@ export class Tokenizer {
         this.addLocationInfo = !!options.sourceCodeLocationInfo;
         this.onParseError = options.onParseError ?? null;
         this.preprocessor = new Preprocessor(options);
-        this.ctLoc = this.getCurrentLocation(-1);
+        this.currentLocation = this.getCurrentLocation(-1);
     }
 
     //Errors
     private _err(code: ERR): void {
         this.onParseError?.(this.preprocessor.getError(code));
     }
-
-    private currentAttrLocation: Location | null = null;
 
     // NOTE: `offset` may never run across line boundaries.
     private getCurrentLocation(offset: number): Location | null {
@@ -368,7 +366,7 @@ export class Tokenizer {
             forceQuirks: false,
             publicId: null,
             systemId: null,
-            location: this.ctLoc,
+            location: this.currentLocation,
         };
     }
 
@@ -376,7 +374,7 @@ export class Tokenizer {
         this.currentCharacterToken = {
             type,
             chars,
-            location: this.ctLoc,
+            location: this.currentLocation,
         };
     }
 
@@ -398,7 +396,7 @@ export class Tokenizer {
             name: attrNameFirstCh,
             value: '',
         };
-        this.currentAttrLocation = this.getCurrentLocation(0);
+        this.currentLocation = this.getCurrentLocation(0);
     }
 
     private _leaveAttrName(): void {
@@ -407,9 +405,9 @@ export class Tokenizer {
         if (getTokenAttr(token, this.currentAttr.name) === null) {
             token.attrs.push(this.currentAttr);
 
-            if (token.location) {
+            if (token.location && this.currentLocation) {
                 const attrLocations = (token.location.attrs ??= Object.create(null));
-                attrLocations[this.currentAttr.name] = this.currentAttrLocation!;
+                attrLocations[this.currentAttr.name] = this.currentLocation;
 
                 // Set end location
                 this._leaveAttrValue();
@@ -420,10 +418,10 @@ export class Tokenizer {
     }
 
     private _leaveAttrValue(): void {
-        if (this.currentAttrLocation) {
-            this.currentAttrLocation.endLine = this.preprocessor.line;
-            this.currentAttrLocation.endCol = this.preprocessor.col;
-            this.currentAttrLocation.endOffset = this.preprocessor.offset;
+        if (this.currentLocation) {
+            this.currentLocation.endLine = this.preprocessor.line;
+            this.currentLocation.endCol = this.preprocessor.col;
+            this.currentLocation.endOffset = this.preprocessor.offset;
         }
     }
 
@@ -465,7 +463,7 @@ export class Tokenizer {
         }
 
         this.tokenQueue.push(ct);
-        this.ctLoc = this.getCurrentLocation(-1);
+        this.currentLocation = this.getCurrentLocation(-1);
     }
 
     private _emitCurrentCharacterToken(nextLocation: Location | null): void {
@@ -500,8 +498,8 @@ export class Tokenizer {
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
     private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
         if (this.currentCharacterToken && this.currentCharacterToken.type !== type) {
-            this.ctLoc = this.getCurrentLocation(0);
-            this._emitCurrentCharacterToken(this.ctLoc);
+            this.currentLocation = this.getCurrentLocation(0);
+            this._emitCurrentCharacterToken(this.currentLocation);
         }
 
         if (this.currentCharacterToken) {
@@ -1960,7 +1958,7 @@ export class Tokenizer {
             this.state = State.COMMENT_START;
         } else if (this._consumeSequenceIfMatch($$.DOCTYPE, false)) {
             // NOTE: Doctypes tokens are created without fixed offsets. We keep track of the moment a doctype *might* start here.
-            this.ctLoc = this.getCurrentLocation($$.DOCTYPE.length + 1);
+            this.currentLocation = this.getCurrentLocation($$.DOCTYPE.length + 1);
             this.state = State.DOCTYPE;
         } else if (this._consumeSequenceIfMatch($$.CDATA_START, true)) {
             if (this.allowCDATA) {
