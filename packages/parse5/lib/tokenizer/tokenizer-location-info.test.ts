@@ -77,6 +77,24 @@ it('Location Info (Tokenizer)', () => {
             lastStartTagName: 'plaintext',
             htmlChunks: ['Text', ' \n', 'Test</plaintext><div>'],
         },
+        {
+            initialMode: TokenizerMode.DATA,
+            lastStartTagName: '',
+            htmlChunks: [
+                '\n',
+                '<!-- regular comment -->',
+                '<! bogus comment >',
+                '<? another bogus comment >',
+                '</!yet another bogus comment>',
+                '<![CDATA[ cdata as a bogus comment >',
+            ],
+        },
+        {
+            initialMode: TokenizerMode.DATA,
+            lastStartTagName: '',
+            allowCDATA: true,
+            htmlChunks: ['<a>', '<![CDATA[ ', 'CDATA', ' ]]>', '<test>', ' <![CDATA[ ]]>\n'],
+        },
     ];
 
     for (const testCase of testCases) {
@@ -93,6 +111,7 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.preprocessor.bufferWaterline = 8;
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
+        tokenizer.allowCDATA = !!testCase.allowCDATA;
 
         for (let token = tokenizer.getNextToken(), j = 0; token.type !== TokenType.EOF; ) {
             if (token.type === TokenType.HIBERNATION) {
