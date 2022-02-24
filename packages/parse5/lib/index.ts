@@ -29,9 +29,7 @@ export function parse<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     html: string,
     options?: ParserOptions<T>
 ): T['document'] {
-    const parser = new Parser(options);
-
-    return parser.parse(html);
+    return Parser.parse(html, options);
 }
 
 /**
@@ -77,7 +75,5 @@ export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterM
         fragmentContext = null;
     }
 
-    const parser = new Parser(options);
-
-    return parser.parseFragment(html as string, fragmentContext);
+    return Parser.parseFragment(html as string, fragmentContext, options);
 }

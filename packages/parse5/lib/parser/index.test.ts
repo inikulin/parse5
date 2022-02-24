@@ -8,7 +8,7 @@ import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import { NAMESPACES as NS } from '../common/html.js';
 import { isElementNode } from '../tree-adapters/default.js';
 
-const origParseFragment = Parser.prototype.parseFragment;
+const origParseFragment = Parser.parseFragment;
 
 generateParsingTests('parser', 'Parser', {}, (test, opts) => ({
     node: test.fragmentContext
@@ -27,21 +27,25 @@ describe('parser', () => {
 
     describe('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
         beforeEach(() => {
-            Parser.prototype.parseFragment = function <T extends TreeAdapterTypeMap>(
-                this: Parser<T>,
+            Parser.parseFragment = function <T extends TreeAdapterTypeMap>(
                 html: string,
-                fragmentContext?: T['element']
-            ): { html: string; fragmentContext: T['element'] | null | undefined; options: ParserOptions<T> } {
+                fragmentContext?: T['element'],
+                options?: ParserOptions<T>
+            ): {
+                html: string;
+                fragmentContext: T['element'] | null | undefined;
+                options: ParserOptions<T> | undefined;
+            } {
                 return {
                     html,
                     fragmentContext,
-                    options: this.options,
+                    options,
                 };
             };
         });
 
         afterEach(() => {
-            Parser.prototype.parseFragment = origParseFragment;
+            Parser.parseFragment = origParseFragment;
         });
 
         it('parses correctly', () => {
@@ -65,7 +69,7 @@ describe('parser', () => {
 
             assert.ok(!args.fragmentContext);
             expect(args).toHaveProperty('html', html);
-            assert.ok(!args.options.sourceCodeLocationInfo);
+            assert.ok(!args.options);
         });
     });
 

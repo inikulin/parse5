@@ -82,7 +82,7 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
      *
      *  @default `true`
      */
-    scriptingEnabled?: boolean | undefined;
+    scriptingEnabled?: boolean;
 
     /**
      * Enables source code location information. When enabled, each node (except the root node)
@@ -94,14 +94,14 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
      *
      * @default `false`
      */
-    sourceCodeLocationInfo?: boolean | undefined;
+    sourceCodeLocationInfo?: boolean;
 
     /**
      * Specifies the resulting tree format.
      *
      * @default `treeAdapters.default`
      */
-    treeAdapter?: TreeAdapter<T> | undefined;
+    treeAdapter?: TreeAdapter<T>;
 
     /**
      * Callback for parse errors.
@@ -111,86 +111,119 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
     onParseError?: ParserErrorHandler | null;
 }
 
+const defaultParserOptions = {
+    scriptingEnabled: true,
+    sourceCodeLocationInfo: false,
+    treeAdapter: defaultTreeAdapter,
+    onParseError: null,
+};
+
 //Parser
 export class Parser<T extends TreeAdapterTypeMap> {
-    options: ParserOptions<T>;
     treeAdapter: TreeAdapter<T>;
     private onParseError: ParserErrorHandler | null;
     private currentToken: Token | null = null;
+    public options: Required<ParserOptions<T>>;
+    public document: T['document'];
 
-    constructor(options?: ParserOptions<T>) {
+    public constructor(
+        options?: ParserOptions<T>,
+        document?: T['document'],
+        public fragmentContext: T['element'] | null = null
+    ) {
         this.options = {
-            scriptingEnabled: true,
-            sourceCodeLocationInfo: false,
+            ...defaultParserOptions,
             ...options,
         };
 
-        this.treeAdapter = this.options.treeAdapter ??= defaultTreeAdapter as TreeAdapter<T>;
-        this.onParseError = this.options.onParseError ??= null;
+        this.treeAdapter = this.options.treeAdapter;
+        this.onParseError = this.options.onParseError;
 
         // Always enable location info if we report parse errors.
         if (this.onParseError) {
             this.options.sourceCodeLocationInfo = true;
         }
+
+        this.document = document ?? this.treeAdapter.createDocument();
+
+        this.tokenizer = new Tokenizer(this.options);
+        this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
+
+        this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
+        this._setContextModes(fragmentContext ?? this.document, this.fragmentContextID);
+
+        this.openElements = new OpenElementStack(
+            this.document,
+            this.treeAdapter,
+            this.onItemPush.bind(this),
+            this.onItemPop.bind(this)
+        );
     }
 
     // API
-    public parse(html: string): T['document'] {
-        const document = this.treeAdapter.createDocument();
+    public static parse<T extends TreeAdapterTypeMap>(html: string, options?: ParserOptions<T>): T['document'] {
+        const parser = new this(options);
 
-        this._bootstrap(document, null);
-        this.tokenizer.write(html, true);
-        this._runParsingLoop(null);
+        parser.tokenizer.write(html, true);
+        parser._runParsingLoop(null);
 
-        return document;
+        return parser.document;
     }
 
-    public parseFragment(html: string, fragmentContext?: T['parentNode'] | null): T['documentFragment'] {
+    public static parseFragment<T extends TreeAdapterTypeMap>(
+        html: string,
+        fragmentContext?: T['parentNode'] | null,
+        options?: ParserOptions<T>
+    ): T['documentFragment'] {
+        const opts: Required<ParserOptions<T>> = {
+            ...defaultParserOptions,
+            ...options,
+        };
+
         //NOTE: use <template> element as a fragment context if context element was not provided,
         //so we will parse in "forgiving" manner
-        fragmentContext ??= this.treeAdapter.createElement(TN.TEMPLATE, NS.HTML, []);
+        fragmentContext ??= opts.treeAdapter.createElement(TN.TEMPLATE, NS.HTML, []);
 
         //NOTE: create fake element which will be used as 'document' for fragment parsing.
         //This is important for jsdom there 'document' can't be recreated, therefore
         //fragment parsing causes messing of the main `document`.
-        const documentMock = this.treeAdapter.createElement('documentmock', NS.HTML, []);
+        const documentMock = opts.treeAdapter.createElement('documentmock', NS.HTML, []);
 
-        this._bootstrap(documentMock, fragmentContext);
+        const parser = new this(opts, documentMock, fragmentContext);
 
-        if (this.fragmentContextID === $.TEMPLATE) {
-            this.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
+        if (parser.fragmentContextID === $.TEMPLATE) {
+            parser.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
         }
 
-        this._initTokenizerForFragmentParsing();
-        this._insertFakeRootElement();
-        this._resetInsertionMode();
-        this._findFormInFragmentContext();
-        this.tokenizer.write(html, true);
-        this._runParsingLoop(null);
+        parser._initTokenizerForFragmentParsing();
+        parser._insertFakeRootElement();
+        parser._resetInsertionMode();
+        parser._findFormInFragmentContext();
+        parser.tokenizer.write(html, true);
+        parser._runParsingLoop(null);
 
-        const rootElement = this.treeAdapter.getFirstChild(documentMock) as T['parentNode'];
-        const fragment = this.treeAdapter.createDocumentFragment();
+        const rootElement = opts.treeAdapter.getFirstChild(documentMock) as T['parentNode'];
+        const fragment = opts.treeAdapter.createDocumentFragment();
 
-        this._adoptNodes(rootElement, fragment);
+        parser._adoptNodes(rootElement, fragment);
 
         return fragment;
     }
 
-    tokenizer!: Tokenizer;
+    tokenizer: Tokenizer;
+
     stopped = false;
     insertionMode = InsertionMode.INITIAL;
     originalInsertionMode = InsertionMode.INITIAL;
 
-    document!: T['document'];
-    fragmentContext!: T['element'] | null;
-    fragmentContextID = $.UNKNOWN;
+    fragmentContextID: $;
 
     headElement: null | T['element'] = null;
     formElement: null | T['element'] = null;
     pendingScript: null | T['element'] = null;
 
-    openElements!: OpenElementStack<T>;
-    activeFormattingElements!: FormattingElementList<T>;
+    openElements: OpenElementStack<T>;
+    activeFormattingElements: FormattingElementList<T>;
     private _considerForeignContent = false;
 
     /**
@@ -205,44 +238,6 @@ export class Parser<T extends TreeAdapterTypeMap> {
     framesetOk = true;
     skipNextNewLine = false;
     fosterParentingEnabled = false;
-
-    //Bootstrap parser
-    _bootstrap(document: T['document'], fragmentContext: T['element'] | null): void {
-        this.tokenizer = new Tokenizer(this.options);
-
-        this.stopped = false;
-
-        this.insertionMode = InsertionMode.INITIAL;
-        this.originalInsertionMode = InsertionMode.INITIAL;
-
-        this.document = document;
-        this.fragmentContext = fragmentContext;
-        this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
-        this._setContextModes(fragmentContext ?? document, this.fragmentContextID);
-
-        this.headElement = null;
-        this.formElement = null;
-        this.pendingScript = null;
-        this.currentToken = null;
-
-        this.openElements = new OpenElementStack(
-            this.document,
-            this.treeAdapter,
-            this.onItemPush.bind(this),
-            this.onItemPop.bind(this)
-        );
-
-        this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
-
-        this.tmplInsertionModeStack.length = 0;
-
-        this.pendingCharacterTokens.length = 0;
-        this.hasNonWhitespacePendingCharacterToken = false;
-
-        this.framesetOk = true;
-        this.skipNextNewLine = false;
-        this.fosterParentingEnabled = false;
-    }
 
     //Errors
     _err(token: Token, code: ERR, beforeToken?: boolean): void {
