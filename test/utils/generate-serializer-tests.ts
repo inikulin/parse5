@@ -12,7 +12,7 @@ export function generateSerializerTests(
         opts: parse5.SerializerOptions<TreeAdapterTypeMap>
     ) => Promise<string> | string
 ): void {
-    const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url)).toString('utf-8');
+    const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url)).toString('utf8');
     const tests = JSON.parse(data) as {
         name: string;
         options?: parse5.SerializerOptions<TreeAdapterTypeMap>;

@@ -13,7 +13,7 @@ main().catch(console.error);
 
 function main(): Promise<void[]> {
     const convertPromises = process.argv.slice(2).map(async (file) => {
-        const content = await readFile(file, 'utf-8');
+        const content = await readFile(file, 'utf8');
         const feedbackTestContent = generateParserFeedbackTest(content);
         const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
 
