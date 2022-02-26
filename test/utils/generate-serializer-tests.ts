@@ -23,7 +23,7 @@ export function generateSerializerTests(
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const [idx, test] of tests.entries()) {
             it(`${prefix} - ${idx}.${test.name}`, async () => {
-                const opts: parse5.SerializerOptions<TreeAdapterTypeMap> = { ...test.options, treeAdapter };
+                const opts = { ...test.options, treeAdapter };
                 const document = parse5.parse(test.input, opts);
                 const serializedResult = await serialize(document, opts);
 

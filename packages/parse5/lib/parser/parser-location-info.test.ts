@@ -18,13 +18,13 @@ generateLocationInfoParserTests(
 );
 
 generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
-    const opts: parse5.ParserOptions<TreeAdapterTypeMap> = {
-        treeAdapter,
-        sourceCodeLocationInfo: true,
-    };
-
     test('Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)', () => {
         const html = '<p>1<p class="2">3';
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
 
         const fragment = parse5.parseFragment(html, opts);
         const firstP = treeAdapter.getChildNodes(fragment)[0];
@@ -35,6 +35,11 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 
     test('Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)', () => {
         const html = '<i>1</i>2';
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
 
         const fragment = parse5.parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
@@ -47,6 +52,11 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
     test('Regression - Location info not exposed with parseFragment (GH-82)', () => {
         const html = '<html><head></head><body>foo</body></html>';
 
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
         const fragment = parse5.parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
 
@@ -56,6 +66,11 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
     test('Regression - location info mixin error when parsing <template> elements (GH-90)', () => {
         const html = '<template>hello</template>';
 
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
         assert.doesNotThrow(() => {
             parse5.parseFragment(html, opts);
         });
@@ -63,6 +78,11 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 
     test('Regression - location info not attached for empty attributes (GH-96)', () => {
         const html = '<div test-attr></div>';
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
 
         const fragment = parse5.parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
@@ -79,6 +99,11 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
           </body></html>
         `;
 
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
         const document = parse5.parse(html, opts);
         const htmlEl = treeAdapter.getChildNodes(document)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
@@ -91,6 +116,11 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 
     test('Regression - location.startTag should be available if end tag is missing (GH-181)', () => {
         const html = '<p>test';
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
 
         const fragment = parse5.parseFragment(html, opts);
         const p = treeAdapter.getChildNodes(fragment)[0];
