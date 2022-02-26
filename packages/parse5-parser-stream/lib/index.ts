@@ -43,9 +43,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         super({ decodeStrings: false });
 
         this.parser = new Parser(options);
-
-        this.document = this.parser.treeAdapter.createDocument();
-        this.parser._bootstrap(this.document, null);
+        this.document = this.parser.document;
     }
 
     //WritableStream implementation
