@@ -31,7 +31,7 @@ export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
             }
 
             const filePath = path.join(dataDirPath, fileName);
-            const testSet = fs.readFileSync(filePath, 'utf-8');
+            const testSet = fs.readFileSync(filePath, 'utf8');
             const setName = fileName.replace('.dat', '');
 
             for (const test of parseDatFile(testSet, treeAdapter)) {
