@@ -32,6 +32,7 @@ interface TokenSourceData {
 
 type TokenSourceCreator = (data: TokenizeHandler) => Tokenizer;
 
+/** Receives events and immediately compares them against the expected values. We check the entire output again at the end. */
 class TokenizeHandler implements TokenSourceData, TokenHandler {
     constructor(private testData: LoadedTest) {}
 
