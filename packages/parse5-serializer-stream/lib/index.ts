@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream';
-import { Serializer, SerializerOptions } from 'parse5/dist/serializer/index.js';
+import { serialize, type SerializerOptions } from 'parse5/dist/serializer/index.js';
 import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 /**
@@ -22,32 +22,19 @@ import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js'
  * ```
  */
 export class SerializerStream<T extends TreeAdapterTypeMap> extends Readable {
-    private serializer: Serializer<T>;
-
     /**
      * Streaming AST node to an HTML serializer. A readable stream.
      *
      * @param node Node to serialize.
      * @param options Serialization options.
      */
-    constructor(node: T['parentNode'], options: SerializerOptions<T>) {
+    constructor(private node: T['parentNode'], private options: SerializerOptions<T>) {
         super({ encoding: 'utf8' });
-
-        this.serializer = new Serializer(node, options);
-
-        Object.defineProperty(this.serializer, 'html', {
-            //NOTE: To make `+=` concat operator work properly we define
-            //getter which always returns empty string
-            get() {
-                return '';
-            },
-            set: (data: string) => this.push(data),
-        });
     }
 
     //Readable stream implementation
     override _read(): void {
-        this.serializer.serialize();
+        this.push(serialize(this.node, this.options));
         this.push(null);
     }
 }

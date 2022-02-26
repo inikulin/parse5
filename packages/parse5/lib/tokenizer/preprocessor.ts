@@ -17,7 +17,8 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 export class Preprocessor {
     public html = '';
     private pos = -1;
-    private lastGapPos = -1;
+    // NOTE: Initial `lastGapPos` is -2, to ensure `col` on initialisation is 0
+    private lastGapPos = -2;
     private gapStack: number[] = [];
     private skipNextNewLine = false;
     private lastChunkWritten = false;
@@ -106,7 +107,7 @@ export class Preprocessor {
             this.lineStartPos -= this.pos;
             this.droppedBufferSize += this.pos;
             this.pos = 0;
-            this.lastGapPos = -1;
+            this.lastGapPos = -2;
             this.gapStack.length = 0;
         }
     }

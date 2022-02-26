@@ -74,6 +74,7 @@ export interface TextNode {
 export interface Template extends Element {
     nodeName: 'template';
     tagName: 'template';
+    /** The content of a `template` tag. */
     content: DocumentFragment;
 }
 

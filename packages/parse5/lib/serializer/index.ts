@@ -1,7 +1,6 @@
-import * as defaultTreeAdapter from '../tree-adapters/default.js';
-import * as doctype from '../common/doctype.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
+import * as DefaultTreeAdapter from '../tree-adapters/default.js';
 
 //Escaping regexes
 const AMP_REGEX = /&/g;
@@ -31,16 +30,7 @@ const VOID_ELEMENTS = new Set<string>([
     $.TRACK,
     $.WBR,
 ]);
-const UNESCAPED_TEXT = new Set<string>([
-    $.STYLE,
-    $.SCRIPT,
-    $.XMP,
-    $.IFRAME,
-    $.NOEMBED,
-    $.NOFRAMES,
-    $.PLAINTEXT,
-    $.NOSCRIPT,
-]);
+const UNESCAPED_TEXT = new Set<string>([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT]);
 
 export interface SerializerOptions<T extends TreeAdapterTypeMap> {
     /**
@@ -49,117 +39,181 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
      * @default `treeAdapters.default`
      */
     treeAdapter?: TreeAdapter<T>;
+    /**
+     * The [scripting flag](https://html.spec.whatwg.org/multipage/parsing.html#scripting-flag). If set
+     * to `true`, `noscript` element content will not be escaped.
+     *
+     *  @default `true`
+     */
+    scriptingEnabled?: boolean;
 }
 
-//Serializer
-export class Serializer<T extends TreeAdapterTypeMap> {
-    html = '';
-    treeAdapter: TreeAdapter<T>;
+type InternalOptions<T extends TreeAdapterTypeMap> = Required<SerializerOptions<T>>;
 
-    constructor(
-        private startNode: T['parentNode'],
-        { treeAdapter = defaultTreeAdapter as TreeAdapter<T> }: SerializerOptions<T>
-    ) {
-        this.treeAdapter = treeAdapter;
-    }
+const defaultOpts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true };
 
-    //API
-    serialize(): string {
-        this._serializeChildNodes(this.startNode);
+/**
+ * Serializes an AST node to an HTML string.
+ *
+ * @example
+ *
+ * ```js
+ * const parse5 = require('parse5');
+ *
+ * const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
+ *
+ * // Serializes a document.
+ * const html = parse5.serialize(document);
+ *
+ * // Serializes the <html> element content.
+ * const str = parse5.serialize(document.childNodes[1]);
+ *
+ * console.log(str); //> '<head></head><body>Hi there!</body>'
+ * ```
+ *
+ * @param node Node to serialize.
+ * @param options Serialization options.
+ */
+export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
+    node: T['parentNode'],
+    options?: SerializerOptions<T>
+): string {
+    const opts = { ...defaultOpts, ...options };
+    return serializeChildNodes(node, opts);
+}
 
-        return this.html;
-    }
+/**
+ * Serializes an AST element node to an HTML string, including the element node.
+ *
+ * @example
+ *
+ * ```js
+ * const parse5 = require('parse5');
+ *
+ * const document = parse5.parseFragment('<div>Hello, <b>world</b>!</div>');
+ *
+ * // Serializes the <div> element.
+ * const html = parse5.serializeOuter(document.childNodes[0]);
+ *
+ * console.log(str); //> '<div>Hello, <b>world</b>!</div>'
+ * ```
+ *
+ * @param node Node to serialize.
+ * @param options Serialization options.
+ */
+export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
+    node: T['element'],
+    options?: SerializerOptions<T>
+): string {
+    const opts = { ...defaultOpts, ...options };
+    return serializeElement(node, opts);
+}
 
-    //Internals
-    private _serializeChildNodes(parentNode: T['parentNode']): void {
-        const childNodes = this.treeAdapter.getChildNodes(parentNode);
+function serializeChildNodes<T extends TreeAdapterTypeMap>(
+    parentNode: T['parentNode'],
+    options: InternalOptions<T>
+): string {
+    let html = '';
+    // Get container of the child nodes
+    const container =
+        options.treeAdapter.isElementNode(parentNode) &&
+        options.treeAdapter.getTagName(parentNode) === $.TEMPLATE &&
+        options.treeAdapter.getNamespaceURI(parentNode) === NS.HTML
+            ? options.treeAdapter.getTemplateContent(parentNode)
+            : parentNode;
+    const childNodes = options.treeAdapter.getChildNodes(container);
 
-        if (childNodes) {
-            for (const currentNode of childNodes) {
-                if (this.treeAdapter.isElementNode(currentNode)) {
-                    this._serializeElement(currentNode);
-                } else if (this.treeAdapter.isTextNode(currentNode)) {
-                    this._serializeTextNode(currentNode);
-                } else if (this.treeAdapter.isCommentNode(currentNode)) {
-                    this._serializeCommentNode(currentNode);
-                } else if (this.treeAdapter.isDocumentTypeNode(currentNode)) {
-                    this._serializeDocumentTypeNode(currentNode);
-                }
+    if (childNodes) {
+        for (const currentNode of childNodes) {
+            if (options.treeAdapter.isElementNode(currentNode)) {
+                html += serializeElement(currentNode, options);
+            } else if (options.treeAdapter.isTextNode(currentNode)) {
+                html += serializeTextNode(currentNode, options);
+            } else if (options.treeAdapter.isCommentNode(currentNode)) {
+                html += serializeCommentNode(currentNode, options);
+            } else if (options.treeAdapter.isDocumentTypeNode(currentNode)) {
+                html += serializeDocumentTypeNode(currentNode, options);
             }
         }
     }
 
-    private _serializeElement(node: T['element']): void {
-        const tn = this.treeAdapter.getTagName(node);
-        const ns = this.treeAdapter.getNamespaceURI(node);
+    return html;
+}
 
-        this.html += `<${tn}`;
-        this._serializeAttributes(node);
-        this.html += '>';
+function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], options: InternalOptions<T>): string {
+    const tn = options.treeAdapter.getTagName(node);
 
-        if (!VOID_ELEMENTS.has(tn)) {
-            const childNodesHolder =
-                tn === $.TEMPLATE && ns === NS.HTML ? this.treeAdapter.getTemplateContent(node) : node;
+    return `<${tn}${serializeAttributes(node, options)}>${
+        options.treeAdapter.getNamespaceURI(node) === NS.HTML && VOID_ELEMENTS.has(tn)
+            ? ''
+            : `${serializeChildNodes(node, options)}</${tn}>`
+    }`;
+}
 
-            this._serializeChildNodes(childNodesHolder);
-            this.html += `</${tn}>`;
-        }
-    }
+function serializeAttributes<T extends TreeAdapterTypeMap>(
+    node: T['element'],
+    { treeAdapter }: InternalOptions<T>
+): string {
+    let html = '';
+    for (const attr of treeAdapter.getAttrList(node)) {
+        html += ' ';
 
-    private _serializeAttributes(node: T['element']): void {
-        for (const attr of this.treeAdapter.getAttrList(node)) {
-            const value = escapeString(attr.value, true);
-
-            this.html += ' ';
-
-            if (!attr.namespace) {
-                this.html += attr.name;
-            } else
-                switch (attr.namespace) {
-                    case NS.XML: {
-                        this.html += `xml:${attr.name}`;
-                        break;
-                    }
-                    case NS.XMLNS: {
-                        if (attr.name !== 'xmlns') {
-                            this.html += 'xmlns:';
-                        }
-
-                        this.html += attr.name;
-                        break;
-                    }
-                    case NS.XLINK: {
-                        this.html += `xlink:${attr.name}`;
-                        break;
-                    }
-                    default: {
-                        this.html += `${attr.prefix}:${attr.name}`;
-                    }
+        if (!attr.namespace) {
+            html += attr.name;
+        } else
+            switch (attr.namespace) {
+                case NS.XML: {
+                    html += `xml:${attr.name}`;
+                    break;
                 }
+                case NS.XMLNS: {
+                    if (attr.name !== 'xmlns') {
+                        html += 'xmlns:';
+                    }
 
-            this.html += `="${value}"`;
-        }
+                    html += attr.name;
+                    break;
+                }
+                case NS.XLINK: {
+                    html += `xlink:${attr.name}`;
+                    break;
+                }
+                default: {
+                    html += `${attr.prefix}:${attr.name}`;
+                }
+            }
+
+        html += `="${escapeString(attr.value, true)}"`;
     }
 
-    private _serializeTextNode(node: T['textNode']): void {
-        const content = this.treeAdapter.getTextNodeContent(node);
-        const parent = this.treeAdapter.getParentNode(node);
+    return html;
+}
 
-        this.html +=
-            parent && this.treeAdapter.isElementNode(parent) && UNESCAPED_TEXT.has(this.treeAdapter.getTagName(parent))
-                ? content
-                : escapeString(content, false);
-    }
+function serializeTextNode<T extends TreeAdapterTypeMap>(node: T['textNode'], options: InternalOptions<T>): string {
+    const { treeAdapter } = options;
+    const content = treeAdapter.getTextNodeContent(node);
+    const parent = treeAdapter.getParentNode(node);
+    const parentTn = parent && treeAdapter.isElementNode(parent) && treeAdapter.getTagName(parent);
 
-    private _serializeCommentNode(node: T['commentNode']): void {
-        this.html += `<!--${this.treeAdapter.getCommentNodeContent(node)}-->`;
-    }
+    return parentTn &&
+        treeAdapter.getNamespaceURI(parent) === NS.HTML &&
+        (UNESCAPED_TEXT.has(parentTn) || (options.scriptingEnabled && parentTn === $.NOSCRIPT))
+        ? content
+        : escapeString(content, false);
+}
 
-    private _serializeDocumentTypeNode(node: T['documentType']): void {
-        const name = this.treeAdapter.getDocumentTypeNodeName(node);
+function serializeCommentNode<T extends TreeAdapterTypeMap>(
+    node: T['commentNode'],
+    { treeAdapter }: InternalOptions<T>
+): string {
+    return `<!--${treeAdapter.getCommentNodeContent(node)}-->`;
+}
 
-        this.html += `<${doctype.serializeContent(name, null, null)}>`;
-    }
+function serializeDocumentTypeNode<T extends TreeAdapterTypeMap>(
+    node: T['documentType'],
+    { treeAdapter }: InternalOptions<T>
+): string {
+    return `<!DOCTYPE ${treeAdapter.getDocumentTypeNodeName(node)}>`;
 }
 
 // NOTE: used in tests and by rewriting stream

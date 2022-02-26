@@ -15,6 +15,7 @@ export function generateSerializerTests(
     const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url)).toString('utf-8');
     const tests = JSON.parse(data) as {
         name: string;
+        options?: parse5.SerializerOptions<TreeAdapterTypeMap>;
         input: string;
         expected: string;
     }[];
@@ -22,7 +23,7 @@ export function generateSerializerTests(
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const [idx, test] of tests.entries()) {
             it(`${prefix} - ${idx}.${test.name}`, async () => {
-                const opts = { treeAdapter };
+                const opts = { ...test.options, treeAdapter };
                 const document = parse5.parse(test.input, opts);
                 const serializedResult = await serialize(document, opts);
 
