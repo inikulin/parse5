@@ -595,7 +595,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler {
                 break;
             }
             case TokenType.START_TAG: {
-                this.onStartTag(token);
+                this._processStartTag(token);
                 break;
             }
             case TokenType.END_TAG: {
@@ -952,17 +952,27 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler {
         this.skipNextNewLine = false;
         this.currentToken = token;
 
+        this._processStartTag(token);
+
+        if (token.selfClosing && !token.ackSelfClosing) {
+            this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
+        }
+    }
+    /**
+     * Processes a given start tag.
+     *
+     * `onStartTag` checks if a self-closing tag was recognized. When a token
+     * is moved inbetween multiple insertion modes, this check for self-closing
+     * could lead to false positives. To avoid this, `_processStartTag` is used
+     * for nested calls.
+     *
+     * @param token The token to process.
+     */
+    _processStartTag(token: TagToken): void {
         if (this.shouldProcessStartTagTokenInForeignContent(token)) {
             startTagInForeignContent(this, token);
         } else {
             this._startTagOutsideForeignContent(token);
-        }
-
-        // FIXME: This can currently fire unexpectedly.
-        if (token.selfClosing && !token.ackSelfClosing) {
-            this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
-            // Prevent this error from being shown again.
-            token.ackSelfClosing = true;
         }
     }
     _startTagOutsideForeignContent(token: TagToken): void {
@@ -2628,7 +2638,7 @@ function tableStartTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     if (p.openElements.hasInTableScope($.TABLE)) {
         p.openElements.popUntilTagNamePopped($.TABLE);
         p._resetInsertionMode();
-        p.onStartTag(token);
+        p._processStartTag(token);
     }
 }
 
@@ -3128,7 +3138,7 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
                 p._resetInsertionMode();
 
                 if (token.tagID !== $.SELECT) {
-                    p.onStartTag(token);
+                    p._processStartTag(token);
                 }
             }
             break;
@@ -3198,7 +3208,7 @@ function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, tok
     ) {
         p.openElements.popUntilTagNamePopped($.SELECT);
         p._resetInsertionMode();
-        p.onStartTag(token);
+        p._processStartTag(token);
     } else {
         startTagInSelect(p, token);
     }
