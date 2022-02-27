@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { Tokenizer, TokenizerMode, TokenHandler } from './index.js';
-import { Location, EOFToken, Token, CharacterToken, DoctypeToken, TagToken, CommentToken } from '../common/token.js';
+import { Location, EOFToken, CharacterToken, DoctypeToken, TagToken, CommentToken } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
 interface LocationInfoTestCase {
@@ -21,10 +21,6 @@ class LocationInfoHandler implements TokenHandler {
         this.lines = html.split(/\r?\n/g);
     }
 
-    protected handleToken(token: Token): void {
-        this.validateLocation(token.location);
-    }
-
     private validateLocation(location: Location | null): void {
         assert.ok(location);
 
@@ -43,26 +39,26 @@ class LocationInfoHandler implements TokenHandler {
         this.idx += 1;
     }
 
-    onComment(token: CommentToken): void {
-        this.handleToken(token);
+    onComment({ location }: CommentToken): void {
+        this.validateLocation(location);
     }
-    onDoctype(token: DoctypeToken): void {
-        this.handleToken(token);
+    onDoctype({ location }: DoctypeToken): void {
+        this.validateLocation(location);
     }
-    onStartTag(token: TagToken): void {
-        this.handleToken(token);
+    onStartTag({ location }: TagToken): void {
+        this.validateLocation(location);
     }
-    onEndTag(token: TagToken): void {
-        this.handleToken(token);
+    onEndTag({ location }: TagToken): void {
+        this.validateLocation(location);
     }
-    onCharacter(token: CharacterToken): void {
-        this.handleToken(token);
+    onCharacter({ location }: CharacterToken): void {
+        this.validateLocation(location);
     }
-    onNullCharacter(token: CharacterToken): void {
-        this.handleToken(token);
+    onNullCharacter({ location }: CharacterToken): void {
+        this.validateLocation(location);
     }
-    onWhitespaceCharacter(token: CharacterToken): void {
-        this.handleToken(token);
+    onWhitespaceCharacter({ location }: CharacterToken): void {
+        this.validateLocation(location);
     }
     onEof({ location }: EOFToken): void {
         assert.ok(location);
