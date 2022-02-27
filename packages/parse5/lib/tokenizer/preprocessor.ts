@@ -30,11 +30,7 @@ export class Preprocessor {
     public droppedBufferSize = 0;
     public line = 1;
 
-    onParseError: ParserErrorHandler | null;
-
-    constructor(options: { onParseError?: ParserErrorHandler | null }) {
-        this.onParseError = options.onParseError ?? null;
-    }
+    constructor(private handler: { onParseError?: ParserErrorHandler | null }) {}
 
     /** The column on the current line. If we just saw a gap (eg. a surrogate pair), return the index before. */
     public get col(): number {
@@ -62,9 +58,9 @@ export class Preprocessor {
     //NOTE: avoid reporting error twice on advance/retreat
     private lastErrOffset = -1;
     private _err(code: ERR): void {
-        if (this.onParseError && this.lastErrOffset !== this.offset) {
+        if (this.handler.onParseError && this.lastErrOffset !== this.offset) {
             this.lastErrOffset = this.offset;
-            this.onParseError(this.getError(code));
+            this.handler.onParseError(this.getError(code));
         }
     }
 
@@ -210,7 +206,7 @@ export class Preprocessor {
         //range (ASCII alphanumeric, whitespaces, big chunk of BMP)
         //before going into detailed performance cost validation.
         const isCommonValidRange =
-            this.onParseError === null ||
+            this.handler.onParseError === null ||
             (cp > 0x1f && cp < 0x7f) ||
             cp === $.LINE_FEED ||
             cp === $.CARRIAGE_RETURN ||

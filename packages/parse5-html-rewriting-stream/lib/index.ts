@@ -1,4 +1,4 @@
-import type { Token, Location } from 'parse5/dist/common/token.js';
+import type { Location } from 'parse5/dist/common/token.js';
 import { SAXParser, EndTag, StartTag, Doctype, Text, Comment, SaxToken } from 'parse5-sax-parser';
 import { escapeString } from 'parse5/dist/serializer/index.js';
 
@@ -73,9 +73,9 @@ export class RewritingStream extends SAXParser {
     }
 
     // Events
-    protected override _handleToken(token: Token): boolean {
-        if (!super._handleToken(token)) {
-            this.emitRaw(this._getRawHtml(token.location!));
+    protected override emitIfListenerExists(eventName: string, token: SaxToken): boolean {
+        if (!super.emitIfListenerExists(eventName, token)) {
+            this.emitRaw(this._getRawHtml(token.sourceCodeLocation!));
         }
 
         // NOTE: don't skip new lines after <pre> and other tags,

@@ -1,4 +1,5 @@
-import { Tokenizer, TokenizerMode } from '../tokenizer/index.js';
+import { TokenizerMode } from '../tokenizer/index.js';
+import { QueuedTokenizer } from '../tokenizer/queued.js';
 import { OpenElementStack } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
@@ -146,7 +147,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         this.document = document ?? this.treeAdapter.createDocument();
 
-        this.tokenizer = new Tokenizer(this.options);
+        this.tokenizer = new QueuedTokenizer(this.options);
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
         this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
@@ -210,8 +211,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return fragment;
     }
 
-    tokenizer: Tokenizer;
-
+    tokenizer: QueuedTokenizer;
     stopped = false;
     insertionMode = InsertionMode.INITIAL;
     originalInsertionMode = InsertionMode.INITIAL;

@@ -1,7 +1,60 @@
 import * as assert from 'node:assert';
 import { Tokenizer, TokenizerMode } from './index.js';
-import { TokenType } from '../common/token.js';
+import { SinglePathHandler } from './queued.js';
+import { Location, EOFToken, Token } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
+
+interface LocationInfoTestCase {
+    initialMode: typeof TokenizerMode[keyof typeof TokenizerMode];
+    lastStartTagName: string;
+    htmlChunks: string[];
+}
+
+/** Receives events and immediately compares them against the expected values. */
+class LocationInfoHandler extends SinglePathHandler {
+    public sawEof = false;
+    /** The index of the last html chunk. */
+    private idx = 0;
+    /** All of the lines in the input. */
+    private lines: string[];
+
+    constructor(private testCase: LocationInfoTestCase, private html: string) {
+        super();
+        this.lines = html.split(/\r?\n/g);
+    }
+
+    protected handleToken(token: Token): void {
+        this.validateLocation(token.location);
+    }
+
+    private validateLocation(location: Location | null): void {
+        assert.ok(location);
+
+        //Offsets
+        const actual = this.html.substring(location.startOffset, location.endOffset);
+        const chunk = this.testCase.htmlChunks[this.idx];
+
+        assert.strictEqual(actual, chunk);
+
+        //Line/col
+        const line = getSubstringByLineCol(this.lines, location);
+        const expected = normalizeNewLine(chunk);
+
+        assert.strictEqual(line, expected);
+
+        this.idx += 1;
+    }
+
+    override onEof({ location }: EOFToken): void {
+        assert.ok(location);
+        assert.strictEqual(location.endOffset, location.startOffset);
+        assert.strictEqual(location.endOffset, this.html.length);
+
+        assert.strictEqual(this.idx, this.testCase.htmlChunks.length);
+
+        this.sawEof = true;
+    }
+}
 
 it('Location Info (Tokenizer)', () => {
     const testCases = [
@@ -99,8 +152,8 @@ it('Location Info (Tokenizer)', () => {
 
     for (const testCase of testCases) {
         const html = testCase.htmlChunks.join('');
-        const lines = html.split(/\r?\n/g);
-        const tokenizer = new Tokenizer({ sourceCodeLocationInfo: true });
+        const handler = new LocationInfoHandler(testCase, html);
+        const tokenizer = new Tokenizer({ sourceCodeLocationInfo: true }, handler);
         const lastChunkIdx = testCase.htmlChunks.length - 1;
 
         for (let i = 0; i < testCase.htmlChunks.length; i++) {
@@ -113,27 +166,8 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.lastStartTagName = testCase.lastStartTagName;
         tokenizer.allowCDATA = !!testCase.allowCDATA;
 
-        for (let token = tokenizer.getNextToken(), j = 0; token.type !== TokenType.EOF; ) {
-            if (token.type === TokenType.HIBERNATION) {
-                continue;
-            }
-
-            assert.ok(token.location);
-
-            //Offsets
-            let actual = html.substring(token.location.startOffset, token.location.endOffset);
-
-            assert.strictEqual(actual, testCase.htmlChunks[j]);
-
-            //Line/col
-            actual = getSubstringByLineCol(lines, token.location);
-
-            const expected = normalizeNewLine(testCase.htmlChunks[j]);
-
-            assert.strictEqual(actual, expected);
-
-            token = tokenizer.getNextToken();
-            j++;
+        while (!handler.sawEof) {
+            tokenizer.getNextToken();
         }
     }
 });

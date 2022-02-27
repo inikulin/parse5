@@ -13,6 +13,7 @@ import {
     CharacterToken,
     DoctypeToken,
     TagToken,
+    EOFToken,
     getTokenAttr,
     CommentToken,
     Attribute,
@@ -52,8 +53,6 @@ const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
     [0x9e, 0x01_7e],
     [0x9f, 0x01_78],
 ]);
-
-const HIBERNATION_TOKEN: Token = { type: TokenType.HIBERNATION, location: null };
 
 //States
 const enum State {
@@ -203,11 +202,29 @@ function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
     return isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN;
 }
 
+export interface TokenizerOptions {
+    sourceCodeLocationInfo?: boolean;
+}
+
+export interface TokenHandler {
+    onComment(token: CommentToken): void;
+    onDoctype(token: DoctypeToken): void;
+    onStartTag(token: TagToken): void;
+    onEndTag(token: TagToken): void;
+    onEof(token: EOFToken): void;
+    onCharacter(token: CharacterToken): void;
+    onNullCharacter(token: CharacterToken): void;
+    onWhitespaceCharacter(token: CharacterToken): void;
+
+    onParseError?: ParserErrorHandler | null;
+}
+
 //Tokenizer
 export class Tokenizer {
     public preprocessor: Preprocessor;
 
-    private tokenQueue: Token[] = [];
+    /** Indicates that the next token has been emitted, and `getNextToken` should return. */
+    private hasEmitted = false;
 
     public allowCDATA = false;
     public lastStartTagName = '';
@@ -225,24 +242,19 @@ export class Tokenizer {
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
 
-    private addLocationInfo;
-    private onParseError;
-
-    constructor(options: { sourceCodeLocationInfo?: boolean; onParseError?: ParserErrorHandler | null }) {
-        this.addLocationInfo = !!options.sourceCodeLocationInfo;
-        this.onParseError = options.onParseError ?? null;
-        this.preprocessor = new Preprocessor(options);
+    constructor(private options: TokenizerOptions, private handler: TokenHandler) {
+        this.preprocessor = new Preprocessor(handler);
         this.currentLocation = this.getCurrentLocation(-1);
     }
 
     //Errors
     private _err(code: ERR): void {
-        this.onParseError?.(this.preprocessor.getError(code));
+        this.handler.onParseError?.(this.preprocessor.getError(code));
     }
 
     // NOTE: `offset` may never run across line boundaries.
     private getCurrentLocation(offset: number): Location | null {
-        if (!this.addLocationInfo) {
+        if (!this.options.sourceCodeLocationInfo) {
             return null;
         }
 
@@ -257,8 +269,9 @@ export class Tokenizer {
     }
 
     //API
-    public getNextToken(): Token {
-        while (this.tokenQueue.length === 0 && this.active) {
+    public getNextToken(): void {
+        this.hasEmitted = false;
+        while (!this.hasEmitted && this.active) {
             this.consumedAfterSnapshot = 0;
 
             const cp = this._consume();
@@ -267,8 +280,6 @@ export class Tokenizer {
                 this._callState(cp);
             }
         }
-
-        return this.tokenQueue.shift()!;
     }
 
     public write(chunk: string, isLastChunk: boolean): void {
@@ -286,7 +297,6 @@ export class Tokenizer {
         if (this.preprocessor.endOfChunkHit) {
             this._unconsume(this.consumedAfterSnapshot);
             this.active = false;
-            this.tokenQueue.push(HIBERNATION_TOKEN);
 
             return true;
         }
@@ -378,18 +388,6 @@ export class Tokenizer {
         };
     }
 
-    private _createEOFToken(): void {
-        const location = this.getCurrentLocation(0);
-
-        if (location) {
-            location.endLine = location.startLine;
-            location.endCol = location.startCol;
-            location.endOffset = location.startOffset;
-        }
-
-        this.currentToken = { type: TokenType.EOF, location };
-    }
-
     //Tag attributes
     private _createAttr(attrNameFirstCh: string): void {
         this.currentAttr = {
@@ -426,44 +424,51 @@ export class Tokenizer {
     }
 
     //Token emission
-    private _emitCurrentToken(): void {
-        const ct = this.currentToken!;
-
+    private prepareToken(ct: Token): void {
         this._emitCurrentCharacterToken(ct.location);
-
         this.currentToken = null;
 
-        //NOTE: store emited start tag's tagName to determine is the following end tag token is appropriate.
-        switch (ct.type) {
-            case TokenType.START_TAG: {
-                ct.tagID = getTagID(ct.tagName);
-                this.lastStartTagName = ct.tagName;
-                break;
-            }
-            case TokenType.END_TAG: {
-                ct.tagID = getTagID(ct.tagName);
-
-                if (ct.attrs.length > 0) {
-                    this._err(ERR.endTagWithAttributes);
-                }
-
-                if (ct.selfClosing) {
-                    this._err(ERR.endTagWithTrailingSolidus);
-                }
-                break;
-            }
-            default:
-            // Do nothing
-        }
-
-        if (ct.location && ct.type !== TokenType.EOF) {
+        if (ct.location) {
             ct.location.endLine = this.preprocessor.line;
             ct.location.endCol = this.preprocessor.col + 1;
             ct.location.endOffset = this.preprocessor.offset + 1;
         }
 
-        this.tokenQueue.push(ct);
+        this.hasEmitted = true;
         this.currentLocation = this.getCurrentLocation(-1);
+    }
+
+    private emitCurrentTagToken(): void {
+        const ct = this.currentToken as TagToken;
+
+        this.prepareToken(ct);
+
+        ct.tagID = getTagID(ct.tagName);
+
+        if (ct.type === TokenType.START_TAG) {
+            this.lastStartTagName = ct.tagName;
+            this.handler.onStartTag(ct);
+        } else {
+            if (ct.attrs.length > 0) {
+                this._err(ERR.endTagWithAttributes);
+            }
+
+            if (ct.selfClosing) {
+                this._err(ERR.endTagWithTrailingSolidus);
+            }
+
+            this.handler.onEndTag(ct);
+        }
+    }
+
+    private emitCurrentComment(ct: CommentToken): void {
+        this.prepareToken(ct);
+        this.handler.onComment(ct);
+    }
+
+    private emitCurrentDoctype(ct: DoctypeToken): void {
+        this.prepareToken(ct);
+        this.handler.onDoctype(ct);
     }
 
     private _emitCurrentCharacterToken(nextLocation: Location | null): void {
@@ -476,14 +481,38 @@ export class Tokenizer {
                 this.currentCharacterToken.location.endOffset = nextLocation.startOffset;
             }
 
-            this.tokenQueue.push(this.currentCharacterToken);
+            switch (this.currentCharacterToken.type) {
+                case TokenType.CHARACTER: {
+                    this.handler.onCharacter(this.currentCharacterToken);
+                    break;
+                }
+                case TokenType.NULL_CHARACTER: {
+                    this.handler.onNullCharacter(this.currentCharacterToken);
+                    break;
+                }
+                case TokenType.WHITESPACE_CHARACTER: {
+                    this.handler.onWhitespaceCharacter(this.currentCharacterToken);
+                    break;
+                }
+            }
+
+            this.hasEmitted = true;
             this.currentCharacterToken = null;
         }
     }
 
     private _emitEOFToken(): void {
-        this._createEOFToken();
-        this._emitCurrentToken();
+        const location = this.getCurrentLocation(0);
+
+        if (location) {
+            location.endLine = location.startLine;
+            location.endCol = location.startCol;
+            location.endOffset = location.startOffset;
+        }
+
+        this._emitCurrentCharacterToken(location);
+        this.handler.onEof({ type: TokenType.EOF, location });
+        this.hasEmitted = true;
     }
 
     //Characters emission
@@ -497,16 +526,17 @@ export class Tokenizer {
     //2)TokenType.WHITESPACE_CHARACTER - any whitespace/new-line character sequences (e.g. '\n  \r\t   \f')
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
     private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
-        if (this.currentCharacterToken && this.currentCharacterToken.type !== type) {
-            this.currentLocation = this.getCurrentLocation(0);
-            this._emitCurrentCharacterToken(this.currentLocation);
+        if (this.currentCharacterToken) {
+            if (this.currentCharacterToken.type !== type) {
+                this.currentLocation = this.getCurrentLocation(0);
+                this._emitCurrentCharacterToken(this.currentLocation);
+            } else {
+                this.currentCharacterToken.chars += ch;
+                return;
+            }
         }
 
-        if (this.currentCharacterToken) {
-            this.currentCharacterToken.chars += ch;
-        } else {
-            this._createCharacterToken(type, ch);
-        }
+        this._createCharacterToken(type, ch);
     }
 
     private _emitCodePoint(cp: number): void {
@@ -1142,7 +1172,7 @@ export class Tokenizer {
             }
             case $.GREATER_THAN_SIGN: {
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentTagToken();
                 break;
             }
             case $.NULL: {
@@ -1213,7 +1243,7 @@ export class Tokenizer {
             }
             case $.GREATER_THAN_SIGN: {
                 this._advanceBy(this.lastStartTagName.length);
-                this._emitCurrentToken();
+                this.emitCurrentTagToken();
                 this.state = State.DATA;
                 return false;
             }
@@ -1710,7 +1740,7 @@ export class Tokenizer {
             }
             case $.GREATER_THAN_SIGN: {
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentTagToken();
                 break;
             }
             case $.EOF: {
@@ -1748,7 +1778,7 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.missingAttributeValue);
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentTagToken();
                 break;
             }
             default: {
@@ -1836,7 +1866,7 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._leaveAttrValue();
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentTagToken();
                 break;
             }
             case $.NULL: {
@@ -1884,7 +1914,7 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._leaveAttrValue();
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentTagToken();
                 break;
             }
             case $.EOF: {
@@ -1905,9 +1935,10 @@ export class Tokenizer {
     private _stateSelfClosingStartTag(cp: number): void {
         switch (cp) {
             case $.GREATER_THAN_SIGN: {
-                (this.currentToken as TagToken).selfClosing = true;
+                const token = this.currentToken as TagToken;
+                token.selfClosing = true;
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentTagToken();
                 break;
             }
             case $.EOF: {
@@ -1931,11 +1962,11 @@ export class Tokenizer {
         switch (cp) {
             case $.GREATER_THAN_SIGN: {
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 break;
             }
             case $.EOF: {
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 this._emitEOFToken();
                 break;
             }
@@ -1992,7 +2023,8 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.abruptClosingOfEmptyComment);
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                const token = this.currentToken as CommentToken;
+                this.emitCurrentComment(token);
                 break;
             }
             default: {
@@ -2005,6 +2037,7 @@ export class Tokenizer {
     // Comment start dash state
     //------------------------------------------------------------------
     private _stateCommentStartDash(cp: number): void {
+        const token = this.currentToken as CommentToken;
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this.state = State.COMMENT_END;
@@ -2013,17 +2046,17 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.abruptClosingOfEmptyComment);
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInComment);
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 this._emitEOFToken();
                 break;
             }
             default: {
-                (this.currentToken as CommentToken).data += '-';
+                token.data += '-';
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2052,7 +2085,7 @@ export class Tokenizer {
             }
             case $.EOF: {
                 this._err(ERR.eofInComment);
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2120,6 +2153,7 @@ export class Tokenizer {
     // Comment end dash state
     //------------------------------------------------------------------
     private _stateCommentEndDash(cp: number): void {
+        const token = this.currentToken as CommentToken;
         switch (cp) {
             case $.HYPHEN_MINUS: {
                 this.state = State.COMMENT_END;
@@ -2127,12 +2161,12 @@ export class Tokenizer {
             }
             case $.EOF: {
                 this._err(ERR.eofInComment);
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 this._emitEOFToken();
                 break;
             }
             default: {
-                (this.currentToken as CommentToken).data += '-';
+                token.data += '-';
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2147,7 +2181,7 @@ export class Tokenizer {
         switch (cp) {
             case $.GREATER_THAN_SIGN: {
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 break;
             }
             case $.EXCLAMATION_MARK: {
@@ -2160,7 +2194,7 @@ export class Tokenizer {
             }
             case $.EOF: {
                 this._err(ERR.eofInComment);
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2186,12 +2220,12 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.incorrectlyClosedComment);
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInComment);
-                this._emitCurrentToken();
+                this.emitCurrentComment(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2222,8 +2256,9 @@ export class Tokenizer {
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 this._createDoctypeToken(null);
-                (this.currentToken as DoctypeToken).forceQuirks = true;
-                this._emitCurrentToken();
+                const token = this.currentToken as DoctypeToken;
+                token.forceQuirks = true;
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2259,16 +2294,18 @@ export class Tokenizer {
                 case $.GREATER_THAN_SIGN: {
                     this._err(ERR.missingDoctypeName);
                     this._createDoctypeToken(null);
-                    (this.currentToken as DoctypeToken).forceQuirks = true;
-                    this._emitCurrentToken();
+                    const token = this.currentToken as DoctypeToken;
+                    token.forceQuirks = true;
+                    this.emitCurrentDoctype(token);
                     this.state = State.DATA;
                     break;
                 }
                 case $.EOF: {
                     this._err(ERR.eofInDoctype);
                     this._createDoctypeToken(null);
-                    (this.currentToken as DoctypeToken).forceQuirks = true;
-                    this._emitCurrentToken();
+                    const token = this.currentToken as DoctypeToken;
+                    token.forceQuirks = true;
+                    this.emitCurrentDoctype(token);
                     this._emitEOFToken();
                     break;
                 }
@@ -2294,7 +2331,7 @@ export class Tokenizer {
             }
             case $.GREATER_THAN_SIGN: {
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 break;
             }
             case $.NULL: {
@@ -2305,7 +2342,7 @@ export class Tokenizer {
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2330,13 +2367,13 @@ export class Tokenizer {
             }
             case $.GREATER_THAN_SIGN: {
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2386,13 +2423,13 @@ export class Tokenizer {
                 this._err(ERR.missingDoctypePublicIdentifier);
                 token.forceQuirks = true;
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2432,13 +2469,13 @@ export class Tokenizer {
                 this._err(ERR.missingDoctypePublicIdentifier);
                 token.forceQuirks = true;
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2469,14 +2506,14 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.abruptDoctypePublicIdentifier);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this.state = State.DATA;
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2504,14 +2541,14 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.abruptDoctypePublicIdentifier);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this.state = State.DATA;
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2536,7 +2573,7 @@ export class Tokenizer {
             }
             case $.GREATER_THAN_SIGN: {
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 break;
             }
             case $.QUOTATION_MARK: {
@@ -2554,7 +2591,7 @@ export class Tokenizer {
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2581,7 +2618,7 @@ export class Tokenizer {
                 break;
             }
             case $.GREATER_THAN_SIGN: {
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this.state = State.DATA;
                 break;
             }
@@ -2598,7 +2635,7 @@ export class Tokenizer {
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2640,13 +2677,13 @@ export class Tokenizer {
                 this._err(ERR.missingDoctypeSystemIdentifier);
                 token.forceQuirks = true;
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2686,13 +2723,13 @@ export class Tokenizer {
                 this._err(ERR.missingDoctypeSystemIdentifier);
                 token.forceQuirks = true;
                 this.state = State.DATA;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2723,14 +2760,14 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.abruptDoctypeSystemIdentifier);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this.state = State.DATA;
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2758,14 +2795,14 @@ export class Tokenizer {
             case $.GREATER_THAN_SIGN: {
                 this._err(ERR.abruptDoctypeSystemIdentifier);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this.state = State.DATA;
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2789,14 +2826,14 @@ export class Tokenizer {
                 break;
             }
             case $.GREATER_THAN_SIGN: {
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this.state = State.DATA;
                 break;
             }
             case $.EOF: {
                 this._err(ERR.eofInDoctype);
                 token.forceQuirks = true;
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }
@@ -2811,9 +2848,11 @@ export class Tokenizer {
     // Bogus DOCTYPE state
     //------------------------------------------------------------------
     private _stateBogusDoctype(cp: number): void {
+        const token = this.currentToken as DoctypeToken;
+
         switch (cp) {
             case $.GREATER_THAN_SIGN: {
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this.state = State.DATA;
                 break;
             }
@@ -2822,7 +2861,7 @@ export class Tokenizer {
                 break;
             }
             case $.EOF: {
-                this._emitCurrentToken();
+                this.emitCurrentDoctype(token);
                 this._emitEOFToken();
                 break;
             }

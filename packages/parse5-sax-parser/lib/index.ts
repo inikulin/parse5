@@ -1,6 +1,13 @@
 import { Transform } from 'node:stream';
-import { Tokenizer } from 'parse5/dist/tokenizer/index.js';
-import { TokenType, Token, CharacterToken, Attribute, Location } from 'parse5/dist/common/token.js';
+import type { Tokenizer, TokenHandler } from 'parse5/dist/tokenizer/index.js';
+import type {
+    Attribute,
+    Location,
+    TagToken,
+    CommentToken,
+    DoctypeToken,
+    CharacterToken,
+} from 'parse5/dist/common/token.js';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
@@ -39,13 +46,13 @@ export interface SAXParserOptions {
  *     });
  * ```
  */
-export class SAXParser extends Transform {
+export class SAXParser extends Transform implements TokenHandler {
     protected options: SAXParserOptions;
-    protected tokenizer: Tokenizer;
     protected parserFeedbackSimulator: ParserFeedbackSimulator;
-    private pendingText: CharacterToken | null = null;
+    private pendingText: Text | null = null;
     private lastChunkWritten = false;
     private stopped = false;
+    protected tokenizer: Tokenizer;
 
     /**
      * @param options Parsing options.
@@ -58,8 +65,8 @@ export class SAXParser extends Transform {
             ...options,
         };
 
-        this.tokenizer = new Tokenizer(this.options);
-        this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.tokenizer);
+        this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.options, this);
+        this.tokenizer = this.parserFeedbackSimulator.tokenizer;
 
         // NOTE: always pipe stream to the /dev/null stream to avoid
         // `highWaterMark` hit even if we don't have consumers.
@@ -127,96 +134,95 @@ export class SAXParser extends Transform {
     }
 
     private _runParsingLoop(): void {
-        let token = null;
-
-        do {
-            token = this.parserFeedbackSimulator.getNextToken();
-
-            if (token.type === TokenType.HIBERNATION) {
-                break;
-            }
-
-            if (
-                token.type === TokenType.CHARACTER ||
-                token.type === TokenType.WHITESPACE_CHARACTER ||
-                token.type === TokenType.NULL_CHARACTER
-            ) {
-                if (this.pendingText === null) {
-                    token.type = TokenType.CHARACTER;
-                    this.pendingText = token;
-                } else {
-                    this.pendingText.chars += token.chars;
-
-                    if (token.location && this.pendingText.location) {
-                        const { endLine, endCol, endOffset } = token.location;
-                        this.pendingText.location = {
-                            ...this.pendingText.location,
-                            endLine,
-                            endCol,
-                            endOffset,
-                        };
-                    }
-                }
-            } else {
-                this._emitPendingText();
-                this._handleToken(token);
-            }
-        } while (!this.stopped && token.type !== TokenType.EOF);
+        while (!this.stopped && this.tokenizer.active) {
+            this.tokenizer.getNextToken();
+        }
     }
 
-    protected _handleToken(token: Token): boolean {
-        switch (token.type) {
-            case TokenType.EOF: {
-                return true;
-            }
-            case TokenType.START_TAG: {
-                const startTag: StartTag = {
-                    tagName: token.tagName,
-                    attrs: token.attrs,
-                    selfClosing: token.selfClosing,
-                    sourceCodeLocation: token.location,
+    /** @internal */
+    onCharacter({ chars, location }: CharacterToken): void {
+        if (this.pendingText === null) {
+            this.pendingText = { text: chars, sourceCodeLocation: location };
+        } else {
+            this.pendingText.text += chars;
+
+            if (location && this.pendingText.sourceCodeLocation) {
+                const { endLine, endCol, endOffset } = location;
+                this.pendingText.sourceCodeLocation = {
+                    ...this.pendingText.sourceCodeLocation,
+                    endLine,
+                    endCol,
+                    endOffset,
                 };
-                return this._emitIfListenerExists('startTag', startTag);
-            }
-            case TokenType.END_TAG: {
-                const endTag: EndTag = {
-                    tagName: token.tagName,
-                    sourceCodeLocation: token.location,
-                };
-                return this._emitIfListenerExists('endTag', endTag);
-            }
-            case TokenType.COMMENT: {
-                const comment: Comment = {
-                    text: token.data,
-                    sourceCodeLocation: token.location,
-                };
-                return this._emitIfListenerExists('comment', comment);
-            }
-            case TokenType.DOCTYPE: {
-                const doctype: Doctype = {
-                    name: token.name,
-                    publicId: token.publicId,
-                    systemId: token.systemId,
-                    sourceCodeLocation: token.location,
-                };
-                return this._emitIfListenerExists('doctype', doctype);
-            }
-            case TokenType.CHARACTER:
-            case TokenType.NULL_CHARACTER:
-            case TokenType.WHITESPACE_CHARACTER: {
-                const text: Text = {
-                    text: token.chars,
-                    sourceCodeLocation: token.location,
-                };
-                return this._emitIfListenerExists('text', text);
-            }
-            case TokenType.HIBERNATION: {
-                return this._emitIfListenerExists('hibernation', {});
             }
         }
     }
 
-    private _emitIfListenerExists(eventName: string, token: SaxToken): boolean {
+    /** @internal */
+    onWhitespaceCharacter(token: CharacterToken): void {
+        this.onCharacter(token);
+    }
+
+    /** @internal */
+    onNullCharacter(token: CharacterToken): void {
+        this.onCharacter(token);
+    }
+
+    /** @internal */
+    onEof(): void {
+        this._emitPendingText();
+        this.stopped = true;
+    }
+
+    /** @internal */
+    onStartTag(token: TagToken): void {
+        this._emitPendingText();
+
+        const startTag: StartTag = {
+            tagName: token.tagName,
+            attrs: token.attrs,
+            selfClosing: token.selfClosing,
+            sourceCodeLocation: token.location,
+        };
+        this.emitIfListenerExists('startTag', startTag);
+    }
+
+    /** @internal */
+    onEndTag(token: TagToken): void {
+        this._emitPendingText();
+
+        const endTag: EndTag = {
+            tagName: token.tagName,
+            sourceCodeLocation: token.location,
+        };
+        this.emitIfListenerExists('endTag', endTag);
+    }
+
+    /** @internal */
+    onDoctype(token: DoctypeToken): void {
+        this._emitPendingText();
+
+        const doctype: Doctype = {
+            name: token.name,
+            publicId: token.publicId,
+            systemId: token.systemId,
+            sourceCodeLocation: token.location,
+        };
+        this.emitIfListenerExists('doctype', doctype);
+    }
+
+    /** @internal */
+    onComment(token: CommentToken): void {
+        this._emitPendingText();
+
+        const comment: Comment = {
+            text: token.data,
+            sourceCodeLocation: token.location,
+        };
+        this.emitIfListenerExists('comment', comment);
+    }
+
+    protected emitIfListenerExists(eventName: string, token: SaxToken): boolean {
         if (this.listenerCount(eventName) === 0) {
             return false;
         }
@@ -232,7 +238,7 @@ export class SAXParser extends Transform {
 
     private _emitPendingText(): void {
         if (this.pendingText !== null) {
-            this._handleToken(this.pendingText);
+            this.emitIfListenerExists('text', this.pendingText);
             this.pendingText = null;
         }
     }

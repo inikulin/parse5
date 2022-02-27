@@ -1,12 +1,12 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
-import { Parser } from '../../packages/parse5/dist/parser/index.js';
-import * as defaultTreeAdapter from '../../packages/parse5/dist/tree-adapters/default.js';
-import { convertTokenToHtml5Lib } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
+import { Parser } from 'parse5/dist/parser/index.js';
+import * as defaultTreeAdapter from 'parse5/dist/tree-adapters/default.js';
+import { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
-import { TokenType, Token } from '../../packages/parse5/dist/common/token.js';
-import type { TreeAdapterTypeMap } from '../../packages/parse5/dist/tree-adapters/interface.js';
+import { TokenType, Token } from 'parse5/dist/common/token.js';
+import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 // eslint-disable-next-line no-console
 main().catch(console.error);
@@ -41,7 +41,41 @@ function appendToken(dest: Token[], token: Token): void {
     dest.push(token);
 }
 
-function collectParserTokens(html: string): ReturnType<typeof convertTokenToHtml5Lib>[] {
+function convertTokenToHtml5Lib(token: Token): HtmlLibToken {
+    switch (token.type) {
+        case TokenType.CHARACTER:
+        case TokenType.NULL_CHARACTER:
+        case TokenType.WHITESPACE_CHARACTER:
+            return ['Character', token.chars];
+
+        case TokenType.START_TAG: {
+            const reformatedAttrs = Object.fromEntries(token.attrs.map(({ name, value }) => [name, value]));
+            const startTagEntry: HtmlLibToken = ['StartTag', token.tagName, reformatedAttrs];
+
+            if (token.selfClosing) {
+                startTagEntry.push(true);
+            }
+
+            return startTagEntry;
+        }
+
+        case TokenType.END_TAG:
+            // NOTE: parser feedback simulator can produce adjusted SVG
+            // tag names for end tag tokens so we need to lower case it
+            return ['EndTag', token.tagName.toLowerCase()];
+
+        case TokenType.COMMENT:
+            return ['Comment', token.data];
+
+        case TokenType.DOCTYPE:
+            return ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks];
+
+        default:
+            throw new TypeError(`Unrecognized token type: ${token.type}`);
+    }
+}
+
+function collectParserTokens(html: string): HtmlLibToken[] {
     const tokens: Token[] = [];
 
     class ExtendedParser<T extends TreeAdapterTypeMap> extends Parser<T> {
