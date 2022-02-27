@@ -1,5 +1,4 @@
-import { TokenizerMode } from '../tokenizer/index.js';
-import { QueuedTokenizer } from '../tokenizer/queued.js';
+import { TokenHandler, Tokenizer, TokenizerMode } from '../tokenizer/index.js';
 import { OpenElementStack } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
@@ -120,9 +119,9 @@ const defaultParserOptions = {
 };
 
 //Parser
-export class Parser<T extends TreeAdapterTypeMap> {
+export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler {
     treeAdapter: TreeAdapter<T>;
-    private onParseError: ParserErrorHandler | null;
+    onParseError: ParserErrorHandler | null;
     private currentToken: Token | null = null;
     public options: Required<ParserOptions<T>>;
     public document: T['document'];
@@ -147,7 +146,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
 
         this.document = document ?? this.treeAdapter.createDocument();
 
-        this.tokenizer = new QueuedTokenizer(this.options);
+        this.tokenizer = new Tokenizer(this.options, this);
         this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
         this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
@@ -211,7 +210,8 @@ export class Parser<T extends TreeAdapterTypeMap> {
         return fragment;
     }
 
-    tokenizer: QueuedTokenizer;
+    tokenizer: Tokenizer;
+
     stopped = false;
     insertionMode = InsertionMode.INITIAL;
     originalInsertionMode = InsertionMode.INITIAL;
@@ -261,13 +261,7 @@ export class Parser<T extends TreeAdapterTypeMap> {
     //Parsing loop
     private _runParsingLoop(scriptHandler: null | ((scriptElement: T['element']) => void)): void {
         while (!this.stopped) {
-            const token = this.tokenizer.getNextToken();
-
-            this._processToken(token);
-
-            if (token.type === TokenType.START_TAG && token.selfClosing && !token.ackSelfClosing) {
-                this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
-            }
+            this.tokenizer.getNextToken();
 
             if (!this.tokenizer.active || (scriptHandler !== null && this.pendingScript)) {
                 break;
@@ -962,6 +956,13 @@ export class Parser<T extends TreeAdapterTypeMap> {
             startTagInForeignContent(this, token);
         } else {
             this._startTagOutsideForeignContent(token);
+        }
+
+        // FIXME: This can currently fire unexpectedly.
+        if (token.selfClosing && !token.ackSelfClosing) {
+            this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
+            // Prevent this error from being shown again.
+            token.ackSelfClosing = true;
         }
     }
     _startTagOutsideForeignContent(token: TagToken): void {
