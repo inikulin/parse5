@@ -145,7 +145,7 @@ it('Location Info (Tokenizer)', () => {
         {
             initialMode: TokenizerMode.DATA,
             lastStartTagName: '',
-            allowCDATA: true,
+            inForeignNode: true,
             htmlChunks: ['<a>', '<![CDATA[ ', 'CDATA', ' ]]>', '<test>', ' <![CDATA[ ]]>\n'],
         },
     ];
@@ -164,7 +164,7 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.preprocessor.bufferWaterline = 8;
         tokenizer.state = testCase.initialMode;
         tokenizer.lastStartTagName = testCase.lastStartTagName;
-        tokenizer.allowCDATA = !!testCase.allowCDATA;
+        tokenizer.inForeignNode = !!testCase.inForeignNode;
 
         while (!handler.sawEof) {
             tokenizer.getNextToken();

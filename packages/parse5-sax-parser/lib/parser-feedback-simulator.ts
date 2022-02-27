@@ -75,13 +75,13 @@ export class ParserFeedbackSimulator implements TokenHandler {
     private _enterNamespace(namespace: NS): void {
         this.namespaceStack.unshift(namespace);
         this.inForeignContent = namespace !== NS.HTML;
-        this.tokenizer.allowCDATA = this.inForeignContent;
+        this.tokenizer.inForeignNode = this.inForeignContent;
     }
 
     private _leaveCurrentNamespace(): void {
         this.namespaceStack.shift();
         this.inForeignContent = this.namespaceStack[0] !== NS.HTML;
-        this.tokenizer.allowCDATA = this.inForeignContent;
+        this.tokenizer.inForeignNode = this.inForeignContent;
     }
 
     //Token handlers
