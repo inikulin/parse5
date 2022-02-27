@@ -974,13 +974,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler {
         } else {
             this._startTagOutsideForeignContent(token);
         }
-
-        // FIXME: This can currently fire unexpectedly.
-        if (token.selfClosing && !token.ackSelfClosing) {
-            this._err(token, ERR.nonVoidHtmlElementStartTagWithTrailingSolidus);
-            // Prevent this error from being shown again.
-            token.ackSelfClosing = true;
-        }
     }
     _startTagOutsideForeignContent(token: TagToken): void {
         switch (this.insertionMode) {
