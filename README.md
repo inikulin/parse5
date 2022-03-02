@@ -8,13 +8,6 @@
 <i>HTML parsing/serialization toolset for Node.js. <a href="https://html.spec.whatwg.org/multipage/">WHATWG HTML Living Standard (aka HTML5)</a>-compliant.</i>
 </p>
 
----
-
-This is a fork of the original parse5 package. We want this to become the next version of the package, pending on
-@inikulin's go-ahead.
-
----
-
 <p align="center">
   <a href="https://github.com/inikulin/parse5/actions/workflows/nodejs-test.yml"><img alt="Build Status" src="https://img.shields.io/github/workflow/status/inikulin/parse5/Node.js%20CI?label=tests&style=flat"></a>
   <a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
