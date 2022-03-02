@@ -14,17 +14,6 @@ interface TokenError {
     col: number;
 }
 
-const TestsWithBrokenErrors: Record<string, TokenError[]> = {
-    /*
-     * 57.entities has an error that is not part of the test data.
-     *
-     * TODO: Move this to the test data.
-     */
-    'Undefined named entity in attribute value ending in semicolon and whose name starts with a known entity name.': [
-        { code: 'unknown-named-character-reference', col: 12, line: 1 },
-    ],
-};
-
 interface TokenSourceData {
     tokens: HtmlLibToken[];
     errors: TokenError[];
@@ -222,9 +211,7 @@ function loadTests(dataDirPath: string): LoadedTest[] {
                     initialState: getTokenizerSuitableStateName(initialStateName),
                     initialStateName,
                     lastStartTag: descr.lastStartTag,
-                    expectedErrors: TestsWithBrokenErrors[descr.description]
-                        ? TestsWithBrokenErrors[descr.description]
-                        : descr.errors || [],
+                    expectedErrors: descr.errors || [],
                 });
             }
         }
