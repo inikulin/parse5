@@ -1,7 +1,6 @@
 import * as assert from 'node:assert';
-import { Tokenizer, TokenizerMode } from './index.js';
-import { SinglePathHandler } from './queued.js';
-import { Location, EOFToken, Token } from '../common/token.js';
+import { Tokenizer, TokenizerMode, TokenHandler } from './index.js';
+import { Location, EOFToken, CharacterToken, DoctypeToken, TagToken, CommentToken } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
 interface LocationInfoTestCase {
@@ -11,7 +10,7 @@ interface LocationInfoTestCase {
 }
 
 /** Receives events and immediately compares them against the expected values. */
-class LocationInfoHandler extends SinglePathHandler {
+class LocationInfoHandler implements TokenHandler {
     public sawEof = false;
     /** The index of the last html chunk. */
     private idx = 0;
@@ -19,12 +18,7 @@ class LocationInfoHandler extends SinglePathHandler {
     private lines: string[];
 
     constructor(private testCase: LocationInfoTestCase, private html: string) {
-        super();
         this.lines = html.split(/\r?\n/g);
-    }
-
-    protected handleToken(token: Token): void {
-        this.validateLocation(token.location);
     }
 
     private validateLocation(location: Location | null): void {
@@ -45,7 +39,28 @@ class LocationInfoHandler extends SinglePathHandler {
         this.idx += 1;
     }
 
-    override onEof({ location }: EOFToken): void {
+    onComment({ location }: CommentToken): void {
+        this.validateLocation(location);
+    }
+    onDoctype({ location }: DoctypeToken): void {
+        this.validateLocation(location);
+    }
+    onStartTag({ location }: TagToken): void {
+        this.validateLocation(location);
+    }
+    onEndTag({ location }: TagToken): void {
+        this.validateLocation(location);
+    }
+    onCharacter({ location }: CharacterToken): void {
+        this.validateLocation(location);
+    }
+    onNullCharacter({ location }: CharacterToken): void {
+        this.validateLocation(location);
+    }
+    onWhitespaceCharacter({ location }: CharacterToken): void {
+        this.validateLocation(location);
+    }
+    onEof({ location }: EOFToken): void {
         assert.ok(location);
         assert.strictEqual(location.endOffset, location.startOffset);
         assert.strictEqual(location.endOffset, this.html.length);

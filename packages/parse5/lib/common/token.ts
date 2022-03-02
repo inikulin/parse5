@@ -96,13 +96,9 @@ export interface EOFToken extends TokenBase {
     readonly type: TokenType.EOF;
 }
 
-interface HibernationToken extends TokenBase {
-    readonly type: TokenType.HIBERNATION;
-}
-
 export interface CharacterToken extends TokenBase {
     type: TokenType.CHARACTER | TokenType.NULL_CHARACTER | TokenType.WHITESPACE_CHARACTER;
     chars: string;
 }
 
-export type Token = DoctypeToken | TagToken | CommentToken | EOFToken | HibernationToken | CharacterToken;
+export type Token = DoctypeToken | TagToken | CommentToken | EOFToken | CharacterToken;
