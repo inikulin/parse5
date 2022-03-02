@@ -283,7 +283,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         writeCallback?.();
     }
 
-    //Text parsing
+    //Stack events
     onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
         this.treeAdapter.onItemPush?.(node);
         if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
