@@ -580,12 +580,18 @@ export class Tokenizer {
 
             // If the branch is a value, store it and continue
             if (current & BinTrieFlags.HAS_VALUE) {
+                // Attribute values that aren't terminated properly aren't parsed, and shouldn't lead to a parser error.
+                // See the example in https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state
                 if (
                     cp !== $.SEMICOLON &&
                     this._isCharacterReferenceInAttribute() &&
                     isEntityInAttributeInvalidEnd(this.preprocessor.peek(1))
                 ) {
-                    // No need to consider multi-byte values, as legacy entities are always a single byte.
+                    //NOTE: we don't flush all consumed code points here, and instead switch back to the original state after
+                    //emitting an ampersand. This is fine, as alphanumeric characters won't be parsed differently in attributes.
+                    result = [$.AMPERSAND];
+
+                    // Skip over the value. No need to consider multi-byte values, as legacy entities are always a single byte.
                     i += 1;
                 } else {
                     // If this is a surrogate pair, consume the next two bytes.
