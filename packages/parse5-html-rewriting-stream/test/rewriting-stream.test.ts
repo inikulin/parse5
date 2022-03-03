@@ -17,6 +17,9 @@ const srcHtml = outdent`
   </html>
 `;
 
+const LONG_TEXT = 'a'.repeat((1 << 16) + 1);
+const LONG_TEXT_WITH_COMMENT = `${'a'.repeat((1 << 16) - 5)}<!-- comment -->`;
+
 function createRewriterTest({
     src,
     expected,
@@ -28,13 +31,17 @@ function createRewriterTest({
     expected: string;
     assignTokenHandlers?: (rewriter: RewritingStream) => void;
 }) {
-    return (done: () => void): void => {
+    return (done: (err?: unknown) => void): void => {
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
 
         writable.once('close', () => {
-            assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
-            done();
+            try {
+                assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
+                done();
+            } catch (error) {
+                done(error);
+            }
         });
 
         rewriter.pipe(writable);
@@ -306,47 +313,19 @@ describe('RewritingStream', () => {
         assert.throws(() => stream.write(buf), TypeError);
     });
 
-    it('Should pass long text correctly (GH-292)', (done) => {
-        const source = 'a'.repeat((1 << 16) + 1);
-        const parser = new RewritingStream();
-        let output = '';
+    it(
+        'Should pass long text correctly (GH-292)',
+        createRewriterTest({
+            src: LONG_TEXT,
+            expected: LONG_TEXT,
+        })
+    );
 
-        parser.on('data', (data) => {
-            output += data.toString();
-        });
-
-        parser.once('close', () => {
-            try {
-                assert.strictEqual(output.length, source.length);
-                done();
-            } catch (error) {
-                done(error);
-            }
-        });
-
-        parser.write(source);
-        parser.end();
-    });
-
-    it('Should emit comment after text correctly', (done) => {
-        const source = `${'a'.repeat((1 << 16) - 3)}<!-- foo -->`;
-        const parser = new RewritingStream();
-        let output = '';
-
-        parser.on('data', (data) => {
-            output += data.toString();
-        });
-
-        parser.once('close', () => {
-            try {
-                assert.strictEqual(output.length, source.length);
-                done();
-            } catch (error) {
-                done(error);
-            }
-        });
-
-        parser.write(source);
-        parser.end();
-    });
+    it(
+        'Should emit comment after text correctly',
+        createRewriterTest({
+            src: LONG_TEXT_WITH_COMMENT,
+            expected: LONG_TEXT_WITH_COMMENT,
+        })
+    );
 });
