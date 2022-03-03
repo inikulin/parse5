@@ -39,8 +39,8 @@ export function makeChunks(str: string, minSize?: number, maxSize?: number): str
     const chunks = [];
     let start = 0;
 
-    // NOTE: add 1 as well, so we avoid situation when we have just one huge chunk
-    let end = Math.min(getRandomChunkSize(minSize, maxSize), str.length, 1);
+    // NOTE: start with 1, so we avoid situation when we have just one huge chunk
+    let end = 1;
 
     while (start < str.length) {
         chunks.push(str.substring(start, end));
