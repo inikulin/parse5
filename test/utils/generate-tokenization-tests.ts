@@ -221,7 +221,6 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 }
 
 export function generateTokenizationTests(
-    _name: string,
     prefix: string,
     testSuite: string,
     createTokenSource: TokenSourceCreator

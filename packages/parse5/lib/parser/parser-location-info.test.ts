@@ -11,7 +11,6 @@ import { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 generateLocationInfoParserTests(
     'location-info-parser',
-    'Parser',
     (input: string, opts: parse5.ParserOptions<TreeAdapterTypeMap>) => ({
         node: parse5.parse(input, opts),
     })
