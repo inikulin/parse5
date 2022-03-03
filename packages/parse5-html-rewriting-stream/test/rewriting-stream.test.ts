@@ -32,7 +32,7 @@ function createRewriterTest({
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
 
-        writable.once('finish', () => {
+        writable.once('close', () => {
             assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
             done();
         });
@@ -290,7 +290,7 @@ describe('RewritingStream', () => {
             assert.strictEqual(text, 'text');
         });
 
-        parser.once('finish', () => {
+        parser.once('close', () => {
             assert.ok(foundText);
             done();
         });
