@@ -298,7 +298,7 @@ describe('RewritingStream', () => {
             assert.strictEqual(text, 'text');
         });
 
-        parser.once('finished', () => {
+        parser.once('finish', () => {
             assert.ok(foundText);
             done();
         });
