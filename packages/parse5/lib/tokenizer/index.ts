@@ -465,16 +465,22 @@ export class Tokenizer {
 
             this.handler.onEndTag(ct);
         }
+
+        this.preprocessor.dropParsedChunk();
     }
 
     private emitCurrentComment(ct: CommentToken): void {
         this.prepareToken(ct);
         this.handler.onComment(ct);
+
+        this.preprocessor.dropParsedChunk();
     }
 
     private emitCurrentDoctype(ct: DoctypeToken): void {
         this.prepareToken(ct);
         this.handler.onDoctype(ct);
+
+        this.preprocessor.dropParsedChunk();
     }
 
     private _emitCurrentCharacterToken(nextLocation: Location | null): void {
@@ -969,8 +975,6 @@ export class Tokenizer {
     // Data state
     //------------------------------------------------------------------
     private _stateData(cp: number): void {
-        this.preprocessor.dropParsedChunk();
-
         switch (cp) {
             case $.LESS_THAN_SIGN: {
                 this.state = State.TAG_OPEN;
@@ -999,8 +1003,6 @@ export class Tokenizer {
     //  RCDATA state
     //------------------------------------------------------------------
     private _stateRcdata(cp: number): void {
-        this.preprocessor.dropParsedChunk();
-
         switch (cp) {
             case $.AMPERSAND: {
                 this.returnState = State.RCDATA;
@@ -1029,8 +1031,6 @@ export class Tokenizer {
     // RAWTEXT state
     //------------------------------------------------------------------
     private _stateRawtext(cp: number): void {
-        this.preprocessor.dropParsedChunk();
-
         switch (cp) {
             case $.LESS_THAN_SIGN: {
                 this.state = State.RAWTEXT_LESS_THAN_SIGN;
@@ -1054,8 +1054,6 @@ export class Tokenizer {
     // Script data state
     //------------------------------------------------------------------
     private _stateScriptData(cp: number): void {
-        this.preprocessor.dropParsedChunk();
-
         switch (cp) {
             case $.LESS_THAN_SIGN: {
                 this.state = State.SCRIPT_DATA_LESS_THAN_SIGN;
@@ -1079,8 +1077,6 @@ export class Tokenizer {
     // PLAINTEXT state
     //------------------------------------------------------------------
     private _statePlaintext(cp: number): void {
-        this.preprocessor.dropParsedChunk();
-
         switch (cp) {
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
