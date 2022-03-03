@@ -305,4 +305,22 @@ describe('RewritingStream', () => {
 
         assert.throws(() => stream.write(buf), TypeError);
     });
+
+    it('Regression - RewritingStream - should pass long text correctly (GH-292)', (done) => {
+        const source = 'a'.repeat(65_540);
+        const parser = new RewritingStream();
+        let output = '';
+
+        parser.on('data', (data) => {
+            output += data.toString();
+        });
+
+        parser.once('finish', () => {
+            assert.strictEqual(output.length, source.length);
+            done();
+        });
+
+        parser.write(source);
+        parser.end();
+    });
 });
