@@ -328,7 +328,7 @@ describe('RewritingStream', () => {
         parser.end();
     });
 
-    it.only('Should emit comment after text correctly', (done) => {
+    it('Should emit comment after text correctly', (done) => {
         const source = `${'a'.repeat((1 << 16) - 3)}<!-- foo -->`;
         const parser = new RewritingStream();
         let output = '';
