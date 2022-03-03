@@ -97,8 +97,12 @@ export class Preprocessor {
         return cp;
     }
 
+    public willDropParsedChunk(): boolean {
+        return this.pos > this.bufferWaterline;
+    }
+
     public dropParsedChunk(): void {
-        if (this.pos > this.bufferWaterline) {
+        if (this.willDropParsedChunk()) {
             this.html = this.html.substring(this.pos);
             this.lineStartPos -= this.pos;
             this.droppedBufferSize += this.pos;

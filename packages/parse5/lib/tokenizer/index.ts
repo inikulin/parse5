@@ -542,6 +542,7 @@ export class Tokenizer {
             if (this.currentCharacterToken.type !== type) {
                 this.currentLocation = this.getCurrentLocation(0);
                 this._emitCurrentCharacterToken(this.currentLocation);
+                this.preprocessor.dropParsedChunk();
             } else {
                 this.currentCharacterToken.chars += ch;
                 return;

@@ -306,8 +306,8 @@ describe('RewritingStream', () => {
         assert.throws(() => stream.write(buf), TypeError);
     });
 
-    it('Regression - RewritingStream - should pass long text correctly (GH-292)', (done) => {
-        const source = 'a'.repeat(65_540);
+    it('Should pass long text correctly (GH-292)', (done) => {
+        const source = 'a'.repeat((1 << 16) + 1);
         const parser = new RewritingStream();
         let output = '';
 
@@ -315,9 +315,35 @@ describe('RewritingStream', () => {
             output += data.toString();
         });
 
-        parser.once('finish', () => {
-            assert.strictEqual(output.length, source.length);
-            done();
+        parser.once('close', () => {
+            try {
+                assert.strictEqual(output.length, source.length);
+                done();
+            } catch (error) {
+                done(error);
+            }
+        });
+
+        parser.write(source);
+        parser.end();
+    });
+
+    it.only('Should emit comment after text correctly', (done) => {
+        const source = `${'a'.repeat((1 << 16) - 3)}<!-- foo -->`;
+        const parser = new RewritingStream();
+        let output = '';
+
+        parser.on('data', (data) => {
+            output += data.toString();
+        });
+
+        parser.once('close', () => {
+            try {
+                assert.strictEqual(output.length, source.length);
+                done();
+            } catch (error) {
+                done(error);
+            }
         });
 
         parser.write(source);
