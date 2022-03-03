@@ -3,6 +3,7 @@ import { outdent } from 'outdent';
 import { RewritingStream } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
 import { getStringDiffMsg, writeChunkedToStream, WritableStreamStub } from 'parse5-test-utils/utils/common.js';
+import { finished } from 'node:stream';
 
 const srcHtml = outdent`
   <!DOCTYPE html "">
@@ -35,7 +36,7 @@ function createRewriterTest({
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
 
-        writable.once('close', () => {
+        finished(writable, () => {
             try {
                 assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
                 done();
@@ -297,7 +298,7 @@ describe('RewritingStream', () => {
             assert.strictEqual(text, 'text');
         });
 
-        parser.once('close', () => {
+        parser.once('finished', () => {
             assert.ok(foundText);
             done();
         });
