@@ -1,5 +1,5 @@
 import { TokenHandler, Tokenizer, TokenizerMode } from '../tokenizer/index.js';
-import { OpenElementStack } from './open-element-stack.js';
+import { OpenElementStack, StackHandler } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
 import * as defaultTreeAdapter from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
@@ -119,7 +119,7 @@ const defaultParserOptions = {
 };
 
 //Parser
-export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler {
+export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, StackHandler<T> {
     treeAdapter: TreeAdapter<T>;
     onParseError: ParserErrorHandler | null;
     private currentToken: Token | null = null;
@@ -152,12 +152,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler {
         this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
         this._setContextModes(fragmentContext ?? this.document, this.fragmentContextID);
 
-        this.openElements = new OpenElementStack(
-            this.document,
-            this.treeAdapter,
-            this.onItemPush.bind(this),
-            this.onItemPop.bind(this)
-        );
+        this.openElements = new OpenElementStack(this.document, this.treeAdapter, this);
     }
 
     // API
@@ -288,13 +283,13 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler {
         writeCallback?.();
     }
 
-    //Text parsing
-    private onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
+    //Stack events
+    onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
         this.treeAdapter.onItemPush?.(node);
         if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
     }
 
-    private onItemPop(node: T['parentNode'], isTop: boolean): void {
+    onItemPop(node: T['parentNode'], isTop: boolean): void {
         if (this.options.sourceCodeLocationInfo) {
             this._setEndLocation(node, this.currentToken!);
         }

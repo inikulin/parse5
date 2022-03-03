@@ -41,6 +41,11 @@ const TABLE_BODY_CONTEXT = [$.TBODY, $.TFOOT, $.THEAD, $.TEMPLATE, $.HTML];
 const TABLE_CONTEXT = [$.TABLE, $.TEMPLATE, $.HTML];
 const TABLE_CELLS = [$.TD, $.TH];
 
+export interface StackHandler<T extends TreeAdapterTypeMap> {
+    onItemPush: (node: T['parentNode'], tid: number, isTop: boolean) => void;
+    onItemPop: (node: T['parentNode'], isTop: boolean) => void;
+}
+
 //Stack of open elements
 export class OpenElementStack<T extends TreeAdapterTypeMap> {
     items: T['parentNode'][] = [];
@@ -55,12 +60,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : this.current;
     }
 
-    constructor(
-        document: T['document'],
-        private treeAdapter: TreeAdapter<T>,
-        private onItemPush: (node: T['parentNode'], tid: number, isTop: boolean) => void,
-        private onItemPop: (node: T['parentNode'], isTop: boolean) => void
-    ) {
+    constructor(document: T['document'], private treeAdapter: TreeAdapter<T>, private handler: StackHandler<T>) {
         this.current = document;
     }
 
@@ -92,7 +92,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             this.tmplCount++;
         }
 
-        this.onItemPush(element, tagID, true);
+        this.handler.onItemPush(element, tagID, true);
     }
 
     pop(): void {
@@ -104,7 +104,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.stackTop--;
         this._updateCurrentElement();
 
-        this.onItemPop(popped, true);
+        this.handler.onItemPop(popped, true);
     }
 
     replace(oldElement: T['element'], newElement: T['element']): void {
@@ -128,7 +128,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             this._updateCurrentElement();
         }
 
-        this.onItemPush(this.current, this.currentTagId, insertionIdx === this.stackTop);
+        this.handler.onItemPush(this.current, this.currentTagId, insertionIdx === this.stackTop);
     }
 
     popUntilTagNamePopped(tagName: $): void {
@@ -152,7 +152,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             this.stackTop--;
             this._updateCurrentElement();
 
-            this.onItemPop(popped, this.stackTop < idx);
+            this.handler.onItemPop(popped, this.stackTop < idx);
         }
     }
 
@@ -218,7 +218,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
                 this.tagIDs.splice(idx, 1);
                 this.stackTop--;
                 this._updateCurrentElement();
-                this.onItemPop(element, false);
+                this.handler.onItemPop(element, false);
             }
         }
     }
