@@ -3,6 +3,7 @@ import { outdent } from 'outdent';
 import { RewritingStream } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
 import { getStringDiffMsg, writeChunkedToStream, WritableStreamStub } from 'parse5-test-utils/utils/common.js';
+import { finished } from 'node:stream';
 
 const srcHtml = outdent`
   <!DOCTYPE html "">
@@ -17,6 +18,9 @@ const srcHtml = outdent`
   </html>
 `;
 
+const LONG_TEXT = 'a'.repeat((1 << 16) + 1);
+const LONG_TEXT_WITH_COMMENT = `${'a'.repeat((1 << 16) - 5)}<!-- comment -->`;
+
 function createRewriterTest({
     src,
     expected,
@@ -28,13 +32,17 @@ function createRewriterTest({
     expected: string;
     assignTokenHandlers?: (rewriter: RewritingStream) => void;
 }) {
-    return (done: () => void): void => {
+    return (done: (err?: unknown) => void): void => {
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
 
-        writable.once('finish', () => {
-            assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
-            done();
+        finished(writable, () => {
+            try {
+                assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
+                done();
+            } catch (error) {
+                done(error);
+            }
         });
 
         rewriter.pipe(writable);
@@ -305,4 +313,20 @@ describe('RewritingStream', () => {
 
         assert.throws(() => stream.write(buf), TypeError);
     });
+
+    it(
+        'Should pass long text correctly (GH-292)',
+        createRewriterTest({
+            src: LONG_TEXT,
+            expected: LONG_TEXT,
+        })
+    );
+
+    it(
+        'Should emit comment after text correctly',
+        createRewriterTest({
+            src: LONG_TEXT_WITH_COMMENT,
+            expected: LONG_TEXT_WITH_COMMENT,
+        })
+    );
 });

@@ -156,6 +156,10 @@ export class SAXParser extends Transform implements TokenHandler {
                 };
             }
         }
+
+        if (this.tokenizer.preprocessor.willDropParsedChunk()) {
+            this._emitPendingText();
+        }
     }
 
     /** @internal */
