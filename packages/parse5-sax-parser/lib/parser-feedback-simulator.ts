@@ -8,7 +8,7 @@ import { TAG_ID as $, TAG_NAMES as TN, NAMESPACES as NS, getTagID } from 'parse5
 //Simulates adjustment of the Tokenizer which performed by standard parser during tree construction.
 export class ParserFeedbackSimulator implements TokenHandler {
     private namespaceStack: NS[] = [];
-    private inForeignContent = false;
+    public inForeignContent = false;
     public skipNextNewLine = false;
     public tokenizer: Tokenizer;
 
