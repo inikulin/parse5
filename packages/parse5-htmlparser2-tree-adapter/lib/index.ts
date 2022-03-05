@@ -104,12 +104,7 @@ export function getTemplateContent(templateElement: Element): Document {
     return templateElement.children[0] as Document;
 }
 
-export function setDocumentType(
-    document: Document,
-    name: string | null,
-    publicId: string | null,
-    systemId: string | null
-): void {
+export function setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
     const data = doctype.serializeContent(name, publicId, systemId);
     let doctypeNode = document.children.find(
         (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype'
