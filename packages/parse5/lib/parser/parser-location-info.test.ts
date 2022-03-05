@@ -172,6 +172,63 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 
         assertNodeLocation(textLocation, html.slice(8, 15), html, [html]);
     });
+
+    test("Should use the HTML element's position for BODY, if BODY isn't closed", () => {
+        const html = outdent`
+          <html>
+            <body>
+              <p>test</p>
+          </html>
+          <!-- comment -->
+        `;
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
+        const document = parse5.parse(html, opts);
+        const htmlEl = treeAdapter.getChildNodes(document)[0];
+        const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
+
+        const htmlLocation = treeAdapter.getNodeSourceCodeLocation(htmlEl);
+        const bodyLocation = treeAdapter.getNodeSourceCodeLocation(bodyEl);
+
+        assert.ok(htmlLocation?.endTag && bodyLocation);
+
+        // HTML element's end tag's start location should be BODY's end location
+        assert.strictEqual(htmlLocation.endTag.startOffset, bodyLocation.endOffset);
+        assert.strictEqual(htmlLocation.endTag.startLine, bodyLocation.endLine);
+        assert.strictEqual(htmlLocation.endTag.startCol, bodyLocation.endCol);
+
+        // The HTML element's location should not be the location of EOF
+        assert.notStrictEqual(htmlLocation.endOffset, html.length);
+    });
+
+    test('Should set HTML location to EOF if no end tag is supplied', () => {
+        const html = outdent`
+          <html>
+            <body>
+              <p>test</p>
+              <!-- comment -->
+        `;
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
+        const document = parse5.parse(html, opts);
+        const htmlEl = treeAdapter.getChildNodes(document)[0];
+        const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
+
+        const htmlLocation = treeAdapter.getNodeSourceCodeLocation(htmlEl);
+        const bodyLocation = treeAdapter.getNodeSourceCodeLocation(bodyEl);
+
+        assert.ok(htmlLocation && bodyLocation);
+        assert.strictEqual(htmlLocation.endOffset, html.length);
+        assert.strictEqual(bodyLocation.endOffset, html.length);
+    });
 });
 
 describe('location-info-parser', () => {
