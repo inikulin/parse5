@@ -1,6 +1,6 @@
 import type { Location } from 'parse5/dist/common/token.js';
 import { SAXParser, EndTag, StartTag, Doctype, Text, Comment, SaxToken } from 'parse5-sax-parser';
-import { escapeString } from 'parse5/dist/serializer/index.js';
+import { hasUnescapedText, escapeString } from 'parse5/dist/serializer/index.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
@@ -125,7 +125,11 @@ export class RewritingStream extends SAXParser {
 
     /** Emits serialized text token into the output stream. */
     public emitText({ text }: Text): void {
-        this.push(escapeString(text, false));
+        this.push(
+            !this.parserFeedbackSimulator.inForeignContent && hasUnescapedText(this.tokenizer.lastStartTagName, true)
+                ? text
+                : escapeString(text, false)
+        );
     }
 
     /** Emits serialized comment token into the output stream. */

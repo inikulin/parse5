@@ -32,6 +32,10 @@ const VOID_ELEMENTS = new Set<string>([
 ]);
 const UNESCAPED_TEXT = new Set<string>([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT]);
 
+export function hasUnescapedText(tn: string, scriptingEnabled: boolean): boolean {
+    return UNESCAPED_TEXT.has(tn) || (scriptingEnabled && tn === $.NOSCRIPT);
+}
+
 export interface SerializerOptions<T extends TreeAdapterTypeMap> {
     /**
      * Specifies input tree format.
@@ -197,7 +201,7 @@ function serializeTextNode<T extends TreeAdapterTypeMap>(node: T['textNode'], op
 
     return parentTn &&
         treeAdapter.getNamespaceURI(parent) === NS.HTML &&
-        (UNESCAPED_TEXT.has(parentTn) || (options.scriptingEnabled && parentTn === $.NOSCRIPT))
+        hasUnescapedText(parentTn, options.scriptingEnabled)
         ? content
         : escapeString(content, false);
 }

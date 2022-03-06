@@ -329,4 +329,21 @@ describe('RewritingStream', () => {
             expected: LONG_TEXT_WITH_COMMENT,
         })
     );
+
+    it(
+        'Should emit text in script without escaping (GH-339)',
+        createRewriterTest({
+            src: '<script></script>',
+            expected: '<script>foo && bar</script>',
+            assignTokenHandlers: (rewriter) => {
+                // On a script tag, emit the text without escaping
+                rewriter.on('startTag', (token) => {
+                    rewriter.emitStartTag(token);
+                    if (token.tagName === 'script') {
+                        rewriter.emitText({ text: 'foo && bar' });
+                    }
+                });
+            },
+        })
+    );
 });
