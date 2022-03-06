@@ -3,7 +3,7 @@ import { serialize, type SerializerOptions } from 'parse5/dist/serializer/index.
 import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 /**
- * Streaming AST node to an HTML serializer. A [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable).
+ * Streaming AST node to HTML serializer. A [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable).
  *
  * @example
  *
@@ -23,7 +23,7 @@ import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js'
  */
 export class SerializerStream<T extends TreeAdapterTypeMap> extends Readable {
     /**
-     * Streaming AST node to an HTML serializer. A readable stream.
+     * Streaming AST node to HTML serializer. A readable stream.
      *
      * @param node Node to serialize.
      * @param options Serialization options.

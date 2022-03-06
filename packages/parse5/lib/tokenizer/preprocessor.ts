@@ -55,7 +55,7 @@ export class Preprocessor {
         };
     }
 
-    //NOTE: avoid reporting error twice on advance/retreat
+    //NOTE: avoid reporting errors twice on advance/retreat
     private lastErrOffset = -1;
     private _err(code: ERR): void {
         if (this.handler.onParseError && this.lastErrOffset !== this.offset) {
@@ -78,14 +78,14 @@ export class Preprocessor {
                 //NOTE: we have a surrogate pair. Peek pair character and recalculate code point.
                 this.pos++;
 
-                //NOTE: add gap that should be avoided during retreat
+                //NOTE: add a gap that should be avoided during retreat
                 this._addGap();
 
                 return getSurrogatePairCodePoint(cp, nextCp);
             }
         }
 
-        //NOTE: we are at the end of a chunk, therefore we can't infer surrogate pair yet.
+        //NOTE: we are at the end of a chunk, therefore we can't infer the surrogate pair yet.
         else if (!this.lastChunkWritten) {
             this.endOfChunkHit = true;
             return $.EOF;

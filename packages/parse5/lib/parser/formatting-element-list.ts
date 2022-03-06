@@ -75,11 +75,11 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
 
         if (candidates.length < NOAH_ARK_CAPACITY) return;
 
-        //NOTE: build attrs map for the new element so we can perform fast lookups
+        //NOTE: build attrs map for the new element, so we can perform fast lookups
         const neAttrsMap = new Map(neAttrs.map((neAttr: Attribute) => [neAttr.name, neAttr.value]));
         let validCandidates = 0;
 
-        //NOTE: remove bottommost candidates until Noah's Ark condition will not be met
+        //NOTE: remove bottommost candidates, until Noah's Ark condition will not be met
         for (let i = 0; i < candidates.length; i++) {
             const candidate = candidates[i];
 

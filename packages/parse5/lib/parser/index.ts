@@ -175,13 +175,13 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             ...options,
         };
 
-        //NOTE: use <template> element as a fragment context if context element was not provided,
-        //so we will parse in "forgiving" manner
+        //NOTE: use a <template> element as the fragment context if no context element was provided,
+        //so we will parse in a "forgiving" manner
         fragmentContext ??= opts.treeAdapter.createElement(TN.TEMPLATE, NS.HTML, []);
 
-        //NOTE: create fake element which will be used as 'document' for fragment parsing.
-        //This is important for jsdom there 'document' can't be recreated, therefore
-        //fragment parsing causes messing of the main `document`.
+        //NOTE: create a fake element which will be used as the `document` for fragment parsing.
+        //This is important for jsdom, where a new `document` cannot be created. This led to
+        //fragment parsing messing with the main `document`.
         const documentMock = opts.treeAdapter.createElement('documentmock', NS.HTML, []);
 
         const parser = new this(opts, documentMock, fragmentContext);
@@ -495,7 +495,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         const textNodeIdx = beforeElement ? siblings.lastIndexOf(beforeElement) : siblings.length;
         const textNode = siblings[textNodeIdx - 1];
 
-        //NOTE: if we have location assigned by another token, then just update end position
+        //NOTE: if we have a location assigned by another token, then just update the end position
         const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
         if (tnLoc) {
@@ -1291,7 +1291,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
     let nextElement = p.openElements.getCommonAncestor(furthestBlock) as T['element'];
 
     for (let i = 0, element = nextElement; element !== formattingElement; i++, element = nextElement) {
-        //NOTE: store next element for the next loop iteration (it may be deleted from the stack by step 9.5)
+        //NOTE: store the next element for the next loop iteration (it may be deleted from the stack by step 9.5)
         nextElement = p.openElements.getCommonAncestor(element) as T['element'];
 
         const elementEntry = p.activeFormattingElements.getElementEntry(element);
@@ -2028,7 +2028,7 @@ function iframeStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
 }
 
 //NOTE: here we assume that we always act as an user agent with enabled plugins, so we parse
-//<noembed> as a rawtext.
+//<noembed> as rawtext.
 function noembedStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._switchToTextParsing(token, TokenizerMode.RAWTEXT);
 }
@@ -3480,7 +3480,7 @@ function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
         const tagName = p.treeAdapter.getTagName(element);
 
         if (tagName.toLowerCase() === token.tagName) {
-            //NOTE: update token tag name for `_setEndLocation`.
+            //NOTE: update the token tag name for `_setEndLocation`.
             token.tagName = tagName;
             p.openElements.shortenToLength(i);
             break;
