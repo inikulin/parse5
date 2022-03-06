@@ -152,6 +152,26 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             '<foreignObject></foreignObject>'
         );
     });
+
+    test('Regression - Escaped script content has incorrect location info (GH-265)', () => {
+        const html = '<script>"<!--";</script>';
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
+        const fragment = parse5.parseFragment(html, opts);
+        const script = treeAdapter.getChildNodes(fragment)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(script);
+        const textLocation = treeAdapter.getNodeSourceCodeLocation(treeAdapter.getChildNodes(script)[0]);
+
+        assert.ok(location && textLocation);
+        assertNodeLocation(location, html, html, [html]);
+        assertStartTagLocation(location, html, html, [html]);
+
+        assertNodeLocation(textLocation, html.slice(8, 15), html, [html]);
+    });
 });
 
 describe('location-info-parser', () => {
