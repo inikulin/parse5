@@ -36,30 +36,30 @@ import { hasUnescapedText, escapeString } from 'parse5/dist/serializer/index.js'
  *     rewriter.emitEndTag(endTag);
  * });
  *
- * // Wrap all text nodes with <i> tag
+ * // Wrap all text nodes with an <i> tag
  * rewriter.on('text', (_, raw) => {
- *     // Use raw representation of text without HTML entities decoding
+ *     // Use the raw representation of text without HTML entities decoding
  *     rewriter.emitRaw(`<i>${raw}</i>`);
  * });
  *
  * http.get('http://google.com', res => {
  *    // Assumes response is UTF-8.
  *    res.setEncoding('utf8');
- *    // RewritingStream is the Transform stream, which means you can pipe
+ *    // `RewritingStream` is a `Transform` stream, which means you can pipe
  *    // through it.
  *    res.pipe(rewriter).pipe(file);
  * });
  * ```
  */
 export class RewritingStream extends SAXParser {
-    /** Note: The `sourceCodeLocationInfo` is always enabled. */
+    /** Note: `sourceCodeLocationInfo` is always enabled. */
     constructor() {
         super({ sourceCodeLocationInfo: true });
     }
 
     override _transformChunk(chunk: string): string {
-        // NOTE: ignore upstream return value as we want to push to
-        // the Writable part of Transform stream ourselves.
+        // NOTE: ignore upstream return values as we want to push to
+        // the `Writable` part of the `Transform` stream ourselves.
         super._transformChunk(chunk);
         return '';
     }
@@ -78,7 +78,7 @@ export class RewritingStream extends SAXParser {
             this.emitRaw(this._getRawHtml(token.sourceCodeLocation!));
         }
 
-        // NOTE: don't skip new lines after <pre> and other tags,
+        // NOTE: don't skip new lines after `<pre>` and other tags,
         // otherwise we'll have incorrect raw data.
         this.parserFeedbackSimulator.skipNextNewLine = false;
         return true;
@@ -89,7 +89,7 @@ export class RewritingStream extends SAXParser {
         this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation!));
     }
 
-    /** Emits serialized document type token into the output stream. */
+    /** Emits a serialized document type token into the output stream. */
     public emitDoctype(token: Doctype): void {
         let res = `<!DOCTYPE ${token.name}`;
 
@@ -108,7 +108,7 @@ export class RewritingStream extends SAXParser {
         this.push(res);
     }
 
-    /** Emits serialized start tag token into the output stream. */
+    /** Emits a serialized start tag token into the output stream. */
     public emitStartTag(token: StartTag): void {
         const res = token.attrs.reduce(
             (res, attr) => `${res} ${attr.name}="${escapeString(attr.value, true)}"`,
@@ -118,12 +118,12 @@ export class RewritingStream extends SAXParser {
         this.push(res + (token.selfClosing ? '/>' : '>'));
     }
 
-    /** Emits serialized end tag token into the output stream. */
+    /** Emits a serialized end tag token into the output stream. */
     public emitEndTag(token: EndTag): void {
         this.push(`</${token.tagName}>`);
     }
 
-    /** Emits serialized text token into the output stream. */
+    /** Emits a serialized text token into the output stream. */
     public emitText({ text }: Text): void {
         this.push(
             !this.parserFeedbackSimulator.inForeignContent && hasUnescapedText(this.tokenizer.lastStartTagName, true)
@@ -132,12 +132,12 @@ export class RewritingStream extends SAXParser {
         );
     }
 
-    /** Emits serialized comment token into the output stream. */
+    /** Emits a serialized comment token into the output stream. */
     public emitComment(token: Comment): void {
         this.push(`<!--${token.text}-->`);
     }
 
-    /** Emits raw HTML string into the output stream. */
+    /** Emits a raw HTML string into the output stream. */
     public emitRaw(html: string): void {
         this.push(html);
     }

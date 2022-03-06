@@ -13,8 +13,9 @@ import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
 export interface SAXParserOptions {
     /**
-     * Enables source code location information for the tokens.
-     * When enabled, each token will have `sourceCodeLocation` property.
+     * Enables source code location information for tokens.
+     *
+     * When enabled, each token will have a `sourceCodeLocation` property.
      */
     sourceCodeLocationInfo?: boolean;
 }
@@ -39,8 +40,8 @@ export interface SAXParserOptions {
  *     });
  *
  *     http.get('http://google.com', res => {
- *        // SAXParser is the Transform stream, which means you can pipe
- *        // through it. So, you can analyze page content and, e.g., save it
+ *        // `SAXParser` is the `Transform` stream, which means you can pipe
+ *        // through it. So, you can analyze the page content and, e.g., save it
  *        // to the file at the same time:
  *        res.pipe(parser).pipe(file);
  *     });
@@ -68,13 +69,13 @@ export class SAXParser extends Transform implements TokenHandler {
         this.parserFeedbackSimulator = new ParserFeedbackSimulator(this.options, this);
         this.tokenizer = this.parserFeedbackSimulator.tokenizer;
 
-        // NOTE: always pipe stream to the /dev/null stream to avoid
-        // `highWaterMark` hit even if we don't have consumers.
+        // NOTE: always pipe the stream to the /dev/null stream to avoid
+        // the `highWaterMark` to be hit even if we don't have consumers.
         // (see: https://github.com/inikulin/parse5/issues/97#issuecomment-171940774)
         this.pipe(new DevNullStream());
     }
 
-    //TransformStream implementation
+    //`Transform` implementation
     override _transform(
         chunk: string,
         _encoding: string,
@@ -289,13 +290,13 @@ export interface Doctype extends SaxToken {
 export interface SAXParser {
     /** Raised when the parser encounters a start tag. */
     on(event: 'startTag', listener: (startTag: StartTag) => void): this;
-    /** Raised when parser encounters an end tag. */
+    /** Raised when the parser encounters an end tag. */
     on(event: 'endTag', listener: (endTag: EndTag) => void): this;
-    /** Raised when parser encounters a comment. */
+    /** Raised when the parser encounters a comment. */
     on(event: 'comment', listener: (comment: Comment) => void): this;
-    /** Raised when parser encounters text content. */
+    /** Raised when the parser encounters text content. */
     on(event: 'text', listener: (text: Text) => void): this;
-    /** Raised when parser encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration) */
+    /** Raised when the parser encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration) */
     on(event: 'doctype', listener: (doctype: Doctype) => void): this;
     /**
      * Base event handler.

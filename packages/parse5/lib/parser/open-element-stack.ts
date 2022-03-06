@@ -175,7 +175,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     popAllUpToHtmlElement(): void {
-        //NOTE: here we assume that root <html> element is always first in the open element stack, so
+        //NOTE: here we assume that the root <html> element is always first in the open element stack, so
         //we perform this fast stack clean up.
         this.tmplCount = 0;
         this.shortenToLength(1);

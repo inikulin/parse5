@@ -485,7 +485,7 @@ export class Tokenizer {
 
     private _emitCurrentCharacterToken(nextLocation: Location | null): void {
         if (this.currentCharacterToken) {
-            //NOTE: if we have pending character token make it's end location equal to the
+            //NOTE: if we have a pending character token, make it's end location equal to the
             //current token's start location.
             if (nextLocation && this.currentCharacterToken.location) {
                 this.currentCharacterToken.location.endLine = nextLocation.startLine;
@@ -564,8 +564,8 @@ export class Tokenizer {
         this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
     }
 
-    //NOTE: used then we emit character explicitly. This is always a non-whitespace and a non-null character.
-    //So we can avoid additional checks here.
+    //NOTE: used when we emit characters explicitly.
+    //This is always for non-whitespace and non-null characters, which allows us to avoid additional checks.
     private _emitChars(ch: string): void {
         this._appendCharToCurrentCharacterToken(TokenType.CHARACTER, ch);
     }

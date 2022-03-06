@@ -109,9 +109,9 @@ export function generateLocationInfoParserTests(
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadParserLocationInfoTestData()) {
-            //NOTE: How it works: we parse document with the location info.
-            //Then for each node in the tree we run serializer and compare results with the substring
-            //obtained via location info from the expected serialization results.
+            //NOTE: How it works: we parse document with location info.
+            //Then for each node in the tree we run the serializer and compare results with the substring
+            //obtained via the location info from the expected serialization results.
             it(`Location info (Parser) - ${test.name}`, async () => {
                 const serializerOpts = { treeAdapter };
                 const html = escapeString(test.data);
