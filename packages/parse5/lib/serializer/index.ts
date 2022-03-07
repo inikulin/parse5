@@ -146,7 +146,8 @@ function serializeNode<T extends TreeAdapterTypeMap>(node: T['node'], options: I
     } else if (options.treeAdapter.isDocumentTypeNode(node)) {
         return serializeDocumentTypeNode(node, options);
     }
-    throw new Error('Unrecognized node type');
+    // Return an empty string for unknown nodes
+    return '';
 }
 
 function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], options: InternalOptions<T>): string {
