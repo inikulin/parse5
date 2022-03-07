@@ -3,6 +3,7 @@ import * as parse5 from 'parse5';
 import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import { type Element, isElementNode } from 'parse5/dist/tree-adapters/default';
+import { NAMESPACES } from 'parse5/dist/common/html.js';
 
 generateSerializerTests('serializer', 'Serializer', parse5.serialize);
 
@@ -44,13 +45,17 @@ describe('serializer', () => {
     });
 
     it('serializes the children of void elements as the empty string (GH-289)', () => {
-        const document = parse5.parseFragment('<br>');
-        const br = document.childNodes[0];
-        assert.ok(isElementNode(br));
+        const br = treeAdapters.default.createElement('br', NAMESPACES.HTML, []);
 
         // Add child node to `br`, to make sure they are skipped.
-        treeAdapters.default.appendChild(br, parse5.parseFragment('<div>').childNodes[0]);
+        treeAdapters.default.appendChild(br, treeAdapters.default.createElement('div', NAMESPACES.HTML, []));
 
         assert.equal(parse5.serialize(br), '');
+
+        // If the namespace is not HTML, the serializer should not skip the children.
+        const svgBr = treeAdapters.default.createElement('br', NAMESPACES.SVG, []);
+        treeAdapters.default.appendChild(svgBr, treeAdapters.default.createElement('div', NAMESPACES.HTML, []));
+
+        assert.equal(parse5.serialize(svgBr), '<div></div>');
     });
 });
