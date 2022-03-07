@@ -16,5 +16,11 @@
         "declarationMap": true,
         "sourceMap": true
     },
-    "references": [{ "path": "packages/parse5/tsconfig.json" }]
+    "references": [{ "path": "packages/parse5/tsconfig.json" }],
+    "typedocOptions": {
+        "out": "docs/build",
+        "name": "parse5",
+        "readme": "README.md",
+        "entryPointStrategy": "packages"
+    }
 }
