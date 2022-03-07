@@ -28,7 +28,6 @@
         "unicorn/prefer-string-slice": "off",
         "unicorn/prefer-code-point": "off",
         "unicorn/no-array-push-push": "off",
-        "unicorn/no-array-reduce": "off",
         "unicorn/no-for-loop": "off",
         "unicorn/consistent-destructuring": "off",
         "unicorn/prefer-switch": ["error", { "emptyDefaultCase": "do-nothing-comment" }]
