@@ -4,7 +4,6 @@ import { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/inter
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { escapeString } from 'parse5/dist/serializer/index.js';
 import * as parse5 from 'parse5/dist/index.js';
 import {
     removeNewLines,
@@ -13,22 +12,19 @@ import {
     normalizeNewLine,
     generateTestsForEachTreeAdapter,
 } from './common.js';
+import * as doctype from 'parse5/dist/common/doctype.js';
 
 function walkTree<T extends TreeAdapterTypeMap>(
-    document: T['document'],
+    parent: T['parentNode'],
     treeAdapter: TreeAdapter<T>,
     handler: (node: T['node']) => void
 ): void {
-    const stack = [...treeAdapter.getChildNodes(document)];
-    let node;
-    while ((node = stack.shift())) {
-        const children = treeAdapter.getChildNodes(node);
+    for (const node of treeAdapter.getChildNodes(parent)) {
+        if (treeAdapter.isElementNode(node)) {
+            walkTree(node, treeAdapter, handler);
+        }
 
         handler(node);
-
-        if (children?.length) {
-            stack.unshift(...children);
-        }
     }
 }
 
@@ -75,7 +71,10 @@ function assertAttrsLocation(location: ElementLocation, serializedNode: string, 
     assert.ok(location.attrs, 'Expected attrs to be defined');
 
     for (const attr of Object.values(location.attrs)) {
-        const expected = serializedNode.slice(attr.startOffset, attr.endOffset);
+        const expected = serializedNode.slice(
+            attr.startOffset - location.startOffset,
+            attr.endOffset - location.startOffset
+        );
 
         assertLocation(attr, expected, html, lines);
     }
@@ -113,8 +112,7 @@ export function generateLocationInfoParserTests(
             //Then for each node in the tree we run the serializer and compare results with the substring
             //obtained via the location info from the expected serialization results.
             it(`Location info (Parser) - ${test.name}`, async () => {
-                const serializerOpts = { treeAdapter };
-                const html = escapeString(test.data);
+                const html = test.data;
                 const lines = html.split(/\r?\n/g);
 
                 const parserOpts = {
@@ -122,26 +120,26 @@ export function generateLocationInfoParserTests(
                     sourceCodeLocationInfo: true,
                 };
 
-                const parsingResult = await parse(html, parserOpts);
+                const parsingResult = parse(html, parserOpts);
                 const document = parsingResult.node;
 
                 walkTree(document, treeAdapter, (node) => {
                     const location = treeAdapter.getNodeSourceCodeLocation(node);
 
-                    if (location) {
-                        const fragment = treeAdapter.createDocumentFragment();
+                    assert.ok(location);
 
-                        treeAdapter.appendChild(fragment, node);
+                    const serializedNode = treeAdapter.isDocumentTypeNode(node)
+                        ? `<${doctype.serializeContent(
+                              treeAdapter.getDocumentTypeNodeName(node),
+                              treeAdapter.getDocumentTypeNodePublicId(node),
+                              treeAdapter.getDocumentTypeNodeSystemId(node)
+                          )}>`
+                        : parse5.serializeOuter(node, { treeAdapter });
 
-                        const serializedNode = parse5.serialize(fragment, serializerOpts);
+                    assertLocation(location, serializedNode, html, lines);
 
-                        assertNodeLocation(location, serializedNode, html, lines);
-
-                        // TODO: None of the cases below are ever matched.
-
-                        if (location.startTag) {
-                            assertStartTagLocation(location, serializedNode, html, lines);
-                        }
+                    if (treeAdapter.isElementNode(node)) {
+                        assertStartTagLocation(location, serializedNode, html, lines);
 
                         if (location.endTag) {
                             assertEndTagLocation(location, serializedNode, html, lines);
@@ -149,6 +147,9 @@ export function generateLocationInfoParserTests(
 
                         if (location.attrs) {
                             assertAttrsLocation(location, serializedNode, html, lines);
+                        } else {
+                            // If we don't have `location.attrs`, we expect that the node has no attributes.
+                            assert.strictEqual(treeAdapter.getAttrList(node).length, 0);
                         }
                     }
                 });
