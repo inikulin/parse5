@@ -139,11 +139,14 @@ function serializeChildNodes<T extends TreeAdapterTypeMap>(
 function serializeNode<T extends TreeAdapterTypeMap>(node: T['node'], options: InternalOptions<T>): string {
     if (options.treeAdapter.isElementNode(node)) {
         return serializeElement(node, options);
-    } else if (options.treeAdapter.isTextNode(node)) {
+    }
+    if (options.treeAdapter.isTextNode(node)) {
         return serializeTextNode(node, options);
-    } else if (options.treeAdapter.isCommentNode(node)) {
+    }
+    if (options.treeAdapter.isCommentNode(node)) {
         return serializeCommentNode(node, options);
-    } else if (options.treeAdapter.isDocumentTypeNode(node)) {
+    }
+    if (options.treeAdapter.isDocumentTypeNode(node)) {
         return serializeDocumentTypeNode(node, options);
     }
     // Return an empty string for unknown nodes
