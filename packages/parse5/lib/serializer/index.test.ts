@@ -44,7 +44,7 @@ describe('serializer', () => {
     });
 
     it('serializes the children of void elements as the empty string (GH-289)', () => {
-        const document = parse5.parseFragment('<br/>');
+        const document = parse5.parseFragment('<br>');
         const br = document.childNodes[0];
         assert.ok(isElementNode(br));
 
