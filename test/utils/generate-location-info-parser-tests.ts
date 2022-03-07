@@ -103,7 +103,6 @@ function loadParserLocationInfoTestData(): { name: string; data: string }[] {
 
 export function generateLocationInfoParserTests(
     name: string,
-    _prefix: string,
     parse: (html: string, opts: ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] }
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {

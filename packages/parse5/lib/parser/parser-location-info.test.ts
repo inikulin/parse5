@@ -11,7 +11,6 @@ import { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 generateLocationInfoParserTests(
     'location-info-parser',
-    'Parser',
     (input: string, opts: parse5.ParserOptions<TreeAdapterTypeMap>) => ({
         node: parse5.parse(input, opts),
     })
@@ -28,8 +27,9 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 
         const fragment = parse5.parseFragment(html, opts);
         const firstP = treeAdapter.getChildNodes(fragment)[0];
-        const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP)!;
+        const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP);
 
+        assert.ok(firstPLocation);
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     });
 

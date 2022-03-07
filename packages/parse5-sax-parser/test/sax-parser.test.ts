@@ -37,10 +37,9 @@ function createBasicTest(html: string, expected: string, options?: SAXParserOpti
 
         parser.on('startTag', ({ tagName, attrs, selfClosing }) => {
             actual += `<${tagName}`;
-            actual += attrs.reduce(
-                (res: string, attr: { name: string; value: string }) => `${res} ${attr.name}="${attr.value}"`,
-                ''
-            );
+            for (const attr of attrs) {
+                actual += ` ${attr.name}="${attr.value}"`;
+            }
             actual += selfClosing ? '/>' : '>';
         });
 

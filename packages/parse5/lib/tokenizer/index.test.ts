@@ -7,12 +7,7 @@ const tokenizerOpts = {
     sourceCodeLocationInfo: true,
 };
 
-generateTokenizationTests(
-    'tokenizer',
-    'Tokenizer',
-    dataPath.pathname,
-    (handler) => new Tokenizer(tokenizerOpts, handler)
-);
+generateTokenizationTests('Tokenizer', dataPath.pathname, (handler) => new Tokenizer(tokenizerOpts, handler));
 
 describe('tokenizer', () => {
     it('Regression - `<<` in comment parses correctly (GH-325)', () => {

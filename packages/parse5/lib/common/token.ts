@@ -21,9 +21,9 @@ export interface Location {
     startOffset: number;
     /** One-based line index of the last character. */
     endLine: number;
-    /** One-based column index of the last character. */
+    /** One-based column index of the last character. Points directly *after* the last character. */
     endCol: number;
-    /** Zero-based last character index. */
+    /** Zero-based last character index. Points directly *after* the last character. */
     endOffset: number;
 }
 

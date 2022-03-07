@@ -3,7 +3,7 @@ import { generateLocationInfoParserTests } from 'parse5-test-utils/utils/generat
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 import { parseChunked } from './utils/parse-chunked.js';
 
-generateLocationInfoParserTests('location-info', 'ParserStream', (input, opts) =>
+generateLocationInfoParserTests('location-info', (input, opts) =>
     // NOTE: because of performance use bigger chunks here
     parseChunked(input, opts, 100, 400)
 );
