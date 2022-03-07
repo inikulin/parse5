@@ -3343,7 +3343,7 @@ function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
 
             // Update the body element, if it doesn't have an end tag
             const bodyElement = p.openElements.items[1];
-            if (!p.treeAdapter.getNodeSourceCodeLocation(bodyElement)?.endTag) {
+            if (bodyElement && !p.treeAdapter.getNodeSourceCodeLocation(bodyElement)?.endTag) {
                 p._setEndLocation(bodyElement, token);
             }
         }
