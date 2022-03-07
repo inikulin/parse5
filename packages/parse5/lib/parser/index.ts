@@ -1419,11 +1419,30 @@ function appendCommentToDocument<T extends TreeAdapterTypeMap>(p: Parser<T>, tok
 function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken): void {
     p.stopped = true;
 
+    // NOTE: Set end locations for elements that remain on the open element stack.
     if (token.location) {
-        // NOTE: generate location info for elements
-        // that remains on open element stack
-        for (let i = p.openElements.stackTop; i >= 0; i--) {
+        // NOTE: If we are not in a fragment, `html` and `body` will stay on the stack.
+        // This is a problem, as we might overwrite their end position here.
+        const target = p.fragmentContext ? 0 : 2;
+        for (let i = p.openElements.stackTop; i >= target; i--) {
             p._setEndLocation(p.openElements.items[i], token);
+        }
+
+        // Handle `html` and `body`
+        if (!p.fragmentContext && p.openElements.stackTop >= 0) {
+            const htmlElement = p.openElements.items[0];
+            const htmlLocation = p.treeAdapter.getNodeSourceCodeLocation(htmlElement);
+            if (htmlLocation && !htmlLocation.endTag) {
+                p._setEndLocation(htmlElement, token);
+
+                if (p.openElements.stackTop >= 1) {
+                    const bodyElement = p.openElements.items[1];
+                    const bodyLocation = p.treeAdapter.getNodeSourceCodeLocation(bodyElement);
+                    if (bodyLocation && !bodyLocation.endTag) {
+                        p._setEndLocation(bodyElement, token);
+                    }
+                }
+            }
         }
     }
 }
@@ -3321,6 +3340,12 @@ function endTagAfterBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
         //the end location explicitly.
         if (p.options.sourceCodeLocationInfo && p.openElements.tagIDs[0] === $.HTML) {
             p._setEndLocation(p.openElements.items[0], token);
+
+            // Update the body element, if it doesn't have an end tag
+            const bodyElement = p.openElements.items[1];
+            if (bodyElement && !p.treeAdapter.getNodeSourceCodeLocation(bodyElement)?.endTag) {
+                p._setEndLocation(bodyElement, token);
+            }
         }
     } else {
         tokenAfterBody(p, token);
