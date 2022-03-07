@@ -39,7 +39,7 @@ export interface DatFile<T extends TreeAdapterTypeMap> {
 export function parseDatFile<T extends TreeAdapterTypeMap>(testSet: string, treeAdapter: TreeAdapter<T>): DatFile<T>[] {
     const testDescrs: Record<string, number | string[]>[] = [];
     let curDirective = '';
-    let curDescr: Record<string, number | string[]> | null = null;
+    let curDescr: Record<string, number | string[]> = {};
 
     for (const [idx, line] of testSet.split(/\r?\n/).entries()) {
         if (line === '#data') {
@@ -49,9 +49,9 @@ export function parseDatFile<T extends TreeAdapterTypeMap>(testSet: string, tree
 
         if (line[0] === '#') {
             curDirective = line;
-            curDescr![curDirective] = [];
+            curDescr[curDirective] = [];
         } else {
-            (curDescr![curDirective] as string[]).push(line);
+            (curDescr[curDirective] as string[]).push(line);
         }
     }
 

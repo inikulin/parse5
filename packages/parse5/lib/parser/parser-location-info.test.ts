@@ -27,8 +27,9 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 
         const fragment = parse5.parseFragment(html, opts);
         const firstP = treeAdapter.getChildNodes(fragment)[0];
-        const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP)!;
+        const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP);
 
+        assert.ok(firstPLocation);
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     });
 
