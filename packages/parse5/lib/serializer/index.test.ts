@@ -42,4 +42,15 @@ describe('serializer', () => {
 
         assert.equal(html, '<button>Hello</button>');
     });
+
+    it('serializes the children of void elements as the empty string (GH-289)', () => {
+        const document = parse5.parseFragment('<br/>');
+        const br = document.childNodes[0];
+        assert.ok(isElementNode(br));
+
+        // Add child node to `br`, to make sure they are skipped.
+        treeAdapters.default.appendChild(br, parse5.parseFragment('<div>').childNodes[0]);
+
+        assert.equal(parse5.serialize(br), '');
+    });
 });
