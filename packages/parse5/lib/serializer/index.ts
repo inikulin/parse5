@@ -30,6 +30,15 @@ const VOID_ELEMENTS = new Set<string>([
     $.TRACK,
     $.WBR,
 ]);
+
+function isVoidElement<T extends TreeAdapterTypeMap>(node: T['node'], options: InternalOptions<T>): boolean {
+    return (
+        options.treeAdapter.isElementNode(node) &&
+        options.treeAdapter.getNamespaceURI(node) === NS.HTML &&
+        VOID_ELEMENTS.has(options.treeAdapter.getTagName(node))
+    );
+}
+
 const UNESCAPED_TEXT = new Set<string>([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT]);
 
 export function hasUnescapedText(tn: string, scriptingEnabled: boolean): boolean {
@@ -83,6 +92,11 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.Defa
     options?: SerializerOptions<T>
 ): string {
     const opts = { ...defaultOpts, ...options };
+
+    if (isVoidElement(node, opts)) {
+        return '';
+    }
+
     return serializeChildNodes(node, opts);
 }
 
@@ -157,9 +171,7 @@ function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], opti
     const tn = options.treeAdapter.getTagName(node);
 
     return `<${tn}${serializeAttributes(node, options)}>${
-        options.treeAdapter.getNamespaceURI(node) === NS.HTML && VOID_ELEMENTS.has(tn)
-            ? ''
-            : `${serializeChildNodes(node, options)}</${tn}>`
+        isVoidElement(node, options) ? '' : `${serializeChildNodes(node, options)}</${tn}>`
     }`;
 }
 
