@@ -38,7 +38,7 @@
         "lint:prettier": "npm run prettier -- --check",
         "unit-tests": "NODE_OPTIONS=--experimental-vm-modules jest",
         "test": "npm run lint && npm run unit-tests",
-        "generate-feedback-tests": "node --loader ts-node/esm scripts/generate-parser-feedback-test/index.ts test/data/html5lib-tests/tree-construction/*.dat test/data/tree-construction-regression/*.dat",
+        "generate-feedback-tests": "node --loader ts-node/esm scripts/generate-parser-feedback-test/index.ts test/data/html5lib-tests/tree-construction/*.dat",
         "bench-perf": "npm run build && node bench/perf/index.js",
         "bench-memory-sax": "npm run build && node bench/memory/sax-parser.js",
         "preversion": "npm test",
