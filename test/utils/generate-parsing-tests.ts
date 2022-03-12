@@ -118,7 +118,8 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
     };
 }
 
-const treePath = new URL('../data/html5lib-tests/tree-construction', import.meta.url);
+// TODO: Stop using the fork here.
+const treePath = new URL('../data/html5lib-tests-fork/tree-construction', import.meta.url);
 const treeRegressionPath = new URL('../data/tree-construction-regression', import.meta.url);
 
 export function generateParsingTests(
