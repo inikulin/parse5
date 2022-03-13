@@ -14,7 +14,7 @@ generateParsingTests(
     {
         skipFragments: true,
         withoutErrors: true,
-        testSuite: [suitePath.pathname],
+        suitePath,
     },
     async (test, opts) => {
         const chunks = makeChunks(test.input);

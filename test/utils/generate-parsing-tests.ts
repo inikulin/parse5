@@ -15,33 +15,31 @@ export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends 
 }
 
 export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
-    dataDirs: (string | URL)[],
+    dataDir: URL,
     treeAdapter: TreeAdapter<T>
 ): TreeConstructionTestData<T>[] {
     const tests: TreeConstructionTestData<T>[] = [];
 
-    for (const dataDir of dataDirs) {
-        const dataDirPath = typeof dataDir === 'string' ? dataDir : dataDir.pathname;
-        const testSetFileNames = fs.readdirSync(dataDirPath);
-        const dirName = path.basename(dataDirPath);
+    const dataDirPath = dataDir.pathname;
+    const testSetFileNames = fs.readdirSync(dataDir);
+    const dirName = path.basename(dataDirPath);
 
-        for (const fileName of testSetFileNames) {
-            if (path.extname(fileName) !== '.dat') {
-                continue;
-            }
+    for (const fileName of testSetFileNames) {
+        if (path.extname(fileName) !== '.dat') {
+            continue;
+        }
 
-            const filePath = path.join(dataDirPath, fileName);
-            const testSet = fs.readFileSync(filePath, 'utf8');
-            const setName = fileName.replace('.dat', '');
+        const filePath = path.join(dataDirPath, fileName);
+        const testSet = fs.readFileSync(filePath, 'utf8');
+        const setName = fileName.replace('.dat', '');
 
-            for (const test of parseDatFile(testSet, treeAdapter)) {
-                tests.push({
-                    ...test,
-                    idx: tests.length,
-                    setName,
-                    dirName,
-                });
-            }
+        for (const test of parseDatFile(testSet, treeAdapter)) {
+            tests.push({
+                ...test,
+                idx: tests.length,
+                setName,
+                dirName,
+            });
         }
     }
 
@@ -83,7 +81,7 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
     test: TreeConstructionTestData<T>,
     treeAdapter: TreeAdapter<T>,
     parse: ParseMethod<T>,
-    { withoutErrors }: { withoutErrors?: boolean }
+    { withoutErrors, expectError }: { withoutErrors?: boolean; expectError?: boolean } = {}
 ): () => Promise<void> {
     return async (): Promise<void> => {
         const errs: string[] = [];
@@ -109,18 +107,31 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
         const { node, chunks } = await parse(test, opts);
         const actual = serializeToDatFileFormat(node, opts.treeAdapter);
         const msg = prettyPrintParserAssertionArgs(actual, test.expected, chunks);
+        let sawError = false;
 
-        assert.ok(actual === test.expected, msg);
+        try {
+            assert.ok(actual === test.expected, msg);
 
-        if (!withoutErrors) {
-            assert.deepEqual(errs.sort(), test.expectedErrors.sort());
+            if (!withoutErrors) {
+                assert.deepEqual(errs.sort(), test.expectedErrors.sort());
+            }
+        } catch (error) {
+            if (expectError) {
+                return;
+            }
+            sawError = true;
+
+            throw error;
+        }
+
+        if (!sawError && expectError) {
+            throw new Error(`Expected error but none was thrown`);
         }
     };
 }
 
 // TODO: Stop using the fork here.
 const treePath = new URL('../data/html5lib-tests-fork/tree-construction', import.meta.url);
-const treeRegressionPath = new URL('../data/tree-construction-regression', import.meta.url);
 
 export function generateParsingTests(
     name: string,
@@ -128,18 +139,30 @@ export function generateParsingTests(
     {
         skipFragments,
         withoutErrors,
-        testSuite = [treePath.pathname, treeRegressionPath.pathname],
-    }: { skipFragments?: boolean; withoutErrors?: boolean; testSuite?: string[] },
+        expectErrors: expectError = [],
+        suitePath = treePath,
+    }: { skipFragments?: boolean; withoutErrors?: boolean; expectErrors?: string[]; suitePath?: URL },
     parse: ParseMethod<TreeAdapterTypeMap>
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
-        for (const test of loadTreeConstructionTestData(testSuite, treeAdapter).filter(
+        const errorsToExpect = new Set(expectError);
+
+        for (const test of loadTreeConstructionTestData(suitePath, treeAdapter).filter(
             (test) => !skipFragments || !test.fragmentContext
         )) {
+            const expectError = errorsToExpect.delete(`${test.idx}.${test.setName}`);
+
             it(
                 `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`,
-                createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, { withoutErrors })
+                createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, {
+                    withoutErrors,
+                    expectError,
+                })
             );
+        }
+
+        if (errorsToExpect.size > 0) {
+            throw new Error(`Expected errors were not found: ${[...errorsToExpect].join(', ')}`);
         }
     });
 }
