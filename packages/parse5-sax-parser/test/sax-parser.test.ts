@@ -72,8 +72,9 @@ const hugePage = new URL('../../../test/data/huge-page/huge-page.html', import.m
 
 describe('SAX parser', () => {
     //Basic tests
-    for (const [idx, data] of loadSAXParserTestData().entries())
+    for (const [idx, data] of loadSAXParserTestData().entries()) {
         it(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected));
+    }
 
     it('Piping and .stop()', async () => {
         const parser = new SAXParser();
