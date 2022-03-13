@@ -1,6 +1,7 @@
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { makeChunks, generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
+import { runInNewContext } from 'node:vm';
 
 function pause(): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, 5));
@@ -28,15 +29,11 @@ generateParsingTests(
                 const scriptTextNode = opts.treeAdapter.getChildNodes(scriptElement)[0];
                 const script = scriptTextNode ? opts.treeAdapter.getTextNodeContent(scriptTextNode) : '';
 
-                (document as any).write = documentWrite;
-
                 //NOTE: emulate postponed script execution
                 await pause();
 
                 try {
-                    /* eslint-disable no-eval */
-                    eval(script);
-                    /* eslint-enable no-eval */
+                    runInNewContext(script, { document: { write: documentWrite } });
                     resume();
                 } catch (error) {
                     reject(error);
