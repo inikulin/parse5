@@ -3460,7 +3460,7 @@ function characterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, t
     p.framesetOk = false;
 }
 
-function popUntilIntegrationPoint<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
+function popUntilHtmlOrIntegrationPoint<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     while (
         p.treeAdapter.getNamespaceURI(p.openElements.current) !== NS.HTML &&
         !p._isIntegrationPoint(p.openElements.currentTagId, p.openElements.current)
@@ -3471,7 +3471,7 @@ function popUntilIntegrationPoint<T extends TreeAdapterTypeMap>(p: Parser<T>): v
 
 function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (foreignContent.causesExit(token)) {
-        popUntilIntegrationPoint(p);
+        popUntilHtmlOrIntegrationPoint(p);
 
         p._startTagOutsideForeignContent(token);
     } else {
@@ -3499,7 +3499,7 @@ function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, to
 
 function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.P || token.tagID === $.BR) {
-        popUntilIntegrationPoint(p);
+        popUntilHtmlOrIntegrationPoint(p);
 
         p._endTagOutsideForeignContent(token);
 
