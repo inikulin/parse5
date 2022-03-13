@@ -21,7 +21,7 @@ generateParsingTests(
     'Parser',
     {
         withoutErrors: true,
-        testSuite: [new URL('../../../../test/data/html5lib-tests/tree-construction', import.meta.url)],
+        suitePath: new URL('../../../../test/data/html5lib-tests/tree-construction', import.meta.url),
         expectErrors: [
             '271.foreign-fragment',
             '272.foreign-fragment',
