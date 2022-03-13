@@ -174,11 +174,16 @@ export function insertTextBefore(parentNode: NodeWithChildren, text: string, ref
 export function adoptAttributes(recipient: Element, attrs: Attribute[]): void {
     for (let i = 0; i < attrs.length; i++) {
         const attrName = attrs[i].name;
+        const { namespace, prefix } = attrs[i];
 
         if (typeof recipient.attribs[attrName] === 'undefined') {
             recipient.attribs[attrName] = attrs[i].value;
-            recipient['x-attribsNamespace']![attrName] = attrs[i].namespace!;
-            recipient['x-attribsPrefix']![attrName] = attrs[i].prefix!;
+            if (recipient['x-attribsNamespace'] && namespace) {
+                recipient['x-attribsNamespace'][attrName] = namespace;
+            }
+            if (recipient['x-attribsPrefix'] && prefix) {
+                recipient['x-attribsPrefix'][attrName] = prefix;
+            }
         }
     }
 }

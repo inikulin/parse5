@@ -76,7 +76,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         }
 
         while (this.pendingHtmlInsertions.length > 0) {
-            const html = this.pendingHtmlInsertions.pop()!;
+            const html = this.pendingHtmlInsertions.pop() ?? '';
 
             this.parser.tokenizer.insertHtmlAtCurrentPos(html);
         }

@@ -294,8 +294,8 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     onItemPop(node: T['parentNode'], isTop: boolean): void {
-        if (this.options.sourceCodeLocationInfo) {
-            this._setEndLocation(node, this.currentToken!);
+        if (this.options.sourceCodeLocationInfo && this.currentToken) {
+            this._setEndLocation(node, this.currentToken);
         }
 
         this.treeAdapter.onItemPop?.(node, this.openElements.current);
@@ -1729,9 +1729,13 @@ function startTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Ta
         case $.TEMPLATE:
         case $.TITLE: {
             p._err(token, ERR.abandonedHeadElementChild);
-            p.openElements.push(p.headElement!, $.HEAD);
+            if (p.headElement) {
+                p.openElements.push(p.headElement, $.HEAD);
+            }
             startTagInHead(p, token);
-            p.openElements.remove(p.headElement!);
+            if (p.headElement) {
+                p.openElements.remove(p.headElement);
+            }
             break;
         }
         case $.HEAD: {

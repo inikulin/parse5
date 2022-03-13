@@ -114,7 +114,11 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     }
 
     insertElementAfterBookmark(element: T['element'], token: TagToken): void {
-        const bookmarkIdx = this.entries.indexOf(this.bookmark!);
+        if (this.bookmark === null) {
+            return;
+        }
+
+        const bookmarkIdx = this.entries.indexOf(this.bookmark);
 
         this.entries.splice(bookmarkIdx, 0, {
             type: EntryType.Element,

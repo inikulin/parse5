@@ -235,7 +235,11 @@ export class Preprocessor {
         this.pos -= count;
 
         while (this.pos < this.lastGapPos) {
-            this.lastGapPos = this.gapStack.pop()!;
+            const lastGapPos = this.gapStack.pop();
+            if (lastGapPos === undefined) {
+                throw new Error('Gap stack was unexpectedly empty');
+            }
+            this.lastGapPos = lastGapPos;
             this.pos--;
         }
 
