@@ -237,7 +237,9 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     //Errors
     _err(token: Token, code: ERR, beforeToken?: boolean): void {
-        if (!this.onParseError) return;
+        if (!this.onParseError) {
+            return;
+        }
 
         const loc = token.location ?? BASE_LOC;
         const err = {
@@ -286,7 +288,9 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Stack events
     onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
         this.treeAdapter.onItemPush?.(node);
-        if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
+        if (isTop && this.openElements.stackTop > 0) {
+            this._setContextModes(node, tid);
+        }
     }
 
     onItemPop(node: T['parentNode'], isTop: boolean): void {
@@ -451,12 +455,16 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         this.treeAdapter.setTemplateContent(tmpl, content);
         this._attachElementToTree(tmpl, token.location);
         this.openElements.push(tmpl, token.tagID);
-        if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(content, null);
+        if (this.options.sourceCodeLocationInfo) {
+            this.treeAdapter.setNodeSourceCodeLocation(content, null);
+        }
     }
 
     _insertFakeRootElement(): void {
         const element = this.treeAdapter.createElement(TN.HTML, NS.HTML, []);
-        if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(element, null);
+        if (this.options.sourceCodeLocationInfo) {
+            this.treeAdapter.setNodeSourceCodeLocation(element, null);
+        }
 
         this.treeAdapter.appendChild(this.openElements.current, element);
         this.openElements.push(element, $.HTML);
@@ -489,7 +497,9 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             this.treeAdapter.insertText(parent, token.chars);
         }
 
-        if (!token.location) return;
+        if (!token.location) {
+            return;
+        }
 
         const siblings = this.treeAdapter.getChildNodes(parent);
         const textNodeIdx = beforeElement ? siblings.lastIndexOf(beforeElement) : siblings.length;
@@ -541,7 +551,9 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Token processing
     private shouldProcessStartTagTokenInForeignContent(token: TagToken): boolean {
         // Check that neither current === document, or ns === NS.HTML
-        if (!this.currentNotInHTML) return false;
+        if (!this.currentNotInHTML) {
+            return false;
+        }
 
         let current: T['parentNode'];
         let currentTagId: number;
@@ -1397,7 +1409,9 @@ function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
         const commonAncestor = p.openElements.getCommonAncestor(formattingElementEntry.element);
 
         p.treeAdapter.detachNode(lastElement);
-        if (commonAncestor) aaInsertLastNodeInCommonAncestor(p, commonAncestor, lastElement);
+        if (commonAncestor) {
+            aaInsertLastNodeInCommonAncestor(p, commonAncestor, lastElement);
+        }
         aaReplaceFormattingElement(p, furthestBlock, formattingElementEntry);
     }
 }
@@ -2453,7 +2467,9 @@ function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
         // Compare the tag name here, as the tag might not be a known tag with an ID.
         if (tid === elementId && (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)) {
             p.openElements.generateImpliedEndTagsWithExclusion(tid);
-            if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
+            if (p.openElements.stackTop >= i) {
+                p.openElements.shortenToLength(i);
+            }
             break;
         }
 
