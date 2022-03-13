@@ -38,8 +38,6 @@ generateParsingTests(
             '335.foreign-fragment',
             '336.foreign-fragment',
             '337.foreign-fragment',
-            '505.search-element',
-            '506.search-element',
             '1408.tests26',
             '1409.tests26',
             '1410.tests26',
