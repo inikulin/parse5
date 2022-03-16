@@ -12,12 +12,13 @@ import type { DefaultTreeAdapterMap } from 'parse5/dist/tree-adapters/default.js
  * ```js
  * const ParserStream = require('parse5-parser-stream');
  * const http = require('http');
+ * const { finished } = require('node:stream');
  *
  * // Fetch the page content and obtain it's <head> node
  * http.get('http://inikulin.github.io/parse5/', res => {
  *     const parser = new ParserStream();
  *
- *     parser.once('finish', () => {
+ *     finished(parser, () => {
  *         console.log(parser.document.childNodes[1].childNodes[0].tagName); //> 'head'
  *     });
  *
@@ -27,7 +28,6 @@ import type { DefaultTreeAdapterMap } from 'parse5/dist/tree-adapters/default.js
  *
  */
 export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> extends Writable {
-    private lastChunkWritten = false;
     private writeCallback: null | (() => void) = null;
     private pausedByScript = false;
 
@@ -53,16 +53,15 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         }
 
         this.writeCallback = callback;
-        this.parser.tokenizer.write(chunk, this.lastChunkWritten);
+        this.parser.tokenizer.write(chunk, false);
         this._runParsingLoop();
     }
 
-    // TODO [engine:node@>=16]: Due to issues with Node < 16, we are overriding `end` instead of `_final`.
+    override _final(callback: (error?: Error | null) => void): void {
+        this.writeCallback = callback;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    override end(chunk?: any, encoding?: any, callback?: any): any {
-        this.lastChunkWritten = true;
-        super.end(chunk || '', encoding, callback);
+        this.parser.tokenizer.write('', true);
+        this._runParsingLoop();
     }
 
     //Scriptable parser implementation

@@ -6,6 +6,7 @@ import { treeAdapters, WritableStreamStub } from 'parse5-test-utils/dist/common.
 import * as parse5 from '../../packages/parse5/dist/index.js';
 import { ParserStream as parse5Stream } from '../../packages/parse5-parser-stream/dist/index.js';
 import * as parse5Upstream from 'parse5';
+import { finished } from 'node:stream/promises';
 
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
 const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);
@@ -21,7 +22,7 @@ global.upstreamParser = parse5Upstream;
 global.hugePage = readFileSync(hugePagePath).toString();
 
 // Micro data
-global.microTests = loadTreeConstructionTestData([treeConstructionPath], treeAdapters.default)
+global.microTests = loadTreeConstructionTestData(treeConstructionPath, treeAdapters.default)
     .filter(
         (test) =>
             //NOTE: this test caused a stack overflow in parse5 v1.x
@@ -107,35 +108,28 @@ runBench({
     name: 'parse5 regression benchmark - STREAM',
     defer: true,
     workingCopyFn: async (deferred) => {
-        const parsePromises = files.map(
-            (fileName) =>
-                new Promise((resolve) => {
-                    const stream = createReadStream(fileName, 'utf8');
-                    const parserStream = new WorkingCopyParserStream();
+        const parsePromises = files.map((fileName) => {
+            const stream = createReadStream(fileName, 'utf8');
+            const parserStream = new WorkingCopyParserStream();
 
-                    stream.pipe(parserStream);
-                    parserStream.on('finish', resolve);
-                })
-        );
+            stream.pipe(parserStream);
+            return finished(parserStream);
+        });
 
         await Promise.all(parsePromises);
         deferred.resolve();
     },
     upstreamFn: async (deferred) => {
-        const parsePromises = files.map(
-            (fileName) =>
-                new Promise((resolve) => {
-                    const stream = createReadStream(fileName, 'utf8');
-                    const writable = new WritableStreamStub();
+        const parsePromises = files.map(async (fileName) => {
+            const stream = createReadStream(fileName, 'utf8');
+            const writable = new WritableStreamStub();
 
-                    writable.on('finish', () => {
-                        upstreamParser.parse(writable.writtenData);
-                        resolve();
-                    });
+            stream.pipe(writable);
 
-                    stream.pipe(writable);
-                })
-        );
+            await finished(writable);
+
+            upstreamParser.parse(writable.writtenData);
+        });
 
         await Promise.all(parsePromises);
         deferred.resolve();
