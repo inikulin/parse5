@@ -123,21 +123,15 @@ export class SAXParser extends Transform implements TokenHandler {
      */
     public stop(): void {
         this.stopped = true;
+        this.tokenizer.pause();
     }
 
     //Internals
     protected _transformChunk(chunk: string): string {
         if (!this.stopped) {
             this.tokenizer.write(chunk, this.lastChunkWritten);
-            this._runParsingLoop();
         }
         return chunk;
-    }
-
-    private _runParsingLoop(): void {
-        while (!this.stopped && this.tokenizer.active) {
-            this.tokenizer.getNextToken();
-        }
     }
 
     /** @internal */
