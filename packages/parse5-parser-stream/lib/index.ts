@@ -44,11 +44,11 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         super({ decodeStrings: false });
 
         const resume = (): void => {
-            while (this.pendingHtmlInsertions.length > 0) {
-                const html = this.pendingHtmlInsertions.pop()!;
-
-                this.parser.tokenizer.insertHtmlAtCurrentPos(html);
+            for (let i = this.pendingHtmlInsertions.length - 1; i >= 0; i--) {
+                this.parser.tokenizer.insertHtmlAtCurrentPos(this.pendingHtmlInsertions[i]);
             }
+
+            this.pendingHtmlInsertions.length = 0;
 
             //NOTE: keep parsing if we don't wait for the next input chunk
             this.parser.tokenizer.resume(this.writeCallback);
