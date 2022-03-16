@@ -305,6 +305,7 @@ export class Tokenizer {
 
         this.paused = false;
 
+        // Necessary for synchronous resume.
         if (this.inLoop) return;
 
         this._runParsingLoop();
