@@ -3460,14 +3460,18 @@ function characterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, t
     p.framesetOk = false;
 }
 
+function popUntilHtmlOrIntegrationPoint<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
+    while (
+        p.treeAdapter.getNamespaceURI(p.openElements.current) !== NS.HTML &&
+        !p._isIntegrationPoint(p.openElements.currentTagId, p.openElements.current)
+    ) {
+        p.openElements.pop();
+    }
+}
+
 function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    if (foreignContent.causesExit(token) && !p.fragmentContext) {
-        while (
-            p.treeAdapter.getNamespaceURI(p.openElements.current) !== NS.HTML &&
-            !p._isIntegrationPoint(p.openElements.currentTagId, p.openElements.current)
-        ) {
-            p.openElements.pop();
-        }
+    if (foreignContent.causesExit(token)) {
+        popUntilHtmlOrIntegrationPoint(p);
 
         p._startTagOutsideForeignContent(token);
     } else {
@@ -3494,6 +3498,13 @@ function startTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, to
 }
 
 function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    if (token.tagID === $.P || token.tagID === $.BR) {
+        popUntilHtmlOrIntegrationPoint(p);
+
+        p._endTagOutsideForeignContent(token);
+
+        return;
+    }
     for (let i = p.openElements.stackTop; i > 0; i--) {
         const element = p.openElements.items[i];
 
