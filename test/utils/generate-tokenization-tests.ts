@@ -113,6 +113,7 @@ function tokenize(createTokenSource: TokenSourceCreator, chunks: string[], testD
     }
 
     assert.ok(result.sawEof);
+    assert.ok(!tokenizer.active);
 
     // Sort errors by line and column
     result.errors.sort((err1, err2) => err1.line - err2.line || err1.col - err2.col);
