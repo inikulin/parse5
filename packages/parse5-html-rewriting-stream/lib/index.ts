@@ -75,7 +75,8 @@ export class RewritingStream extends SAXParser {
     // Events
     protected override emitIfListenerExists(eventName: string, token: SaxToken): boolean {
         if (!super.emitIfListenerExists(eventName, token)) {
-            this.emitRaw(this._getRawHtml(token.sourceCodeLocation!));
+            const html = token.sourceCodeLocation ? this._getRawHtml(token.sourceCodeLocation) : '';
+            this.emitRaw(html);
         }
 
         // NOTE: don't skip new lines after `<pre>` and other tags,
@@ -86,7 +87,8 @@ export class RewritingStream extends SAXParser {
 
     // Emitter API
     protected override _emitToken(eventName: string, token: SaxToken): void {
-        this.emit(eventName, token, this._getRawHtml(token.sourceCodeLocation!));
+        const html = token.sourceCodeLocation ? this._getRawHtml(token.sourceCodeLocation) : '';
+        this.emit(eventName, token, html);
     }
 
     /** Emits a serialized document type token into the output stream. */
