@@ -1,5 +1,6 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { finished } from 'parse5-test-utils/utils/common.js';
 import { SAXParser, SAXParserOptions } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
@@ -98,7 +99,7 @@ describe('SAX parser', () => {
 
         await finished(writable);
 
-        const expected = fs.readFileSync(hugePage).toString();
+        const expected = await readFile(hugePage, 'utf8');
 
         assert.strictEqual(handlerCallCount, 10);
         assert.strictEqual(writable.writtenData, expected);
