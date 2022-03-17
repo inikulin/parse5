@@ -28,6 +28,7 @@ import type { DefaultTreeAdapterMap } from 'parse5/dist/tree-adapters/default.js
  *
  */
 export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> extends Writable {
+    private lastChunkWritten = false;
     private writeCallback: null | (() => void) = null;
     private pausedByScript = false;
 
@@ -53,15 +54,16 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         }
 
         this.writeCallback = callback;
-        this.parser.tokenizer.write(chunk, false);
+        this.parser.tokenizer.write(chunk, this.lastChunkWritten);
         this._runParsingLoop();
     }
 
-    override _final(callback: (error?: Error | null) => void): void {
-        this.writeCallback = callback;
+    // TODO [engine:node@>=16]: Due to issues with Node < 16, we are overriding `end` instead of `_final`.
 
-        this.parser.tokenizer.write('', true);
-        this._runParsingLoop();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    override end(chunk?: any, encoding?: any, callback?: any): any {
+        this.lastChunkWritten = true;
+        super.end(chunk || '', encoding, callback);
     }
 
     //Scriptable parser implementation
