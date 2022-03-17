@@ -1,4 +1,4 @@
-import { Writable } from 'node:stream';
+import { Writable, Readable, finished as finishedCb } from 'node:stream';
 import * as assert from 'node:assert';
 import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface.js';
 import * as defaultTreeAdapter from 'parse5/dist/tree-adapters/default.js';
@@ -129,4 +129,10 @@ export function getSubstringByLineCol(lines: string[], loc: Location): string {
     lines[0] = lines[0].substring(loc.startCol - 1);
 
     return lines.join('\n');
+}
+
+// TODO [engine:node@>=16]: Replace this with `finished` from 'node:stream/promises'.
+
+export function finished(stream: Writable | Readable): Promise<void> {
+    return new Promise((resolve, reject) => finishedCb(stream, (err) => (err ? reject(err) : resolve())));
 }

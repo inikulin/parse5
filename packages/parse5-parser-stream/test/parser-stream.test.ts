@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { parseChunked } from './utils/parse-chunked.js';
-import { finished } from 'node:stream/promises';
+import { finished } from 'parse5-test-utils/utils/common.js';
 
 generateParsingTests('ParserStream', 'ParserStream', { skipFragments: true }, (test, opts) =>
     parseChunked(test.input, opts)

@@ -2,11 +2,10 @@ import { readFileSync, createReadStream, readdirSync } from 'node:fs';
 import Benchmark from 'benchmark';
 import { loadTreeConstructionTestData } from 'parse5-test-utils/dist/generate-parsing-tests.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/dist/load-sax-parser-test-data.js';
-import { treeAdapters, WritableStreamStub } from 'parse5-test-utils/dist/common.js';
+import { treeAdapters, WritableStreamStub, finished } from 'parse5-test-utils/dist/common.js';
 import * as parse5 from '../../packages/parse5/dist/index.js';
 import { ParserStream as parse5Stream } from '../../packages/parse5-parser-stream/dist/index.js';
 import * as parse5Upstream from 'parse5';
-import { finished } from 'node:stream/promises';
 
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
 const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);

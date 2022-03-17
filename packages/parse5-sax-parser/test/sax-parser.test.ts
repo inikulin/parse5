@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import { finished } from 'node:stream/promises';
+import { finished } from 'parse5-test-utils/utils/common.js';
 import { SAXParser, SAXParserOptions } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
 import {

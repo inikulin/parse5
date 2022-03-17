@@ -2,7 +2,7 @@ import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { makeChunks, generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 import { runInNewContext } from 'node:vm';
-import { finished } from 'node:stream/promises';
+import { finished } from 'parse5-test-utils/utils/common.js';
 
 function pause(): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, 5));
