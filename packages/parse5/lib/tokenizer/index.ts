@@ -223,8 +223,9 @@ export interface TokenHandler {
 export class Tokenizer {
     public preprocessor: Preprocessor;
 
-    /** Indicates that the next token has been emitted, and `getNextToken` should return. */
-    private hasEmitted = false;
+    private paused = false;
+    /** Ensures that the parsing loop isn't run multiple times at once. */
+    private inLoop = false;
 
     /**
      * Indicates that the current adjusted node exists, is not an element in the HTML namespace,
@@ -274,10 +275,12 @@ export class Tokenizer {
         };
     }
 
-    //API
-    public getNextToken(): void {
-        this.hasEmitted = false;
-        while (!this.hasEmitted && this.active) {
+    private _runParsingLoop(): void {
+        if (this.inLoop) return;
+
+        this.inLoop = true;
+
+        while (this.active && !this.paused) {
             this.consumedAfterSnapshot = 0;
 
             const cp = this._consume();
@@ -286,16 +289,46 @@ export class Tokenizer {
                 this._callState(cp);
             }
         }
+
+        this.inLoop = false;
     }
 
-    public write(chunk: string, isLastChunk: boolean): void {
+    //API
+    public pause(): void {
+        this.paused = true;
+    }
+
+    public resume(writeCallback?: () => void): void {
+        if (!this.paused) {
+            throw new Error('Parser was already resumed');
+        }
+
+        this.paused = false;
+
+        // Necessary for synchronous resume.
+        if (this.inLoop) return;
+
+        this._runParsingLoop();
+
+        if (!this.paused) {
+            writeCallback?.();
+        }
+    }
+
+    public write(chunk: string, isLastChunk: boolean, writeCallback?: () => void): void {
         this.active = true;
         this.preprocessor.write(chunk, isLastChunk);
+        this._runParsingLoop();
+
+        if (!this.paused) {
+            writeCallback?.();
+        }
     }
 
     public insertHtmlAtCurrentPos(chunk: string): void {
         this.active = true;
         this.preprocessor.insertHtmlAtCurrentPos(chunk);
+        this._runParsingLoop();
     }
 
     //Hibernation
@@ -440,7 +473,6 @@ export class Tokenizer {
             ct.location.endOffset = this.preprocessor.offset + 1;
         }
 
-        this.hasEmitted = true;
         this.currentLocation = this.getCurrentLocation(-1);
     }
 
@@ -508,7 +540,6 @@ export class Tokenizer {
                 }
             }
 
-            this.hasEmitted = true;
             this.currentCharacterToken = null;
         }
     }
@@ -524,7 +555,7 @@ export class Tokenizer {
 
         this._emitCurrentCharacterToken(location);
         this.handler.onEof({ type: TokenType.EOF, location });
-        this.hasEmitted = true;
+        this.active = false;
     }
 
     //Characters emission

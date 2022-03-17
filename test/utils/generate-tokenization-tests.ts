@@ -95,14 +95,9 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
     public errors: TokenError[] = [];
 }
 
-function tokenize(
-    createTokenSource: TokenSourceCreator,
-    chunks: string | string[],
-    testData: LoadedTest
-): TokenSourceData {
+function tokenize(createTokenSource: TokenSourceCreator, chunks: string[], testData: LoadedTest): TokenSourceData {
     const result = new TokenizeHandler(testData);
     const tokenizer = createTokenSource(result);
-    let chunkIdx = 0;
 
     // NOTE: set small waterline for testing purposes
     tokenizer.preprocessor.bufferWaterline = 8;
@@ -112,13 +107,13 @@ function tokenize(
         tokenizer.lastStartTagName = testData.lastStartTag;
     }
 
-    while (!result.sawEof) {
-        if (tokenizer.active) {
-            tokenizer.getNextToken();
-        } else {
-            tokenizer.write(chunks[chunkIdx], ++chunkIdx === chunks.length);
-        }
+    for (let i = 0; i < chunks.length; i++) {
+        assert.ok(!result.sawEof);
+        tokenizer.write(chunks[i], i === chunks.length - 1);
     }
+
+    assert.ok(result.sawEof);
+    assert.ok(!tokenizer.active);
 
     // Sort errors by line and column
     result.errors.sort((err1, err2) => err1.line - err2.line || err1.col - err2.col);

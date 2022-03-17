@@ -129,7 +129,8 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     public constructor(
         options?: ParserOptions<T>,
         document?: T['document'],
-        public fragmentContext: T['element'] | null = null
+        public fragmentContext: T['element'] | null = null,
+        public scriptHandler: null | ((pendingScript: T['element']) => void) = null
     ) {
         this.options = {
             ...defaultParserOptions,
@@ -160,7 +161,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         const parser = new this(options);
 
         parser.tokenizer.write(html, true);
-        parser._runParsingLoop(null);
 
         return parser.document;
     }
@@ -195,7 +195,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         parser._resetInsertionMode();
         parser._findFormInFragmentContext();
         parser.tokenizer.write(html, true);
-        parser._runParsingLoop(null);
 
         const rootElement = opts.treeAdapter.getFirstChild(documentMock) as T['parentNode'];
         const fragment = opts.treeAdapter.createDocumentFragment();
@@ -215,7 +214,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     headElement: null | T['element'] = null;
     formElement: null | T['element'] = null;
-    pendingScript: null | T['element'] = null;
 
     openElements: OpenElementStack<T>;
     activeFormattingElements: FormattingElementList<T>;
@@ -251,36 +249,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         };
 
         this.onParseError(err);
-    }
-
-    //Parsing loop
-    private _runParsingLoop(scriptHandler: null | ((scriptElement: T['element']) => void)): void {
-        while (!this.stopped) {
-            this.tokenizer.getNextToken();
-
-            if (!this.tokenizer.active || (scriptHandler !== null && this.pendingScript)) {
-                break;
-            }
-        }
-    }
-
-    public runParsingLoopForCurrentChunk(
-        writeCallback: null | (() => void),
-        scriptHandler: (scriptElement: T['element']) => void
-    ): void {
-        this._runParsingLoop(scriptHandler);
-
-        if (scriptHandler && this.pendingScript) {
-            const script = this.pendingScript;
-
-            this.pendingScript = null;
-
-            scriptHandler(script);
-
-            return;
-        }
-
-        writeCallback?.();
     }
 
     //Stack events
@@ -2576,7 +2544,7 @@ function eofInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken):
 //------------------------------------------------------------------
 function endTagInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.SCRIPT) {
-        p.pendingScript = p.openElements.current;
+        p.scriptHandler?.(p.openElements.current);
     }
 
     p.openElements.pop();
