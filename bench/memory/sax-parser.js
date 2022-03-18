@@ -7,12 +7,9 @@ import { finished } from 'parse5-test-utils/dist/common.js';
 main();
 
 async function main() {
-    let parsedDataSize = 0;
-    let maxMemUsage = 0;
-    let startDate = null;
-    let endDate = null;
     const heapDiffMeasurement = new memwatch.HeapDiff();
-    let heapDiff = null;
+
+    let maxMemUsage = 0;
 
     memwatch.on('stats', (stats) => {
         maxMemUsage = Math.max(maxMemUsage, stats.used_heap_size);
@@ -20,11 +17,11 @@ async function main() {
 
     const statsPromise = new Promise((resolve) => memwatch.once('stats', resolve));
 
-    startDate = new Date();
+    const startDate = new Date();
 
-    parsedDataSize = await parse();
-    endDate = new Date();
-    heapDiff = heapDiffMeasurement.end();
+    const parsedDataSize = await parse();
+    const endDate = new Date();
+    const heapDiff = heapDiffMeasurement.end();
 
     // NOTE: we need at least one `stats` result to get maxMemUsage
     await statsPromise;
