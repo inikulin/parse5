@@ -1,3 +1,0 @@
-[submodule "html5lib-tests"]
-	path = test/data/html5lib-tests
-	url = https://github.com/HTMLParseErrorWG/html5lib-tests
