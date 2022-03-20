@@ -2,4 +2,5 @@ test/data/html5lib-tests
 test/data/html5lib-tests-fork
 packages/*/dist/
 test/dist/
+docs/build/
 node_modules

@@ -10,11 +10,27 @@ import { isElementNode } from '../tree-adapters/default.js';
 
 const origParseFragment = Parser.parseFragment;
 
-generateParsingTests('parser', 'Parser', {}, (test, opts) => ({
-    node: test.fragmentContext
-        ? parse5.parseFragment(test.fragmentContext, test.input, opts)
-        : parse5.parse(test.input, opts),
-}));
+generateParsingTests(
+    'parser',
+    'Parser',
+    {
+        expectErrors: [
+            //NOTE: Foreign content behaviour was updated in the HTML spec.
+            //The old test suite still tests the old behaviour.
+            '269.foreign-fragment',
+            '270.foreign-fragment',
+            '307.foreign-fragment',
+            '309.foreign-fragment',
+            '316.foreign-fragment',
+            '317.foreign-fragment',
+        ],
+    },
+    (test, opts) => ({
+        node: test.fragmentContext
+            ? parse5.parseFragment(test.fragmentContext, test.input, opts)
+            : parse5.parse(test.input, opts),
+    })
+);
 
 generateParsingTests(
     'parser upstream',
@@ -22,29 +38,7 @@ generateParsingTests(
     {
         withoutErrors: true,
         suitePath: new URL('../../../../test/data/html5lib-tests/tree-construction', import.meta.url),
-        expectErrors: [
-            '271.foreign-fragment',
-            '272.foreign-fragment',
-            '309.foreign-fragment',
-            '311.foreign-fragment',
-            '318.foreign-fragment',
-            '319.foreign-fragment',
-            '329.foreign-fragment',
-            '330.foreign-fragment',
-            '331.foreign-fragment',
-            '332.foreign-fragment',
-            '333.foreign-fragment',
-            '334.foreign-fragment',
-            '335.foreign-fragment',
-            '336.foreign-fragment',
-            '337.foreign-fragment',
-            '505.search-element',
-            '506.search-element',
-            '1408.tests26',
-            '1409.tests26',
-            '1410.tests26',
-            '1411.tests26',
-        ],
+        expectErrors: ['505.search-element', '506.search-element'],
     },
     (test, opts) => ({
         node: test.fragmentContext

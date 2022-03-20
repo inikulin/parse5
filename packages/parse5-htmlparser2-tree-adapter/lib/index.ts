@@ -242,20 +242,18 @@ export function setNodeSourceCodeLocation(node: Node, location: ElementLocation 
         node.endIndex = location.endOffset;
     }
 
-    // TODO: Update types in `domhandler`
-    node.sourceCodeLocation = location as any;
+    node.sourceCodeLocation = location;
 }
 
 export function getNodeSourceCodeLocation(node: Node): ElementLocation | null | undefined {
-    return node.sourceCodeLocation as ElementLocation | null | undefined;
+    return node.sourceCodeLocation;
 }
 
-export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<ElementLocation>): void {
+export function updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
     if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
 
-    // TODO: Update types in `domhandler`
     node.sourceCodeLocation = {
         ...node.sourceCodeLocation,
         ...endLocation,
-    } as any;
+    };
 }
