@@ -3,22 +3,19 @@ import { Tokenizer, TokenizerMode, TokenHandler } from './index.js';
 import { Location, EOFToken, CharacterToken, DoctypeToken, TagToken, CommentToken } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
-interface LocationInfoTestCase {
-    initialMode: typeof TokenizerMode[keyof typeof TokenizerMode];
-    lastStartTagName: string;
-    htmlChunks: string[];
-}
-
 /** Receives events and immediately compares them against the expected values. */
 class LocationInfoHandler implements TokenHandler {
     public sawEof = false;
+    /** All HTML chunks concatenated. */
+    private html: string;
     /** The index of the last html chunk. */
     private idx = 0;
     /** All of the lines in the input. */
     private lines: string[];
 
-    constructor(private testCase: LocationInfoTestCase, private html: string) {
-        this.lines = html.split(/\r?\n/g);
+    constructor(private htmlChunks: string[]) {
+        this.html = htmlChunks.join('');
+        this.lines = this.html.split(/\r?\n/g);
     }
 
     private validateLocation(location: Location | null): void {
@@ -26,7 +23,7 @@ class LocationInfoHandler implements TokenHandler {
 
         //Offsets
         const actual = this.html.substring(location.startOffset, location.endOffset);
-        const chunk = this.testCase.htmlChunks[this.idx];
+        const chunk = this.htmlChunks[this.idx];
 
         assert.strictEqual(actual, chunk);
 
@@ -65,7 +62,7 @@ class LocationInfoHandler implements TokenHandler {
         assert.strictEqual(location.endOffset, location.startOffset);
         assert.strictEqual(location.endOffset, this.html.length);
 
-        assert.strictEqual(this.idx, this.testCase.htmlChunks.length);
+        assert.strictEqual(this.idx, this.htmlChunks.length);
 
         this.sawEof = true;
     }
@@ -166,14 +163,9 @@ it('Location Info (Tokenizer)', () => {
     ];
 
     for (const testCase of testCases) {
-        const html = testCase.htmlChunks.join('');
-        const handler = new LocationInfoHandler(testCase, html);
+        const { htmlChunks } = testCase;
+        const handler = new LocationInfoHandler(htmlChunks);
         const tokenizer = new Tokenizer({ sourceCodeLocationInfo: true }, handler);
-        const lastChunkIdx = testCase.htmlChunks.length - 1;
-
-        for (let i = 0; i < testCase.htmlChunks.length; i++) {
-            tokenizer.write(testCase.htmlChunks[i], i === lastChunkIdx);
-        }
 
         // NOTE: set small waterline for testing purposes
         tokenizer.preprocessor.bufferWaterline = 8;
@@ -181,8 +173,11 @@ it('Location Info (Tokenizer)', () => {
         tokenizer.lastStartTagName = testCase.lastStartTagName;
         tokenizer.inForeignNode = !!testCase.inForeignNode;
 
-        while (!handler.sawEof) {
-            tokenizer.getNextToken();
+        for (let i = 0; i < htmlChunks.length; i++) {
+            tokenizer.write(htmlChunks[i], i === htmlChunks.length - 1);
         }
+
+        assert.ok(handler.sawEof);
+        assert.ok(!tokenizer.active);
     }
 });
