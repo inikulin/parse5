@@ -14,12 +14,13 @@ import type { DefaultTreeAdapterMap } from 'parse5/dist/tree-adapters/default.js
  * ```js
  * const ParserStream = require('parse5-parser-stream');
  * const http = require('http');
+ * const { finished } = require('node:stream');
  *
  * // Fetch the page content and obtain it's <head> node
  * http.get('http://inikulin.github.io/parse5/', res => {
  *     const parser = new ParserStream();
  *
- *     parser.once('finish', () => {
+ *     finished(parser, () => {
  *         console.log(parser.document.childNodes[1].childNodes[0].tagName); //> 'head'
  *     });
  *

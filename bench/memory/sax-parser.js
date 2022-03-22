@@ -1,35 +1,30 @@
 import { readFile } from 'node:fs/promises';
 import format from 'human-format';
-import promisifyEvent from 'promisify-event';
 import memwatch from '@airbnb/node-memwatch';
-import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
+import { SAXParser } from 'parse5-sax-parser/dist/index.js';
+import { finished } from 'parse5-test-utils/dist/common.js';
 
 main();
 
 async function main() {
-    let parsedDataSize = 0;
-    let maxMemUsage = 0;
-    let startDate = null;
-    let endDate = null;
     const heapDiffMeasurement = new memwatch.HeapDiff();
-    let heapDiff = null;
+
+    let maxMemUsage = 0;
 
     memwatch.on('stats', (stats) => {
         maxMemUsage = Math.max(maxMemUsage, stats.used_heap_size);
     });
 
-    startDate = new Date();
+    const statsPromise = new Promise((resolve) => memwatch.once('stats', resolve));
 
-    const parserPromise = parse().then((dataSize) => {
-        parsedDataSize = dataSize;
-        endDate = new Date();
-        heapDiff = heapDiffMeasurement.end();
-    });
+    const startDate = new Date();
 
-    await Promise.all([
-        parserPromise,
-        promisifyEvent(memwatch, 'stats'), // NOTE: we need at least one `stats` result
-    ]);
+    const parsedDataSize = await parse();
+    const endDate = new Date();
+    const heapDiff = heapDiffMeasurement.end();
+
+    // NOTE: we need at least one `stats` result to get maxMemUsage
+    await statsPromise;
 
     printResults(parsedDataSize, startDate, endDate, heapDiff, maxMemUsage);
 }
@@ -46,7 +41,7 @@ async function parse() {
 
     stream.end();
 
-    await promisifyEvent(stream, 'finish');
+    await finished(stream);
 
     return parsedDataSize;
 }

@@ -10,7 +10,6 @@
         "benchmark": "^2.1.4",
         "human-format": "^1.0.0",
         "@airbnb/node-memwatch": "^2.0.0",
-        "parse5": "npm:parse5",
-        "promisify-event": "^1.0.0"
+        "parse5": "npm:parse5"
     }
 }

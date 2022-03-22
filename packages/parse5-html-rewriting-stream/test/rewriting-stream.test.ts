@@ -3,7 +3,7 @@ import { outdent } from 'outdent';
 import { RewritingStream } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
 import { getStringDiffMsg, writeChunkedToStream, WritableStreamStub } from 'parse5-test-utils/utils/common.js';
-import { finished } from 'node:stream';
+import { finished } from 'parse5-test-utils/utils/common.js';
 
 const srcHtml = outdent`
   <!DOCTYPE html "">
@@ -32,23 +32,18 @@ function createRewriterTest({
     expected: string;
     assignTokenHandlers?: (rewriter: RewritingStream) => void;
 }) {
-    return (done: (err?: unknown) => void): void => {
+    return async (): Promise<void> => {
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
-
-        finished(writable, () => {
-            try {
-                assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
-                done();
-            } catch (error) {
-                done(error);
-            }
-        });
 
         rewriter.pipe(writable);
 
         assignTokenHandlers(rewriter);
         writeChunkedToStream(src, rewriter);
+
+        await finished(writable);
+
+        assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
     };
 }
 
@@ -289,7 +284,7 @@ describe('RewritingStream', () => {
         })
     );
 
-    it('Last text chunk must be flushed (GH-271)', (done) => {
+    it('Last text chunk must be flushed (GH-271)', async () => {
         const parser = new RewritingStream();
         let foundText = false;
 
@@ -298,13 +293,12 @@ describe('RewritingStream', () => {
             assert.strictEqual(text, 'text');
         });
 
-        parser.once('finish', () => {
-            assert.ok(foundText);
-            done();
-        });
-
         parser.write('text');
         parser.end();
+
+        await finished(parser);
+
+        assert.ok(foundText);
     });
 
     it('Should not accept binary input (GH-269)', () => {

@@ -1,5 +1,6 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
+import { finished } from 'parse5-test-utils/utils/common.js';
 import { SAXParser, SAXParserOptions } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
 import {
@@ -14,7 +15,7 @@ function sanitizeForComparison(str: string): string {
 }
 
 function createBasicTest(html: string, expected: string, options?: SAXParserOptions) {
-    return function (): void {
+    return async function (): Promise<void> {
         //NOTE: the idea of the test is to serialize back given HTML using SAXParser handlers
         let actual = '';
         const parser = new SAXParser(options);
@@ -55,15 +56,15 @@ function createBasicTest(html: string, expected: string, options?: SAXParserOpti
             actual += `<!--${text}-->`;
         });
 
-        parser.once('finish', () => {
-            expected = sanitizeForComparison(expected);
-            actual = sanitizeForComparison(actual);
-
-            //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
-            assert.ok(actual === expected, getStringDiffMsg(actual, expected));
-        });
-
         writeChunkedToStream(html, parser);
+
+        await finished(parser);
+
+        expected = sanitizeForComparison(expected);
+        actual = sanitizeForComparison(actual);
+
+        //NOTE: use ok assertion, so output will not be polluted by the whole content of the strings
+        assert.ok(actual === expected, getStringDiffMsg(actual, expected));
     };
 }
 
@@ -74,7 +75,7 @@ describe('SAX parser', () => {
     for (const [idx, data] of loadSAXParserTestData().entries())
         it(`${idx + 1}.${data.name}`, createBasicTest(data.src, data.expected));
 
-    it('Piping and .stop()', (done) => {
+    it('Piping and .stop()', async () => {
         const parser = new SAXParser();
         const writable = new WritableStreamStub();
         let handlerCallCount = 0;
@@ -95,25 +96,24 @@ describe('SAX parser', () => {
         parser.on('comment', handler);
         parser.on('text', handler);
 
-        writable.once('finish', () => {
-            const expected = fs.readFileSync(hugePage).toString();
+        await finished(writable);
 
-            assert.strictEqual(handlerCallCount, 10);
-            assert.strictEqual(writable.writtenData, expected);
-            done();
-        });
+        const expected = fs.readFileSync(hugePage).toString();
+
+        assert.strictEqual(handlerCallCount, 10);
+        assert.strictEqual(writable.writtenData, expected);
     });
 
-    it('Parser silently exits on big files (GH-97)', (done) => {
+    it('Parser silently exits on big files (GH-97)', () => {
         const parser = new SAXParser();
 
         fs.createReadStream(hugePage, 'utf8').pipe(parser);
 
         //NOTE: This is a smoke test - in case of regression it will fail with timeout.
-        parser.once('finish', done);
+        return finished(parser);
     });
 
-    it('Last text chunk must be flushed (GH-271)', (done) => {
+    it('Last text chunk must be flushed (GH-271)', async () => {
         const parser = new SAXParser();
         let foundText = false;
 
@@ -122,13 +122,12 @@ describe('SAX parser', () => {
             assert.strictEqual(text, 'text');
         });
 
-        parser.once('finish', () => {
-            assert.ok(foundText);
-            done();
-        });
-
         parser.write('text');
         parser.end();
+
+        await finished(parser);
+
+        assert.ok(foundText);
     });
 
     it('Should not accept binary input (GH-269)', () => {
