@@ -51,8 +51,8 @@
             ]
         },
         {
-            "description": "<p><b><i><u></p>\\r\\n<p>X",
-            "input": "<p><b><i><u></p>\r\n<p>X",
+            "description": "<p><b><i><u></p>\\n<p>X",
+            "input": "<p><b><i><u></p>\n<p>X",
             "output": [
                 [
                     "StartTag",

@@ -108,9 +108,12 @@ function collectParserTokens(html: string): HtmlLibToken[] {
             );
         }
         override onWhitespaceCharacter(token: CharacterToken): void {
+            const { skipNextNewLine } = this;
+            const { chars } = token;
+
             this.guardTopLevel(
                 () => super.onWhitespaceCharacter(token),
-                () => ['Character', token.chars]
+                () => ['Character', skipNextNewLine && chars.startsWith('\n') ? chars.slice(1) : chars]
             );
         }
     }

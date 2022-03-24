@@ -956,8 +956,8 @@
             ]
         },
         {
-            "description": "test\\r\\ntest",
-            "input": "test\r\ntest",
+            "description": "test\\ntest",
+            "input": "test\ntest",
             "output": [
                 [
                     "Character",
@@ -997,8 +997,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><body><title>X</title><meta name=z><link rel=foo><style>\\r\\nx { content:\"</style\" } </style>",
-            "input": "<!DOCTYPE html><body><title>X</title><meta name=z><link rel=foo><style>\r\nx { content:\"</style\" } </style>",
+            "description": "<!DOCTYPE html><body><title>X</title><meta name=z><link rel=foo><style>\\nx { content:\"</style\" } </style>",
+            "input": "<!DOCTYPE html><body><title>X</title><meta name=z><link rel=foo><style>\nx { content:\"</style\" } </style>",
             "output": [
                 [
                     "DOCTYPE",
@@ -1086,8 +1086,8 @@
             ]
         },
         {
-            "description": " \\r\\n ",
-            "input": " \r\n ",
+            "description": " \\n ",
+            "input": " \n ",
             "output": [
                 [
                     "Character",
@@ -1118,8 +1118,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><script>\\r\\n</script>  <title>x</title>  </head>",
-            "input": "<!DOCTYPE html><script>\r\n</script>  <title>x</title>  </head>",
+            "description": "<!DOCTYPE html><script>\\n</script>  <title>x</title>  </head>",
+            "input": "<!DOCTYPE html><script>\n</script>  <title>x</title>  </head>",
             "output": [
                 [
                     "DOCTYPE",

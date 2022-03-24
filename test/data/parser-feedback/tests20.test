@@ -57,6 +57,62 @@
             ]
         },
         {
+            "description": "<!doctype html><p><button><article>",
+            "input": "<!doctype html><p><button><article>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "article",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><aside>",
+            "input": "<!doctype html><p><button><aside>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ]
+            ]
+        },
+        {
             "description": "<!doctype html><p><button><blockquote>",
             "input": "<!doctype html><p><button><blockquote>",
             "output": [
@@ -80,6 +136,370 @@
                 [
                     "StartTag",
                     "blockquote",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><center>",
+            "input": "<!doctype html><p><button><center>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "center",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><details>",
+            "input": "<!doctype html><p><button><details>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "details",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><dialog>",
+            "input": "<!doctype html><p><button><dialog>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dialog",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><dir>",
+            "input": "<!doctype html><p><button><dir>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dir",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><div>",
+            "input": "<!doctype html><p><button><div>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><dl>",
+            "input": "<!doctype html><p><button><dl>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dl",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><fieldset>",
+            "input": "<!doctype html><p><button><fieldset>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "fieldset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><figcaption>",
+            "input": "<!doctype html><p><button><figcaption>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "figcaption",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><figure>",
+            "input": "<!doctype html><p><button><figure>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><footer>",
+            "input": "<!doctype html><p><button><footer>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "footer",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><header>",
+            "input": "<!doctype html><p><button><header>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "header",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><hgroup>",
+            "input": "<!doctype html><p><button><hgroup>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "hgroup",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><main>",
+            "input": "<!doctype html><p><button><main>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "main",
                     {}
                 ]
             ]
@@ -113,6 +533,62 @@
             ]
         },
         {
+            "description": "<!doctype html><p><button><nav>",
+            "input": "<!doctype html><p><button><nav>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "nav",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><ol>",
+            "input": "<!doctype html><p><button><ol>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "ol",
+                    {}
+                ]
+            ]
+        },
+        {
             "description": "<!doctype html><p><button><p>",
             "input": "<!doctype html><p><button><p>",
             "output": [
@@ -136,6 +612,90 @@
                 [
                     "StartTag",
                     "p",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><search>",
+            "input": "<!doctype html><p><button><search>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "search",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><section>",
+            "input": "<!doctype html><p><button><section>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "section",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><p><button><summary>",
+            "input": "<!doctype html><p><button><summary>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "summary",
                     {}
                 ]
             ]

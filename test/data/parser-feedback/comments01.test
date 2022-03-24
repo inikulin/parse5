@@ -37,6 +37,34 @@
             ]
         },
         {
+            "description": "FOO<!-- BAR --! >BAZ",
+            "input": "FOO<!-- BAR --! >BAZ",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "Comment",
+                    " BAR --! >BAZ"
+                ]
+            ]
+        },
+        {
+            "description": "FOO<!-- BAR --!\\n>BAZ",
+            "input": "FOO<!-- BAR --!\n>BAZ",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "Comment",
+                    " BAR --!\n>BAZ"
+                ]
+            ]
+        },
+        {
             "description": "FOO<!-- BAR --   >BAZ",
             "input": "FOO<!-- BAR --   >BAZ",
             "output": [

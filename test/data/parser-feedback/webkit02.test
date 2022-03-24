@@ -57,6 +57,49 @@
             ]
         },
         {
+            "description": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
+            "input": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
+            "output": [
+                [
+                    "StartTag",
+                    "p",
+                    {
+                        "id": "status"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<strong>A</strong>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "Character",
+                    "B"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ]
+            ]
+        },
+        {
             "description": "<div><sarcasm><div></div></sarcasm></div>",
             "input": "<div><sarcasm><div></div></sarcasm></div>",
             "output": [

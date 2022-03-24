@@ -107,8 +107,8 @@
             ]
         },
         {
-            "description": "<html>\\u0000\\r\\n <frameset></frameset>",
-            "input": "<html>\u0000\r\n <frameset></frameset>",
+            "description": "<html>\\u0000\\n<frameset></frameset>",
+            "input": "<html>\u0000\n<frameset></frameset>",
             "output": [
                 [
                     "StartTag",
@@ -117,7 +117,7 @@
                 ],
                 [
                     "Character",
-                    "\u0000\n "
+                    "\u0000\n"
                 ],
                 [
                     "StartTag",
@@ -458,8 +458,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><pre>\\r\\n\\r\\nA</pre>",
-            "input": "<!DOCTYPE html><pre>\r\n\r\nA</pre>",
+            "description": "<!DOCTYPE html><pre>\\n\\nA</pre>",
+            "input": "<!DOCTYPE html><pre>\n\nA</pre>",
             "output": [
                 [
                     "DOCTYPE",

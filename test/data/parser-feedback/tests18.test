@@ -1,6 +1,21 @@
 {
     "tests": [
         {
+            "description": "<plaintext></plaintext>",
+            "input": "<plaintext></plaintext>",
+            "output": [
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
             "description": "<!doctype html><plaintext></plaintext>",
             "input": "<!doctype html><plaintext></plaintext>",
             "output": [
@@ -10,6 +25,140 @@
                     null,
                     null,
                     true
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><html><plaintext></plaintext>",
+            "input": "<!doctype html><html><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><head><plaintext></plaintext>",
+            "input": "<!doctype html><head><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><html><noscript><plaintext></plaintext>",
+            "input": "<!doctype html><html><noscript><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<plaintext></plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html></head><plaintext></plaintext>",
+            "input": "<!doctype html></head><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "EndTag",
+                    "head"
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><body><plaintext></plaintext>",
+            "input": "<!doctype html><body><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
                 ],
                 [
                     "StartTag",
@@ -179,6 +328,198 @@
                 [
                     "Character",
                     "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><table><colgroup><plaintext></plaintext>",
+            "input": "<!doctype html><table><colgroup><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><template><plaintext>a</template>b",
+            "input": "<!doctype html><template><plaintext>a</template>b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "template",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a</template>b"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><body></body><plaintext></plaintext>",
+            "input": "<!doctype html><body></body><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><body></body></html><plaintext></plaintext>",
+            "input": "<!doctype html><body></body></html><plaintext></plaintext>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</plaintext>"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><svg><plaintext>a</plaintext>b",
+            "input": "<!doctype html><svg><plaintext>a</plaintext>b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a"
+                ],
+                [
+                    "EndTag",
+                    "plaintext"
+                ],
+                [
+                    "Character",
+                    "b"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><svg><title><plaintext>a</plaintext>b",
+            "input": "<!doctype html><svg><title><plaintext>a</plaintext>b",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a</plaintext>b"
                 ]
             ]
         },

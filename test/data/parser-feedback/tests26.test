@@ -639,8 +639,8 @@
             ]
         },
         {
-            "description": "<p><code x</code></p>\\r\\n",
-            "input": "<p><code x</code></p>\r\n",
+            "description": "<p><code x</code></p>\\n",
+            "input": "<p><code x</code></p>\n",
             "output": [
                 [
                     "StartTag",
@@ -907,6 +907,86 @@
                 [
                     "StartTag",
                     "button",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg></p><foo>",
+            "input": "<svg></p><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<svg></br><foo>",
+            "input": "<svg></br><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "br"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math></p><foo>",
+            "input": "<math></p><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "description": "<math></br><foo>",
+            "input": "<math></br><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "br"
+                ],
+                [
+                    "StartTag",
+                    "foo",
                     {}
                 ]
             ]

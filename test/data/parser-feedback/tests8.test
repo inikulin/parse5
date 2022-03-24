@@ -1,8 +1,8 @@
 {
     "tests": [
         {
-            "description": "<div>\\r\\n<div></div>\\r\\n</span>x",
-            "input": "<div>\r\n<div></div>\r\n</span>x",
+            "description": "<div>\\n<div></div>\\n</span>x",
+            "input": "<div>\n<div></div>\n</span>x",
             "output": [
                 [
                     "StartTag",
@@ -37,8 +37,8 @@
             ]
         },
         {
-            "description": "<div>x<div></div>\\r\\n</span>x",
-            "input": "<div>x<div></div>\r\n</span>x",
+            "description": "<div>x<div></div>\\n</span>x",
+            "input": "<div>x<div></div>\n</span>x",
             "output": [
                 [
                     "StartTag",
@@ -182,6 +182,31 @@
                 [
                     "Character",
                     "x"
+                ]
+            ]
+        },
+        {
+            "description": "<table><li><li></table>",
+            "input": "<table><li><li></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "li",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "li",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
                 ]
             ]
         },

@@ -1,0 +1,126 @@
+{
+    "tests": [
+        {
+            "description": "<!doctype html><p>foo<search>bar<p>baz",
+            "input": "<!doctype html><p>foo<search>bar<p>baz",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ],
+                [
+                    "StartTag",
+                    "search",
+                    {}
+                ],
+                [
+                    "Character",
+                    "bar"
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "baz"
+                ]
+            ]
+        },
+        {
+            "description": "<!doctype html><search><p>foo</search>bar",
+            "input": "<!doctype html><search><p>foo</search>bar",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "search",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "Character",
+                    "foo"
+                ],
+                [
+                    "EndTag",
+                    "search"
+                ],
+                [
+                    "Character",
+                    "bar"
+                ]
+            ]
+        },
+        {
+            "description": "<!DOCTYPE html>xxx<svg><x><g><a><search><b>",
+            "input": "<!DOCTYPE html>xxx<svg><x><g><a><search><b>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "Character",
+                    "xxx"
+                ],
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "x",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "g",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "search",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ]
+            ]
+        }
+    ]
+}

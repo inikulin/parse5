@@ -1,8 +1,8 @@
 {
     "tests": [
         {
-            "description": "<svg><![CDATA[foo\\r\\nbar]]>",
-            "input": "<svg><![CDATA[foo\r\nbar]]>",
+            "description": "<svg><![CDATA[foo\\nbar]]>",
+            "input": "<svg><![CDATA[foo\nbar]]>",
             "output": [
                 [
                     "StartTag",
@@ -31,8 +31,8 @@
             ]
         },
         {
-            "description": "<svg><![CDATA[foo\\r\\nbar]]>",
-            "input": "<svg><![CDATA[foo\r\nbar]]>",
+            "description": "<svg><![CDATA[foo\\nbar]]>",
+            "input": "<svg><![CDATA[foo\nbar]]>",
             "output": [
                 [
                     "StartTag",

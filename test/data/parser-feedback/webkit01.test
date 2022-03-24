@@ -50,8 +50,8 @@
             "output": []
         },
         {
-            "description": "<div>Hello</div>\\r\\n<script>\\r\\nconsole.log(\"PASS\");\\r\\n</script>\\r\\n<div>Bye</div>",
-            "input": "<div>Hello</div>\r\n<script>\r\nconsole.log(\"PASS\");\r\n</script>\r\n<div>Bye</div>",
+            "description": "<div>Hello</div>\\n<script>\\nconsole.log(\"PASS\");\\n</script>\\n<div>Bye</div>",
+            "input": "<div>Hello</div>\n<script>\nconsole.log(\"PASS\");\n</script>\n<div>Bye</div>",
             "output": [
                 [
                     "StartTag",
@@ -124,8 +124,8 @@
             ]
         },
         {
-            "description": "<div>Hello</div>\\r\\n<script>\\r\\nconsole.log(\"FOO<span>BAR</span>BAZ\");\\r\\n</script>\\r\\n<div>Bye</div>",
-            "input": "<div>Hello</div>\r\n<script>\r\nconsole.log(\"FOO<span>BAR</span>BAZ\");\r\n</script>\r\n<div>Bye</div>",
+            "description": "<div>Hello</div>\\n<script>\\nconsole.log(\"FOO<span>BAR</span>BAZ\");\\n</script>\\n<div>Bye</div>",
+            "input": "<div>Hello</div>\n<script>\nconsole.log(\"FOO<span>BAR</span>BAZ\");\n</script>\n<div>Bye</div>",
             "output": [
                 [
                     "StartTag",
@@ -487,6 +487,50 @@
                 [
                     "Comment",
                     " Hi there "
+                ]
+            ]
+        },
+        {
+            "description": "<html><body></body></html><!-- Comment A --><!-- Comment B --><!-- Comment C --><!-- Comment D --><!-- Comment E -->",
+            "input": "<html><body></body></html><!-- Comment A --><!-- Comment B --><!-- Comment C --><!-- Comment D --><!-- Comment E -->",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "Comment",
+                    " Comment A "
+                ],
+                [
+                    "Comment",
+                    " Comment B "
+                ],
+                [
+                    "Comment",
+                    " Comment C "
+                ],
+                [
+                    "Comment",
+                    " Comment D "
+                ],
+                [
+                    "Comment",
+                    " Comment E "
                 ]
             ]
         },
@@ -993,8 +1037,8 @@
             ]
         },
         {
-            "description": "<head></head>\\r\\n<body></body>",
-            "input": "<head></head>\r\n<body></body>",
+            "description": "<head></head>\\n<body></body>",
+            "input": "<head></head>\n<body></body>",
             "output": [
                 [
                     "StartTag",

@@ -135,8 +135,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><html><head></head><body><pre>\\r\\n</pre></body></html>",
-            "input": "<!DOCTYPE html><html><head></head><body><pre>\r\n</pre></body></html>",
+            "description": "<!DOCTYPE html><html><head></head><body><pre>\\n</pre></body></html>",
+            "input": "<!DOCTYPE html><html><head></head><body><pre>\n</pre></body></html>",
             "output": [
                 [
                     "DOCTYPE",
@@ -184,8 +184,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><html><head></head><body><pre>\\r\\nfoo</pre></body></html>",
-            "input": "<!DOCTYPE html><html><head></head><body><pre>\r\nfoo</pre></body></html>",
+            "description": "<!DOCTYPE html><html><head></head><body><pre>\\nfoo</pre></body></html>",
+            "input": "<!DOCTYPE html><html><head></head><body><pre>\nfoo</pre></body></html>",
             "output": [
                 [
                     "DOCTYPE",
@@ -237,8 +237,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><html><head></head><body><pre>\\r\\n\\r\\nfoo</pre></body></html>",
-            "input": "<!DOCTYPE html><html><head></head><body><pre>\r\n\r\nfoo</pre></body></html>",
+            "description": "<!DOCTYPE html><html><head></head><body><pre>\\n\\nfoo</pre></body></html>",
+            "input": "<!DOCTYPE html><html><head></head><body><pre>\n\nfoo</pre></body></html>",
             "output": [
                 [
                     "DOCTYPE",
@@ -290,8 +290,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><html><head></head><body><pre>\\r\\nfoo\\r\\n</pre></body></html>",
-            "input": "<!DOCTYPE html><html><head></head><body><pre>\r\nfoo\r\n</pre></body></html>",
+            "description": "<!DOCTYPE html><html><head></head><body><pre>\\nfoo\\n</pre></body></html>",
+            "input": "<!DOCTYPE html><html><head></head><body><pre>\nfoo\n</pre></body></html>",
             "output": [
                 [
                     "DOCTYPE",
@@ -343,8 +343,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><html><head></head><body><pre>x</pre><span>\\r\\n</span></body></html>",
-            "input": "<!DOCTYPE html><html><head></head><body><pre>x</pre><span>\r\n</span></body></html>",
+            "description": "<!DOCTYPE html><html><head></head><body><pre>x</pre><span>\\n</span></body></html>",
+            "input": "<!DOCTYPE html><html><head></head><body><pre>x</pre><span>\n</span></body></html>",
             "output": [
                 [
                     "DOCTYPE",
@@ -409,8 +409,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><html><head></head><body><pre>x\\r\\ny</pre></body></html>",
-            "input": "<!DOCTYPE html><html><head></head><body><pre>x\r\ny</pre></body></html>",
+            "description": "<!DOCTYPE html><html><head></head><body><pre>x\\ny</pre></body></html>",
+            "input": "<!DOCTYPE html><html><head></head><body><pre>x\ny</pre></body></html>",
             "output": [
                 [
                     "DOCTYPE",
@@ -462,8 +462,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><html><head></head><body><pre>x<div>\\r\\ny</pre></body></html>",
-            "input": "<!DOCTYPE html><html><head></head><body><pre>x<div>\r\ny</pre></body></html>",
+            "description": "<!DOCTYPE html><html><head></head><body><pre>x<div>\\ny</pre></body></html>",
+            "input": "<!DOCTYPE html><html><head></head><body><pre>x<div>\ny</pre></body></html>",
             "output": [
                 [
                     "DOCTYPE",
@@ -652,8 +652,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><textarea>\\r\\n</textarea>",
-            "input": "<!DOCTYPE html><textarea>\r\n</textarea>",
+            "description": "<!DOCTYPE html><textarea>\\n</textarea>",
+            "input": "<!DOCTYPE html><textarea>\n</textarea>",
             "output": [
                 [
                     "DOCTYPE",
@@ -674,8 +674,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><textarea>\\r\\nfoo</textarea>",
-            "input": "<!DOCTYPE html><textarea>\r\nfoo</textarea>",
+            "description": "<!DOCTYPE html><textarea>\\nfoo</textarea>",
+            "input": "<!DOCTYPE html><textarea>\nfoo</textarea>",
             "output": [
                 [
                     "DOCTYPE",
@@ -700,8 +700,8 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><textarea>\\r\\n\\r\\nfoo</textarea>",
-            "input": "<!DOCTYPE html><textarea>\r\n\r\nfoo</textarea>",
+            "description": "<!DOCTYPE html><textarea>\\n\\nfoo</textarea>",
+            "input": "<!DOCTYPE html><textarea>\n\nfoo</textarea>",
             "output": [
                 [
                     "DOCTYPE",
