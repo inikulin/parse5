@@ -32,6 +32,6 @@ as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.
 </p>
 
 <p align="center">
-  <a href="https://github.com/inikulin/parse5/releases">Version history</a>
+  <a href="https://github.com/inikulin/parse5/releases">Changelog</a>
 </p>
 </p>
