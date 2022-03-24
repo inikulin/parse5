@@ -145,3 +145,24 @@ export class RewritingStream extends SAXParser {
         this.push(html);
     }
 }
+
+export interface RewritingStream {
+    /** Raised when the rewriter encounters a start tag. */
+    on(event: 'startTag', listener: (startTag: StartTag, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters an end tag. */
+    on(event: 'endTag', listener: (endTag: EndTag, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters a comment. */
+    on(event: 'comment', listener: (comment: Comment, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters text content. */
+    on(event: 'text', listener: (text: Text, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration). */
+    on(event: 'doctype', listener: (doctype: Doctype, rawHtml: string) => void): this;
+
+    /**
+     * Base event handler.
+     *
+     * @param event Name of the event
+     * @param handler Event handler
+     */
+    on(event: string, handler: (...args: any[]) => void): this;
+}
