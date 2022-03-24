@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<head><noscript><!doctype html><!--foo--></noscript>",
             "input": "<head><noscript><!doctype html><!--foo--></noscript>",
             "output": [
@@ -25,6 +26,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><html class=\"foo\"><!--foo--></noscript>",
             "input": "<head><noscript><html class=\"foo\"><!--foo--></noscript>",
             "output": [
@@ -49,6 +51,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript></noscript>",
             "input": "<head><noscript></noscript>",
             "output": [
@@ -69,6 +72,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript>   </noscript>",
             "input": "<head><noscript>   </noscript>",
             "output": [
@@ -93,6 +97,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><!--foo--></noscript>",
             "input": "<head><noscript><!--foo--></noscript>",
             "output": [
@@ -117,6 +122,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><basefont><!--foo--></noscript>",
             "input": "<head><noscript><basefont><!--foo--></noscript>",
             "output": [
@@ -141,6 +147,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><bgsound><!--foo--></noscript>",
             "input": "<head><noscript><bgsound><!--foo--></noscript>",
             "output": [
@@ -165,6 +172,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><link><!--foo--></noscript>",
             "input": "<head><noscript><link><!--foo--></noscript>",
             "output": [
@@ -189,6 +197,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><meta><!--foo--></noscript>",
             "input": "<head><noscript><meta><!--foo--></noscript>",
             "output": [
@@ -213,6 +222,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><noframes>XXX</noscript></noframes></noscript>",
             "input": "<head><noscript><noframes>XXX</noscript></noframes></noscript>",
             "output": [
@@ -245,6 +255,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><style>XXX</style></noscript>",
             "input": "<head><noscript><style>XXX</style></noscript>",
             "output": [
@@ -269,6 +280,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript></br><!--foo--></noscript>",
             "input": "<head><noscript></br><!--foo--></noscript>",
             "output": [
@@ -293,6 +305,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><head class=\"foo\"><!--foo--></noscript>",
             "input": "<head><noscript><head class=\"foo\"><!--foo--></noscript>",
             "output": [
@@ -317,6 +330,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><noscript class=\"foo\"><!--foo--></noscript>",
             "input": "<head><noscript><noscript class=\"foo\"><!--foo--></noscript>",
             "output": [
@@ -341,6 +355,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript></p><!--foo--></noscript>",
             "input": "<head><noscript></p><!--foo--></noscript>",
             "output": [
@@ -365,6 +380,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript><p><!--foo--></noscript>",
             "input": "<head><noscript><p><!--foo--></noscript>",
             "output": [
@@ -389,6 +405,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript>XXX<!--foo--></noscript></head>",
             "input": "<head><noscript>XXX<!--foo--></noscript></head>",
             "output": [
@@ -417,6 +434,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><noscript>",
             "input": "<head><noscript>",
             "output": [

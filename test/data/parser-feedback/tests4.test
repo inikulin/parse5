@@ -1,3 +1,125 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "fragmentContext": "div",
+            "description": "direct div content",
+            "input": "direct div content",
+            "output": [
+                [
+                    "Character",
+                    "direct div content"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "textarea",
+            "description": "direct textarea content",
+            "input": "direct textarea content",
+            "output": [
+                [
+                    "Character",
+                    "direct textarea content"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "textarea",
+            "description": "textarea content with <em>pseudo</em> <foo>markup",
+            "input": "textarea content with <em>pseudo</em> <foo>markup",
+            "output": [
+                [
+                    "Character",
+                    "textarea content with "
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "Character",
+                    "pseudo"
+                ],
+                [
+                    "EndTag",
+                    "em"
+                ],
+                [
+                    "Character",
+                    " "
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "Character",
+                    "markup"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "style",
+            "description": "this is &#x0043;DATA inside a <style> element",
+            "input": "this is &#x0043;DATA inside a <style> element",
+            "output": [
+                [
+                    "Character",
+                    "this is CDATA inside a "
+                ],
+                [
+                    "StartTag",
+                    "style",
+                    {}
+                ],
+                [
+                    "Character",
+                    " element"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "plaintext",
+            "description": "</plaintext>",
+            "input": "</plaintext>",
+            "output": [
+                [
+                    "EndTag",
+                    "plaintext"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "html",
+            "description": "setting html's innerHTML",
+            "input": "setting html's innerHTML",
+            "output": [
+                [
+                    "Character",
+                    "setting html's innerHTML"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "head",
+            "description": "<title>setting head's innerHTML</title>",
+            "input": "<title>setting head's innerHTML</title>",
+            "output": [
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "Character",
+                    "setting head's innerHTML"
+                ],
+                [
+                    "EndTag",
+                    "title"
+                ]
+            ]
+        }
+    ]
 }

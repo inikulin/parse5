@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<button>1</foo>",
             "input": "<button>1</foo>",
             "output": [
@@ -20,6 +21,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<foo>1<p>2</foo>",
             "input": "<foo>1<p>2</foo>",
             "output": [
@@ -48,6 +50,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<dd>1</foo>",
             "input": "<dd>1</foo>",
             "output": [
@@ -67,6 +70,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<foo>1<dd>2</foo>",
             "input": "<foo>1<dd>2</foo>",
             "output": [

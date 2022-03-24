@@ -1,3 +1,227 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "fragmentContext": "td",
+            "description": "<svg><tr><td><title><tr>",
+            "input": "<svg><tr><td><title><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<svg><tr><td><title><tr>",
+            "input": "<svg><tr><td><title><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "thead",
+            "description": "<svg><thead><title><tbody>",
+            "input": "<svg><thead><title><tbody>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tfoot",
+            "description": "<svg><tfoot><title><tbody>",
+            "input": "<svg><tfoot><title><tbody>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<svg><tbody><title><tfoot>",
+            "input": "<svg><tbody><title><tfoot>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<svg><tbody><title></table>",
+            "input": "<svg><tbody><title></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<svg><thead><title></table>",
+            "input": "<svg><thead><title></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<svg><tfoot><title></table>",
+            "input": "<svg><tfoot><title></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "title",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        }
+    ]
 }

@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rb>b<rb></ruby></html>",
             "input": "<html><ruby>a<rb>b<rb></ruby></html>",
             "output": [
@@ -43,6 +44,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rb>b<rt></ruby></html>",
             "input": "<html><ruby>a<rb>b<rt></ruby></html>",
             "output": [
@@ -85,6 +87,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rb>b<rtc></ruby></html>",
             "input": "<html><ruby>a<rb>b<rtc></ruby></html>",
             "output": [
@@ -127,6 +130,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rb>b<rp></ruby></html>",
             "input": "<html><ruby>a<rb>b<rp></ruby></html>",
             "output": [
@@ -169,6 +173,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rb>b<span></ruby></html>",
             "input": "<html><ruby>a<rb>b<span></ruby></html>",
             "output": [
@@ -211,6 +216,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rt>b<rb></ruby></html>",
             "input": "<html><ruby>a<rt>b<rb></ruby></html>",
             "output": [
@@ -253,6 +259,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rt>b<rt></ruby></html>",
             "input": "<html><ruby>a<rt>b<rt></ruby></html>",
             "output": [
@@ -295,6 +302,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rt>b<rtc></ruby></html>",
             "input": "<html><ruby>a<rt>b<rtc></ruby></html>",
             "output": [
@@ -337,6 +345,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rt>b<rp></ruby></html>",
             "input": "<html><ruby>a<rt>b<rp></ruby></html>",
             "output": [
@@ -379,6 +388,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rt>b<span></ruby></html>",
             "input": "<html><ruby>a<rt>b<span></ruby></html>",
             "output": [
@@ -421,6 +431,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rtc>b<rb></ruby></html>",
             "input": "<html><ruby>a<rtc>b<rb></ruby></html>",
             "output": [
@@ -463,6 +474,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rtc>b<rt>c<rt>d</ruby></html>",
             "input": "<html><ruby>a<rtc>b<rt>c<rt>d</ruby></html>",
             "output": [
@@ -518,6 +530,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rtc>b<rtc></ruby></html>",
             "input": "<html><ruby>a<rtc>b<rtc></ruby></html>",
             "output": [
@@ -560,6 +573,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rtc>b<rp></ruby></html>",
             "input": "<html><ruby>a<rtc>b<rp></ruby></html>",
             "output": [
@@ -602,6 +616,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rtc>b<span></ruby></html>",
             "input": "<html><ruby>a<rtc>b<span></ruby></html>",
             "output": [
@@ -644,6 +659,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rp>b<rb></ruby></html>",
             "input": "<html><ruby>a<rp>b<rb></ruby></html>",
             "output": [
@@ -686,6 +702,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rp>b<rt></ruby></html>",
             "input": "<html><ruby>a<rp>b<rt></ruby></html>",
             "output": [
@@ -728,6 +745,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rp>b<rtc></ruby></html>",
             "input": "<html><ruby>a<rp>b<rtc></ruby></html>",
             "output": [
@@ -770,6 +788,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rp>b<rp></ruby></html>",
             "input": "<html><ruby>a<rp>b<rp></ruby></html>",
             "output": [
@@ -812,6 +831,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rp>b<span></ruby></html>",
             "input": "<html><ruby>a<rp>b<span></ruby></html>",
             "output": [
@@ -854,6 +874,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby><rtc><ruby>a<rb>b<rt></ruby></ruby></html>",
             "input": "<html><ruby><rtc><ruby>a<rb>b<rt></ruby></ruby></html>",
             "output": [

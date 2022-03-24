@@ -1,3 +1,1551 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "fragmentContext": "body",
+            "description": "<body><span>",
+            "input": "<body><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "body",
+            "description": "<span><body>",
+            "input": "<span><body>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "div",
+            "description": "<span><body>",
+            "input": "<span><body>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "html",
+            "description": "<body><span>",
+            "input": "<body><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "body",
+            "description": "<frameset><span>",
+            "input": "<frameset><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "body",
+            "description": "<span><frameset>",
+            "input": "<span><frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "div",
+            "description": "<span><frameset>",
+            "input": "<span><frameset>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "html",
+            "description": "<frameset><span>",
+            "input": "<frameset><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<table><tr>",
+            "input": "<table><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "</table><tr>",
+            "input": "</table><tr>",
+            "output": [
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a>",
+            "input": "<a>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a>",
+            "input": "<a>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><caption>a",
+            "input": "<a><caption>a",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ],
+                [
+                    "Character",
+                    "a"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><colgroup><col>",
+            "input": "<a><colgroup><col>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "col",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><tbody><tr>",
+            "input": "<a><tbody><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><tfoot><tr>",
+            "input": "<a><tfoot><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><thead><tr>",
+            "input": "<a><thead><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><tr>",
+            "input": "<a><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><th>",
+            "input": "<a><th>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "th",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "table",
+            "description": "<a><td>",
+            "input": "<a><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<table></table><tbody>",
+            "input": "<table></table><tbody>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "</table><span>",
+            "input": "</table><span>",
+            "output": [
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span></table>",
+            "input": "<span></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "</caption><span>",
+            "input": "</caption><span>",
+            "output": [
+                [
+                    "EndTag",
+                    "caption"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span></caption><span>",
+            "input": "<span></caption><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "caption"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><caption><span>",
+            "input": "<span><caption><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><col><span>",
+            "input": "<span><col><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "col",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><colgroup><span>",
+            "input": "<span><colgroup><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><html><span>",
+            "input": "<span><html><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><tbody><span>",
+            "input": "<span><tbody><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><td><span>",
+            "input": "<span><td><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><tfoot><span>",
+            "input": "<span><tfoot><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><thead><span>",
+            "input": "<span><thead><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><th><span>",
+            "input": "<span><th><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "th",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span><tr><span>",
+            "input": "<span><tr><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "caption",
+            "description": "<span></table><span>",
+            "input": "<span></table><span>",
+            "output": [
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "colgroup",
+            "description": "</colgroup><col>",
+            "input": "</colgroup><col>",
+            "output": [
+                [
+                    "EndTag",
+                    "colgroup"
+                ],
+                [
+                    "StartTag",
+                    "col",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "colgroup",
+            "description": "<a><col>",
+            "input": "<a><col>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "col",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<caption><a>",
+            "input": "<caption><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<col><a>",
+            "input": "<col><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "col",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<colgroup><a>",
+            "input": "<colgroup><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<tbody><a>",
+            "input": "<tbody><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<tfoot><a>",
+            "input": "<tfoot><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<thead><a>",
+            "input": "<thead><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "</table><a>",
+            "input": "</table><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<a><tr>",
+            "input": "<a><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<a><td>",
+            "input": "<a><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<a><td>",
+            "input": "<a><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<a><td>",
+            "input": "<a><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<td><table><tbody><a><tr>",
+            "input": "<td><table><tbody><a><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "</tr><td>",
+            "input": "</tr><td>",
+            "output": [
+                [
+                    "EndTag",
+                    "tr"
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<td><table><a><tr></tr><tr>",
+            "input": "<td><table><a><tr></tr><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "tr"
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<caption><td>",
+            "input": "<caption><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<col><td>",
+            "input": "<col><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "col",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<colgroup><td>",
+            "input": "<colgroup><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<tbody><td>",
+            "input": "<tbody><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<tfoot><td>",
+            "input": "<tfoot><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<thead><td>",
+            "input": "<thead><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<tr><td>",
+            "input": "<tr><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "</table><td>",
+            "input": "</table><td>",
+            "output": [
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<td><table></table><td>",
+            "input": "<td><table></table><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<td><table></table><td>",
+            "input": "<td><table></table><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<caption><a>",
+            "input": "<caption><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "caption",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<col><a>",
+            "input": "<col><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "col",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<colgroup><a>",
+            "input": "<colgroup><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "colgroup",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<tbody><a>",
+            "input": "<tbody><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<tfoot><a>",
+            "input": "<tfoot><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<th><a>",
+            "input": "<th><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "th",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<thead><a>",
+            "input": "<thead><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<tr><a>",
+            "input": "<tr><a>",
+            "output": [
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "</table><a>",
+            "input": "</table><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "table"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "</tbody><a>",
+            "input": "</tbody><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "tbody"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "</td><a>",
+            "input": "</td><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "td"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "</tfoot><a>",
+            "input": "</tfoot><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "tfoot"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "</thead><a>",
+            "input": "</thead><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "thead"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "</th><a>",
+            "input": "</th><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "th"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "</tr><a>",
+            "input": "</tr><a>",
+            "output": [
+                [
+                    "EndTag",
+                    "tr"
+                ],
+                [
+                    "StartTag",
+                    "a",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "td",
+            "description": "<table><td><td>",
+            "input": "<table><td><td>",
+            "output": [
+                [
+                    "StartTag",
+                    "table",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "select",
+            "description": "</select><option>",
+            "input": "</select><option>",
+            "output": [
+                [
+                    "EndTag",
+                    "select"
+                ],
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "select",
+            "description": "<input><option>",
+            "input": "<input><option>",
+            "output": [
+                [
+                    "StartTag",
+                    "input",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "select",
+            "description": "<keygen><option>",
+            "input": "<keygen><option>",
+            "output": [
+                [
+                    "StartTag",
+                    "keygen",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "select",
+            "description": "<textarea><option>",
+            "input": "<textarea><option>",
+            "output": [
+                [
+                    "StartTag",
+                    "textarea",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<option>"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "html",
+            "description": "</html><!--abc-->",
+            "input": "</html><!--abc-->",
+            "output": [
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "Comment",
+                    "abc"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "frameset",
+            "description": "</frameset><frame>",
+            "input": "</frameset><frame>",
+            "output": [
+                [
+                    "EndTag",
+                    "frameset"
+                ],
+                [
+                    "StartTag",
+                    "frame",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "html",
+            "description": "",
+            "input": "",
+            "output": []
+        }
+    ]
 }

@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<table><th>",
             "input": "<table><th>",
             "output": [
@@ -17,6 +18,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td>",
             "input": "<table><td>",
             "output": [
@@ -33,6 +35,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><col foo='bar'>",
             "input": "<table><col foo='bar'>",
             "output": [
@@ -51,6 +54,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><colgroup></html>foo",
             "input": "<table><colgroup></html>foo",
             "output": [
@@ -75,6 +79,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table></table><p>foo",
             "input": "<table></table><p>foo",
             "output": [
@@ -99,6 +104,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table></body></caption></col></colgroup></html></tbody></td></tfoot></th></thead></tr><td>",
             "input": "<table></body></caption></col></colgroup></html></tbody></td></tfoot></th></thead></tr><td>",
             "output": [
@@ -159,6 +165,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><select><option>3</select></table>",
             "input": "<table><select><option>3</select></table>",
             "output": [
@@ -192,6 +199,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><select><table></table></select></table>",
             "input": "<table><select><table></table></select></table>",
             "output": [
@@ -225,6 +233,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><select></table>",
             "input": "<table><select></table>",
             "output": [
@@ -245,6 +254,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><select><option>A<tr><td>B</td></tr></table>",
             "input": "<table><select><option>A<tr><td>B</td></tr></table>",
             "output": [
@@ -296,6 +306,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td></body></caption></col></colgroup></html>foo",
             "input": "<table><td></body></caption></col></colgroup></html>foo",
             "output": [
@@ -336,6 +347,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td>A</table>B",
             "input": "<table><td>A</table>B",
             "output": [
@@ -364,6 +376,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tr><caption>",
             "input": "<table><tr><caption>",
             "output": [
@@ -385,6 +398,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tr></body></caption></col></colgroup></html></td></th><td>foo",
             "input": "<table><tr></body></caption></col></colgroup></html></td></th><td>foo",
             "output": [
@@ -438,6 +452,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td><tr>",
             "input": "<table><td><tr>",
             "output": [
@@ -459,6 +474,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td><button><td>",
             "input": "<table><td><button><td>",
             "output": [
@@ -485,6 +501,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tr><td><svg><desc><td>",
             "input": "<table><tr><td><svg><desc><td>",
             "output": [

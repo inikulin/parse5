@@ -1,3 +1,227 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "fragmentContext": "td",
+            "description": "<math><tr><td><mo><tr>",
+            "input": "<math><tr><td><mo><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tr",
+            "description": "<math><tr><td><mo><tr>",
+            "input": "<math><tr><td><mo><tr>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "td",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tr",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "thead",
+            "description": "<math><thead><mo><tbody>",
+            "input": "<math><thead><mo><tbody>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tfoot",
+            "description": "<math><tfoot><mo><tbody>",
+            "input": "<math><tfoot><mo><tbody>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<math><tbody><mo><tfoot>",
+            "input": "<math><tbody><mo><tfoot>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<math><tbody><mo></table>",
+            "input": "<math><tbody><mo></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tbody",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<math><thead><mo></table>",
+            "input": "<math><thead><mo></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "thead",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "tbody",
+            "description": "<math><tfoot><mo></table>",
+            "input": "<math><tfoot><mo></table>",
+            "output": [
+                [
+                    "StartTag",
+                    "math",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "tfoot",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "table"
+                ]
+            ]
+        }
+    ]
 }

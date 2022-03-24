@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<main>bar<p>baz",
             "input": "<!doctype html><p>foo<main>bar<p>baz",
             "output": [
@@ -41,6 +42,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><main><p>foo</main>bar",
             "input": "<!doctype html><main><p>foo</main>bar",
             "output": [
@@ -76,6 +78,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>xxx<svg><x><g><a><main><b>",
             "input": "<!DOCTYPE html>xxx<svg><x><g><a><main><b>",
             "output": [

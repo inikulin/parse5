@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><tbody><select><tr>",
             "input": "<!doctype html><table><tbody><select><tr>",
             "output": [
@@ -34,6 +35,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><tr><select><td>",
             "input": "<!doctype html><table><tr><select><td>",
             "output": [
@@ -67,6 +69,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><tr><td><select><td>",
             "input": "<!doctype html><table><tr><td><select><td>",
             "output": [
@@ -105,6 +108,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><tr><th><select><td>",
             "input": "<!doctype html><table><tr><th><select><td>",
             "output": [
@@ -143,6 +147,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><caption><select><tr>",
             "input": "<!doctype html><table><caption><select><tr>",
             "output": [
@@ -176,6 +181,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><tr>",
             "input": "<!doctype html><select><tr>",
             "output": [
@@ -199,6 +205,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><td>",
             "input": "<!doctype html><select><td>",
             "output": [
@@ -222,6 +229,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><th>",
             "input": "<!doctype html><select><th>",
             "output": [
@@ -245,6 +253,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><tbody>",
             "input": "<!doctype html><select><tbody>",
             "output": [
@@ -268,6 +277,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><thead>",
             "input": "<!doctype html><select><thead>",
             "output": [
@@ -291,6 +301,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><tfoot>",
             "input": "<!doctype html><select><tfoot>",
             "output": [
@@ -314,6 +325,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><caption>",
             "input": "<!doctype html><select><caption>",
             "output": [
@@ -337,6 +349,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><tr></table>a",
             "input": "<!doctype html><table><tr></table>a",
             "output": [

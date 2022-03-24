@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<menuitem>",
             "input": "<menuitem>",
             "output": [
@@ -12,6 +13,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "</menuitem>",
             "input": "</menuitem>",
             "output": [
@@ -22,6 +24,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><menuitem>A",
             "input": "<!DOCTYPE html><body><menuitem>A",
             "output": [
@@ -49,6 +52,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><menuitem>A<menuitem>B",
             "input": "<!DOCTYPE html><body><menuitem>A<menuitem>B",
             "output": [
@@ -85,6 +89,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><menuitem>A<menu>B</menu>",
             "input": "<!DOCTYPE html><body><menuitem>A<menu>B</menu>",
             "output": [
@@ -125,6 +130,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><menuitem>A<hr>B",
             "input": "<!DOCTYPE html><body><menuitem>A<hr>B",
             "output": [
@@ -161,6 +167,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><li><menuitem><li>",
             "input": "<!DOCTYPE html><li><menuitem><li>",
             "output": [
@@ -189,6 +196,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><menuitem><p></menuitem>x",
             "input": "<!DOCTYPE html><menuitem><p></menuitem>x",
             "output": [
@@ -220,6 +228,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><p><b></p><menuitem>",
             "input": "<!DOCTYPE html><p><b></p><menuitem>",
             "output": [
@@ -252,6 +261,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><menuitem><asdf></menuitem>x",
             "input": "<!DOCTYPE html><menuitem><asdf></menuitem>x",
             "output": [
@@ -283,6 +293,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html></menuitem>",
             "input": "<!DOCTYPE html></menuitem>",
             "output": [
@@ -300,6 +311,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html></menuitem>",
             "input": "<!DOCTYPE html><html></menuitem>",
             "output": [
@@ -322,6 +334,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><head></menuitem>",
             "input": "<!DOCTYPE html><head></menuitem>",
             "output": [
@@ -344,6 +357,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><select><menuitem></select>",
             "input": "<!DOCTYPE html><select><menuitem></select>",
             "output": [
@@ -371,6 +385,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><option><menuitem>",
             "input": "<!DOCTYPE html><option><menuitem>",
             "output": [
@@ -394,6 +409,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><menuitem><option>",
             "input": "<!DOCTYPE html><menuitem><option>",
             "output": [
@@ -417,6 +433,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><menuitem></body>",
             "input": "<!DOCTYPE html><menuitem></body>",
             "output": [
@@ -439,6 +456,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><menuitem></html>",
             "input": "<!DOCTYPE html><menuitem></html>",
             "output": [
@@ -461,6 +479,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><menuitem><p>",
             "input": "<!DOCTYPE html><menuitem><p>",
             "output": [
@@ -484,6 +503,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><menuitem><li>",
             "input": "<!DOCTYPE html><menuitem><li>",
             "output": [

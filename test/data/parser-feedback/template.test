@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<body><template>Hello</template>",
             "input": "<body><template>Hello</template>",
             "output": [
@@ -25,6 +26,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template>Hello</template>",
             "input": "<template>Hello</template>",
             "output": [
@@ -44,6 +46,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template></template><div></div>",
             "input": "<template></template><div></div>",
             "output": [
@@ -68,6 +71,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><template>Hello</template>",
             "input": "<html><template>Hello</template>",
             "output": [
@@ -92,6 +96,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head><template><div></div></template></head>",
             "input": "<head><template><div></div></template></head>",
             "output": [
@@ -125,6 +130,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><template><div><span></template><b>",
             "input": "<div><template><div><span></template><b>",
             "output": [
@@ -160,6 +166,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><template></div>Hello",
             "input": "<div><template></div>Hello",
             "output": [
@@ -184,6 +191,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div></template></div>",
             "input": "<div></template></div>",
             "output": [
@@ -203,6 +211,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template></template></table>",
             "input": "<table><template></template></table>",
             "output": [
@@ -227,6 +236,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template></template></div>",
             "input": "<table><template></template></div>",
             "output": [
@@ -251,6 +261,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><div><template></template></div>",
             "input": "<table><div><template></template></div>",
             "output": [
@@ -280,6 +291,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template></template><div></div>",
             "input": "<table><template></template><div></div>",
             "output": [
@@ -309,6 +321,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table>   <template></template></table>",
             "input": "<table>   <template></template></table>",
             "output": [
@@ -337,6 +350,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tbody><template></template></tbody>",
             "input": "<table><tbody><template></template></tbody>",
             "output": [
@@ -366,6 +380,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tbody><template></tbody></template>",
             "input": "<table><tbody><template></tbody></template>",
             "output": [
@@ -395,6 +410,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tbody><template></template></tbody></table>",
             "input": "<table><tbody><template></template></tbody></table>",
             "output": [
@@ -428,6 +444,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><thead><template></template></thead>",
             "input": "<table><thead><template></template></thead>",
             "output": [
@@ -457,6 +474,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tfoot><template></template></tfoot>",
             "input": "<table><tfoot><template></template></tfoot>",
             "output": [
@@ -486,6 +504,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><template></template></select>",
             "input": "<select><template></template></select>",
             "output": [
@@ -510,6 +529,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><template><option></option></template></select>",
             "input": "<select><template><option></option></template></select>",
             "output": [
@@ -543,6 +563,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><option></option></select><option></option></template>",
             "input": "<template><option></option></select><option></option></template>",
             "output": [
@@ -580,6 +601,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><template></template><option></select>",
             "input": "<select><template></template><option></select>",
             "output": [
@@ -609,6 +631,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><option><template></template></select>",
             "input": "<select><option><template></template></select>",
             "output": [
@@ -638,6 +661,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><template>",
             "input": "<select><template>",
             "output": [
@@ -654,6 +678,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><option></option><template>",
             "input": "<select><option></option><template>",
             "output": [
@@ -679,6 +704,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><option></option><template><option>",
             "input": "<select><option></option><template><option>",
             "output": [
@@ -709,6 +735,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><thead><template><td></template></table>",
             "input": "<table><thead><template><td></template></table>",
             "output": [
@@ -743,6 +770,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template><thead></template></table>",
             "input": "<table><template><thead></template></table>",
             "output": [
@@ -772,6 +800,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><table><template><td></tr><div></template></table>",
             "input": "<body><table><template><td></tr><div></template></table>",
             "output": [
@@ -815,6 +844,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template><thead></template></thead></table>",
             "input": "<table><template><thead></template></thead></table>",
             "output": [
@@ -848,6 +878,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><thead><template><tr></template></table>",
             "input": "<table><thead><template><tr></template></table>",
             "output": [
@@ -882,6 +913,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template><tr></template></table>",
             "input": "<table><template><tr></template></table>",
             "output": [
@@ -911,6 +943,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tr><template><td>",
             "input": "<table><tr><template><td>",
             "output": [
@@ -937,6 +970,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template><tr><template><td></template></tr></template></table>",
             "input": "<table><template><tr><template><td></template></tr></template></table>",
             "output": [
@@ -984,6 +1018,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template><tr><template><td></td></template></tr></template></table>",
             "input": "<table><template><tr><template><td></td></template></tr></template></table>",
             "output": [
@@ -1035,6 +1070,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><template><td></template>",
             "input": "<table><template><td></template>",
             "output": [
@@ -1060,6 +1096,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><td></td></template>",
             "input": "<body><template><td></td></template>",
             "output": [
@@ -1089,6 +1126,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><template><tr></tr></template><td></td></template>",
             "input": "<body><template><template><tr></tr></template><td></td></template>",
             "output": [
@@ -1136,6 +1174,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><colgroup><template><col>",
             "input": "<table><colgroup><template><col>",
             "output": [
@@ -1162,6 +1201,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<frameset><template><frame></frame></template></frameset>",
             "input": "<frameset><template><frame></frame></template></frameset>",
             "output": [
@@ -1195,6 +1235,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><frame></frame></frameset><frame></frame></template>",
             "input": "<template><frame></frame></frameset><frame></frame></template>",
             "output": [
@@ -1232,6 +1273,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><div><frameset><span></span></div><span></span></template>",
             "input": "<template><div><frameset><span></span></div><span></span></template>",
             "output": [
@@ -1279,6 +1321,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><div><frameset><span></span></div><span></span></template></body>",
             "input": "<body><template><div><frameset><span></span></div><span></span></template></body>",
             "output": [
@@ -1335,6 +1378,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><script>var i = 1;</script><td></td></template>",
             "input": "<body><template><script>var i = 1;</script><td></td></template>",
             "output": [
@@ -1377,6 +1421,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><tr><div></div></tr></template>",
             "input": "<body><template><tr><div></div></tr></template>",
             "output": [
@@ -1415,6 +1460,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><tr></tr><td></td></template>",
             "input": "<body><template><tr></tr><td></td></template>",
             "output": [
@@ -1453,6 +1499,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><td></td></tr><td></td></template>",
             "input": "<body><template><td></td></tr><td></td></template>",
             "output": [
@@ -1495,6 +1542,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><td></td><tbody><td></td></template>",
             "input": "<body><template><td></td><tbody><td></td></template>",
             "output": [
@@ -1538,6 +1586,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><td></td><caption></caption><td></td></template>",
             "input": "<body><template><td></td><caption></caption><td></td></template>",
             "output": [
@@ -1585,6 +1634,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><td></td><colgroup></caption><td></td></template>",
             "input": "<body><template><td></td><colgroup></caption><td></td></template>",
             "output": [
@@ -1632,6 +1682,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><td></td></table><td></td></template>",
             "input": "<body><template><td></td></table><td></td></template>",
             "output": [
@@ -1674,6 +1725,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><tr></tr><tbody><tr></tr></template>",
             "input": "<body><template><tr></tr><tbody><tr></tr></template>",
             "output": [
@@ -1717,6 +1769,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><tr></tr><caption><tr></tr></template>",
             "input": "<body><template><tr></tr><caption><tr></tr></template>",
             "output": [
@@ -1760,6 +1813,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><tr></tr></table><tr></tr></template>",
             "input": "<body><template><tr></tr></table><tr></tr></template>",
             "output": [
@@ -1802,6 +1856,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><thead></thead><caption></caption><tbody></tbody></template>",
             "input": "<body><template><thead></thead><caption></caption><tbody></tbody></template>",
             "output": [
@@ -1849,6 +1904,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><thead></thead></table><tbody></tbody></template></body>",
             "input": "<body><template><thead></thead></table><tbody></tbody></template></body>",
             "output": [
@@ -1895,6 +1951,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><div><tr></tr></div></template>",
             "input": "<body><template><div><tr></tr></div></template>",
             "output": [
@@ -1933,6 +1990,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><em>Hello</em></template>",
             "input": "<body><template><em>Hello</em></template>",
             "output": [
@@ -1966,6 +2024,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><!--comment--></template>",
             "input": "<body><template><!--comment--></template>",
             "output": [
@@ -1990,6 +2049,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><style></style><td></td></template>",
             "input": "<body><template><style></style><td></td></template>",
             "output": [
@@ -2028,6 +2088,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><meta><td></td></template>",
             "input": "<body><template><meta><td></td></template>",
             "output": [
@@ -2062,6 +2123,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><link><td></td></template>",
             "input": "<body><template><link><td></td></template>",
             "output": [
@@ -2096,6 +2158,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><template><tr></tr></template><td></td></template>",
             "input": "<body><template><template><tr></tr></template><td></td></template>",
             "output": [
@@ -2143,6 +2206,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><table><colgroup><template><col></col></template></colgroup></table></body>",
             "input": "<body><table><colgroup><template><col></col></template></colgroup></table></body>",
             "output": [
@@ -2194,6 +2258,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body a=b><template><div></div><body c=d><div></div></body></template></body>",
             "input": "<body a=b><template><div></div><body c=d><div></div></body></template></body>",
             "output": [
@@ -2249,6 +2314,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html a=b><template><div><html b=c><span></template>",
             "input": "<html a=b><template><div><html b=c><span></template>",
             "output": [
@@ -2288,6 +2354,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html a=b><template><col></col><html b=c><col></col></template>",
             "input": "<html a=b><template><col></col><html b=c><col></col></template>",
             "output": [
@@ -2335,6 +2402,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html a=b><template><frame></frame><html b=c><frame></frame></template>",
             "input": "<html a=b><template><frame></frame><html b=c><frame></frame></template>",
             "output": [
@@ -2382,6 +2450,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><tr></tr><template></template><td></td></template>",
             "input": "<body><template><tr></tr><template></template><td></td></template>",
             "output": [
@@ -2429,6 +2498,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><thead></thead><template><tr></tr></template><tr></tr><tfoot></tfoot></template>",
             "input": "<body><template><thead></thead><template><tr></tr></template><tr></tr><tfoot></tfoot></template>",
             "output": [
@@ -2494,6 +2564,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><template><b><template></template></template>text</template>",
             "input": "<body><template><template><b><template></template></template>text</template>",
             "output": [
@@ -2541,6 +2612,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><col><colgroup>",
             "input": "<body><template><col><colgroup>",
             "output": [
@@ -2567,6 +2639,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><col></colgroup>",
             "input": "<body><template><col></colgroup>",
             "output": [
@@ -2592,6 +2665,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><col><colgroup></template></body>",
             "input": "<body><template><col><colgroup></template></body>",
             "output": [
@@ -2626,6 +2700,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><col><div>",
             "input": "<body><template><col><div>",
             "output": [
@@ -2652,6 +2727,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><col></div>",
             "input": "<body><template><col></div>",
             "output": [
@@ -2677,6 +2753,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><col>Hello",
             "input": "<body><template><col>Hello",
             "output": [
@@ -2702,6 +2779,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template><i><menu>Foo</i>",
             "input": "<body><template><i><menu>Foo</i>",
             "output": [
@@ -2736,6 +2814,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><template></div><div>Foo</div><template></template><tr></tr>",
             "input": "<body><template></div><div>Foo</div><template></template><tr></tr>",
             "output": [
@@ -2787,6 +2866,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><div><template></div><tr><td>Foo</td></tr></template>",
             "input": "<body><div><template></div><tr><td>Foo</td></tr></template>",
             "output": [
@@ -2838,6 +2918,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template></figcaption><sub><table></table>",
             "input": "<template></figcaption><sub><table></table>",
             "output": [
@@ -2867,6 +2948,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template>",
             "input": "<template><template>",
             "output": [
@@ -2883,6 +2965,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><div>",
             "input": "<template><div>",
             "output": [
@@ -2899,6 +2982,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><div>",
             "input": "<template><template><div>",
             "output": [
@@ -2920,6 +3004,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><table>",
             "input": "<template><template><table>",
             "output": [
@@ -2941,6 +3026,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><tbody>",
             "input": "<template><template><tbody>",
             "output": [
@@ -2962,6 +3048,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><tr>",
             "input": "<template><template><tr>",
             "output": [
@@ -2983,6 +3070,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><td>",
             "input": "<template><template><td>",
             "output": [
@@ -3004,6 +3092,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><caption>",
             "input": "<template><template><caption>",
             "output": [
@@ -3025,6 +3114,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><colgroup>",
             "input": "<template><template><colgroup>",
             "output": [
@@ -3046,6 +3136,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><col>",
             "input": "<template><template><col>",
             "output": [
@@ -3067,6 +3158,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><tbody><select>",
             "input": "<template><template><tbody><select>",
             "output": [
@@ -3093,6 +3185,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><table>Foo",
             "input": "<template><template><table>Foo",
             "output": [
@@ -3118,6 +3211,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><frame>",
             "input": "<template><template><frame>",
             "output": [
@@ -3139,6 +3233,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><script>var i",
             "input": "<template><template><script>var i",
             "output": [
@@ -3164,6 +3259,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><template><style>var i",
             "input": "<template><template><style>var i",
             "output": [
@@ -3189,6 +3285,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><table></template><body><span>Foo",
             "input": "<template><table></template><body><span>Foo",
             "output": [
@@ -3223,6 +3320,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><td></template><body><span>Foo",
             "input": "<template><td></template><body><span>Foo",
             "output": [
@@ -3257,6 +3355,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><object></template><body><span>Foo",
             "input": "<template><object></template><body><span>Foo",
             "output": [
@@ -3291,6 +3390,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><svg><template>",
             "input": "<template><svg><template>",
             "output": [
@@ -3312,6 +3412,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><svg><foo><template><foreignObject><div></template><div>",
             "input": "<template><svg><foo><template><foreignObject><div></template><div>",
             "output": [
@@ -3357,6 +3458,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<dummy><template><span></dummy>",
             "input": "<dummy><template><span></dummy>",
             "output": [
@@ -3382,6 +3484,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><table><tr><td><select><template>Foo</template><caption>A</table>",
             "input": "<body><table><tr><td><select><template>Foo</template><caption>A</table>",
             "output": [
@@ -3439,6 +3542,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body></body><template>",
             "input": "<body></body><template>",
             "output": [
@@ -3459,6 +3563,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head></head><template>",
             "input": "<head></head><template>",
             "output": [
@@ -3479,6 +3584,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head></head><template>Foo</template>",
             "input": "<head></head><template>Foo</template>",
             "output": [
@@ -3507,6 +3613,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE HTML><dummy><table><template><table><template><table><script>",
             "input": "<!DOCTYPE HTML><dummy><table><template><table><template><table><script>",
             "output": [
@@ -3555,6 +3662,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<template><a><table><a>",
             "input": "<template><a><table><a>",
             "output": [
@@ -3577,6 +3685,51 @@
                     "StartTag",
                     "a",
                     {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "template",
+            "description": "<template><form><input name=\"q\"></form><div>second</div></template>",
+            "input": "<template><form><input name=\"q\"></form><div>second</div></template>",
+            "output": [
+                [
+                    "StartTag",
+                    "template",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "form",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "input",
+                    {
+                        "name": "q"
+                    }
+                ],
+                [
+                    "EndTag",
+                    "form"
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "Character",
+                    "second"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ],
+                [
+                    "EndTag",
+                    "template"
                 ]
             ]
         }

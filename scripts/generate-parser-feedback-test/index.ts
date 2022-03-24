@@ -127,13 +127,12 @@ function generateParserFeedbackTest(parserTestFile: string): string {
     const tests = parseDatFile(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {
-        tests: tests
-            .filter((test) => !test.fragmentContext) // TODO
-            .map(({ input }) => ({
-                description: addSlashes(input),
-                input,
-                output: collectParserTokens(input),
-            })),
+        tests: tests.map(({ input, fragmentContext }) => ({
+            fragmentContext: (fragmentContext as defaultTreeAdapter.Element | null)?.tagName ?? null,
+            description: addSlashes(input),
+            input,
+            output: collectParserTokens(input),
+        })),
     };
 
     return JSON.stringify(feedbackTest, null, 4);
