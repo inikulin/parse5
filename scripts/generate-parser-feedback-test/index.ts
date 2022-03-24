@@ -124,11 +124,11 @@ function collectParserTokens(html: string): HtmlLibToken[] {
 }
 
 function generateParserFeedbackTest(parserTestFile: string): string {
-    const tests = parseDatFile(parserTestFile, defaultTreeAdapter);
+    const tests = parseDatFile<defaultTreeAdapter.DefaultTreeAdapterMap>(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {
         tests: tests.map(({ input, fragmentContext }) => ({
-            fragmentContext: (fragmentContext as defaultTreeAdapter.Element | null)?.tagName ?? null,
+            fragmentContext: fragmentContext?.tagName ?? null,
             description: addSlashes(input),
             input,
             output: collectParserTokens(input),
