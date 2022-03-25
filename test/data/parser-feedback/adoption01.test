@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<a><p></a></p>",
             "input": "<a><p></a></p>",
             "output": [
@@ -25,6 +26,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a>1<p>2</a>3</p>",
             "input": "<a>1<p>2</a>3</p>",
             "output": [
@@ -61,6 +63,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a>1<button>2</a>3</button>",
             "input": "<a>1<button>2</a>3</button>",
             "output": [
@@ -97,6 +100,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a>1<b>2</a>3</b>",
             "input": "<a>1<b>2</a>3</b>",
             "output": [
@@ -133,6 +137,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a>1<div>2<div>3</a>4</div>5</div>",
             "input": "<a>1<div>2<div>3</a>4</div>5</div>",
             "output": [
@@ -186,6 +191,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><a>1<p>2</a>3</p>",
             "input": "<table><a>1<p>2</a>3</p>",
             "output": [
@@ -227,6 +233,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<b><b><a><p></a>",
             "input": "<b><b><a><p></a>",
             "output": [
@@ -257,6 +264,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<b><a><b><p></a>",
             "input": "<b><a><b><p></a>",
             "output": [
@@ -287,6 +295,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a><b><b><p></a>",
             "input": "<a><b><b><p></a>",
             "output": [
@@ -317,6 +326,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p>1<s id=\"A\">2<b id=\"B\">3</p>4</s>5</b>",
             "input": "<p>1<s id=\"A\">2<b id=\"B\">3</p>4</s>5</b>",
             "output": [
@@ -374,6 +384,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><a>1<td>2</td>3</table>",
             "input": "<table><a>1<td>2</td>3</table>",
             "output": [
@@ -415,6 +426,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table>A<td>B</td>C</table>",
             "input": "<table>A<td>B</td>C</table>",
             "output": [
@@ -451,6 +463,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a><svg><tr><input></a>",
             "input": "<a><svg><tr><input></a>",
             "output": [
@@ -481,6 +494,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><a><b><div><div><div><div><div><div><div><div><div><div></a>",
             "input": "<div><a><b><div><div><div><div><div><div><div><div><div><div></a>",
             "output": [
@@ -556,6 +570,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><a><b><u><i><code><div></a>",
             "input": "<div><a><b><u><i><code><div></a>",
             "output": [
@@ -601,6 +616,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<b><b><b><b>x</b></b></b></b>y",
             "input": "<b><b><b><b>x</b></b></b></b>y",
             "output": [
@@ -651,6 +667,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p><b><b><b><b><p>x",
             "input": "<p><b><b><b><b><p>x",
             "output": [
@@ -687,6 +704,51 @@
                 [
                     "Character",
                     "x"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "div",
+            "description": "<b><em><foo><foob><fooc><aside></b></em>",
+            "input": "<b><em><foo><foob><fooc><aside></b></em>",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foob",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "fooc",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "EndTag",
+                    "em"
                 ]
             ]
         }

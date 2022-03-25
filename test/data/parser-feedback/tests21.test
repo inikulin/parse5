@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[foo]]>",
             "input": "<svg><![CDATA[foo]]>",
             "output": [
@@ -16,6 +17,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><![CDATA[foo]]>",
             "input": "<math><![CDATA[foo]]>",
             "output": [
@@ -31,6 +33,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><![CDATA[foo]]>",
             "input": "<div><![CDATA[foo]]>",
             "output": [
@@ -46,6 +49,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[foo",
             "input": "<svg><![CDATA[foo",
             "output": [
@@ -61,6 +65,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[foo",
             "input": "<svg><![CDATA[foo",
             "output": [
@@ -76,6 +81,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[",
             "input": "<svg><![CDATA[",
             "output": [
@@ -87,6 +93,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[]]>",
             "input": "<svg><![CDATA[]]>",
             "output": [
@@ -98,6 +105,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[]] >]]>",
             "input": "<svg><![CDATA[]] >]]>",
             "output": [
@@ -113,6 +121,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[]] >]]>",
             "input": "<svg><![CDATA[]] >]]>",
             "output": [
@@ -128,6 +137,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[]]",
             "input": "<svg><![CDATA[]]",
             "output": [
@@ -143,6 +153,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[]",
             "input": "<svg><![CDATA[]",
             "output": [
@@ -158,6 +169,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[]>a",
             "input": "<svg><![CDATA[]>a",
             "output": [
@@ -173,6 +185,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><svg><![CDATA[foo]]]>",
             "input": "<!DOCTYPE html><svg><![CDATA[foo]]]>",
             "output": [
@@ -195,6 +208,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><svg><![CDATA[foo]]]]>",
             "input": "<!DOCTYPE html><svg><![CDATA[foo]]]]>",
             "output": [
@@ -217,6 +231,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><svg><![CDATA[foo]]]]]>",
             "input": "<!DOCTYPE html><svg><![CDATA[foo]]]]]>",
             "output": [
@@ -239,6 +254,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><foreignObject><div><![CDATA[foo]]>",
             "input": "<svg><foreignObject><div><![CDATA[foo]]>",
             "output": [
@@ -264,6 +280,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[<svg>]]>",
             "input": "<svg><![CDATA[<svg>]]>",
             "output": [
@@ -279,6 +296,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[</svg>a]]>",
             "input": "<svg><![CDATA[</svg>a]]>",
             "output": [
@@ -294,6 +312,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[<svg>a",
             "input": "<svg><![CDATA[<svg>a",
             "output": [
@@ -309,6 +328,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[</svg>a",
             "input": "<svg><![CDATA[</svg>a",
             "output": [
@@ -324,6 +344,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[<svg>]]><path>",
             "input": "<svg><![CDATA[<svg>]]><path>",
             "output": [
@@ -344,6 +365,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[<svg>]]></path>",
             "input": "<svg><![CDATA[<svg>]]></path>",
             "output": [
@@ -363,6 +385,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[<svg>]]><!--path-->",
             "input": "<svg><![CDATA[<svg>]]><!--path-->",
             "output": [
@@ -382,6 +405,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[<svg>]]>path",
             "input": "<svg><![CDATA[<svg>]]>path",
             "output": [
@@ -397,6 +421,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[<!--svg-->]]>",
             "input": "<svg><![CDATA[<!--svg-->]]>",
             "output": [

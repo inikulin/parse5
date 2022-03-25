@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!doctype html><math><mn DefinitionUrl=\"foo\">",
             "input": "<!doctype html><math><mn DefinitionUrl=\"foo\">",
             "output": [
@@ -26,6 +27,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html></p><!--foo-->",
             "input": "<!doctype html><html></p><!--foo-->",
             "output": [
@@ -52,6 +54,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><head></head></p><!--foo-->",
             "input": "<!doctype html><head></head></p><!--foo-->",
             "output": [
@@ -82,6 +85,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><body><p><pre>",
             "input": "<!doctype html><body><p><pre>",
             "output": [
@@ -110,6 +114,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><body><p><listing>",
             "input": "<!doctype html><body><p><listing>",
             "output": [
@@ -138,6 +143,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><plaintext>",
             "input": "<!doctype html><p><plaintext>",
             "output": [
@@ -161,6 +167,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><h1>",
             "input": "<!doctype html><p><h1>",
             "output": [
@@ -184,6 +191,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><isindex type=\"hidden\">",
             "input": "<!doctype html><isindex type=\"hidden\">",
             "output": [
@@ -204,6 +212,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ruby><p><rp>",
             "input": "<!doctype html><ruby><p><rp>",
             "output": [
@@ -232,6 +241,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ruby><div><span><rp>",
             "input": "<!doctype html><ruby><div><span><rp>",
             "output": [
@@ -265,6 +275,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ruby><div><p><rp>",
             "input": "<!doctype html><ruby><div><p><rp>",
             "output": [
@@ -298,6 +309,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ruby><p><rt>",
             "input": "<!doctype html><ruby><p><rt>",
             "output": [
@@ -326,6 +338,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ruby><div><span><rt>",
             "input": "<!doctype html><ruby><div><span><rt>",
             "output": [
@@ -359,6 +372,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ruby><div><p><rt>",
             "input": "<!doctype html><ruby><div><p><rt>",
             "output": [
@@ -392,6 +406,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rb>b<rt></ruby></html>",
             "input": "<html><ruby>a<rb>b<rt></ruby></html>",
             "output": [
@@ -434,6 +449,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rp>b<rt></ruby></html>",
             "input": "<html><ruby>a<rp>b<rt></ruby></html>",
             "output": [
@@ -476,6 +492,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rt>b<rt></ruby></html>",
             "input": "<html><ruby>a<rt>b<rt></ruby></html>",
             "output": [
@@ -518,6 +535,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><ruby>a<rtc>b<rt>c<rb>d</ruby></html>",
             "input": "<html><ruby>a<rtc>b<rt>c<rb>d</ruby></html>",
             "output": [
@@ -573,6 +591,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><math/><foo>",
             "input": "<!doctype html><math/><foo>",
             "output": [
@@ -597,6 +616,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg/><foo>",
             "input": "<!doctype html><svg/><foo>",
             "output": [
@@ -621,6 +641,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><div></body><!--foo-->",
             "input": "<!doctype html><div></body><!--foo-->",
             "output": [
@@ -647,6 +668,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><h1><div><h3><span></h1>foo",
             "input": "<!doctype html><h1><div><h3><span></h1>foo",
             "output": [
@@ -688,6 +710,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p></h3>foo",
             "input": "<!doctype html><p></h3>foo",
             "output": [
@@ -714,6 +737,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><h3><li>abc</h2>foo",
             "input": "<!doctype html><h3><li>abc</h2>foo",
             "output": [
@@ -749,6 +773,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table>abc<!--foo-->",
             "input": "<!doctype html><table>abc<!--foo-->",
             "output": [
@@ -775,6 +800,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table>  <!--foo-->",
             "input": "<!doctype html><table>  <!--foo-->",
             "output": [
@@ -801,6 +827,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table> b <!--foo-->",
             "input": "<!doctype html><table> b <!--foo-->",
             "output": [
@@ -827,6 +854,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><option><option>",
             "input": "<!doctype html><select><option><option>",
             "output": [
@@ -855,6 +883,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><option></optgroup>",
             "input": "<!doctype html><select><option></optgroup>",
             "output": [
@@ -882,6 +911,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select><option></optgroup>",
             "input": "<!doctype html><select><option></optgroup>",
             "output": [
@@ -909,6 +939,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><dd><optgroup><dd>",
             "input": "<!doctype html><dd><optgroup><dd>",
             "output": [
@@ -937,6 +968,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><math><mi><p><h1>",
             "input": "<!doctype html><p><math><mi><p><h1>",
             "output": [
@@ -975,6 +1007,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><math><mo><p><h1>",
             "input": "<!doctype html><p><math><mo><p><h1>",
             "output": [
@@ -1013,6 +1046,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><math><mn><p><h1>",
             "input": "<!doctype html><p><math><mn><p><h1>",
             "output": [
@@ -1051,6 +1085,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><math><ms><p><h1>",
             "input": "<!doctype html><p><math><ms><p><h1>",
             "output": [
@@ -1089,6 +1124,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><math><mtext><p><h1>",
             "input": "<!doctype html><p><math><mtext><p><h1>",
             "output": [
@@ -1127,6 +1163,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><frameset></noframes>",
             "input": "<!doctype html><frameset></noframes>",
             "output": [
@@ -1149,6 +1186,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html c=d><body></html><html a=b>",
             "input": "<!doctype html><html c=d><body></html><html a=b>",
             "output": [
@@ -1185,6 +1223,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html c=d><frameset></frameset></html><html a=b>",
             "input": "<!doctype html><html c=d><frameset></frameset></html><html a=b>",
             "output": [
@@ -1225,6 +1264,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html><frameset></frameset></html><!--foo-->",
             "input": "<!doctype html><html><frameset></frameset></html><!--foo-->",
             "output": [
@@ -1260,6 +1300,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html><frameset></frameset></html>  ",
             "input": "<!doctype html><html><frameset></frameset></html>  ",
             "output": [
@@ -1295,6 +1336,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html><frameset></frameset></html>abc",
             "input": "<!doctype html><html><frameset></frameset></html>abc",
             "output": [
@@ -1330,6 +1372,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html><frameset></frameset></html><p>",
             "input": "<!doctype html><html><frameset></frameset></html><p>",
             "output": [
@@ -1366,6 +1409,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html><frameset></frameset></html></p>",
             "input": "<!doctype html><html><frameset></frameset></html></p>",
             "output": [
@@ -1401,6 +1445,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><frameset></frameset></html><!doctype html>",
             "input": "<html><frameset></frameset></html><!doctype html>",
             "output": [
@@ -1432,6 +1477,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><body><frameset>",
             "input": "<!doctype html><body><frameset>",
             "output": [
@@ -1455,6 +1501,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><frameset><frame>",
             "input": "<!doctype html><p><frameset><frame>",
             "output": [
@@ -1483,6 +1530,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>a<frameset>",
             "input": "<!doctype html><p>a<frameset>",
             "output": [
@@ -1510,6 +1558,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p> <frameset><frame>",
             "input": "<!doctype html><p> <frameset><frame>",
             "output": [
@@ -1542,6 +1591,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><pre><frameset>",
             "input": "<!doctype html><pre><frameset>",
             "output": [
@@ -1565,6 +1615,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><listing><frameset>",
             "input": "<!doctype html><listing><frameset>",
             "output": [
@@ -1588,6 +1639,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><li><frameset>",
             "input": "<!doctype html><li><frameset>",
             "output": [
@@ -1611,6 +1663,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><dd><frameset>",
             "input": "<!doctype html><dd><frameset>",
             "output": [
@@ -1634,6 +1687,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><dt><frameset>",
             "input": "<!doctype html><dt><frameset>",
             "output": [
@@ -1657,6 +1711,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><button><frameset>",
             "input": "<!doctype html><button><frameset>",
             "output": [
@@ -1680,6 +1735,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><applet><frameset>",
             "input": "<!doctype html><applet><frameset>",
             "output": [
@@ -1703,6 +1759,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><marquee><frameset>",
             "input": "<!doctype html><marquee><frameset>",
             "output": [
@@ -1726,6 +1783,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><object><frameset>",
             "input": "<!doctype html><object><frameset>",
             "output": [
@@ -1749,6 +1807,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><frameset>",
             "input": "<!doctype html><table><frameset>",
             "output": [
@@ -1772,6 +1831,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><area><frameset>",
             "input": "<!doctype html><area><frameset>",
             "output": [
@@ -1795,6 +1855,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><basefont><frameset>",
             "input": "<!doctype html><basefont><frameset>",
             "output": [
@@ -1818,6 +1879,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><bgsound><frameset>",
             "input": "<!doctype html><bgsound><frameset>",
             "output": [
@@ -1841,6 +1903,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><br><frameset>",
             "input": "<!doctype html><br><frameset>",
             "output": [
@@ -1864,6 +1927,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><embed><frameset>",
             "input": "<!doctype html><embed><frameset>",
             "output": [
@@ -1887,6 +1951,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><img><frameset>",
             "input": "<!doctype html><img><frameset>",
             "output": [
@@ -1910,6 +1975,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><input><frameset>",
             "input": "<!doctype html><input><frameset>",
             "output": [
@@ -1933,6 +1999,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><keygen><frameset>",
             "input": "<!doctype html><keygen><frameset>",
             "output": [
@@ -1956,6 +2023,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><wbr><frameset>",
             "input": "<!doctype html><wbr><frameset>",
             "output": [
@@ -1979,6 +2047,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><hr><frameset>",
             "input": "<!doctype html><hr><frameset>",
             "output": [
@@ -2002,6 +2071,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><textarea></textarea><frameset>",
             "input": "<!doctype html><textarea></textarea><frameset>",
             "output": [
@@ -2029,6 +2099,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><xmp></xmp><frameset>",
             "input": "<!doctype html><xmp></xmp><frameset>",
             "output": [
@@ -2056,6 +2127,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><iframe></iframe><frameset>",
             "input": "<!doctype html><iframe></iframe><frameset>",
             "output": [
@@ -2083,6 +2155,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><select></select><frameset>",
             "input": "<!doctype html><select></select><frameset>",
             "output": [
@@ -2110,6 +2183,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg></svg><frameset><frame>",
             "input": "<!doctype html><svg></svg><frameset><frame>",
             "output": [
@@ -2142,6 +2216,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><math></math><frameset><frame>",
             "input": "<!doctype html><math></math><frameset><frame>",
             "output": [
@@ -2174,6 +2249,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg><foreignObject><div> <frameset><frame>",
             "input": "<!doctype html><svg><foreignObject><div> <frameset><frame>",
             "output": [
@@ -2216,6 +2292,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg>a</svg><frameset><frame>",
             "input": "<!doctype html><svg>a</svg><frameset><frame>",
             "output": [
@@ -2252,6 +2329,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg> </svg><frameset><frame>",
             "input": "<!doctype html><svg> </svg><frameset><frame>",
             "output": [
@@ -2288,6 +2366,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html>aaa<frameset></frameset>",
             "input": "<html>aaa<frameset></frameset>",
             "output": [
@@ -2312,6 +2391,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html> a <frameset></frameset>",
             "input": "<html> a <frameset></frameset>",
             "output": [
@@ -2336,6 +2416,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><div><frameset>",
             "input": "<!doctype html><div><frameset>",
             "output": [
@@ -2359,6 +2440,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><div><body><frameset>",
             "input": "<!doctype html><div><body><frameset>",
             "output": [
@@ -2387,6 +2469,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><math></p>a",
             "input": "<!doctype html><p><math></p>a",
             "output": [
@@ -2418,6 +2501,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><math><mn><span></p>a",
             "input": "<!doctype html><p><math><mn><span></p>a",
             "output": [
@@ -2459,6 +2543,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><math></html>",
             "input": "<!doctype html><math></html>",
             "output": [
@@ -2481,6 +2566,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><meta charset=\"ascii\">",
             "input": "<!doctype html><meta charset=\"ascii\">",
             "output": [
@@ -2501,6 +2587,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><meta http-equiv=\"content-type\" content=\"text/html;charset=ascii\">",
             "input": "<!doctype html><meta http-equiv=\"content-type\" content=\"text/html;charset=ascii\">",
             "output": [
@@ -2522,6 +2609,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><head><!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa--><meta charset=\"utf8\">",
             "input": "<!doctype html><head><!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa--><meta charset=\"utf8\">",
             "output": [
@@ -2551,6 +2639,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><html a=b><head></head><html c=d>",
             "input": "<!doctype html><html a=b><head></head><html c=d>",
             "output": [
@@ -2587,6 +2676,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><image/>",
             "input": "<!doctype html><image/>",
             "output": [
@@ -2606,6 +2696,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html>a<i>b<table>c<b>d</i>e</b>f",
             "input": "<!doctype html>a<i>b<table>c<b>d</i>e</b>f",
             "output": [
@@ -2666,6 +2757,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><i>a<b>b<div>c<a>d</i>e</b>f",
             "input": "<!doctype html><table><i>a<b>b<div>c<a>d</i>e</b>f",
             "output": [
@@ -2736,6 +2828,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><i>a<b>b<div>c<a>d</i>e</b>f",
             "input": "<!doctype html><i>a<b>b<div>c<a>d</i>e</b>f",
             "output": [
@@ -2801,6 +2894,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><i>a<b>b<div>c</i>",
             "input": "<!doctype html><table><i>a<b>b<div>c</i>",
             "output": [
@@ -2850,6 +2944,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><i>a<b>b<div>c<a>d</i>e</b>f",
             "input": "<!doctype html><table><i>a<b>b<div>c<a>d</i>e</b>f",
             "output": [
@@ -2920,6 +3015,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><i>a<div>b<tr>c<b>d</i>e",
             "input": "<!doctype html><table><i>a<div>b<tr>c<b>d</i>e",
             "output": [
@@ -2982,6 +3078,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><td><table><i>a<div>b<b>c</i>d",
             "input": "<!doctype html><table><td><table><i>a<div>b<b>c</i>d",
             "output": [
@@ -3045,6 +3142,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><body><bgsound>",
             "input": "<!doctype html><body><bgsound>",
             "output": [
@@ -3068,6 +3166,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><body><basefont>",
             "input": "<!doctype html><body><basefont>",
             "output": [
@@ -3091,6 +3190,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><a><b></a><basefont>",
             "input": "<!doctype html><a><b></a><basefont>",
             "output": [
@@ -3123,6 +3223,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><a><b></a><bgsound>",
             "input": "<!doctype html><a><b></a><bgsound>",
             "output": [
@@ -3155,6 +3256,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><figcaption><article></figcaption>a",
             "input": "<!doctype html><figcaption><article></figcaption>a",
             "output": [
@@ -3186,6 +3288,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><summary><article></summary>a",
             "input": "<!doctype html><summary><article></summary>a",
             "output": [
@@ -3217,6 +3320,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><a><plaintext>b",
             "input": "<!doctype html><p><a><plaintext>b",
             "output": [
@@ -3249,6 +3353,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><div>a<a></div>b<p>c</p>d",
             "input": "<!DOCTYPE html><div>a<a></div>b<p>c</p>d",
             "output": [

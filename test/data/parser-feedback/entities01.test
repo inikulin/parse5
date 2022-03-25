@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "FOO&gt;BAR",
             "input": "FOO&gt;BAR",
             "output": [
@@ -11,6 +12,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&gtBAR",
             "input": "FOO&gtBAR",
             "output": [
@@ -21,6 +23,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&gt BAR",
             "input": "FOO&gt BAR",
             "output": [
@@ -31,6 +34,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&gt;;;BAR",
             "input": "FOO&gt;;;BAR",
             "output": [
@@ -41,6 +45,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "I'm &notit; I tell you",
             "input": "I'm &notit; I tell you",
             "output": [
@@ -51,6 +56,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "I'm &notin; I tell you",
             "input": "I'm &notin; I tell you",
             "output": [
@@ -61,6 +67,29 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "&ammmp;",
+            "input": "&ammmp;",
+            "output": [
+                [
+                    "Character",
+                    "&ammmp;"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "&ammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmp;",
+            "input": "&ammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmp;",
+            "output": [
+                [
+                    "Character",
+                    "&ammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmp;"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "FOO& BAR",
             "input": "FOO& BAR",
             "output": [
@@ -71,6 +100,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&<BAR>",
             "input": "FOO&<BAR>",
             "output": [
@@ -86,6 +116,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&&&&gt;BAR",
             "input": "FOO&&&&gt;BAR",
             "output": [
@@ -96,6 +127,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#41;BAR",
             "input": "FOO&#41;BAR",
             "output": [
@@ -106,6 +138,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x41;BAR",
             "input": "FOO&#x41;BAR",
             "output": [
@@ -116,6 +149,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#X41;BAR",
             "input": "FOO&#X41;BAR",
             "output": [
@@ -126,6 +160,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#BAR",
             "input": "FOO&#BAR",
             "output": [
@@ -136,6 +171,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#ZOO",
             "input": "FOO&#ZOO",
             "output": [
@@ -146,6 +182,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xBAR",
             "input": "FOO&#xBAR",
             "output": [
@@ -156,6 +193,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xZOO",
             "input": "FOO&#xZOO",
             "output": [
@@ -166,6 +204,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#XZOO",
             "input": "FOO&#XZOO",
             "output": [
@@ -176,6 +215,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#41BAR",
             "input": "FOO&#41BAR",
             "output": [
@@ -186,6 +226,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x41BAR",
             "input": "FOO&#x41BAR",
             "output": [
@@ -196,6 +237,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x41ZOO",
             "input": "FOO&#x41ZOO",
             "output": [
@@ -206,6 +248,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0000;ZOO",
             "input": "FOO&#x0000;ZOO",
             "output": [
@@ -216,6 +259,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0078;ZOO",
             "input": "FOO&#x0078;ZOO",
             "output": [
@@ -226,6 +270,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0079;ZOO",
             "input": "FOO&#x0079;ZOO",
             "output": [
@@ -236,6 +281,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0080;ZOO",
             "input": "FOO&#x0080;ZOO",
             "output": [
@@ -246,6 +292,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0081;ZOO",
             "input": "FOO&#x0081;ZOO",
             "output": [
@@ -256,6 +303,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0082;ZOO",
             "input": "FOO&#x0082;ZOO",
             "output": [
@@ -266,6 +314,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0083;ZOO",
             "input": "FOO&#x0083;ZOO",
             "output": [
@@ -276,6 +325,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0084;ZOO",
             "input": "FOO&#x0084;ZOO",
             "output": [
@@ -286,6 +336,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0085;ZOO",
             "input": "FOO&#x0085;ZOO",
             "output": [
@@ -296,6 +347,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0086;ZOO",
             "input": "FOO&#x0086;ZOO",
             "output": [
@@ -306,6 +358,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0087;ZOO",
             "input": "FOO&#x0087;ZOO",
             "output": [
@@ -316,6 +369,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0088;ZOO",
             "input": "FOO&#x0088;ZOO",
             "output": [
@@ -326,6 +380,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0089;ZOO",
             "input": "FOO&#x0089;ZOO",
             "output": [
@@ -336,6 +391,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x008A;ZOO",
             "input": "FOO&#x008A;ZOO",
             "output": [
@@ -346,6 +402,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x008B;ZOO",
             "input": "FOO&#x008B;ZOO",
             "output": [
@@ -356,6 +413,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x008C;ZOO",
             "input": "FOO&#x008C;ZOO",
             "output": [
@@ -366,6 +424,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x008D;ZOO",
             "input": "FOO&#x008D;ZOO",
             "output": [
@@ -376,6 +435,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x008E;ZOO",
             "input": "FOO&#x008E;ZOO",
             "output": [
@@ -386,6 +446,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x008F;ZOO",
             "input": "FOO&#x008F;ZOO",
             "output": [
@@ -396,6 +457,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0090;ZOO",
             "input": "FOO&#x0090;ZOO",
             "output": [
@@ -406,6 +468,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0091;ZOO",
             "input": "FOO&#x0091;ZOO",
             "output": [
@@ -416,6 +479,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0092;ZOO",
             "input": "FOO&#x0092;ZOO",
             "output": [
@@ -426,6 +490,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0093;ZOO",
             "input": "FOO&#x0093;ZOO",
             "output": [
@@ -436,6 +501,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0094;ZOO",
             "input": "FOO&#x0094;ZOO",
             "output": [
@@ -446,6 +512,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0095;ZOO",
             "input": "FOO&#x0095;ZOO",
             "output": [
@@ -456,6 +523,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0096;ZOO",
             "input": "FOO&#x0096;ZOO",
             "output": [
@@ -466,6 +534,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0097;ZOO",
             "input": "FOO&#x0097;ZOO",
             "output": [
@@ -476,6 +545,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0098;ZOO",
             "input": "FOO&#x0098;ZOO",
             "output": [
@@ -486,6 +556,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x0099;ZOO",
             "input": "FOO&#x0099;ZOO",
             "output": [
@@ -496,6 +567,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x009A;ZOO",
             "input": "FOO&#x009A;ZOO",
             "output": [
@@ -506,6 +578,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x009B;ZOO",
             "input": "FOO&#x009B;ZOO",
             "output": [
@@ -516,6 +589,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x009C;ZOO",
             "input": "FOO&#x009C;ZOO",
             "output": [
@@ -526,6 +600,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x009D;ZOO",
             "input": "FOO&#x009D;ZOO",
             "output": [
@@ -536,6 +611,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x009E;ZOO",
             "input": "FOO&#x009E;ZOO",
             "output": [
@@ -546,6 +622,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x009F;ZOO",
             "input": "FOO&#x009F;ZOO",
             "output": [
@@ -556,6 +633,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x00A0;ZOO",
             "input": "FOO&#x00A0;ZOO",
             "output": [
@@ -566,6 +644,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xD7FF;ZOO",
             "input": "FOO&#xD7FF;ZOO",
             "output": [
@@ -576,6 +655,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xD800;ZOO",
             "input": "FOO&#xD800;ZOO",
             "output": [
@@ -586,6 +666,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xD801;ZOO",
             "input": "FOO&#xD801;ZOO",
             "output": [
@@ -596,6 +677,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xDFFE;ZOO",
             "input": "FOO&#xDFFE;ZOO",
             "output": [
@@ -606,6 +688,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xDFFF;ZOO",
             "input": "FOO&#xDFFF;ZOO",
             "output": [
@@ -616,6 +699,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xE000;ZOO",
             "input": "FOO&#xE000;ZOO",
             "output": [
@@ -626,6 +710,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x10FFFE;ZOO",
             "input": "FOO&#x10FFFE;ZOO",
             "output": [
@@ -636,6 +721,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x1087D4;ZOO",
             "input": "FOO&#x1087D4;ZOO",
             "output": [
@@ -646,6 +732,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x10FFFF;ZOO",
             "input": "FOO&#x10FFFF;ZOO",
             "output": [
@@ -656,6 +743,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#x110000;ZOO",
             "input": "FOO&#x110000;ZOO",
             "output": [
@@ -666,6 +754,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#xFFFFFF;ZOO",
             "input": "FOO&#xFFFFFF;ZOO",
             "output": [
@@ -676,6 +765,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#11111111111",
             "input": "FOO&#11111111111",
             "output": [
@@ -686,6 +776,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#1111111111",
             "input": "FOO&#1111111111",
             "output": [
@@ -696,6 +787,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#111111111111",
             "input": "FOO&#111111111111",
             "output": [
@@ -706,6 +798,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#11111111111ZOO",
             "input": "FOO&#11111111111ZOO",
             "output": [
@@ -716,6 +809,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#1111111111ZOO",
             "input": "FOO&#1111111111ZOO",
             "output": [
@@ -726,6 +820,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO&#111111111111ZOO",
             "input": "FOO&#111111111111ZOO",
             "output": [

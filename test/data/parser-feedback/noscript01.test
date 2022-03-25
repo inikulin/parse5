@@ -1,3 +1,454 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><!doctype html><!--foo--></noscript>",
+            "input": "<head><noscript><!doctype html><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!doctype html><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><html class=\"foo\"><!--foo--></noscript>",
+            "input": "<head><noscript><html class=\"foo\"><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<html class=\"foo\"><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript></noscript>",
+            "input": "<head><noscript></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript>   </noscript>",
+            "input": "<head><noscript>   </noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "   "
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><!--foo--></noscript>",
+            "input": "<head><noscript><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><basefont><!--foo--></noscript>",
+            "input": "<head><noscript><basefont><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<basefont><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><bgsound><!--foo--></noscript>",
+            "input": "<head><noscript><bgsound><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<bgsound><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><link><!--foo--></noscript>",
+            "input": "<head><noscript><link><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<link><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><meta><!--foo--></noscript>",
+            "input": "<head><noscript><meta><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<meta><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><noframes>XXX</noscript></noframes></noscript>",
+            "input": "<head><noscript><noframes>XXX</noscript></noframes></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<noframes>XXX"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "EndTag",
+                    "noframes"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><style>XXX</style></noscript>",
+            "input": "<head><noscript><style>XXX</style></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<style>XXX</style>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript></br><!--foo--></noscript>",
+            "input": "<head><noscript></br><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</br><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><head class=\"foo\"><!--foo--></noscript>",
+            "input": "<head><noscript><head class=\"foo\"><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<head class=\"foo\"><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><noscript class=\"foo\"><!--foo--></noscript>",
+            "input": "<head><noscript><noscript class=\"foo\"><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<noscript class=\"foo\"><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript></p><!--foo--></noscript>",
+            "input": "<head><noscript></p><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "</p><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript><p><!--foo--></noscript>",
+            "input": "<head><noscript><p><!--foo--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<p><!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript>XXX<!--foo--></noscript></head>",
+            "input": "<head><noscript>XXX<!--foo--></noscript></head>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "XXX<!--foo-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "EndTag",
+                    "head"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<head><noscript>",
+            "input": "<head><noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ]
+            ]
+        }
+    ]
 }

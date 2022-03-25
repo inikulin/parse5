@@ -108,9 +108,12 @@ function collectParserTokens(html: string): HtmlLibToken[] {
             );
         }
         override onWhitespaceCharacter(token: CharacterToken): void {
+            const { skipNextNewLine } = this;
+            const { chars } = token;
+
             this.guardTopLevel(
                 () => super.onWhitespaceCharacter(token),
-                () => ['Character', token.chars]
+                () => ['Character', skipNextNewLine && chars.startsWith('\n') ? chars.slice(1) : chars]
             );
         }
     }
@@ -121,16 +124,15 @@ function collectParserTokens(html: string): HtmlLibToken[] {
 }
 
 function generateParserFeedbackTest(parserTestFile: string): string {
-    const tests = parseDatFile(parserTestFile, defaultTreeAdapter);
+    const tests = parseDatFile<defaultTreeAdapter.DefaultTreeAdapterMap>(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {
-        tests: tests
-            .filter((test) => !test.fragmentContext) // TODO
-            .map(({ input }) => ({
-                description: addSlashes(input),
-                input,
-                output: collectParserTokens(input),
-            })),
+        tests: tests.map(({ input, fragmentContext }) => ({
+            fragmentContext: fragmentContext?.tagName ?? null,
+            description: addSlashes(input),
+            input,
+            output: collectParserTokens(input),
+        })),
     };
 
     return JSON.stringify(feedbackTest, null, 4);

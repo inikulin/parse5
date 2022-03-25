@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><foo>A",
             "input": "<!DOCTYPE html><body><foo>A",
             "output": [
@@ -28,6 +29,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><area>A",
             "input": "<!DOCTYPE html><body><area>A",
             "output": [
@@ -55,6 +57,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><base>A",
             "input": "<!DOCTYPE html><body><base>A",
             "output": [
@@ -82,6 +85,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><basefont>A",
             "input": "<!DOCTYPE html><body><basefont>A",
             "output": [
@@ -109,6 +113,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><bgsound>A",
             "input": "<!DOCTYPE html><body><bgsound>A",
             "output": [
@@ -136,6 +141,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><br>A",
             "input": "<!DOCTYPE html><body><br>A",
             "output": [
@@ -163,6 +169,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><col>A",
             "input": "<!DOCTYPE html><body><col>A",
             "output": [
@@ -190,6 +197,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><command>A",
             "input": "<!DOCTYPE html><body><command>A",
             "output": [
@@ -217,6 +225,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><embed>A",
             "input": "<!DOCTYPE html><body><embed>A",
             "output": [
@@ -244,6 +253,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><frame>A",
             "input": "<!DOCTYPE html><body><frame>A",
             "output": [
@@ -271,6 +281,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><hr>A",
             "input": "<!DOCTYPE html><body><hr>A",
             "output": [
@@ -298,6 +309,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><img>A",
             "input": "<!DOCTYPE html><body><img>A",
             "output": [
@@ -325,6 +337,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><input>A",
             "input": "<!DOCTYPE html><body><input>A",
             "output": [
@@ -352,6 +365,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><keygen>A",
             "input": "<!DOCTYPE html><body><keygen>A",
             "output": [
@@ -379,6 +393,160 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html><keygen>A</keygen>B",
+            "input": "<!DOCTYPE html><keygen>A</keygen>B",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "keygen",
+                    {}
+                ],
+                [
+                    "Character",
+                    "A"
+                ],
+                [
+                    "EndTag",
+                    "keygen"
+                ],
+                [
+                    "Character",
+                    "B"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "</keygen>A",
+            "input": "</keygen>A",
+            "output": [
+                [
+                    "EndTag",
+                    "keygen"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html></keygen>A",
+            "input": "<!DOCTYPE html></keygen>A",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "EndTag",
+                    "keygen"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html><head></keygen>A",
+            "input": "<!DOCTYPE html><head></keygen>A",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "keygen"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html><head></head></keygen>A",
+            "input": "<!DOCTYPE html><head></head></keygen>A",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "head"
+                ],
+                [
+                    "EndTag",
+                    "keygen"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html><body></keygen>A",
+            "input": "<!DOCTYPE html><body></keygen>A",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "keygen"
+                ],
+                [
+                    "Character",
+                    "A"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><link>A",
             "input": "<!DOCTYPE html><body><link>A",
             "output": [
@@ -406,6 +574,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><meta>A",
             "input": "<!DOCTYPE html><body><meta>A",
             "output": [
@@ -433,6 +602,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><param>A",
             "input": "<!DOCTYPE html><body><param>A",
             "output": [
@@ -460,6 +630,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><source>A",
             "input": "<!DOCTYPE html><body><source>A",
             "output": [
@@ -487,6 +658,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><track>A",
             "input": "<!DOCTYPE html><body><track>A",
             "output": [
@@ -514,6 +686,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><wbr>A",
             "input": "<!DOCTYPE html><body><wbr>A",
             "output": [

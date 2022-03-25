@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<address>bar<p>baz",
             "input": "<!doctype html><p>foo<address>bar<p>baz",
             "output": [
@@ -41,6 +42,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><address><p>foo</address>bar",
             "input": "<!doctype html><address><p>foo</address>bar",
             "output": [
@@ -76,6 +78,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<article>bar<p>baz",
             "input": "<!doctype html><p>foo<article>bar<p>baz",
             "output": [
@@ -116,6 +119,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><article><p>foo</article>bar",
             "input": "<!doctype html><article><p>foo</article>bar",
             "output": [
@@ -151,6 +155,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<aside>bar<p>baz",
             "input": "<!doctype html><p>foo<aside>bar<p>baz",
             "output": [
@@ -191,6 +196,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><aside><p>foo</aside>bar",
             "input": "<!doctype html><aside><p>foo</aside>bar",
             "output": [
@@ -226,6 +232,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<blockquote>bar<p>baz",
             "input": "<!doctype html><p>foo<blockquote>bar<p>baz",
             "output": [
@@ -266,6 +273,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><blockquote><p>foo</blockquote>bar",
             "input": "<!doctype html><blockquote><p>foo</blockquote>bar",
             "output": [
@@ -301,6 +309,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<center>bar<p>baz",
             "input": "<!doctype html><p>foo<center>bar<p>baz",
             "output": [
@@ -341,6 +350,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><center><p>foo</center>bar",
             "input": "<!doctype html><center><p>foo</center>bar",
             "output": [
@@ -376,6 +386,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<details>bar<p>baz",
             "input": "<!doctype html><p>foo<details>bar<p>baz",
             "output": [
@@ -416,6 +427,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><details><p>foo</details>bar",
             "input": "<!doctype html><details><p>foo</details>bar",
             "output": [
@@ -451,6 +463,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<dialog>bar<p>baz",
             "input": "<!doctype html><p>foo<dialog>bar<p>baz",
             "output": [
@@ -491,6 +504,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><dialog><p>foo</dialog>bar",
             "input": "<!doctype html><dialog><p>foo</dialog>bar",
             "output": [
@@ -526,6 +540,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<dir>bar<p>baz",
             "input": "<!doctype html><p>foo<dir>bar<p>baz",
             "output": [
@@ -566,6 +581,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><dir><p>foo</dir>bar",
             "input": "<!doctype html><dir><p>foo</dir>bar",
             "output": [
@@ -601,6 +617,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<div>bar<p>baz",
             "input": "<!doctype html><p>foo<div>bar<p>baz",
             "output": [
@@ -641,6 +658,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><div><p>foo</div>bar",
             "input": "<!doctype html><div><p>foo</div>bar",
             "output": [
@@ -676,6 +694,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<dl>bar<p>baz",
             "input": "<!doctype html><p>foo<dl>bar<p>baz",
             "output": [
@@ -716,6 +735,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><dl><p>foo</dl>bar",
             "input": "<!doctype html><dl><p>foo</dl>bar",
             "output": [
@@ -751,6 +771,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<fieldset>bar<p>baz",
             "input": "<!doctype html><p>foo<fieldset>bar<p>baz",
             "output": [
@@ -791,6 +812,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><fieldset><p>foo</fieldset>bar",
             "input": "<!doctype html><fieldset><p>foo</fieldset>bar",
             "output": [
@@ -826,6 +848,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<figcaption>bar<p>baz",
             "input": "<!doctype html><p>foo<figcaption>bar<p>baz",
             "output": [
@@ -866,6 +889,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><figcaption><p>foo</figcaption>bar",
             "input": "<!doctype html><figcaption><p>foo</figcaption>bar",
             "output": [
@@ -901,6 +925,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<figure>bar<p>baz",
             "input": "<!doctype html><p>foo<figure>bar<p>baz",
             "output": [
@@ -941,6 +966,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><figure><p>foo</figure>bar",
             "input": "<!doctype html><figure><p>foo</figure>bar",
             "output": [
@@ -976,6 +1002,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<footer>bar<p>baz",
             "input": "<!doctype html><p>foo<footer>bar<p>baz",
             "output": [
@@ -1016,6 +1043,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><footer><p>foo</footer>bar",
             "input": "<!doctype html><footer><p>foo</footer>bar",
             "output": [
@@ -1051,6 +1079,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<header>bar<p>baz",
             "input": "<!doctype html><p>foo<header>bar<p>baz",
             "output": [
@@ -1091,6 +1120,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><header><p>foo</header>bar",
             "input": "<!doctype html><header><p>foo</header>bar",
             "output": [
@@ -1126,6 +1156,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<hgroup>bar<p>baz",
             "input": "<!doctype html><p>foo<hgroup>bar<p>baz",
             "output": [
@@ -1166,6 +1197,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><hgroup><p>foo</hgroup>bar",
             "input": "<!doctype html><hgroup><p>foo</hgroup>bar",
             "output": [
@@ -1201,6 +1233,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<listing>bar<p>baz",
             "input": "<!doctype html><p>foo<listing>bar<p>baz",
             "output": [
@@ -1241,6 +1274,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><listing><p>foo</listing>bar",
             "input": "<!doctype html><listing><p>foo</listing>bar",
             "output": [
@@ -1276,6 +1310,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<menu>bar<p>baz",
             "input": "<!doctype html><p>foo<menu>bar<p>baz",
             "output": [
@@ -1316,6 +1351,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><menu><p>foo</menu>bar",
             "input": "<!doctype html><menu><p>foo</menu>bar",
             "output": [
@@ -1351,6 +1387,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<nav>bar<p>baz",
             "input": "<!doctype html><p>foo<nav>bar<p>baz",
             "output": [
@@ -1391,6 +1428,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><nav><p>foo</nav>bar",
             "input": "<!doctype html><nav><p>foo</nav>bar",
             "output": [
@@ -1426,6 +1464,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<ol>bar<p>baz",
             "input": "<!doctype html><p>foo<ol>bar<p>baz",
             "output": [
@@ -1466,6 +1505,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ol><p>foo</ol>bar",
             "input": "<!doctype html><ol><p>foo</ol>bar",
             "output": [
@@ -1501,6 +1541,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<pre>bar<p>baz",
             "input": "<!doctype html><p>foo<pre>bar<p>baz",
             "output": [
@@ -1541,6 +1582,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><pre><p>foo</pre>bar",
             "input": "<!doctype html><pre><p>foo</pre>bar",
             "output": [
@@ -1576,6 +1618,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<section>bar<p>baz",
             "input": "<!doctype html><p>foo<section>bar<p>baz",
             "output": [
@@ -1616,6 +1659,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><section><p>foo</section>bar",
             "input": "<!doctype html><section><p>foo</section>bar",
             "output": [
@@ -1651,6 +1695,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<summary>bar<p>baz",
             "input": "<!doctype html><p>foo<summary>bar<p>baz",
             "output": [
@@ -1691,6 +1736,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><summary><p>foo</summary>bar",
             "input": "<!doctype html><summary><p>foo</summary>bar",
             "output": [
@@ -1726,6 +1772,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p>foo<ul>bar<p>baz",
             "input": "<!doctype html><p>foo<ul>bar<p>baz",
             "output": [
@@ -1766,6 +1813,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><ul><p>foo</ul>bar",
             "input": "<!doctype html><ul><p>foo</ul>bar",
             "output": [

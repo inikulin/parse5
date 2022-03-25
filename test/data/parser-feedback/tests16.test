@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script>",
             "input": "<!doctype html><script>",
             "output": [
@@ -19,6 +20,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script>a",
             "input": "<!doctype html><script>a",
             "output": [
@@ -41,6 +43,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><",
             "input": "<!doctype html><script><",
             "output": [
@@ -63,6 +66,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></",
             "input": "<!doctype html><script></",
             "output": [
@@ -85,6 +89,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></S",
             "input": "<!doctype html><script></S",
             "output": [
@@ -107,6 +112,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></SC",
             "input": "<!doctype html><script></SC",
             "output": [
@@ -129,6 +135,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></SCR",
             "input": "<!doctype html><script></SCR",
             "output": [
@@ -151,6 +158,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></SCRI",
             "input": "<!doctype html><script></SCRI",
             "output": [
@@ -173,6 +181,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></SCRIP",
             "input": "<!doctype html><script></SCRIP",
             "output": [
@@ -195,6 +204,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></SCRIPT",
             "input": "<!doctype html><script></SCRIPT",
             "output": [
@@ -217,6 +227,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></SCRIPT ",
             "input": "<!doctype html><script></SCRIPT ",
             "output": [
@@ -235,6 +246,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></s",
             "input": "<!doctype html><script></s",
             "output": [
@@ -257,6 +269,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></sc",
             "input": "<!doctype html><script></sc",
             "output": [
@@ -279,6 +292,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></scr",
             "input": "<!doctype html><script></scr",
             "output": [
@@ -301,6 +315,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></scri",
             "input": "<!doctype html><script></scri",
             "output": [
@@ -323,6 +338,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></scrip",
             "input": "<!doctype html><script></scrip",
             "output": [
@@ -345,6 +361,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></script",
             "input": "<!doctype html><script></script",
             "output": [
@@ -367,6 +384,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script></script ",
             "input": "<!doctype html><script></script ",
             "output": [
@@ -385,6 +403,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!",
             "input": "<!doctype html><script><!",
             "output": [
@@ -407,6 +426,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!a",
             "input": "<!doctype html><script><!a",
             "output": [
@@ -429,6 +449,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!-",
             "input": "<!doctype html><script><!-",
             "output": [
@@ -451,6 +472,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!-a",
             "input": "<!doctype html><script><!-a",
             "output": [
@@ -473,6 +495,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--",
             "input": "<!doctype html><script><!--",
             "output": [
@@ -495,6 +518,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--a",
             "input": "<!doctype html><script><!--a",
             "output": [
@@ -517,6 +541,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<",
             "input": "<!doctype html><script><!--<",
             "output": [
@@ -539,6 +564,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<a",
             "input": "<!doctype html><script><!--<a",
             "output": [
@@ -561,6 +587,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--</",
             "input": "<!doctype html><script><!--</",
             "output": [
@@ -583,6 +610,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--</script",
             "input": "<!doctype html><script><!--</script",
             "output": [
@@ -605,6 +633,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--</script ",
             "input": "<!doctype html><script><!--</script ",
             "output": [
@@ -627,6 +656,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<s",
             "input": "<!doctype html><script><!--<s",
             "output": [
@@ -649,6 +679,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script",
             "input": "<!doctype html><script><!--<script",
             "output": [
@@ -671,6 +702,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script ",
             "input": "<!doctype html><script><!--<script ",
             "output": [
@@ -693,6 +725,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script <",
             "input": "<!doctype html><script><!--<script <",
             "output": [
@@ -715,6 +748,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script <a",
             "input": "<!doctype html><script><!--<script <a",
             "output": [
@@ -737,6 +771,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </",
             "input": "<!doctype html><script><!--<script </",
             "output": [
@@ -759,6 +794,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </s",
             "input": "<!doctype html><script><!--<script </s",
             "output": [
@@ -781,6 +817,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script",
             "input": "<!doctype html><script><!--<script </script",
             "output": [
@@ -803,6 +840,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </scripta",
             "input": "<!doctype html><script><!--<script </scripta",
             "output": [
@@ -825,6 +863,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script ",
             "input": "<!doctype html><script><!--<script </script ",
             "output": [
@@ -847,6 +886,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script>",
             "input": "<!doctype html><script><!--<script </script>",
             "output": [
@@ -869,6 +909,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script/",
             "input": "<!doctype html><script><!--<script </script/",
             "output": [
@@ -891,6 +932,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script <",
             "input": "<!doctype html><script><!--<script </script <",
             "output": [
@@ -913,6 +955,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script <a",
             "input": "<!doctype html><script><!--<script </script <a",
             "output": [
@@ -935,6 +978,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script </",
             "input": "<!doctype html><script><!--<script </script </",
             "output": [
@@ -957,6 +1001,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script </script",
             "input": "<!doctype html><script><!--<script </script </script",
             "output": [
@@ -979,6 +1024,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script </script ",
             "input": "<!doctype html><script><!--<script </script </script ",
             "output": [
@@ -1001,6 +1047,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script </script/",
             "input": "<!doctype html><script><!--<script </script </script/",
             "output": [
@@ -1023,6 +1070,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script </script </script>",
             "input": "<!doctype html><script><!--<script </script </script>",
             "output": [
@@ -1049,6 +1097,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script -",
             "input": "<!doctype html><script><!--<script -",
             "output": [
@@ -1071,6 +1120,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script -a",
             "input": "<!doctype html><script><!--<script -a",
             "output": [
@@ -1093,6 +1143,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script -<",
             "input": "<!doctype html><script><!--<script -<",
             "output": [
@@ -1115,6 +1166,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --",
             "input": "<!doctype html><script><!--<script --",
             "output": [
@@ -1137,6 +1189,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --a",
             "input": "<!doctype html><script><!--<script --a",
             "output": [
@@ -1159,6 +1212,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --<",
             "input": "<!doctype html><script><!--<script --<",
             "output": [
@@ -1181,6 +1235,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script -->",
             "input": "<!doctype html><script><!--<script -->",
             "output": [
@@ -1203,6 +1258,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --><",
             "input": "<!doctype html><script><!--<script --><",
             "output": [
@@ -1225,6 +1281,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --></",
             "input": "<!doctype html><script><!--<script --></",
             "output": [
@@ -1247,6 +1304,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --></script",
             "input": "<!doctype html><script><!--<script --></script",
             "output": [
@@ -1269,6 +1327,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --></script ",
             "input": "<!doctype html><script><!--<script --></script ",
             "output": [
@@ -1291,6 +1350,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --></script/",
             "input": "<!doctype html><script><!--<script --></script/",
             "output": [
@@ -1313,6 +1373,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script --></script>",
             "input": "<!doctype html><script><!--<script --></script>",
             "output": [
@@ -1339,6 +1400,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script><\\/script>--></script>",
             "input": "<!doctype html><script><!--<script><\\/script>--></script>",
             "output": [
@@ -1365,6 +1427,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></scr'+'ipt>--></script>",
             "input": "<!doctype html><script><!--<script></scr'+'ipt>--></script>",
             "output": [
@@ -1391,6 +1454,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></script><script></script></script>",
             "input": "<!doctype html><script><!--<script></script><script></script></script>",
             "output": [
@@ -1417,6 +1481,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></script><script></script>--><!--</script>",
             "input": "<!doctype html><script><!--<script></script><script></script>--><!--</script>",
             "output": [
@@ -1443,6 +1508,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></script><script></script>-- ></script>",
             "input": "<!doctype html><script><!--<script></script><script></script>-- ></script>",
             "output": [
@@ -1469,6 +1535,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></script><script></script>- -></script>",
             "input": "<!doctype html><script><!--<script></script><script></script>- -></script>",
             "output": [
@@ -1495,6 +1562,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></script><script></script>- - ></script>",
             "input": "<!doctype html><script><!--<script></script><script></script>- - ></script>",
             "output": [
@@ -1521,6 +1589,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></script><script></script>-></script>",
             "input": "<!doctype html><script><!--<script></script><script></script>-></script>",
             "output": [
@@ -1547,6 +1616,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script>--!></script>X",
             "input": "<!doctype html><script><!--<script>--!></script>X",
             "output": [
@@ -1569,6 +1639,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<scr'+'ipt></script>--></script>",
             "input": "<!doctype html><script><!--<scr'+'ipt></script>--></script>",
             "output": [
@@ -1603,6 +1674,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><script><!--<script></scr'+'ipt></script>X",
             "input": "<!doctype html><script><!--<script></scr'+'ipt></script>X",
             "output": [
@@ -1625,6 +1697,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style><!--<style></style>--></style>",
             "input": "<!doctype html><style><!--<style></style>--></style>",
             "output": [
@@ -1659,6 +1732,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style><!--</style>X",
             "input": "<!doctype html><style><!--</style>X",
             "output": [
@@ -1689,6 +1763,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style><!--...</style>...--></style>",
             "input": "<!doctype html><style><!--...</style>...--></style>",
             "output": [
@@ -1723,6 +1798,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style><!--<br><html xmlns:v=\"urn:schemas-microsoft-com:vml\"><!--[if !mso]><style></style>X",
             "input": "<!doctype html><style><!--<br><html xmlns:v=\"urn:schemas-microsoft-com:vml\"><!--[if !mso]><style></style>X",
             "output": [
@@ -1753,6 +1829,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style><!--...<style><!--...--!></style>--></style>",
             "input": "<!doctype html><style><!--...<style><!--...--!></style>--></style>",
             "output": [
@@ -1787,6 +1864,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style><!--...</style><!-- --><style>@import ...</style>",
             "input": "<!doctype html><style><!--...</style><!-- --><style>@import ...</style>",
             "output": [
@@ -1830,6 +1908,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style>...<style><!--...</style><!-- --></style>",
             "input": "<!doctype html><style>...<style><!--...</style><!-- --></style>",
             "output": [
@@ -1864,6 +1943,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><style>...<!--[if IE]><style>...</style>X",
             "input": "<!doctype html><style>...<!--[if IE]><style>...</style>X",
             "output": [
@@ -1894,6 +1974,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><title><!--<title></title>--></title>",
             "input": "<!doctype html><title><!--<title></title>--></title>",
             "output": [
@@ -1928,6 +2009,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><title>&lt;/title></title>",
             "input": "<!doctype html><title>&lt;/title></title>",
             "output": [
@@ -1954,6 +2036,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><title>foo/title><link></head><body>X",
             "input": "<!doctype html><title>foo/title><link></head><body>X",
             "output": [
@@ -1976,6 +2059,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><noscript><!--<noscript></noscript>--></noscript>",
             "input": "<!doctype html><noscript><!--<noscript></noscript>--></noscript>",
             "output": [
@@ -2010,6 +2094,42 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!doctype html><noscript><!--<noscript></noscript>--></noscript>",
+            "input": "<!doctype html><noscript><!--<noscript></noscript>--></noscript>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--<noscript>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
             "input": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
             "output": [
@@ -2053,6 +2173,51 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
+            "input": "<!doctype html><noscript><!--</noscript>X<noscript>--></noscript>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "X"
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!doctype html><noscript><iframe></noscript>X",
             "input": "<!doctype html><noscript><iframe></noscript>X",
             "output": [
@@ -2083,6 +2248,38 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!doctype html><noscript><iframe></noscript>X",
+            "input": "<!doctype html><noscript><iframe></noscript>X",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<iframe>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!doctype html><noframes><!--<noframes></noframes>--></noframes>",
             "input": "<!doctype html><noframes><!--<noframes></noframes>--></noframes>",
             "output": [
@@ -2117,6 +2314,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><noframes><body><script><!--...</script></body></noframes></html>",
             "input": "<!doctype html><noframes><body><script><!--...</script></body></noframes></html>",
             "output": [
@@ -2147,6 +2345,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><textarea><!--<textarea></textarea>--></textarea>",
             "input": "<!doctype html><textarea><!--<textarea></textarea>--></textarea>",
             "output": [
@@ -2181,6 +2380,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><textarea>&lt;/textarea></textarea>",
             "input": "<!doctype html><textarea>&lt;/textarea></textarea>",
             "output": [
@@ -2207,6 +2407,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><textarea>&lt;</textarea>",
             "input": "<!doctype html><textarea>&lt;</textarea>",
             "output": [
@@ -2233,6 +2434,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><textarea>a&lt;b</textarea>",
             "input": "<!doctype html><textarea>a&lt;b</textarea>",
             "output": [
@@ -2259,6 +2461,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><iframe><!--<iframe></iframe>--></iframe>",
             "input": "<!doctype html><iframe><!--<iframe></iframe>--></iframe>",
             "output": [
@@ -2293,6 +2496,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><iframe>...<!--X->...<!--/X->...</iframe>",
             "input": "<!doctype html><iframe>...<!--X->...<!--/X->...</iframe>",
             "output": [
@@ -2319,6 +2523,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><xmp><!--<xmp></xmp>--></xmp>",
             "input": "<!doctype html><xmp><!--<xmp></xmp>--></xmp>",
             "output": [
@@ -2353,6 +2558,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><noembed><!--<noembed></noembed>--></noembed>",
             "input": "<!doctype html><noembed><!--<noembed></noembed>--></noembed>",
             "output": [
@@ -2387,6 +2593,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script>",
             "input": "<script>",
             "output": [
@@ -2398,6 +2605,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script>a",
             "input": "<script>a",
             "output": [
@@ -2413,6 +2621,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><",
             "input": "<script><",
             "output": [
@@ -2428,6 +2637,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></",
             "input": "<script></",
             "output": [
@@ -2443,6 +2653,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></S",
             "input": "<script></S",
             "output": [
@@ -2458,6 +2669,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></SC",
             "input": "<script></SC",
             "output": [
@@ -2473,6 +2685,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></SCR",
             "input": "<script></SCR",
             "output": [
@@ -2488,6 +2701,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></SCRI",
             "input": "<script></SCRI",
             "output": [
@@ -2503,6 +2717,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></SCRIP",
             "input": "<script></SCRIP",
             "output": [
@@ -2518,6 +2733,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></SCRIPT",
             "input": "<script></SCRIPT",
             "output": [
@@ -2533,6 +2749,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></SCRIPT ",
             "input": "<script></SCRIPT ",
             "output": [
@@ -2544,6 +2761,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></s",
             "input": "<script></s",
             "output": [
@@ -2559,6 +2777,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></sc",
             "input": "<script></sc",
             "output": [
@@ -2574,6 +2793,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></scr",
             "input": "<script></scr",
             "output": [
@@ -2589,6 +2809,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></scri",
             "input": "<script></scri",
             "output": [
@@ -2604,6 +2825,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></scrip",
             "input": "<script></scrip",
             "output": [
@@ -2619,6 +2841,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></script",
             "input": "<script></script",
             "output": [
@@ -2634,6 +2857,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script></script ",
             "input": "<script></script ",
             "output": [
@@ -2645,6 +2869,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!",
             "input": "<script><!",
             "output": [
@@ -2660,6 +2885,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!a",
             "input": "<script><!a",
             "output": [
@@ -2675,6 +2901,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!-",
             "input": "<script><!-",
             "output": [
@@ -2690,6 +2917,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!-a",
             "input": "<script><!-a",
             "output": [
@@ -2705,6 +2933,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--",
             "input": "<script><!--",
             "output": [
@@ -2720,6 +2949,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--a",
             "input": "<script><!--a",
             "output": [
@@ -2735,6 +2965,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<",
             "input": "<script><!--<",
             "output": [
@@ -2750,6 +2981,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<a",
             "input": "<script><!--<a",
             "output": [
@@ -2765,6 +2997,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--</",
             "input": "<script><!--</",
             "output": [
@@ -2780,6 +3013,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--</script",
             "input": "<script><!--</script",
             "output": [
@@ -2795,6 +3029,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--</script ",
             "input": "<script><!--</script ",
             "output": [
@@ -2810,6 +3045,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<s",
             "input": "<script><!--<s",
             "output": [
@@ -2825,6 +3061,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script",
             "input": "<script><!--<script",
             "output": [
@@ -2840,6 +3077,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script ",
             "input": "<script><!--<script ",
             "output": [
@@ -2855,6 +3093,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script <",
             "input": "<script><!--<script <",
             "output": [
@@ -2870,6 +3109,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script <a",
             "input": "<script><!--<script <a",
             "output": [
@@ -2885,6 +3125,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </",
             "input": "<script><!--<script </",
             "output": [
@@ -2900,6 +3141,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </s",
             "input": "<script><!--<script </s",
             "output": [
@@ -2915,6 +3157,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script",
             "input": "<script><!--<script </script",
             "output": [
@@ -2930,6 +3173,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </scripta",
             "input": "<script><!--<script </scripta",
             "output": [
@@ -2945,6 +3189,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script ",
             "input": "<script><!--<script </script ",
             "output": [
@@ -2960,6 +3205,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script>",
             "input": "<script><!--<script </script>",
             "output": [
@@ -2975,6 +3221,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script/",
             "input": "<script><!--<script </script/",
             "output": [
@@ -2990,6 +3237,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script <",
             "input": "<script><!--<script </script <",
             "output": [
@@ -3005,6 +3253,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script <a",
             "input": "<script><!--<script </script <a",
             "output": [
@@ -3020,6 +3269,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script </",
             "input": "<script><!--<script </script </",
             "output": [
@@ -3035,6 +3285,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script </script",
             "input": "<script><!--<script </script </script",
             "output": [
@@ -3050,6 +3301,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script </script ",
             "input": "<script><!--<script </script </script ",
             "output": [
@@ -3065,6 +3317,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script </script/",
             "input": "<script><!--<script </script </script/",
             "output": [
@@ -3080,6 +3333,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script </script </script>",
             "input": "<script><!--<script </script </script>",
             "output": [
@@ -3099,6 +3353,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script -",
             "input": "<script><!--<script -",
             "output": [
@@ -3114,6 +3369,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script -a",
             "input": "<script><!--<script -a",
             "output": [
@@ -3129,6 +3385,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --",
             "input": "<script><!--<script --",
             "output": [
@@ -3144,6 +3401,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --a",
             "input": "<script><!--<script --a",
             "output": [
@@ -3159,6 +3417,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script -->",
             "input": "<script><!--<script -->",
             "output": [
@@ -3174,6 +3433,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --><",
             "input": "<script><!--<script --><",
             "output": [
@@ -3189,6 +3449,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --></",
             "input": "<script><!--<script --></",
             "output": [
@@ -3204,6 +3465,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --></script",
             "input": "<script><!--<script --></script",
             "output": [
@@ -3219,6 +3481,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --></script ",
             "input": "<script><!--<script --></script ",
             "output": [
@@ -3234,6 +3497,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --></script/",
             "input": "<script><!--<script --></script/",
             "output": [
@@ -3249,6 +3513,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script --></script>",
             "input": "<script><!--<script --></script>",
             "output": [
@@ -3268,6 +3533,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script><\\/script>--></script>",
             "input": "<script><!--<script><\\/script>--></script>",
             "output": [
@@ -3287,6 +3553,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></scr'+'ipt>--></script>",
             "input": "<script><!--<script></scr'+'ipt>--></script>",
             "output": [
@@ -3306,6 +3573,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></script><script></script></script>",
             "input": "<script><!--<script></script><script></script></script>",
             "output": [
@@ -3325,6 +3593,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></script><script></script>--><!--</script>",
             "input": "<script><!--<script></script><script></script>--><!--</script>",
             "output": [
@@ -3344,6 +3613,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></script><script></script>-- ></script>",
             "input": "<script><!--<script></script><script></script>-- ></script>",
             "output": [
@@ -3363,6 +3633,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></script><script></script>- -></script>",
             "input": "<script><!--<script></script><script></script>- -></script>",
             "output": [
@@ -3382,6 +3653,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></script><script></script>- - ></script>",
             "input": "<script><!--<script></script><script></script>- - ></script>",
             "output": [
@@ -3401,6 +3673,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></script><script></script>-></script>",
             "input": "<script><!--<script></script><script></script>-></script>",
             "output": [
@@ -3420,6 +3693,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script>--!></script>X",
             "input": "<script><!--<script>--!></script>X",
             "output": [
@@ -3435,6 +3709,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<scr'+'ipt></script>--></script>",
             "input": "<script><!--<scr'+'ipt></script>--></script>",
             "output": [
@@ -3462,6 +3737,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script><!--<script></scr'+'ipt></script>X",
             "input": "<script><!--<script></scr'+'ipt></script>X",
             "output": [
@@ -3477,6 +3753,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style><!--<style></style>--></style>",
             "input": "<style><!--<style></style>--></style>",
             "output": [
@@ -3504,6 +3781,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style><!--</style>X",
             "input": "<style><!--</style>X",
             "output": [
@@ -3527,6 +3805,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style><!--...</style>...--></style>",
             "input": "<style><!--...</style>...--></style>",
             "output": [
@@ -3554,6 +3833,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style><!--<br><html xmlns:v=\"urn:schemas-microsoft-com:vml\"><!--[if !mso]><style></style>X",
             "input": "<style><!--<br><html xmlns:v=\"urn:schemas-microsoft-com:vml\"><!--[if !mso]><style></style>X",
             "output": [
@@ -3577,6 +3857,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style><!--...<style><!--...--!></style>--></style>",
             "input": "<style><!--...<style><!--...--!></style>--></style>",
             "output": [
@@ -3604,6 +3885,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style><!--...</style><!-- --><style>@import ...</style>",
             "input": "<style><!--...</style><!-- --><style>@import ...</style>",
             "output": [
@@ -3640,6 +3922,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style>...<style><!--...</style><!-- --></style>",
             "input": "<style>...<style><!--...</style><!-- --></style>",
             "output": [
@@ -3667,6 +3950,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style>...<!--[if IE]><style>...</style>X",
             "input": "<style>...<!--[if IE]><style>...</style>X",
             "output": [
@@ -3690,6 +3974,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<title><!--<title></title>--></title>",
             "input": "<title><!--<title></title>--></title>",
             "output": [
@@ -3717,6 +4002,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<title>&lt;/title></title>",
             "input": "<title>&lt;/title></title>",
             "output": [
@@ -3736,6 +4022,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<title>foo/title><link></head><body>X",
             "input": "<title>foo/title><link></head><body>X",
             "output": [
@@ -3751,6 +4038,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<noscript><!--<noscript></noscript>--></noscript>",
             "input": "<noscript><!--<noscript></noscript>--></noscript>",
             "output": [
@@ -3778,6 +4066,35 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<noscript><!--<noscript></noscript>--></noscript>",
+            "input": "<noscript><!--<noscript></noscript>--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--<noscript>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<noscript><!--</noscript>X<noscript>--></noscript>",
             "input": "<noscript><!--</noscript>X<noscript>--></noscript>",
             "output": [
@@ -3814,6 +4131,44 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<noscript><!--</noscript>X<noscript>--></noscript>",
+            "input": "<noscript><!--</noscript>X<noscript>--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "X"
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<noscript><iframe></noscript>X",
             "input": "<noscript><iframe></noscript>X",
             "output": [
@@ -3837,6 +4192,31 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<noscript><iframe></noscript>X",
+            "input": "<noscript><iframe></noscript>X",
+            "output": [
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<iframe>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<noframes><!--<noframes></noframes>--></noframes>",
             "input": "<noframes><!--<noframes></noframes>--></noframes>",
             "output": [
@@ -3864,6 +4244,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<noframes><body><script><!--...</script></body></noframes></html>",
             "input": "<noframes><body><script><!--...</script></body></noframes></html>",
             "output": [
@@ -3887,6 +4268,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<textarea><!--<textarea></textarea>--></textarea>",
             "input": "<textarea><!--<textarea></textarea>--></textarea>",
             "output": [
@@ -3914,6 +4296,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<textarea>&lt;/textarea></textarea>",
             "input": "<textarea>&lt;/textarea></textarea>",
             "output": [
@@ -3933,6 +4316,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<iframe><!--<iframe></iframe>--></iframe>",
             "input": "<iframe><!--<iframe></iframe>--></iframe>",
             "output": [
@@ -3960,6 +4344,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<iframe>...<!--X->...<!--/X->...</iframe>",
             "input": "<iframe>...<!--X->...<!--/X->...</iframe>",
             "output": [
@@ -3979,6 +4364,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<xmp><!--<xmp></xmp>--></xmp>",
             "input": "<xmp><!--<xmp></xmp>--></xmp>",
             "output": [
@@ -4006,6 +4392,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<noembed><!--<noembed></noembed>--></noembed>",
             "input": "<noembed><!--<noembed></noembed>--></noembed>",
             "output": [
@@ -4033,8 +4420,9 @@
             ]
         },
         {
-            "description": "<!doctype html><table>\\r\\n",
-            "input": "<!doctype html><table>\r\n",
+            "fragmentContext": null,
+            "description": "<!doctype html><table>\\n",
+            "input": "<!doctype html><table>\n",
             "output": [
                 [
                     "DOCTYPE",
@@ -4055,6 +4443,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><td><span><font></span><span>",
             "input": "<!doctype html><table><td><span><font></span><span>",
             "output": [
@@ -4097,6 +4486,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><form><table></form><form></table></form>",
             "input": "<!doctype html><form><table></form><form></table></form>",
             "output": [

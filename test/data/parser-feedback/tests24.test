@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&NotEqualTilde;",
             "input": "<!DOCTYPE html>&NotEqualTilde;",
             "output": [
@@ -18,6 +19,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&NotEqualTilde;A",
             "input": "<!DOCTYPE html>&NotEqualTilde;A",
             "output": [
@@ -35,6 +37,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&ThickSpace;",
             "input": "<!DOCTYPE html>&ThickSpace;",
             "output": [
@@ -52,6 +55,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&ThickSpace;A",
             "input": "<!DOCTYPE html>&ThickSpace;A",
             "output": [
@@ -69,6 +73,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&NotSubset;",
             "input": "<!DOCTYPE html>&NotSubset;",
             "output": [
@@ -86,6 +91,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&NotSubset;A",
             "input": "<!DOCTYPE html>&NotSubset;A",
             "output": [
@@ -103,6 +109,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&Gopf;",
             "input": "<!DOCTYPE html>&Gopf;",
             "output": [
@@ -120,6 +127,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>&Gopf;A",
             "input": "<!DOCTYPE html>&Gopf;A",
             "output": [

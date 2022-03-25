@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<input type=\"hidden\"><frameset>",
             "input": "<input type=\"hidden\"><frameset>",
             "output": [
@@ -19,6 +20,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><table><caption><svg>foo</table>bar",
             "input": "<!DOCTYPE html><table><caption><svg>foo</table>bar",
             "output": [
@@ -59,6 +61,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tr><td><svg><desc><td></desc><circle>",
             "input": "<table><tr><td><svg><desc><td></desc><circle>",
             "output": [

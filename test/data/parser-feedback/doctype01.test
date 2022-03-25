@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html>Hello",
             "input": "<!DOCTYPE html>Hello",
             "output": [
@@ -18,6 +19,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!dOctYpE HtMl>Hello",
             "input": "<!dOctYpE HtMl>Hello",
             "output": [
@@ -35,6 +37,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPEhtml>Hello",
             "input": "<!DOCTYPEhtml>Hello",
             "output": [
@@ -52,6 +55,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE>Hello",
             "input": "<!DOCTYPE>Hello",
             "output": [
@@ -69,6 +73,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE >Hello",
             "input": "<!DOCTYPE >Hello",
             "output": [
@@ -86,6 +91,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato>Hello",
             "input": "<!DOCTYPE potato>Hello",
             "output": [
@@ -103,6 +109,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato >Hello",
             "input": "<!DOCTYPE potato >Hello",
             "output": [
@@ -120,6 +127,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato taco>Hello",
             "input": "<!DOCTYPE potato taco>Hello",
             "output": [
@@ -137,6 +145,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato taco \"ddd>Hello",
             "input": "<!DOCTYPE potato taco \"ddd>Hello",
             "output": [
@@ -154,6 +163,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato sYstEM>Hello",
             "input": "<!DOCTYPE potato sYstEM>Hello",
             "output": [
@@ -171,6 +181,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato sYstEM    >Hello",
             "input": "<!DOCTYPE potato sYstEM    >Hello",
             "output": [
@@ -188,6 +199,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE   potato       sYstEM  ggg>Hello",
             "input": "<!DOCTYPE   potato       sYstEM  ggg>Hello",
             "output": [
@@ -205,6 +217,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato SYSTEM taco  >Hello",
             "input": "<!DOCTYPE potato SYSTEM taco  >Hello",
             "output": [
@@ -222,6 +235,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato SYSTEM 'taco\"'>Hello",
             "input": "<!DOCTYPE potato SYSTEM 'taco\"'>Hello",
             "output": [
@@ -239,6 +253,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato SYSTEM \"taco\">Hello",
             "input": "<!DOCTYPE potato SYSTEM \"taco\">Hello",
             "output": [
@@ -256,6 +271,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato SYSTEM \"tai'co\">Hello",
             "input": "<!DOCTYPE potato SYSTEM \"tai'co\">Hello",
             "output": [
@@ -273,6 +289,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato SYSTEMtaco \"ddd\">Hello",
             "input": "<!DOCTYPE potato SYSTEMtaco \"ddd\">Hello",
             "output": [
@@ -290,6 +307,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato grass SYSTEM taco>Hello",
             "input": "<!DOCTYPE potato grass SYSTEM taco>Hello",
             "output": [
@@ -307,6 +325,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato pUbLIc>Hello",
             "input": "<!DOCTYPE potato pUbLIc>Hello",
             "output": [
@@ -324,6 +343,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato pUbLIc >Hello",
             "input": "<!DOCTYPE potato pUbLIc >Hello",
             "output": [
@@ -341,6 +361,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato pUbLIcgoof>Hello",
             "input": "<!DOCTYPE potato pUbLIcgoof>Hello",
             "output": [
@@ -358,6 +379,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato PUBLIC goof>Hello",
             "input": "<!DOCTYPE potato PUBLIC goof>Hello",
             "output": [
@@ -375,6 +397,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato PUBLIC \"go'of\">Hello",
             "input": "<!DOCTYPE potato PUBLIC \"go'of\">Hello",
             "output": [
@@ -392,6 +415,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato PUBLIC 'go'of'>Hello",
             "input": "<!DOCTYPE potato PUBLIC 'go'of'>Hello",
             "output": [
@@ -409,6 +433,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato PUBLIC 'go:hh   of' >Hello",
             "input": "<!DOCTYPE potato PUBLIC 'go:hh   of' >Hello",
             "output": [
@@ -426,6 +451,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE potato PUBLIC \"W3C-//dfdf\" SYSTEM ggg>Hello",
             "input": "<!DOCTYPE potato PUBLIC \"W3C-//dfdf\" SYSTEM ggg>Hello",
             "output": [
@@ -443,8 +469,9 @@
             ]
         },
         {
-            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\\r\\n   \"http://www.w3.org/TR/html4/strict.dtd\">Hello",
-            "input": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\r\n   \"http://www.w3.org/TR/html4/strict.dtd\">Hello",
+            "fragmentContext": null,
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\\n   \"http://www.w3.org/TR/html4/strict.dtd\">Hello",
+            "input": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n   \"http://www.w3.org/TR/html4/strict.dtd\">Hello",
             "output": [
                 [
                     "DOCTYPE",
@@ -460,6 +487,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE ...>Hello",
             "input": "<!DOCTYPE ...>Hello",
             "output": [
@@ -477,8 +505,9 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\\r\\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
-            "input": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\r\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
+            "input": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
             "output": [
                 [
                     "DOCTYPE",
@@ -490,8 +519,9 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\\r\\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
-            "input": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\r\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
+            "input": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">",
             "output": [
                 [
                     "DOCTYPE",
@@ -503,8 +533,9 @@
             ]
         },
         {
-            "description": "<!DOCTYPE root-element [SYSTEM OR PUBLIC FPI] \"uri\" [ \\r\\n<!-- internal declarations -->\\r\\n]>",
-            "input": "<!DOCTYPE root-element [SYSTEM OR PUBLIC FPI] \"uri\" [ \r\n<!-- internal declarations -->\r\n]>",
+            "fragmentContext": null,
+            "description": "<!DOCTYPE root-element [SYSTEM OR PUBLIC FPI] \"uri\" [ \\n<!-- internal declarations -->\\n]>",
+            "input": "<!DOCTYPE root-element [SYSTEM OR PUBLIC FPI] \"uri\" [ \n<!-- internal declarations -->\n]>",
             "output": [
                 [
                     "DOCTYPE",
@@ -520,8 +551,9 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html PUBLIC\\r\\n  \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\"\\r\\n    \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">",
-            "input": "<!DOCTYPE html PUBLIC\r\n  \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\"\r\n    \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">",
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html PUBLIC\\n  \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\"\\n    \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">",
+            "input": "<!DOCTYPE html PUBLIC\n  \"-//WAPFORUM//DTD XHTML Mobile 1.0//EN\"\n    \"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">",
             "output": [
                 [
                     "DOCTYPE",
@@ -533,6 +565,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE HTML SYSTEM \"http://www.w3.org/DTD/HTML4-strict.dtd\"><body><b>Mine!</b></body>",
             "input": "<!DOCTYPE HTML SYSTEM \"http://www.w3.org/DTD/HTML4-strict.dtd\"><body><b>Mine!</b></body>",
             "output": [
@@ -568,6 +601,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"http://www.w3.org/TR/html4/strict.dtd\">",
             "input": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"http://www.w3.org/TR/html4/strict.dtd\">",
             "output": [
@@ -581,6 +615,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
             "input": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
             "output": [
@@ -594,6 +629,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE HTML PUBLIC\"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
             "input": "<!DOCTYPE HTML PUBLIC\"-//W3C//DTD HTML 4.01//EN\"'http://www.w3.org/TR/html4/strict.dtd'>",
             "output": [
@@ -607,6 +643,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE HTML PUBLIC'-//W3C//DTD HTML 4.01//EN''http://www.w3.org/TR/html4/strict.dtd'>",
             "input": "<!DOCTYPE HTML PUBLIC'-//W3C//DTD HTML 4.01//EN''http://www.w3.org/TR/html4/strict.dtd'>",
             "output": [

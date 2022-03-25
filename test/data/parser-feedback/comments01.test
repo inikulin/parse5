@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "FOO<!-- BAR -->BAZ",
             "input": "FOO<!-- BAR -->BAZ",
             "output": [
@@ -19,6 +20,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!-- BAR --!>BAZ",
             "input": "FOO<!-- BAR --!>BAZ",
             "output": [
@@ -37,6 +39,37 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "FOO<!-- BAR --! >BAZ",
+            "input": "FOO<!-- BAR --! >BAZ",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "Comment",
+                    " BAR --! >BAZ"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "FOO<!-- BAR --!\\n>BAZ",
+            "input": "FOO<!-- BAR --!\n>BAZ",
+            "output": [
+                [
+                    "Character",
+                    "FOO"
+                ],
+                [
+                    "Comment",
+                    " BAR --!\n>BAZ"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "FOO<!-- BAR --   >BAZ",
             "input": "FOO<!-- BAR --   >BAZ",
             "output": [
@@ -51,6 +84,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!-- BAR -- <QUX> -- MUX -->BAZ",
             "input": "FOO<!-- BAR -- <QUX> -- MUX -->BAZ",
             "output": [
@@ -69,6 +103,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!-- BAR -- <QUX> -- MUX --!>BAZ",
             "input": "FOO<!-- BAR -- <QUX> -- MUX --!>BAZ",
             "output": [
@@ -87,6 +122,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!-- BAR -- <QUX> -- MUX -- >BAZ",
             "input": "FOO<!-- BAR -- <QUX> -- MUX -- >BAZ",
             "output": [
@@ -101,6 +137,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!---->BAZ",
             "input": "FOO<!---->BAZ",
             "output": [
@@ -119,6 +156,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!--->BAZ",
             "input": "FOO<!--->BAZ",
             "output": [
@@ -137,6 +175,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!-->BAZ",
             "input": "FOO<!-->BAZ",
             "output": [
@@ -155,6 +194,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<?xml version=\"1.0\">Hi",
             "input": "<?xml version=\"1.0\">Hi",
             "output": [
@@ -169,6 +209,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<?xml version=\"1.0\">",
             "input": "<?xml version=\"1.0\">",
             "output": [
@@ -179,6 +220,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<?xml version",
             "input": "<?xml version",
             "output": [
@@ -189,6 +231,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<!----->BAZ",
             "input": "FOO<!----->BAZ",
             "output": [
@@ -207,6 +250,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><!-- comment --><title>Comment before head</title>",
             "input": "<html><!-- comment --><title>Comment before head</title>",
             "output": [

@@ -2,8 +2,8 @@
     "tests": [
         {
             "fragmentContext": null,
-            "description": "<!doctype html><p>foo<main>bar<p>baz",
-            "input": "<!doctype html><p>foo<main>bar<p>baz",
+            "description": "<!doctype html><p>foo<search>bar<p>baz",
+            "input": "<!doctype html><p>foo<search>bar<p>baz",
             "output": [
                 [
                     "DOCTYPE",
@@ -23,7 +23,7 @@
                 ],
                 [
                     "StartTag",
-                    "main",
+                    "search",
                     {}
                 ],
                 [
@@ -43,8 +43,8 @@
         },
         {
             "fragmentContext": null,
-            "description": "<!doctype html><main><p>foo</main>bar",
-            "input": "<!doctype html><main><p>foo</main>bar",
+            "description": "<!doctype html><search><p>foo</search>bar",
+            "input": "<!doctype html><search><p>foo</search>bar",
             "output": [
                 [
                     "DOCTYPE",
@@ -55,7 +55,7 @@
                 ],
                 [
                     "StartTag",
-                    "main",
+                    "search",
                     {}
                 ],
                 [
@@ -69,7 +69,7 @@
                 ],
                 [
                     "EndTag",
-                    "main"
+                    "search"
                 ],
                 [
                     "Character",
@@ -79,8 +79,8 @@
         },
         {
             "fragmentContext": null,
-            "description": "<!DOCTYPE html>xxx<svg><x><g><a><main><b>",
-            "input": "<!DOCTYPE html>xxx<svg><x><g><a><main><b>",
+            "description": "<!DOCTYPE html>xxx<svg><x><g><a><search><b>",
+            "input": "<!DOCTYPE html>xxx<svg><x><g><a><search><b>",
             "output": [
                 [
                     "DOCTYPE",
@@ -115,7 +115,7 @@
                 ],
                 [
                     "StartTag",
-                    "main",
+                    "search",
                     {}
                 ],
                 [

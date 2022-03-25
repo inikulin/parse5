@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "Test",
             "input": "Test",
             "output": [
@@ -11,6 +12,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div></div>",
             "input": "<div></div>",
             "output": [
@@ -26,6 +28,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>Test</div>",
             "input": "<div>Test</div>",
             "output": [
@@ -45,13 +48,15 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<di",
             "input": "<di",
             "output": []
         },
         {
-            "description": "<div>Hello</div>\\r\\n<script>\\r\\nconsole.log(\"PASS\");\\r\\n</script>\\r\\n<div>Bye</div>",
-            "input": "<div>Hello</div>\r\n<script>\r\nconsole.log(\"PASS\");\r\n</script>\r\n<div>Bye</div>",
+            "fragmentContext": null,
+            "description": "<div>Hello</div>\\n<script>\\nconsole.log(\"PASS\");\\n</script>\\n<div>Bye</div>",
+            "input": "<div>Hello</div>\n<script>\nconsole.log(\"PASS\");\n</script>\n<div>Bye</div>",
             "output": [
                 [
                     "StartTag",
@@ -103,6 +108,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div foo=\"bar\">Hello</div>",
             "input": "<div foo=\"bar\">Hello</div>",
             "output": [
@@ -124,8 +130,9 @@
             ]
         },
         {
-            "description": "<div>Hello</div>\\r\\n<script>\\r\\nconsole.log(\"FOO<span>BAR</span>BAZ\");\\r\\n</script>\\r\\n<div>Bye</div>",
-            "input": "<div>Hello</div>\r\n<script>\r\nconsole.log(\"FOO<span>BAR</span>BAZ\");\r\n</script>\r\n<div>Bye</div>",
+            "fragmentContext": null,
+            "description": "<div>Hello</div>\\n<script>\\nconsole.log(\"FOO<span>BAR</span>BAZ\");\\n</script>\\n<div>Bye</div>",
+            "input": "<div>Hello</div>\n<script>\nconsole.log(\"FOO<span>BAR</span>BAZ\");\n</script>\n<div>Bye</div>",
             "output": [
                 [
                     "StartTag",
@@ -177,6 +184,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<foo bar=\"baz\"></foo><potato quack=\"duck\"></potato>",
             "input": "<foo bar=\"baz\"></foo><potato quack=\"duck\"></potato>",
             "output": [
@@ -205,6 +213,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<foo bar=\"baz\"><potato quack=\"duck\"></potato></foo>",
             "input": "<foo bar=\"baz\"><potato quack=\"duck\"></potato></foo>",
             "output": [
@@ -233,6 +242,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<foo></foo bar=\"baz\"><potato></potato quack=\"duck\">",
             "input": "<foo></foo bar=\"baz\"><potato></potato quack=\"duck\">",
             "output": [
@@ -257,6 +267,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "</ tttt>",
             "input": "</ tttt>",
             "output": [
@@ -267,6 +278,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div FOO ><img><img></div>",
             "input": "<div FOO ><img><img></div>",
             "output": [
@@ -294,6 +306,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p>Test</p<p>Test2</p>",
             "input": "<p>Test</p<p>Test2</p>",
             "output": [
@@ -321,6 +334,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<rdar://problem/6869687>",
             "input": "<rdar://problem/6869687>",
             "output": [
@@ -335,6 +349,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<A>test< /A>",
             "input": "<A>test< /A>",
             "output": [
@@ -350,6 +365,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "&lt;",
             "input": "&lt;",
             "output": [
@@ -360,6 +376,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body foo='bar'><body foo='baz' yo='mama'>",
             "input": "<body foo='bar'><body foo='baz' yo='mama'>",
             "output": [
@@ -381,6 +398,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body></br foo=\"bar\"></body>",
             "input": "<body></br foo=\"bar\"></body>",
             "output": [
@@ -400,6 +418,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<bdy><br foo=\"bar\"></body>",
             "input": "<bdy><br foo=\"bar\"></body>",
             "output": [
@@ -422,6 +441,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body></body></br foo=\"bar\">",
             "input": "<body></body></br foo=\"bar\">",
             "output": [
@@ -441,6 +461,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<bdy></body><br foo=\"bar\">",
             "input": "<bdy></body><br foo=\"bar\">",
             "output": [
@@ -463,6 +484,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><body></body></html><!-- Hi there -->",
             "input": "<html><body></body></html><!-- Hi there -->",
             "output": [
@@ -491,6 +513,52 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<html><body></body></html><!-- Comment A --><!-- Comment B --><!-- Comment C --><!-- Comment D --><!-- Comment E -->",
+            "input": "<html><body></body></html><!-- Comment A --><!-- Comment B --><!-- Comment C --><!-- Comment D --><!-- Comment E -->",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "body"
+                ],
+                [
+                    "EndTag",
+                    "html"
+                ],
+                [
+                    "Comment",
+                    " Comment A "
+                ],
+                [
+                    "Comment",
+                    " Comment B "
+                ],
+                [
+                    "Comment",
+                    " Comment C "
+                ],
+                [
+                    "Comment",
+                    " Comment D "
+                ],
+                [
+                    "Comment",
+                    " Comment E "
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<html><body></body></html>x<!-- Hi there -->",
             "input": "<html><body></body></html>x<!-- Hi there -->",
             "output": [
@@ -523,6 +591,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><body></body></html>x<!-- Hi there --></html><!-- Again -->",
             "input": "<html><body></body></html>x<!-- Hi there --></html><!-- Again -->",
             "output": [
@@ -563,6 +632,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><body></body></html>x<!-- Hi there --></body></html><!-- Again -->",
             "input": "<html><body></body></html>x<!-- Hi there --></body></html><!-- Again -->",
             "output": [
@@ -607,6 +677,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><body><ruby><div><rp>xx</rp></div></ruby></body></html>",
             "input": "<html><body><ruby><div><rp>xx</rp></div></ruby></body></html>",
             "output": [
@@ -662,6 +733,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><body><ruby><div><rt>xx</rt></div></ruby></body></html>",
             "input": "<html><body><ruby><div><rt>xx</rt></div></ruby></body></html>",
             "output": [
@@ -717,6 +789,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><frameset><!--1--><noframes>A</noframes><!--2--></frameset><!--3--><noframes>B</noframes><!--4--></html><!--5--><noframes>C</noframes><!--6-->",
             "input": "<html><frameset><!--1--><noframes>A</noframes><!--2--></frameset><!--3--><noframes>B</noframes><!--4--></html><!--5--><noframes>C</noframes><!--6-->",
             "output": [
@@ -804,6 +877,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><option>A<select><option>B<select><option>C<select><option>D<select><option>E<select><option>F<select><option>G<select>",
             "input": "<select><option>A<select><option>B<select><option>C<select><option>D<select><option>E<select><option>F<select><option>G<select>",
             "output": [
@@ -913,6 +987,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<dd><dd><dt><dt><dd><li><li>",
             "input": "<dd><dd><dt><dt><dd><li><li>",
             "output": [
@@ -954,6 +1029,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><b></div><div><nobr>a<nobr>",
             "input": "<div><b></div><div><nobr>a<nobr>",
             "output": [
@@ -993,8 +1069,9 @@
             ]
         },
         {
-            "description": "<head></head>\\r\\n<body></body>",
-            "input": "<head></head>\r\n<body></body>",
+            "fragmentContext": null,
+            "description": "<head></head>\\n<body></body>",
+            "input": "<head></head>\n<body></body>",
             "output": [
                 [
                     "StartTag",
@@ -1021,6 +1098,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<head></head> <style></style>ddd",
             "input": "<head></head> <style></style>ddd",
             "output": [
@@ -1053,6 +1131,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<kbd><table></kbd><col><select><tr>",
             "input": "<kbd><table></kbd><col><select><tr>",
             "output": [
@@ -1088,6 +1167,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<kbd><table></kbd><col><select><tr></table><div>",
             "input": "<kbd><table></kbd><col><select><tr></table><div>",
             "output": [
@@ -1132,6 +1212,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a><li><style></style><title></title></a>",
             "input": "<a><li><style></style><title></title></a>",
             "output": [
@@ -1170,6 +1251,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<font></p><p><meta><title></title></font>",
             "input": "<font></p><p><meta><title></title></font>",
             "output": [
@@ -1208,6 +1290,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<a><center><title></title><a>",
             "input": "<a><center><title></title><a>",
             "output": [
@@ -1238,6 +1321,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><title><div>",
             "input": "<svg><title><div>",
             "output": [
@@ -1259,6 +1343,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><title><rect><div>",
             "input": "<svg><title><rect><div>",
             "output": [
@@ -1285,6 +1370,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><title><svg><div>",
             "input": "<svg><title><svg><div>",
             "output": [
@@ -1311,6 +1397,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<img <=\"\" FAIL>",
             "input": "<img <=\"\" FAIL>",
             "output": [
@@ -1325,6 +1412,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<ul><li><div id='foo'/>A</li><li>B<div>C</div></li></ul>",
             "input": "<ul><li><div id='foo'/>A</li><li>B<div>C</div></li></ul>",
             "output": [
@@ -1387,6 +1475,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><em><desc></em>",
             "input": "<svg><em><desc></em>",
             "output": [
@@ -1412,6 +1501,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tr><td><svg><desc><td></desc><circle>",
             "input": "<table><tr><td><svg><desc><td></desc><circle>",
             "output": [
@@ -1457,6 +1547,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><tfoot></mi><td>",
             "input": "<svg><tfoot></mi><td>",
             "output": [
@@ -1482,6 +1573,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mrow><mrow><mn>1</mn></mrow><mi>a</mi></mrow></math>",
             "input": "<math><mrow><mrow><mn>1</mn></mrow><mi>a</mi></mrow></math>",
             "output": [
@@ -1541,6 +1633,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><input type=\"hidden\"><frameset>",
             "input": "<!doctype html><input type=\"hidden\"><frameset>",
             "output": [
@@ -1566,6 +1659,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><input type=\"button\"><frameset>",
             "input": "<!doctype html><input type=\"button\"><frameset>",
             "output": [

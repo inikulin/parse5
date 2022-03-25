@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gt;YY\"></div>",
             "input": "<div bar=\"ZZ&gt;YY\"></div>",
             "output": [
@@ -18,6 +19,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&\"></div>",
             "input": "<div bar=\"ZZ&\"></div>",
             "output": [
@@ -35,6 +37,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar='ZZ&'></div>",
             "input": "<div bar='ZZ&'></div>",
             "output": [
@@ -52,6 +55,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=ZZ&></div>",
             "input": "<div bar=ZZ&></div>",
             "output": [
@@ -69,6 +73,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gt=YY\"></div>",
             "input": "<div bar=\"ZZ&gt=YY\"></div>",
             "output": [
@@ -86,6 +91,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gt0YY\"></div>",
             "input": "<div bar=\"ZZ&gt0YY\"></div>",
             "output": [
@@ -103,6 +109,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gt9YY\"></div>",
             "input": "<div bar=\"ZZ&gt9YY\"></div>",
             "output": [
@@ -120,6 +127,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gtaYY\"></div>",
             "input": "<div bar=\"ZZ&gtaYY\"></div>",
             "output": [
@@ -137,6 +145,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gtZYY\"></div>",
             "input": "<div bar=\"ZZ&gtZYY\"></div>",
             "output": [
@@ -154,6 +163,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gt YY\"></div>",
             "input": "<div bar=\"ZZ&gt YY\"></div>",
             "output": [
@@ -171,6 +181,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&gt\"></div>",
             "input": "<div bar=\"ZZ&gt\"></div>",
             "output": [
@@ -188,6 +199,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar='ZZ&gt'></div>",
             "input": "<div bar='ZZ&gt'></div>",
             "output": [
@@ -205,6 +217,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=ZZ&gt></div>",
             "input": "<div bar=ZZ&gt></div>",
             "output": [
@@ -222,6 +235,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&pound_id=23\"></div>",
             "input": "<div bar=\"ZZ&pound_id=23\"></div>",
             "output": [
@@ -239,6 +253,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&prod_id=23\"></div>",
             "input": "<div bar=\"ZZ&prod_id=23\"></div>",
             "output": [
@@ -256,6 +271,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&pound;_id=23\"></div>",
             "input": "<div bar=\"ZZ&pound;_id=23\"></div>",
             "output": [
@@ -273,6 +289,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&prod;_id=23\"></div>",
             "input": "<div bar=\"ZZ&prod;_id=23\"></div>",
             "output": [
@@ -290,6 +307,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&pound=23\"></div>",
             "input": "<div bar=\"ZZ&pound=23\"></div>",
             "output": [
@@ -307,6 +325,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div bar=\"ZZ&prod=23\"></div>",
             "input": "<div bar=\"ZZ&prod=23\"></div>",
             "output": [
@@ -324,6 +343,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>ZZ&pound_id=23</div>",
             "input": "<div>ZZ&pound_id=23</div>",
             "output": [
@@ -343,6 +363,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>ZZ&prod_id=23</div>",
             "input": "<div>ZZ&prod_id=23</div>",
             "output": [
@@ -362,6 +383,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>ZZ&pound;_id=23</div>",
             "input": "<div>ZZ&pound;_id=23</div>",
             "output": [
@@ -381,6 +403,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>ZZ&prod;_id=23</div>",
             "input": "<div>ZZ&prod;_id=23</div>",
             "output": [
@@ -400,6 +423,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>ZZ&pound=23</div>",
             "input": "<div>ZZ&pound=23</div>",
             "output": [
@@ -419,6 +443,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>ZZ&prod=23</div>",
             "input": "<div>ZZ&prod=23</div>",
             "output": [
@@ -438,6 +463,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div>ZZ&AElig=</div>",
             "input": "<div>ZZ&AElig=</div>",
             "output": [

@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "FOO&#x000D;ZOO",
             "input": "FOO&#x000D;ZOO",
             "output": [
@@ -11,6 +12,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html>\\u0000<frameset></frameset>",
             "input": "<html>\u0000<frameset></frameset>",
             "output": [
@@ -35,6 +37,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html> \\u0000 <frameset></frameset>",
             "input": "<html> \u0000 <frameset></frameset>",
             "output": [
@@ -59,6 +62,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html>a\\u0000a<frameset></frameset>",
             "input": "<html>a\u0000a<frameset></frameset>",
             "output": [
@@ -83,6 +87,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html>\\u0000\\u0000<frameset></frameset>",
             "input": "<html>\u0000\u0000<frameset></frameset>",
             "output": [
@@ -107,8 +112,9 @@
             ]
         },
         {
-            "description": "<html>\\u0000\\r\\n <frameset></frameset>",
-            "input": "<html>\u0000\r\n <frameset></frameset>",
+            "fragmentContext": null,
+            "description": "<html>\\u0000\\n<frameset></frameset>",
+            "input": "<html>\u0000\n<frameset></frameset>",
             "output": [
                 [
                     "StartTag",
@@ -117,7 +123,7 @@
                 ],
                 [
                     "Character",
-                    "\u0000\n "
+                    "\u0000\n"
                 ],
                 [
                     "StartTag",
@@ -131,6 +137,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><select>\\u0000",
             "input": "<html><select>\u0000",
             "output": [
@@ -151,6 +158,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "\\u0000",
             "input": "\u0000",
             "output": [
@@ -161,6 +169,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body>\\u0000",
             "input": "<body>\u0000",
             "output": [
@@ -176,6 +185,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<plaintext>\\u0000filler\\u0000text\\u0000",
             "input": "<plaintext>\u0000filler\u0000text\u0000",
             "output": [
@@ -191,6 +201,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[\\u0000filler\\u0000text\\u0000]]>",
             "input": "<svg><![CDATA[\u0000filler\u0000text\u0000]]>",
             "output": [
@@ -206,6 +217,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><!\\u0000>",
             "input": "<body><!\u0000>",
             "output": [
@@ -221,6 +233,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><!\\u0000filler\\u0000text>",
             "input": "<body><!\u0000filler\u0000text>",
             "output": [
@@ -236,6 +249,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body><svg><foreignObject>\\u0000filler\\u0000text",
             "input": "<body><svg><foreignObject>\u0000filler\u0000text",
             "output": [
@@ -261,6 +275,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg>\\u0000filler\\u0000text",
             "input": "<svg>\u0000filler\u0000text",
             "output": [
@@ -276,6 +291,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg>\\u0000<frameset>",
             "input": "<svg>\u0000<frameset>",
             "output": [
@@ -296,6 +312,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg>\\u0000 <frameset>",
             "input": "<svg>\u0000 <frameset>",
             "output": [
@@ -316,6 +333,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg>\\u0000a<frameset>",
             "input": "<svg>\u0000a<frameset>",
             "output": [
@@ -336,6 +354,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg>\\u0000</svg><frameset>",
             "input": "<svg>\u0000</svg><frameset>",
             "output": [
@@ -360,6 +379,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg>\\u0000 </svg><frameset>",
             "input": "<svg>\u0000 </svg><frameset>",
             "output": [
@@ -384,6 +404,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg>\\u0000a</svg><frameset>",
             "input": "<svg>\u0000a</svg><frameset>",
             "output": [
@@ -408,6 +429,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><path></path></svg><frameset>",
             "input": "<svg><path></path></svg><frameset>",
             "output": [
@@ -437,6 +459,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><p><frameset>",
             "input": "<svg><p><frameset>",
             "output": [
@@ -458,8 +481,9 @@
             ]
         },
         {
-            "description": "<!DOCTYPE html><pre>\\r\\n\\r\\nA</pre>",
-            "input": "<!DOCTYPE html><pre>\r\n\r\nA</pre>",
+            "fragmentContext": null,
+            "description": "<!DOCTYPE html><pre>\\n\\nA</pre>",
+            "input": "<!DOCTYPE html><pre>\n\nA</pre>",
             "output": [
                 [
                     "DOCTYPE",
@@ -484,6 +508,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><pre>\\r\\rA</pre>",
             "input": "<!DOCTYPE html><pre>\r\rA</pre>",
             "output": [
@@ -510,6 +535,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><pre>\\rA</pre>",
             "input": "<!DOCTYPE html><pre>\rA</pre>",
             "output": [
@@ -536,6 +562,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><table><tr><td><math><mtext>\\u0000a",
             "input": "<!DOCTYPE html><table><tr><td><math><mtext>\u0000a",
             "output": [
@@ -578,6 +605,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><table><tr><td><svg><foreignObject>\\u0000a",
             "input": "<!DOCTYPE html><table><tr><td><svg><foreignObject>\u0000a",
             "output": [
@@ -620,6 +648,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math><mi>a\\u0000b",
             "input": "<!DOCTYPE html><math><mi>a\u0000b",
             "output": [
@@ -647,6 +676,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math><mo>a\\u0000b",
             "input": "<!DOCTYPE html><math><mo>a\u0000b",
             "output": [
@@ -674,6 +704,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math><mn>a\\u0000b",
             "input": "<!DOCTYPE html><math><mn>a\u0000b",
             "output": [
@@ -701,6 +732,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math><ms>a\\u0000b",
             "input": "<!DOCTYPE html><math><ms>a\u0000b",
             "output": [
@@ -728,6 +760,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math><mtext>a\\u0000b",
             "input": "<!DOCTYPE html><math><mtext>a\u0000b",
             "output": [
