@@ -185,7 +185,7 @@ function serializeAttributes<T extends TreeAdapterTypeMap>(
 
         if (!attr.namespace) {
             html += attr.name;
-        } else
+        } else {
             switch (attr.namespace) {
                 case NS.XML: {
                     html += `xml:${attr.name}`;
@@ -207,6 +207,7 @@ function serializeAttributes<T extends TreeAdapterTypeMap>(
                     html += `${attr.prefix}:${attr.name}`;
                 }
             }
+        }
 
         html += `="${escapeString(attr.value, true)}"`;
     }

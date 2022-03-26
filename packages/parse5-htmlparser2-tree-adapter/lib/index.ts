@@ -250,7 +250,9 @@ export function getNodeSourceCodeLocation(node: Node): ElementLocation | null | 
 }
 
 export function updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
-    if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
+    if (endLocation.endOffset != null) {
+        node.endIndex = endLocation.endOffset;
+    }
 
     node.sourceCodeLocation = {
         ...node.sourceCodeLocation,

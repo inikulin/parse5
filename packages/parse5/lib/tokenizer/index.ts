@@ -276,7 +276,9 @@ export class Tokenizer {
     }
 
     private _runParsingLoop(): void {
-        if (this.inLoop) return;
+        if (this.inLoop) {
+            return;
+        }
 
         this.inLoop = true;
 
@@ -306,7 +308,9 @@ export class Tokenizer {
         this.paused = false;
 
         // Necessary for synchronous resume.
-        if (this.inLoop) return;
+        if (this.inLoop) {
+            return;
+        }
 
         this._runParsingLoop();
 
@@ -610,7 +614,9 @@ export class Tokenizer {
         for (let i = 0, current = htmlDecodeTree[0]; i >= 0; cp = this._consume()) {
             i = determineBranch(htmlDecodeTree, current, i + 1, cp);
 
-            if (i < 0) break;
+            if (i < 0) {
+                break;
+            }
 
             excess += 1;
 
@@ -1132,7 +1138,7 @@ export class Tokenizer {
             this._createStartTagToken();
             this.state = State.TAG_NAME;
             this._stateTagName(cp);
-        } else
+        } else {
             switch (cp) {
                 case $.EXCLAMATION_MARK: {
                     this.state = State.MARKUP_DECLARATION_OPEN;
@@ -1162,6 +1168,7 @@ export class Tokenizer {
                     this._stateData(cp);
                 }
             }
+        }
     }
 
     // End tag open state
@@ -1171,7 +1178,7 @@ export class Tokenizer {
             this._createEndTagToken();
             this.state = State.TAG_NAME;
             this._stateTagName(cp);
-        } else
+        } else {
             switch (cp) {
                 case $.GREATER_THAN_SIGN: {
                     this._err(ERR.missingEndTagName);
@@ -1191,6 +1198,7 @@ export class Tokenizer {
                     this._stateBogusComment(cp);
                 }
             }
+        }
     }
 
     // Tag name state
@@ -2316,7 +2324,7 @@ export class Tokenizer {
         if (isAsciiUpper(cp)) {
             this._createDoctypeToken(String.fromCharCode(toAsciiLower(cp)));
             this.state = State.DOCTYPE_NAME;
-        } else
+        } else {
             switch (cp) {
                 case $.SPACE:
                 case $.LINE_FEED:
@@ -2354,6 +2362,7 @@ export class Tokenizer {
                     this.state = State.DOCTYPE_NAME;
                 }
             }
+        }
     }
 
     // DOCTYPE name state

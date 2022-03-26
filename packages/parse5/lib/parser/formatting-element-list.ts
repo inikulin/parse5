@@ -68,12 +68,16 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     }
 
     private _ensureNoahArkCondition(newElement: T['element']): void {
-        if (this.entries.length < NOAH_ARK_CAPACITY) return;
+        if (this.entries.length < NOAH_ARK_CAPACITY) {
+            return;
+        }
 
         const neAttrs = this.treeAdapter.getAttrList(newElement);
         const candidates = this._getNoahArkConditionCandidates(newElement, neAttrs);
 
-        if (candidates.length < NOAH_ARK_CAPACITY) return;
+        if (candidates.length < NOAH_ARK_CAPACITY) {
+            return;
+        }
 
         //NOTE: build attrs map for the new element, so we can perform fast lookups
         const neAttrsMap = new Map(neAttrs.map((neAttr: Attribute) => [neAttr.name, neAttr.value]));
