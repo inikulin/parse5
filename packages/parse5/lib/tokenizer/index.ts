@@ -276,7 +276,9 @@ export class Tokenizer {
     }
 
     private _runParsingLoop(): void {
-        if (this.inLoop) return;
+        if (this.inLoop) {
+            return;
+        }
 
         this.inLoop = true;
 
@@ -306,7 +308,9 @@ export class Tokenizer {
         this.paused = false;
 
         // Necessary for synchronous resume.
-        if (this.inLoop) return;
+        if (this.inLoop) {
+            return;
+        }
 
         this._runParsingLoop();
 
