@@ -63,7 +63,7 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
 
 type InternalOptions<T extends TreeAdapterTypeMap> = Required<SerializerOptions<T>>;
 
-const defaultOpts: InternalOptions<any> = { treeAdapter: defaultTreeAdapter, scriptingEnabled: true };
+const defaultOpts: InternalOptions<DefaultTreeAdapterMap> = { treeAdapter: defaultTreeAdapter, scriptingEnabled: true };
 
 /**
  * Serializes an AST node to an HTML string.
@@ -91,7 +91,7 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     node: T['parentNode'],
     options?: SerializerOptions<T>
 ): string {
-    const opts = { ...defaultOpts, ...options };
+    const opts = { ...defaultOpts, ...options } as InternalOptions<T>;
 
     if (isVoidElement(node, opts)) {
         return '';
@@ -123,7 +123,7 @@ export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapter
     node: T['node'],
     options?: SerializerOptions<T>
 ): string {
-    const opts = { ...defaultOpts, ...options };
+    const opts = { ...defaultOpts, ...options } as InternalOptions<T>;
     return serializeNode(node, opts);
 }
 
