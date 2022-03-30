@@ -1,11 +1,14 @@
 import { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from 'parse5/dist/tokenizer/index.js';
 import { TokenType, TagToken, CommentToken, DoctypeToken, CharacterToken, EOFToken } from 'parse5/dist/common/token.js';
 import * as foreignContent from 'parse5/dist/common/foreign-content.js';
-import * as unicode from 'parse5/dist/common/unicode.js';
 import { TAG_ID as $, TAG_NAMES as TN, NAMESPACES as NS, getTagID } from 'parse5/dist/common/html.js';
 
-//ParserFeedbackSimulator
-//Simulates adjustment of the Tokenizer which performed by standard parser during tree construction.
+const REPLACEMENT_CHARACTER = '\uFFFD';
+const LINE_FEED_CODE_POINT = 0x0a;
+
+/**
+ * Simulates adjustments of the Tokenizer which are performed by the standard parser during tree construction.
+ */
 export class ParserFeedbackSimulator implements TokenHandler {
     private namespaceStack: NS[] = [];
     public inForeignContent = false;
@@ -24,7 +27,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
         if (this.inForeignContent) {
             this.handler.onCharacter({
                 type: TokenType.CHARACTER,
-                chars: unicode.REPLACEMENT_CHARACTER,
+                chars: REPLACEMENT_CHARACTER,
                 location: token.location,
             });
         } else {
@@ -34,7 +37,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
 
     /** @internal */
     onWhitespaceCharacter(token: CharacterToken): void {
-        if (this.skipNextNewLine && token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED) {
+        if (this.skipNextNewLine && token.chars.charCodeAt(0) === LINE_FEED_CODE_POINT) {
             this.skipNextNewLine = false;
 
             if (token.chars.length === 1) {
