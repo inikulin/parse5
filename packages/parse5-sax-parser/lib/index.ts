@@ -1,5 +1,5 @@
 import { Transform } from 'node:stream';
-import type { Tokenizer, TokenHandler } from 'parse5/dist/tokenizer/index.js';
+import type { Tokenizer, TokenHandler } from 'parse5';
 import type {
     Attribute,
     Location,

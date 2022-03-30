@@ -1,12 +1,11 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
-import { Parser } from 'parse5/dist/parser/index.js';
-import { type DefaultTreeAdapterMap, defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
+import { Parser, type DefaultTreeAdapterMap, type TreeAdapterTypeMap } from 'parse5';
+import { defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
 import { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
-import { CharacterToken, CommentToken, DoctypeToken, TagToken } from '../../packages/parse5/dist/common/token.js';
-import type { TreeAdapterTypeMap } from '../../packages/parse5/dist/tree-adapters/interface.js';
+import type { CharacterToken, CommentToken, DoctypeToken, TagToken } from 'parse5/dist/common/token.js';
 
 // eslint-disable-next-line no-console
 main().catch(console.error);

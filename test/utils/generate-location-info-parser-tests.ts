@@ -1,10 +1,9 @@
-import { ParserOptions } from 'parse5/dist/parser/index';
 import { Location, ElementLocation } from 'parse5/dist/common/token.js';
 import { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as parse5 from 'parse5/dist/index.js';
+import * as parse5 from 'parse5';
 import {
     removeNewLines,
     getSubstringByLineCol,
@@ -103,7 +102,7 @@ function loadParserLocationInfoTestData(): { name: string; data: string }[] {
 
 export function generateLocationInfoParserTests(
     name: string,
-    parse: (html: string, opts: ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] }
+    parse: (html: string, opts: parse5.ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] }
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadParserLocationInfoTestData()) {
