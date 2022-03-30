@@ -1,4 +1,4 @@
-import { html } from 'parse5';
+import { html, escapeString } from 'parse5';
 import type { Location } from 'parse5/dist/common/token.js';
 import {
     SAXParser,
@@ -9,7 +9,6 @@ import {
     type Comment,
     type SaxToken,
 } from 'parse5-sax-parser';
-import { escapeString } from 'parse5/dist/serializer/index.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
