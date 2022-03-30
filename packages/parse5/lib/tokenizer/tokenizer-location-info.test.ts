@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
-import { Tokenizer, TokenizerMode, TokenHandler } from './index.js';
-import { Location, EOFToken, CharacterToken, DoctypeToken, TagToken, CommentToken } from '../common/token.js';
+import { Tokenizer, TokenizerMode, type TokenHandler } from './index.js';
+import type { Location, EOFToken, CharacterToken, DoctypeToken, TagToken, CommentToken } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
 
 /** Receives events and immediately compares them against the expected values. */

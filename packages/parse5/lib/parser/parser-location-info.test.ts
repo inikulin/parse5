@@ -7,11 +7,10 @@ import {
     assertNodeLocation,
 } from 'parse5-test-utils/utils/generate-location-info-parser-tests.js';
 import { generateTestsForEachTreeAdapter, treeAdapters } from 'parse5-test-utils/utils/common.js';
-import { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
 generateLocationInfoParserTests(
     'location-info-parser',
-    (input: string, opts: parse5.ParserOptions<TreeAdapterTypeMap>) => ({
+    (input: string, opts: parse5.ParserOptions<parse5.TreeAdapterTypeMap>) => ({
         node: parse5.parse(input, opts),
     })
 );

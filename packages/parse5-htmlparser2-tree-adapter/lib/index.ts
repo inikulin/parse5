@@ -2,8 +2,8 @@ import { type TreeAdapter, type TreeAdapterTypeMap } from 'parse5';
 import { DOCUMENT_MODE, NAMESPACES as NS } from 'parse5/dist/common/html.js';
 import type { Attribute, ElementLocation } from 'parse5/dist/common/token.js';
 import {
-    Node,
-    NodeWithChildren,
+    type Node,
+    type NodeWithChildren,
     Element,
     Document,
     ProcessingInstruction,

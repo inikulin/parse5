@@ -1,4 +1,4 @@
-import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
+import type { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
 import type { Attribute, ElementLocation } from '../common/token.js';
 
 export interface TreeAdapterTypeMap<

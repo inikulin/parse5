@@ -1,5 +1,13 @@
 import type { Location } from 'parse5/dist/common/token.js';
-import { SAXParser, EndTag, StartTag, Doctype, Text, Comment, SaxToken } from 'parse5-sax-parser';
+import {
+    SAXParser,
+    type EndTag,
+    type StartTag,
+    type Doctype,
+    type Text,
+    type Comment,
+    type SaxToken,
+} from 'parse5-sax-parser';
 import { hasUnescapedText, escapeString } from 'parse5/dist/serializer/index.js';
 
 /**

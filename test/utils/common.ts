@@ -1,4 +1,4 @@
-import { Writable, Readable, finished as finishedCb } from 'node:stream';
+import { Writable, finished as finishedCb, type Readable } from 'node:stream';
 import * as assert from 'node:assert';
 import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface.js';
 import { defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';

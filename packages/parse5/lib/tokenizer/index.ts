@@ -9,18 +9,18 @@ import {
 } from '../common/unicode.js';
 import {
     TokenType,
-    Token,
-    CharacterToken,
-    DoctypeToken,
-    TagToken,
-    EOFToken,
     getTokenAttr,
-    CommentToken,
-    Attribute,
-    Location,
+    type Token,
+    type CharacterToken,
+    type DoctypeToken,
+    type TagToken,
+    type EOFToken,
+    type CommentToken,
+    type Attribute,
+    type Location,
 } from '../common/token.js';
 import { htmlDecodeTree, BinTrieFlags, determineBranch } from 'entities/lib/decode.js';
-import { ERR, ParserErrorHandler } from '../common/error-codes.js';
+import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
 import { TAG_ID, getTagID } from '../common/html.js';
 
 //C1 Unicode control character reference replacements

@@ -1,4 +1,4 @@
-import { Location } from './token.js';
+import type { Location } from './token.js';
 
 export interface ParserError extends Location {
     code: ERR;

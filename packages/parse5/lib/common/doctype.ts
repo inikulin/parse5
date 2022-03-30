@@ -1,5 +1,5 @@
 import { DOCUMENT_MODE } from './html.js';
-import { DoctypeToken } from './token.js';
+import type { DoctypeToken } from './token.js';
 
 //Const
 const VALID_DOCTYPE_NAME = 'html';

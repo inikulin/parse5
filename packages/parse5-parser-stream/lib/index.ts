@@ -1,5 +1,5 @@
 import { Writable } from 'node:stream';
-import { Parser, ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAdapterMap } from 'parse5';
+import { Parser, type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAdapterMap } from 'parse5';
 
 /* eslint-disable unicorn/consistent-function-scoping -- The rule seems to be broken here. */
 

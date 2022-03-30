@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { Parser, type DefaultTreeAdapterMap, type TreeAdapterTypeMap } from 'parse5';
 import { defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
-import { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
+import type { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
 import type { CharacterToken, CommentToken, DoctypeToken, TagToken } from 'parse5/dist/common/token.js';

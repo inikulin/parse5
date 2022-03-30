@@ -1,5 +1,12 @@
-import { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler, foreignContent } from 'parse5';
-import { TokenType, TagToken, CommentToken, DoctypeToken, CharacterToken, EOFToken } from 'parse5/dist/common/token.js';
+import { Tokenizer, type TokenizerOptions, TokenizerMode, type TokenHandler, foreignContent } from 'parse5';
+import {
+    TokenType,
+    type TagToken,
+    type CommentToken,
+    type DoctypeToken,
+    type CharacterToken,
+    type EOFToken,
+} from 'parse5/dist/common/token.js';
 import { TAG_ID as $, TAG_NAMES as TN, NAMESPACES as NS } from 'parse5/dist/common/html.js';
 
 const REPLACEMENT_CHARACTER = '\uFFFD';
