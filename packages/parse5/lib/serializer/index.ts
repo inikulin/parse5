@@ -1,6 +1,6 @@
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
-import * as DefaultTreeAdapter from '../tree-adapters/default.js';
+import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 
 //Escaping regexes
 const AMP_REGEX = /&/g;
@@ -63,7 +63,7 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
 
 type InternalOptions<T extends TreeAdapterTypeMap> = Required<SerializerOptions<T>>;
 
-const defaultOpts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true };
+const defaultOpts: InternalOptions<any> = { treeAdapter: defaultTreeAdapter, scriptingEnabled: true };
 
 /**
  * Serializes an AST node to an HTML string.
@@ -87,7 +87,7 @@ const defaultOpts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true };
  * @param node Node to serialize.
  * @param options Serialization options.
  */
-export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
+export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     node: T['parentNode'],
     options?: SerializerOptions<T>
 ): string {
@@ -119,7 +119,7 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.Defa
  * @param node Node to serialize.
  * @param options Serialization options.
  */
-export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
+export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     node: T['node'],
     options?: SerializerOptions<T>
 ): string {

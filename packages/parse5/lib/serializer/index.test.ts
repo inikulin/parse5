@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import * as parse5 from 'parse5';
 import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
-import { type Element, isElementNode } from 'parse5/dist/tree-adapters/default';
+import { type Element } from 'parse5/dist/tree-adapters/default.js';
 import { NAMESPACES } from 'parse5/dist/common/html.js';
 
 generateSerializerTests('serializer', 'Serializer', parse5.serialize);
@@ -28,7 +28,7 @@ describe('serializer', () => {
         it('serializes outerHTML correctly', () => {
             const document = parse5.parseFragment('<div><button>Hello</button></div>');
             const div = document.childNodes[0];
-            assert.ok(isElementNode(div));
+            assert.ok(treeAdapters.default.isElementNode(div));
             const html = parse5.serializeOuter(div);
 
             assert.equal(html, '<div><button>Hello</button></div>');
@@ -38,7 +38,7 @@ describe('serializer', () => {
     it('serializes <template> elements inner content', () => {
         const document = parse5.parseFragment('<template><button>Hello</button></template>');
         const template = document.childNodes[0];
-        assert.ok(isElementNode(template));
+        assert.ok(treeAdapters.default.isElementNode(template));
         const html = parse5.serialize(template);
 
         assert.equal(html, '<button>Hello</button>');

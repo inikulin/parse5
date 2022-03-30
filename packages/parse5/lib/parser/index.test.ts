@@ -6,7 +6,6 @@ import type { TreeAdapterTypeMap } from './../tree-adapters/interface.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import { NAMESPACES as NS } from '../common/html.js';
-import { isElementNode } from '../tree-adapters/default.js';
 
 const origParseFragment = Parser.parseFragment;
 
@@ -149,9 +148,9 @@ describe('parser', () => {
             });
 
             const htmlElement = document.childNodes[0];
-            assert.ok(isElementNode(htmlElement));
+            assert.ok(treeAdapters.default.isElementNode(htmlElement));
             const bodyElement = htmlElement.childNodes[1];
-            assert.ok(isElementNode(bodyElement));
+            assert.ok(treeAdapters.default.isElementNode(bodyElement));
             // Expect 5 opened elements; in order: html, head, body, and 2x p
             expect(onItemPush).toHaveBeenCalledTimes(5);
             expect(onItemPush).toHaveBeenNthCalledWith(1, htmlElement);

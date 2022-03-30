@@ -1,7 +1,7 @@
 import { TokenHandler, Tokenizer, TokenizerMode } from '../tokenizer/index.js';
 import { OpenElementStack, StackHandler } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
-import * as defaultTreeAdapter from '../tree-adapters/default.js';
+import { defaultTreeAdapter } from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
 import { ERR, ParserErrorHandler } from '../common/error-codes.js';
@@ -111,7 +111,7 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
     onParseError?: ParserErrorHandler | null;
 }
 
-const defaultParserOptions = {
+const defaultParserOptions: Required<ParserOptions<any>> = {
     scriptingEnabled: true,
     sourceCodeLocationInfo: false,
     treeAdapter: defaultTreeAdapter,
