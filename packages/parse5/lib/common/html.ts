@@ -555,3 +555,17 @@ export const SPECIAL_ELEMENTS: Record<NAMESPACES, Set<TAG_ID>> = {
 export function isNumberedHeader(tn: TAG_ID): boolean {
     return tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6;
 }
+
+const UNESCAPED_TEXT = new Set<string>([
+    TAG_NAMES.STYLE,
+    TAG_NAMES.SCRIPT,
+    TAG_NAMES.XMP,
+    TAG_NAMES.IFRAME,
+    TAG_NAMES.NOEMBED,
+    TAG_NAMES.NOFRAMES,
+    TAG_NAMES.PLAINTEXT,
+]);
+
+export function hasUnescapedText(tn: string, scriptingEnabled: boolean): boolean {
+    return UNESCAPED_TEXT.has(tn) || (scriptingEnabled && tn === TAG_NAMES.NOSCRIPT);
+}

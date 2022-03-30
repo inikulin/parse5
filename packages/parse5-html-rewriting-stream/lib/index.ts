@@ -8,7 +8,8 @@ import {
     type Comment,
     type SaxToken,
 } from 'parse5-sax-parser';
-import { hasUnescapedText, escapeString } from 'parse5/dist/serializer/index.js';
+import { escapeString } from 'parse5/dist/serializer/index.js';
+import { hasUnescapedText } from 'parse5/lib/common/html.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
