@@ -1,4 +1,3 @@
-import * as doctype from 'parse5/dist/common/doctype.js';
 import { DOCUMENT_MODE, NAMESPACES as NS } from 'parse5/dist/common/html.js';
 import type { Attribute, ElementLocation } from 'parse5/dist/common/token.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
@@ -31,6 +30,33 @@ export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
 
 function createTextNode(value: string): Text {
     return new Text(value);
+}
+
+function enquoteDoctypeId(id: string): string {
+    const quote = id.includes('"') ? "'" : '"';
+
+    return quote + id + quote;
+}
+
+/** @internal */
+export function serializeDoctypeContent(name: string, publicId: string, systemId: string): string {
+    let str = '!DOCTYPE ';
+
+    if (name) {
+        str += name;
+    }
+
+    if (publicId) {
+        str += ` PUBLIC ${enquoteDoctypeId(publicId)}`;
+    } else if (systemId) {
+        str += ' SYSTEM';
+    }
+
+    if (systemId) {
+        str += ` ${enquoteDoctypeId(systemId)}`;
+    }
+
+    return str;
 }
 
 export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
@@ -112,7 +138,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
-        const data = doctype.serializeContent(name, publicId, systemId);
+        const data = serializeDoctypeContent(name, publicId, systemId);
         let doctypeNode = document.children.find(
             (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype'
         );

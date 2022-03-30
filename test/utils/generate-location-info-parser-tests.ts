@@ -12,7 +12,7 @@ import {
     normalizeNewLine,
     generateTestsForEachTreeAdapter,
 } from './common.js';
-import * as doctype from 'parse5/dist/common/doctype.js';
+import { serializeDoctypeContent } from 'parse5-htmlparser2-tree-adapter';
 
 function walkTree<T extends TreeAdapterTypeMap>(
     parent: T['parentNode'],
@@ -128,7 +128,7 @@ export function generateLocationInfoParserTests(
                     assert.ok(location);
 
                     const serializedNode = treeAdapter.isDocumentTypeNode(node)
-                        ? `<${doctype.serializeContent(
+                        ? `<${serializeDoctypeContent(
                               treeAdapter.getDocumentTypeNodeName(node),
                               treeAdapter.getDocumentTypeNodePublicId(node),
                               treeAdapter.getDocumentTypeNodeSystemId(node)
