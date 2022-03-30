@@ -1,7 +1,7 @@
 import { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from 'parse5/dist/tokenizer/index.js';
 import { TokenType, TagToken, CommentToken, DoctypeToken, CharacterToken, EOFToken } from 'parse5/dist/common/token.js';
 import * as foreignContent from 'parse5/dist/common/foreign-content.js';
-import { TAG_ID as $, TAG_NAMES as TN, NAMESPACES as NS, getTagID } from 'parse5/dist/common/html.js';
+import { TAG_ID as $, TAG_NAMES as TN, NAMESPACES as NS } from 'parse5/dist/common/html.js';
 
 const REPLACEMENT_CHARACTER = '\uFFFD';
 const LINE_FEED_CODE_POINT = 0x0a;
@@ -182,31 +182,21 @@ export class ParserFeedbackSimulator implements TokenHandler {
     onEndTag(token: TagToken): void {
         let tn = token.tagID;
 
+        const [currentNs, previousNs] = this.namespaceStack;
+
+        // NOTE: adjust end tag name as well for consistency
+        if (currentNs === NS.SVG || (!this.inForeignContent && previousNs === NS.SVG)) {
+            foreignContent.adjustTokenSVGTagName(token);
+            tn = token.tagID;
+        }
+
         if (!this.inForeignContent) {
-            const previousNs = this.namespaceStack[1];
-
-            if (previousNs === NS.SVG) {
-                const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
-
-                if (adjustedTagName) {
-                    tn = getTagID(adjustedTagName);
-                }
-            }
-
             //NOTE: check for exit from integration point
             if (foreignContent.isIntegrationPoint(tn, previousNs, token.attrs)) {
                 this._leaveCurrentNamespace();
             }
-        } else if (
-            (tn === $.SVG && this.namespaceStack[0] === NS.SVG) ||
-            (tn === $.MATH && this.namespaceStack[0] === NS.MATHML)
-        ) {
+        } else if ((tn === $.SVG && currentNs === NS.SVG) || (tn === $.MATH && currentNs === NS.MATHML)) {
             this._leaveCurrentNamespace();
-        }
-
-        // NOTE: adjust end tag name as well for consistency
-        if (this.namespaceStack[0] === NS.SVG) {
-            foreignContent.adjustTokenSVGTagName(token);
         }
 
         this.handler.onEndTag(token);
