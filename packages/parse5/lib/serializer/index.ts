@@ -1,4 +1,4 @@
-import { TAG_NAMES as $, NAMESPACES as NS, hasUnescapedText } from '../common/html.js';
+import { TAG_NAMES as $, NS, hasUnescapedText } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 

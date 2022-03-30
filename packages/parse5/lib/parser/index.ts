@@ -9,7 +9,7 @@ import * as unicode from '../common/unicode.js';
 import {
     TAG_ID as $,
     TAG_NAMES as TN,
-    NAMESPACES as NS,
+    NS,
     ATTRS,
     SPECIAL_ELEMENTS,
     DOCUMENT_MODE,

@@ -4,12 +4,14 @@ import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
 export type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
-export type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
+export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
 export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
 export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
 
 /** @internal */
 export * as foreignContent from './common/foreign-content.js';
+/** @internal */
+export * as html from './common/html.js';
 /** @internal */
 export { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from './tokenizer/index.js';
 

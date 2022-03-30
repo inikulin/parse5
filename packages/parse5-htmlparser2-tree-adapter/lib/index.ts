@@ -1,5 +1,4 @@
-import { type TreeAdapter, type TreeAdapterTypeMap } from 'parse5';
-import { DOCUMENT_MODE, NAMESPACES as NS } from 'parse5/dist/common/html.js';
+import { type TreeAdapterTypeMap, type TreeAdapter, html } from 'parse5';
 import type { Attribute, ElementLocation } from 'parse5/dist/common/token.js';
 import {
     type Node,
@@ -68,7 +67,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     //Node construction
     createDocument(): Document {
         const node = new Document([]);
-        node['x-mode'] = DOCUMENT_MODE.NO_QUIRKS;
+        node['x-mode'] = html.DOCUMENT_MODE.NO_QUIRKS;
         return node;
     },
 
@@ -76,7 +75,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return new Document([]);
     },
 
-    createElement(tagName: string, namespaceURI: NS, attrs: Attribute[]): Element {
+    createElement(tagName: string, namespaceURI: html.NS, attrs: Attribute[]): Element {
         const attribs = Object.create(null);
         const attribsNamespace = Object.create(null);
         const attribsPrefix = Object.create(null);
@@ -155,12 +154,12 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         doctypeNode['x-systemId'] = systemId ?? undefined;
     },
 
-    setDocumentMode(document: Document, mode: DOCUMENT_MODE): void {
+    setDocumentMode(document: Document, mode: html.DOCUMENT_MODE): void {
         document['x-mode'] = mode;
     },
 
-    getDocumentMode(document: Document): DOCUMENT_MODE {
-        return document['x-mode'] as DOCUMENT_MODE;
+    getDocumentMode(document: Document): html.DOCUMENT_MODE {
+        return document['x-mode'] as html.DOCUMENT_MODE;
     },
 
     detachNode(node: Node): void {
@@ -238,8 +237,8 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return element.name;
     },
 
-    getNamespaceURI(element: Element): NS {
-        return element.namespace as NS;
+    getNamespaceURI(element: Element): html.NS {
+        return element.namespace as html.NS;
     },
 
     getTextNodeContent(textNode: Text): string {

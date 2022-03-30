@@ -1,5 +1,4 @@
-import type { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
-import { NAMESPACES as NS } from 'parse5/dist/common/html.js';
+import { html, type TreeAdapterTypeMap, type TreeAdapter } from 'parse5';
 
 function createFragmentContext<T extends TreeAdapterTypeMap>(
     tagName: string | undefined,
@@ -9,16 +8,16 @@ function createFragmentContext<T extends TreeAdapterTypeMap>(
         return null;
     }
 
-    let namespace = NS.HTML;
+    let namespace = html.NS.HTML;
     const parts = tagName.split(' ');
 
     if (parts.length > 1) {
         tagName = parts[1];
 
         if (parts[0] === 'svg') {
-            namespace = NS.SVG;
+            namespace = html.NS.SVG;
         } else if (parts[0] === 'math') {
-            namespace = NS.MATHML;
+            namespace = html.NS.MATHML;
         }
     }
 

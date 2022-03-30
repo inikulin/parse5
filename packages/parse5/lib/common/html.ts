@@ -1,4 +1,5 @@
-export enum NAMESPACES {
+/** All valid namespaces in HTML. */
+export enum NS {
     HTML = 'http://www.w3.org/1999/xhtml',
     MATHML = 'http://www.w3.org/1998/Math/MathML',
     SVG = 'http://www.w3.org/2000/svg',
@@ -6,8 +7,6 @@ export enum NAMESPACES {
     XML = 'http://www.w3.org/XML/1998/namespace',
     XMLNS = 'http://www.w3.org/2000/xmlns/',
 }
-
-const NS = NAMESPACES;
 
 export enum ATTRS {
     TYPE = 'type',
@@ -461,7 +460,7 @@ export function getTagID(tagName: string): TAG_ID {
 
 const $ = TAG_ID;
 
-export const SPECIAL_ELEMENTS: Record<NAMESPACES, Set<TAG_ID>> = {
+export const SPECIAL_ELEMENTS: Record<NS, Set<TAG_ID>> = {
     [NS.HTML]: new Set([
         $.ADDRESS,
         $.APPLET,

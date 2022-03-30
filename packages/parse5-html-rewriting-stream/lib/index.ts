@@ -1,3 +1,4 @@
+import { html } from 'parse5';
 import type { Location } from 'parse5/dist/common/token.js';
 import {
     SAXParser,
@@ -9,7 +10,6 @@ import {
     type SaxToken,
 } from 'parse5-sax-parser';
 import { escapeString } from 'parse5/dist/serializer/index.js';
-import { hasUnescapedText } from 'parse5/lib/common/html.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
@@ -138,7 +138,8 @@ export class RewritingStream extends SAXParser {
     /** Emits a serialized text token into the output stream. */
     public emitText({ text }: Text): void {
         this.push(
-            !this.parserFeedbackSimulator.inForeignContent && hasUnescapedText(this.tokenizer.lastStartTagName, true)
+            !this.parserFeedbackSimulator.inForeignContent &&
+                html.hasUnescapedText(this.tokenizer.lastStartTagName, true)
                 ? text
                 : escapeString(text, false)
         );
