@@ -1,7 +1,7 @@
 import { Tokenizer, TokenizerMode, type TokenHandler } from '../tokenizer/index.js';
 import { OpenElementStack, type StackHandler } from './open-element-stack.js';
 import { FormattingElementList, EntryType, type ElementEntry } from './formatting-element-list.js';
-import { defaultTreeAdapter } from '../tree-adapters/default.js';
+import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
 import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
