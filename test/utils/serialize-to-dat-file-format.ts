@@ -1,5 +1,4 @@
-import { html, type TreeAdapter, type TreeAdapterTypeMap } from 'parse5';
-import type { Attribute } from 'parse5/dist/common/token.js';
+import { html, type TreeAdapter, type TreeAdapterTypeMap, type Token } from 'parse5';
 
 function getSerializedTreeIndent(indent: number): string {
     return '|'.padEnd(indent + 2, ' ');
@@ -50,7 +49,7 @@ function serializeNodeList<T extends TreeAdapterTypeMap>(
             str += `<${getElementSerializedNamespaceURI(node, treeAdapter) + tn}>\n`;
 
             let childrenIndent = indent + 2;
-            const serializedAttrs = treeAdapter.getAttrList(node).map((attr: Attribute) => {
+            const serializedAttrs = treeAdapter.getAttrList(node).map((attr: Token.Attribute) => {
                 let attrStr = getSerializedTreeIndent(childrenIndent);
 
                 if (attr.prefix) {

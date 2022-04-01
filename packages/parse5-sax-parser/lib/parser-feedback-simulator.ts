@@ -1,12 +1,12 @@
-import { Tokenizer, type TokenizerOptions, TokenizerMode, type TokenHandler, foreignContent, html } from 'parse5';
 import {
-    TokenType,
-    type TagToken,
-    type CommentToken,
-    type DoctypeToken,
-    type CharacterToken,
-    type EOFToken,
-} from 'parse5/dist/common/token.js';
+    Tokenizer,
+    type TokenizerOptions,
+    TokenizerMode,
+    type TokenHandler,
+    Token,
+    foreignContent,
+    html,
+} from 'parse5';
 
 const $ = html.TAG_ID;
 
@@ -28,12 +28,12 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onNullCharacter(token: CharacterToken): void {
+    onNullCharacter(token: Token.CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.inForeignContent) {
             this.handler.onCharacter({
-                type: TokenType.CHARACTER,
+                type: Token.TokenType.CHARACTER,
                 chars: REPLACEMENT_CHARACTER,
                 location: token.location,
             });
@@ -43,7 +43,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacter(token: CharacterToken): void {
+    onWhitespaceCharacter(token: Token.CharacterToken): void {
         if (this.skipNextNewLine && token.chars.charCodeAt(0) === LINE_FEED_CODE_POINT) {
             this.skipNextNewLine = false;
 
@@ -58,25 +58,25 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onCharacter(token: CharacterToken): void {
+    onCharacter(token: Token.CharacterToken): void {
         this.skipNextNewLine = false;
         this.handler.onCharacter(token);
     }
 
     /** @internal */
-    onComment(token: CommentToken): void {
+    onComment(token: Token.CommentToken): void {
         this.skipNextNewLine = false;
         this.handler.onComment(token);
     }
 
     /** @internal */
-    onDoctype(token: DoctypeToken): void {
+    onDoctype(token: Token.DoctypeToken): void {
         this.skipNextNewLine = false;
         this.handler.onDoctype(token);
     }
 
     /** @internal */
-    onEof(token: EOFToken): void {
+    onEof(token: Token.EOFToken): void {
         this.skipNextNewLine = false;
         this.handler.onEof(token);
     }
@@ -125,7 +125,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onStartTag(token: TagToken): void {
+    onStartTag(token: Token.TagToken): void {
         let tn = token.tagID;
 
         switch (tn) {
@@ -186,7 +186,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onEndTag(token: TagToken): void {
+    onEndTag(token: Token.TagToken): void {
         let tn = token.tagID;
 
         if (!this.inForeignContent) {

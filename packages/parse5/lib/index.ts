@@ -19,6 +19,8 @@ export * as foreignContent from './common/foreign-content.js';
 /** @internal */
 export * as html from './common/html.js';
 /** @internal */
+export * as Token from './common/token.js';
+/** @internal */
 export { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from './tokenizer/index.js';
 
 // Shorthands

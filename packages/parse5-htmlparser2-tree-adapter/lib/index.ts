@@ -1,5 +1,4 @@
-import { type TreeAdapterTypeMap, type TreeAdapter, html } from 'parse5';
-import type { Attribute, ElementLocation } from 'parse5/dist/common/token.js';
+import { type TreeAdapterTypeMap, type TreeAdapter, type Token, html } from 'parse5';
 import {
     type Node,
     type NodeWithChildren,
@@ -75,7 +74,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return new Document([]);
     },
 
-    createElement(tagName: string, namespaceURI: html.NS, attrs: Attribute[]): Element {
+    createElement(tagName: string, namespaceURI: html.NS, attrs: Token.Attribute[]): Element {
         const attribs = Object.create(null);
         const attribsNamespace = Object.create(null);
         const attribsPrefix = Object.create(null);
@@ -203,7 +202,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         }
     },
 
-    adoptAttributes(recipient: Element, attrs: Attribute[]): void {
+    adoptAttributes(recipient: Element, attrs: Token.Attribute[]): void {
         for (let i = 0; i < attrs.length; i++) {
             const attrName = attrs[i].name;
 
@@ -228,7 +227,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return node.parent;
     },
 
-    getAttrList(element: Element): Attribute[] {
+    getAttrList(element: Element): Token.Attribute[] {
         return element.attributes;
     },
 
@@ -268,7 +267,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     // Source code location
-    setNodeSourceCodeLocation(node: Node, location: ElementLocation | null): void {
+    setNodeSourceCodeLocation(node: Node, location: Token.ElementLocation | null): void {
         if (location) {
             node.startIndex = location.startOffset;
             node.endIndex = location.endOffset;
@@ -277,11 +276,11 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         node.sourceCodeLocation = location;
     },
 
-    getNodeSourceCodeLocation(node: Node): ElementLocation | null | undefined {
+    getNodeSourceCodeLocation(node: Node): Token.ElementLocation | null | undefined {
         return node.sourceCodeLocation;
     },
 
-    updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
+    updateNodeSourceCodeLocation(node: Node, endLocation: Token.ElementLocation): void {
         if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
 
         node.sourceCodeLocation = {

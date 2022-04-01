@@ -1,5 +1,4 @@
-import { html, escapeString } from 'parse5';
-import type { Location } from 'parse5/dist/common/token.js';
+import { html, escapeString, type Token } from 'parse5';
 import {
     SAXParser,
     type EndTag,
@@ -72,7 +71,7 @@ export class RewritingStream extends SAXParser {
         return '';
     }
 
-    private _getRawHtml(location: Location): string {
+    private _getRawHtml(location: Token.Location): string {
         const { droppedBufferSize, html } = this.tokenizer.preprocessor;
         const start = location.startOffset - droppedBufferSize;
         const end = location.endOffset - droppedBufferSize;

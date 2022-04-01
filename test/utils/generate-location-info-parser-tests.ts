@@ -1,8 +1,7 @@
-import type { Location, ElementLocation } from 'parse5/dist/common/token.js';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { type TreeAdapterTypeMap, type TreeAdapter, type ParserOptions, serializeOuter } from 'parse5';
+import { type TreeAdapterTypeMap, type TreeAdapter, type ParserOptions, type Token, serializeOuter } from 'parse5';
 import {
     removeNewLines,
     getSubstringByLineCol,
@@ -26,7 +25,7 @@ function walkTree<T extends TreeAdapterTypeMap>(
     }
 }
 
-function assertLocation(loc: Location, expected: string, html: string, lines: string[]): void {
+function assertLocation(loc: Token.Location, expected: string, html: string, lines: string[]): void {
     //Offsets
     let actual = html.substring(loc.startOffset, loc.endOffset);
 
@@ -44,7 +43,7 @@ function assertLocation(loc: Location, expected: string, html: string, lines: st
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag
 export function assertStartTagLocation(
-    location: ElementLocation,
+    location: Token.ElementLocation,
     serializedNode: string,
     html: string,
     lines: string[]
@@ -57,7 +56,12 @@ export function assertStartTagLocation(
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
-function assertEndTagLocation(location: ElementLocation, serializedNode: string, html: string, lines: string[]): void {
+function assertEndTagLocation(
+    location: Token.ElementLocation,
+    serializedNode: string,
+    html: string,
+    lines: string[]
+): void {
     assert.ok(location.endTag, 'Expected endTag to be defined');
     const length = location.endTag.endOffset - location.endTag.startOffset;
     const expected = serializedNode.slice(-length);
@@ -65,7 +69,12 @@ function assertEndTagLocation(location: ElementLocation, serializedNode: string,
     assertLocation(location.endTag, expected, html, lines);
 }
 
-function assertAttrsLocation(location: ElementLocation, serializedNode: string, html: string, lines: string[]): void {
+function assertAttrsLocation(
+    location: Token.ElementLocation,
+    serializedNode: string,
+    html: string,
+    lines: string[]
+): void {
     assert.ok(location.attrs, 'Expected attrs to be defined');
 
     for (const attr of Object.values(location.attrs)) {
@@ -78,7 +87,12 @@ function assertAttrsLocation(location: ElementLocation, serializedNode: string, 
     }
 }
 
-export function assertNodeLocation(location: Location, serializedNode: string, html: string, lines: string[]): void {
+export function assertNodeLocation(
+    location: Token.Location,
+    serializedNode: string,
+    html: string,
+    lines: string[]
+): void {
     const expected = removeNewLines(serializedNode);
 
     assertLocation(location, expected, html, lines);
