@@ -1,16 +1,13 @@
 import { Writable, Readable, finished as finishedCb } from 'node:stream';
 import * as assert from 'node:assert';
 import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface.js';
-import * as defaultTreeAdapter from 'parse5/dist/tree-adapters/default.js';
-import * as htmlTreeAdapter from 'parse5-htmlparser2-tree-adapter';
+import { defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
+import { adapter as htmlparser2Adapter } from 'parse5-htmlparser2-tree-adapter';
 import type { Location } from 'parse5/dist/common/token.js';
-
-const defaultAdapter: TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap> = defaultTreeAdapter;
-const htmlparser2Adapter: TreeAdapter<htmlTreeAdapter.Htmlparser2TreeAdapterMap> = htmlTreeAdapter;
 
 // Ensure the default tree adapter matches the expected type.
 export const treeAdapters = {
-    default: defaultAdapter,
+    default: defaultTreeAdapter,
     htmlparser2: htmlparser2Adapter,
 } as const;
 

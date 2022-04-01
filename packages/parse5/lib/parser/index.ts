@@ -1,7 +1,7 @@
 import { TokenHandler, Tokenizer, TokenizerMode } from '../tokenizer/index.js';
 import { OpenElementStack, StackHandler } from './open-element-stack.js';
 import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
-import * as defaultTreeAdapter from '../tree-adapters/default.js';
+import { defaultTreeAdapter, DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
 import { ERR, ParserErrorHandler } from '../common/error-codes.js';
@@ -111,7 +111,7 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
     onParseError?: ParserErrorHandler | null;
 }
 
-const defaultParserOptions = {
+const defaultParserOptions: Required<ParserOptions<DefaultTreeAdapterMap>> = {
     scriptingEnabled: true,
     sourceCodeLocationInfo: false,
     treeAdapter: defaultTreeAdapter,
@@ -135,7 +135,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         this.options = {
             ...defaultParserOptions,
             ...options,
-        };
+        } as Required<ParserOptions<T>>;
 
         this.treeAdapter = this.options.treeAdapter;
         this.onParseError = this.options.onParseError;
@@ -173,7 +173,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         const opts: Required<ParserOptions<T>> = {
             ...defaultParserOptions,
             ...options,
-        };
+        } as Required<ParserOptions<T>>;
 
         //NOTE: use a <template> element as the fragment context if no context element was provided,
         //so we will parse in a "forgiving" manner

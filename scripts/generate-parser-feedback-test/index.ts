@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { Parser } from 'parse5/dist/parser/index.js';
-import * as defaultTreeAdapter from 'parse5/dist/tree-adapters/default.js';
+import { type DefaultTreeAdapterMap, defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
 import { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
@@ -124,7 +124,7 @@ function collectParserTokens(html: string): HtmlLibToken[] {
 }
 
 function generateParserFeedbackTest(parserTestFile: string): string {
-    const tests = parseDatFile<defaultTreeAdapter.DefaultTreeAdapterMap>(parserTestFile, defaultTreeAdapter);
+    const tests = parseDatFile<DefaultTreeAdapterMap>(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {
         tests: tests.map(({ input, fragmentContext }) => ({
