@@ -1,8 +1,7 @@
 import * as assert from 'node:assert';
-import { html, parse, parseFragment, serialize, serializeOuter } from 'parse5';
+import { html, parse, parseFragment, serialize, serializeOuter, type DefaultTreeAdapterMap } from 'parse5';
 import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
-import { type Element } from 'parse5/dist/tree-adapters/default';
 
 generateSerializerTests('serializer', 'Serializer', serialize);
 
@@ -12,7 +11,7 @@ describe('serializer', () => {
             const document = parse('<template>yo<div></div>42</template>');
             const treeAdapter: typeof treeAdapters.default = {
                 ...treeAdapters.default,
-                getTagName: (element: Element) => {
+                getTagName: (element: DefaultTreeAdapterMap['element']) => {
                     assert.ok(element.tagName);
 
                     return treeAdapters.default.getTagName(element);

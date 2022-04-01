@@ -1,4 +1,4 @@
-import { Tokenizer } from 'parse5/dist/tokenizer/index.js';
+import { Tokenizer } from 'parse5';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 
 const dataPath = new URL('../../../../test/data/html5lib-tests/tokenizer', import.meta.url);

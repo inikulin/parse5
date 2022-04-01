@@ -1,5 +1,4 @@
 import type { Location, ElementLocation } from 'parse5/dist/common/token.js';
-import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface.js';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -15,7 +14,7 @@ import { serializeDoctypeContent } from 'parse5-htmlparser2-tree-adapter';
 
 function walkTree<T extends parse5.TreeAdapterTypeMap>(
     parent: T['parentNode'],
-    treeAdapter: TreeAdapter<T>,
+    treeAdapter: parse5.TreeAdapter<T>,
     handler: (node: T['node']) => void
 ): void {
     for (const node of treeAdapter.getChildNodes(parent)) {
