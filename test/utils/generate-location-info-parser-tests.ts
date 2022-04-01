@@ -2,7 +2,7 @@ import type { Location, ElementLocation } from 'parse5/dist/common/token.js';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as parse5 from 'parse5';
+import { type TreeAdapterTypeMap, type TreeAdapter, type ParserOptions, serializeOuter } from 'parse5';
 import {
     removeNewLines,
     getSubstringByLineCol,
@@ -12,9 +12,9 @@ import {
 } from './common.js';
 import { serializeDoctypeContent } from 'parse5-htmlparser2-tree-adapter';
 
-function walkTree<T extends parse5.TreeAdapterTypeMap>(
+function walkTree<T extends TreeAdapterTypeMap>(
     parent: T['parentNode'],
-    treeAdapter: parse5.TreeAdapter<T>,
+    treeAdapter: TreeAdapter<T>,
     handler: (node: T['node']) => void
 ): void {
     for (const node of treeAdapter.getChildNodes(parent)) {
@@ -101,10 +101,7 @@ function loadParserLocationInfoTestData(): { name: string; data: string }[] {
 
 export function generateLocationInfoParserTests(
     name: string,
-    parse: (
-        html: string,
-        opts: parse5.ParserOptions<parse5.TreeAdapterTypeMap>
-    ) => { node: parse5.TreeAdapterTypeMap['node'] }
+    parse: (html: string, opts: ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] }
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadParserLocationInfoTestData()) {
@@ -134,7 +131,7 @@ export function generateLocationInfoParserTests(
                               treeAdapter.getDocumentTypeNodePublicId(node),
                               treeAdapter.getDocumentTypeNodeSystemId(node)
                           )}>`
-                        : parse5.serializeOuter(node, { treeAdapter });
+                        : serializeOuter(node, { treeAdapter });
 
                     assertLocation(location, serializedNode, html, lines);
 
