@@ -1,10 +1,10 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5/dist/tokenizer/index.js';
+import type { ParserError } from 'parse5';
+import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5';
 import { makeChunks } from './common.js';
 import type { CommentToken, DoctypeToken, TagToken, CharacterToken } from 'parse5/dist/common/token.js';
-import type { ParserError } from 'parse5/dist/common/error-codes.js';
 
 export type HtmlLibToken = [string, string | null, ...unknown[]];
 

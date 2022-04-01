@@ -1,7 +1,6 @@
 import { Writable, finished as finishedCb, type Readable } from 'node:stream';
 import * as assert from 'node:assert';
-import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface.js';
-import { defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
+import { type TreeAdapter, defaultTreeAdapter } from 'parse5';
 import { adapter as htmlparser2Adapter } from 'parse5-htmlparser2-tree-adapter';
 import type { Location } from 'parse5/dist/common/token.js';
 
