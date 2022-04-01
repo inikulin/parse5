@@ -189,21 +189,31 @@ export class ParserFeedbackSimulator implements TokenHandler {
     onEndTag(token: TagToken): void {
         let tn = token.tagID;
 
-        const [currentNs, previousNs] = this.namespaceStack;
-
-        // NOTE: adjust end tag name as well for consistency
-        if (currentNs === html.NS.SVG || (!this.inForeignContent && previousNs === html.NS.SVG)) {
-            foreignContent.adjustTokenSVGTagName(token);
-            tn = token.tagID;
-        }
-
         if (!this.inForeignContent) {
+            const previousNs = this.namespaceStack[1];
+
+            if (previousNs === html.NS.SVG) {
+                const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
+
+                if (adjustedTagName) {
+                    tn = html.getTagID(adjustedTagName);
+                }
+            }
+
             //NOTE: check for exit from integration point
             if (foreignContent.isIntegrationPoint(tn, previousNs, token.attrs)) {
                 this._leaveCurrentNamespace();
             }
-        } else if ((tn === $.SVG && currentNs === html.NS.SVG) || (tn === $.MATH && currentNs === html.NS.MATHML)) {
+        } else if (
+            (tn === $.SVG && this.namespaceStack[0] === html.NS.SVG) ||
+            (tn === $.MATH && this.namespaceStack[0] === html.NS.MATHML)
+        ) {
             this._leaveCurrentNamespace();
+        }
+
+        // NOTE: adjust end tag name as well for consistency
+        if (this.namespaceStack[0] === html.NS.SVG) {
+            foreignContent.adjustTokenSVGTagName(token);
         }
 
         this.handler.onEndTag(token);
