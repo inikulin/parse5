@@ -75,5 +75,9 @@ export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterM
         fragmentContext = null;
     }
 
-    return Parser.parseFragment(html as string, fragmentContext, options);
+    const parser = Parser.getFragmentParser(fragmentContext, options);
+
+    parser.tokenizer.write(html as string, true);
+
+    return parser.getFragment();
 }

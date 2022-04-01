@@ -137,19 +137,16 @@ export function generateParsingTests(
     name: string,
     prefix: string,
     {
-        skipFragments,
         withoutErrors,
         expectErrors: expectError = [],
         suitePath = treePath,
-    }: { skipFragments?: boolean; withoutErrors?: boolean; expectErrors?: string[]; suitePath?: URL },
+    }: { withoutErrors?: boolean; expectErrors?: string[]; suitePath?: URL },
     parse: ParseMethod<TreeAdapterTypeMap>
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         const errorsToExpect = new Set(expectError);
 
-        for (const test of loadTreeConstructionTestData(suitePath, treeAdapter).filter(
-            (test) => !skipFragments || !test.fragmentContext
-        )) {
+        for (const test of loadTreeConstructionTestData(suitePath, treeAdapter)) {
             const expectError = errorsToExpect.delete(`${test.idx}.${test.setName}`);
 
             it(

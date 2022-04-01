@@ -14,14 +14,14 @@ generateParsingTests(
     'ParserStream - Scripting',
     'ParserStream - Scripting',
     {
-        skipFragments: true,
         withoutErrors: true,
         suitePath,
     },
     async (test, opts) => {
         const chunks = makeChunks(test.input);
-        const parser = new ParserStream(opts);
-        const { document } = parser;
+        const parser = test.fragmentContext
+            ? ParserStream.getFragmentStream(test.fragmentContext, opts)
+            : new ParserStream(opts);
 
         parser.on('script', async (scriptElement, documentWrite, resume) => {
             const scriptTextNode = opts.treeAdapter.getChildNodes(scriptElement)[0];
@@ -48,7 +48,10 @@ generateParsingTests(
 
         await finished(parser);
 
-        return { node: document };
+        return {
+            node: test.fragmentContext ? parser.getFragment() : parser.document,
+            chunks,
+        };
     }
 );
 
