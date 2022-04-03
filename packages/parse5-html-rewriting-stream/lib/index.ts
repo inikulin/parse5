@@ -1,6 +1,7 @@
+import { escapeText, escapeAttribute } from 'entities';
 import type { Location } from 'parse5/dist/common/token.js';
 import { SAXParser, EndTag, StartTag, Doctype, Text, Comment, SaxToken } from 'parse5-sax-parser';
-import { hasUnescapedText, escapeString } from 'parse5/dist/serializer/index.js';
+import { hasUnescapedText } from 'parse5/dist/serializer/index.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
@@ -113,7 +114,7 @@ export class RewritingStream extends SAXParser {
         let res = `<${token.tagName}`;
 
         for (const attr of token.attrs) {
-            res += ` ${attr.name}="${escapeString(attr.value, true)}"`;
+            res += ` ${attr.name}="${escapeAttribute(attr.value)}"`;
         }
 
         res += token.selfClosing ? '/>' : '>';
@@ -131,7 +132,7 @@ export class RewritingStream extends SAXParser {
         this.push(
             !this.parserFeedbackSimulator.inForeignContent && hasUnescapedText(this.tokenizer.lastStartTagName, true)
                 ? text
-                : escapeString(text, false)
+                : escapeText(text)
         );
     }
 

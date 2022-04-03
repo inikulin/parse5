@@ -616,8 +616,13 @@ export class Tokenizer {
 
             current = htmlDecodeTree[i];
 
+            const masked = current & BinTrieFlags.VALUE_LENGTH;
+
             // If the branch is a value, store it and continue
-            if (current & BinTrieFlags.HAS_VALUE) {
+            if (masked) {
+                // The mask is the number of bytes of the value, including the current byte.
+                const valueLength = (masked >> 14) - 1;
+
                 // Attribute values that aren't terminated properly aren't parsed, and shouldn't lead to a parser error.
                 // See the example in https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state
                 if (
@@ -629,16 +634,24 @@ export class Tokenizer {
                     //emitting an ampersand. This is fine, as alphanumeric characters won't be parsed differently in attributes.
                     result = [$.AMPERSAND];
 
-                    // Skip over the value. No need to consider multi-byte values, as legacy entities are always a single byte.
-                    i += 1;
+                    // Skip over the value.
+                    i += valueLength;
                 } else {
                     // If this is a surrogate pair, consume the next two bytes.
                     result =
-                        current & BinTrieFlags.MULTI_BYTE
-                            ? [htmlDecodeTree[++i], htmlDecodeTree[++i]]
-                            : [htmlDecodeTree[++i]];
+                        valueLength === 0
+                            ? [htmlDecodeTree[i] & ~BinTrieFlags.VALUE_LENGTH]
+                            : valueLength === 1
+                            ? [htmlDecodeTree[++i]]
+                            : [htmlDecodeTree[++i], htmlDecodeTree[++i]];
                     excess = 0;
                     withoutSemicolon = cp !== $.SEMICOLON;
+                }
+
+                if (valueLength === 0) {
+                    // If the value is zero-length, we're done.
+                    this._consume();
+                    break;
                 }
             }
         }

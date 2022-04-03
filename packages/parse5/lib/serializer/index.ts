@@ -1,13 +1,7 @@
+import { escapeText, escapeAttribute } from 'entities';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
-
-//Escaping regexes
-const AMP_REGEX = /&/g;
-const NBSP_REGEX = /\u00A0/g;
-const DOUBLE_QUOTE_REGEX = /"/g;
-const LT_REGEX = /</g;
-const GT_REGEX = />/g;
 
 // Sets
 const VOID_ELEMENTS = new Set<string>([
@@ -208,7 +202,7 @@ function serializeAttributes<T extends TreeAdapterTypeMap>(
                 }
             }
 
-        html += `="${escapeString(attr.value, true)}"`;
+        html += `="${escapeAttribute(attr.value)}"`;
     }
 
     return html;
@@ -224,7 +218,7 @@ function serializeTextNode<T extends TreeAdapterTypeMap>(node: T['textNode'], op
         treeAdapter.getNamespaceURI(parent) === NS.HTML &&
         hasUnescapedText(parentTn, options.scriptingEnabled)
         ? content
-        : escapeString(content, false);
+        : escapeText(content);
 }
 
 function serializeCommentNode<T extends TreeAdapterTypeMap>(
@@ -239,13 +233,4 @@ function serializeDocumentTypeNode<T extends TreeAdapterTypeMap>(
     { treeAdapter }: InternalOptions<T>
 ): string {
     return `<!DOCTYPE ${treeAdapter.getDocumentTypeNodeName(node)}>`;
-}
-
-// NOTE: used in tests and by rewriting stream
-export function escapeString(str: string, attrMode = false): string {
-    str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
-
-    return attrMode
-        ? str.replace(DOUBLE_QUOTE_REGEX, '&quot;')
-        : str.replace(LT_REGEX, '&lt;').replace(GT_REGEX, '&gt;');
 }
