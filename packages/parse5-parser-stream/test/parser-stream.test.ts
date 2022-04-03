@@ -4,7 +4,23 @@ import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-t
 import { parseChunked } from './utils/parse-chunked.js';
 import { finished } from 'parse5-test-utils/utils/common.js';
 
-generateParsingTests('ParserStream', 'ParserStream', {}, (test, opts) => parseChunked(test, opts));
+generateParsingTests(
+    'ParserStream',
+    'ParserStream',
+    {
+        expectErrors: [
+            //NOTE: Foreign content behaviour was updated in the HTML spec.
+            //The old test suite still tests the old behaviour.
+            '269.foreign-fragment',
+            '270.foreign-fragment',
+            '307.foreign-fragment',
+            '309.foreign-fragment',
+            '316.foreign-fragment',
+            '317.foreign-fragment',
+        ],
+    },
+    (test, opts) => parseChunked(test, opts)
+);
 
 describe('ParserStream', () => {
     it('Fix empty stream parsing with ParserStream (GH-196)', async () => {
