@@ -9,7 +9,7 @@ generateParsingTests(
     'ParserStream',
     {
         expectErrors: [
-            //NOTE: Foreign content behaviour was updated in the HTML spec.
+            //TODO(GH-448): Foreign content behaviour was updated in the HTML spec.
             //The old test suite still tests the old behaviour.
             '269.foreign-fragment',
             '270.foreign-fragment',
