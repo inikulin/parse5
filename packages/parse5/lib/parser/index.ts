@@ -165,11 +165,10 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         return parser.document;
     }
 
-    public static parseFragment<T extends TreeAdapterTypeMap>(
-        html: string,
+    public static getFragmentParser<T extends TreeAdapterTypeMap>(
         fragmentContext?: T['parentNode'] | null,
         options?: ParserOptions<T>
-    ): T['documentFragment'] {
+    ): Parser<T> {
         const opts: Required<ParserOptions<T>> = {
             ...defaultParserOptions,
             ...options,
@@ -194,12 +193,15 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         parser._insertFakeRootElement();
         parser._resetInsertionMode();
         parser._findFormInFragmentContext();
-        parser.tokenizer.write(html, true);
 
-        const rootElement = opts.treeAdapter.getFirstChild(documentMock) as T['parentNode'];
-        const fragment = opts.treeAdapter.createDocumentFragment();
+        return parser;
+    }
 
-        parser._adoptNodes(rootElement, fragment);
+    public getFragment(): T['documentFragment'] {
+        const rootElement = this.treeAdapter.getFirstChild(this.document) as T['parentNode'];
+        const fragment = this.treeAdapter.createDocumentFragment();
+
+        this._adoptNodes(rootElement, fragment);
 
         return fragment;
     }

@@ -1,20 +1,15 @@
 import * as assert from 'node:assert';
 import * as parse5 from 'parse5';
 import { jest } from '@jest/globals';
-import { Parser, ParserOptions } from './index.js';
-import type { TreeAdapterTypeMap } from './../tree-adapters/interface.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
-import { NAMESPACES as NS } from '../common/html.js';
-
-const origParseFragment = Parser.parseFragment;
 
 generateParsingTests(
     'parser',
     'Parser',
     {
         expectErrors: [
-            //NOTE: Foreign content behaviour was updated in the HTML spec.
+            //TODO(GH-448): Foreign content behaviour was updated in the HTML spec.
             //The old test suite still tests the old behaviour.
             '269.foreign-fragment',
             '270.foreign-fragment',
@@ -53,54 +48,6 @@ describe('parser', () => {
 
         assert.ok(treeAdapters.htmlparser2.isDocumentTypeNode(document.childNodes[0]));
         assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
-    });
-
-    describe('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
-        beforeEach(() => {
-            Parser.parseFragment = function <T extends TreeAdapterTypeMap>(
-                html: string,
-                fragmentContext?: T['element'],
-                options?: ParserOptions<T>
-            ): {
-                html: string;
-                fragmentContext: T['element'] | null | undefined;
-                options: ParserOptions<T> | undefined;
-            } {
-                return {
-                    html,
-                    fragmentContext,
-                    options,
-                };
-            };
-        });
-
-        afterEach(() => {
-            Parser.parseFragment = origParseFragment;
-        });
-
-        it('parses correctly', () => {
-            const fragmentContext = treeAdapters.default.createElement('div', NS.HTML, []);
-            const html = '<script></script>';
-            const opts = { sourceCodeLocationInfo: true };
-
-            let args: any = parse5.parseFragment(fragmentContext, html, opts);
-
-            expect(args).toHaveProperty('fragmentContext', fragmentContext);
-            expect(args).toHaveProperty('html', html);
-            assert.ok(args.options.sourceCodeLocationInfo);
-
-            args = parse5.parseFragment(html, opts);
-
-            assert.ok(!args.fragmentContext);
-            expect(args).toHaveProperty('html', html);
-            assert.ok(args.options.sourceCodeLocationInfo);
-
-            args = parse5.parseFragment(html);
-
-            assert.ok(!args.fragmentContext);
-            expect(args).toHaveProperty('html', html);
-            assert.ok(!args.options);
-        });
     });
 
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
