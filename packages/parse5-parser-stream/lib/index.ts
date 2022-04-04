@@ -28,18 +28,31 @@ import { Parser, type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAd
  *
  */
 export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> extends Writable {
+    static getFragmentStream<T extends TreeAdapterTypeMap>(
+        fragmentContext?: T['parentNode'] | null,
+        options?: ParserOptions<T>
+    ): ParserStream<T> {
+        const parser = Parser.getFragmentParser(fragmentContext, options);
+        const stream = new ParserStream(options, parser);
+        return stream;
+    }
+
     private lastChunkWritten = false;
     private writeCallback: undefined | (() => void) = undefined;
 
-    public parser: Parser<T>;
     private pendingHtmlInsertions: string[] = [];
     /** The resulting document node. */
-    public document: T['document'];
+    public get document(): T['document'] {
+        return this.parser.document;
+    }
+    public getFragment(): T['documentFragment'] {
+        return this.parser.getFragment();
+    }
 
     /**
      * @param options Parsing options.
      */
-    constructor(options?: ParserOptions<T>) {
+    constructor(options?: ParserOptions<T>, public parser: Parser<T> = new Parser(options)) {
         super({ decodeStrings: false });
 
         const resume = (): void => {
@@ -66,8 +79,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
             }
         };
 
-        this.parser = new Parser(options, undefined, undefined, scriptHandler);
-        this.document = this.parser.document;
+        this.parser.scriptHandler = scriptHandler;
     }
 
     //WritableStream implementation

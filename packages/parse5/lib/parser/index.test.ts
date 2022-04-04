@@ -14,7 +14,7 @@ generateParsingTests(
     'Parser',
     {
         expectErrors: [
-            //NOTE: Foreign content behaviour was updated in the HTML spec.
+            //TODO(GH-448): Foreign content behaviour was updated in the HTML spec.
             //The old test suite still tests the old behaviour.
             '269.foreign-fragment',
             '270.foreign-fragment',
@@ -49,54 +49,6 @@ describe('parser', () => {
 
         assert.ok(treeAdapters.htmlparser2.isDocumentTypeNode(document.childNodes[0]));
         assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
-    });
-
-    describe('Regression - Incorrect arguments fallback for the parser.parseFragment (GH-82, GH-83)', () => {
-        beforeEach(() => {
-            Parser.parseFragment = function <T extends TreeAdapterTypeMap>(
-                html: string,
-                fragmentContext?: T['element'],
-                options?: ParserOptions<T>
-            ): {
-                html: string;
-                fragmentContext: T['element'] | null | undefined;
-                options: ParserOptions<T> | undefined;
-            } {
-                return {
-                    html,
-                    fragmentContext,
-                    options,
-                };
-            };
-        });
-
-        afterEach(() => {
-            Parser.parseFragment = origParseFragment;
-        });
-
-        it('parses correctly', () => {
-            const fragmentContext = treeAdapters.default.createElement('div', NS.HTML, []);
-            const html = '<script></script>';
-            const opts = { sourceCodeLocationInfo: true };
-
-            let args: any = parseFragment(fragmentContext, html, opts);
-
-            expect(args).toHaveProperty('fragmentContext', fragmentContext);
-            expect(args).toHaveProperty('html', html);
-            assert.ok(args.options.sourceCodeLocationInfo);
-
-            args = parseFragment(html, opts);
-
-            assert.ok(!args.fragmentContext);
-            expect(args).toHaveProperty('html', html);
-            assert.ok(args.options.sourceCodeLocationInfo);
-
-            args = parseFragment(html);
-
-            assert.ok(!args.fragmentContext);
-            expect(args).toHaveProperty('html', html);
-            assert.ok(!args.options);
-        });
     });
 
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
