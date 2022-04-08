@@ -3,8 +3,9 @@ import { DOCUMENT_MODE, NAMESPACES as NS } from 'parse5/dist/common/html.js';
 import type { Attribute, ElementLocation } from 'parse5/dist/common/token.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 import {
-    Node,
-    NodeWithChildren,
+    AnyNode,
+    ParentNode,
+    ChildNode,
     Element,
     Document,
     ProcessingInstruction,
@@ -17,9 +18,9 @@ import {
 } from 'domhandler';
 
 export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
-    Node,
-    NodeWithChildren,
-    Node,
+    AnyNode,
+    ParentNode,
+    ChildNode,
     Document,
     Document,
     Element,
@@ -75,7 +76,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     //Tree mutation
-    appendChild(parentNode: NodeWithChildren, newNode: Node): void {
+    appendChild(parentNode: ParentNode, newNode: ChildNode): void {
         const prev = parentNode.children[parentNode.children.length - 1];
 
         if (prev) {
@@ -87,7 +88,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         newNode.parent = parentNode;
     },
 
-    insertBefore(parentNode: NodeWithChildren, newNode: Node, referenceNode: Node): void {
+    insertBefore(parentNode: ParentNode, newNode: ChildNode, referenceNode: ChildNode): void {
         const insertionIdx = parentNode.children.indexOf(referenceNode);
         const { prev } = referenceNode;
 
@@ -104,11 +105,11 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     setTemplateContent(templateElement: Element, contentElement: Document): void {
-        adapter.appendChild(templateElement, contentElement);
+        adapter.appendChild(templateElement, contentElement as AnyNode as ChildNode);
     },
 
     getTemplateContent(templateElement: Element): Document {
-        return templateElement.children[0] as Document;
+        return templateElement.children[0] as AnyNode as Document;
     },
 
     setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
@@ -137,7 +138,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return document['x-mode'] as DOCUMENT_MODE;
     },
 
-    detachNode(node: Node): void {
+    detachNode(node: ChildNode): void {
         if (node.parent) {
             const idx = node.parent.children.indexOf(node);
             const { prev, next } = node;
@@ -158,7 +159,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         }
     },
 
-    insertText(parentNode: NodeWithChildren, text: string): void {
+    insertText(parentNode: ParentNode, text: string): void {
         const lastChild = parentNode.children[parentNode.children.length - 1];
 
         if (lastChild && isText(lastChild)) {
@@ -168,7 +169,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         }
     },
 
-    insertTextBefore(parentNode: NodeWithChildren, text: string, referenceNode: Node): void {
+    insertTextBefore(parentNode: ParentNode, text: string, referenceNode: ChildNode): void {
         const prevNode = parentNode.children[parentNode.children.indexOf(referenceNode) - 1];
 
         if (prevNode && isText(prevNode)) {
@@ -191,15 +192,15 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     //Tree traversing
-    getFirstChild(node: NodeWithChildren): Node | null {
+    getFirstChild(node: ParentNode): ChildNode | null {
         return node.children[0];
     },
 
-    getChildNodes(node: NodeWithChildren): Node[] {
+    getChildNodes(node: ParentNode): ChildNode[] {
         return node.children;
     },
 
-    getParentNode(node: Node): NodeWithChildren | null {
+    getParentNode(node: AnyNode): ParentNode | null {
         return node.parent;
     },
 
@@ -238,12 +239,12 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
 
     //Node types
 
-    isDocumentTypeNode(node: Node): node is ProcessingInstruction {
+    isDocumentTypeNode(node: AnyNode): node is ProcessingInstruction {
         return isDirective(node) && node.name === '!doctype';
     },
 
     // Source code location
-    setNodeSourceCodeLocation(node: Node, location: ElementLocation | null): void {
+    setNodeSourceCodeLocation(node: AnyNode, location: ElementLocation | null): void {
         if (location) {
             node.startIndex = location.startOffset;
             node.endIndex = location.endOffset;
@@ -252,11 +253,11 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         node.sourceCodeLocation = location;
     },
 
-    getNodeSourceCodeLocation(node: Node): ElementLocation | null | undefined {
+    getNodeSourceCodeLocation(node: AnyNode): ElementLocation | null | undefined {
         return node.sourceCodeLocation;
     },
 
-    updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
+    updateNodeSourceCodeLocation(node: AnyNode, endLocation: ElementLocation): void {
         if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
 
         node.sourceCodeLocation = {
