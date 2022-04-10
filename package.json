@@ -25,9 +25,8 @@
         "typescript": "^4.6.3"
     },
     "scripts": {
-        "build": "npm run build:esm && npm run build:cjs",
+        "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
         "build:esm": "tsc --build packages/* test",
-        "build:cjs": "tsc -p packages/parse5/tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > packages/parse5/dist/cjs/package.json",
         "build:docs": "node --max-old-space-size=8192 node_modules/.bin/typedoc .",
         "prettier": "prettier '**/*.{js,ts,md,json,yml}' --loglevel warn",
         "format": "npm run format:es && npm run format:prettier",
