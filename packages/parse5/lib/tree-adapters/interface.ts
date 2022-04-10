@@ -1,4 +1,4 @@
-import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
+import type { DOCUMENT_MODE, NS } from '../common/html.js';
 import type { Attribute, ElementLocation } from '../common/token.js';
 
 export interface TreeAdapterTypeMap<
@@ -73,7 +73,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param namespaceURI - Namespace of the element.
      * @param attrs - Attribute name-value pair array. Foreign attributes may contain `namespace` and `prefix` fields as well.
      */
-    createElement(tagName: string, namespaceURI: NAMESPACES, attrs: Attribute[]): T['element'];
+    createElement(tagName: string, namespaceURI: NS, attrs: Attribute[]): T['element'];
 
     /**
      * Removes a node from its parent.
@@ -144,7 +144,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      *
      * @param element - Element.
      */
-    getNamespaceURI(element: T['element']): NAMESPACES;
+    getNamespaceURI(element: T['element']): NS;
 
     /**
      * Returns the given node's source code location information.

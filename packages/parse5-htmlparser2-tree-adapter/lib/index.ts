@@ -1,10 +1,7 @@
-import * as doctype from 'parse5/dist/common/doctype.js';
-import { DOCUMENT_MODE, NAMESPACES as NS } from 'parse5/dist/common/html.js';
-import type { Attribute, ElementLocation } from 'parse5/dist/common/token.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
+import { type TreeAdapterTypeMap, type TreeAdapter, type Token, html } from 'parse5';
 import {
-    Node,
-    NodeWithChildren,
+    type Node,
+    type NodeWithChildren,
     Element,
     Document,
     ProcessingInstruction,
@@ -33,6 +30,33 @@ function createTextNode(value: string): Text {
     return new Text(value);
 }
 
+function enquoteDoctypeId(id: string): string {
+    const quote = id.includes('"') ? "'" : '"';
+
+    return quote + id + quote;
+}
+
+/** @internal */
+export function serializeDoctypeContent(name: string, publicId: string, systemId: string): string {
+    let str = '!DOCTYPE ';
+
+    if (name) {
+        str += name;
+    }
+
+    if (publicId) {
+        str += ` PUBLIC ${enquoteDoctypeId(publicId)}`;
+    } else if (systemId) {
+        str += ' SYSTEM';
+    }
+
+    if (systemId) {
+        str += ` ${enquoteDoctypeId(systemId)}`;
+    }
+
+    return str;
+}
+
 export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     // Re-exports from domhandler
     isCommentNode: isComment,
@@ -42,7 +66,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     //Node construction
     createDocument(): Document {
         const node = new Document([]);
-        node['x-mode'] = DOCUMENT_MODE.NO_QUIRKS;
+        node['x-mode'] = html.DOCUMENT_MODE.NO_QUIRKS;
         return node;
     },
 
@@ -50,7 +74,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return new Document([]);
     },
 
-    createElement(tagName: string, namespaceURI: NS, attrs: Attribute[]): Element {
+    createElement(tagName: string, namespaceURI: html.NS, attrs: Token.Attribute[]): Element {
         const attribs = Object.create(null);
         const attribsNamespace = Object.create(null);
         const attribsPrefix = Object.create(null);
@@ -112,7 +136,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
-        const data = doctype.serializeContent(name, publicId, systemId);
+        const data = serializeDoctypeContent(name, publicId, systemId);
         let doctypeNode = document.children.find(
             (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype'
         );
@@ -129,12 +153,12 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         doctypeNode['x-systemId'] = systemId ?? undefined;
     },
 
-    setDocumentMode(document: Document, mode: DOCUMENT_MODE): void {
+    setDocumentMode(document: Document, mode: html.DOCUMENT_MODE): void {
         document['x-mode'] = mode;
     },
 
-    getDocumentMode(document: Document): DOCUMENT_MODE {
-        return document['x-mode'] as DOCUMENT_MODE;
+    getDocumentMode(document: Document): html.DOCUMENT_MODE {
+        return document['x-mode'] as html.DOCUMENT_MODE;
     },
 
     detachNode(node: Node): void {
@@ -178,7 +202,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         }
     },
 
-    adoptAttributes(recipient: Element, attrs: Attribute[]): void {
+    adoptAttributes(recipient: Element, attrs: Token.Attribute[]): void {
         for (let i = 0; i < attrs.length; i++) {
             const attrName = attrs[i].name;
 
@@ -203,7 +227,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return node.parent;
     },
 
-    getAttrList(element: Element): Attribute[] {
+    getAttrList(element: Element): Token.Attribute[] {
         return element.attributes;
     },
 
@@ -212,8 +236,8 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         return element.name;
     },
 
-    getNamespaceURI(element: Element): NS {
-        return element.namespace as NS;
+    getNamespaceURI(element: Element): html.NS {
+        return element.namespace as html.NS;
     },
 
     getTextNodeContent(textNode: Text): string {
@@ -243,7 +267,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     // Source code location
-    setNodeSourceCodeLocation(node: Node, location: ElementLocation | null): void {
+    setNodeSourceCodeLocation(node: Node, location: Token.ElementLocation | null): void {
         if (location) {
             node.startIndex = location.startOffset;
             node.endIndex = location.endOffset;
@@ -252,11 +276,11 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         node.sourceCodeLocation = location;
     },
 
-    getNodeSourceCodeLocation(node: Node): ElementLocation | null | undefined {
+    getNodeSourceCodeLocation(node: Node): Token.ElementLocation | null | undefined {
         return node.sourceCodeLocation;
     },
 
-    updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
+    updateNodeSourceCodeLocation(node: Node, endLocation: Token.ElementLocation): void {
         if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
 
         node.sourceCodeLocation = {

@@ -35,10 +35,6 @@
         ".": {
             "import": "./dist/index.js",
             "require": "./dist/cjs/index.js"
-        },
-        "./dist/*": {
-            "import": "./dist/*",
-            "require": "./dist/cjs/*"
         }
     },
     "repository": {

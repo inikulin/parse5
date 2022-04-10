@@ -1,10 +1,22 @@
-import { Parser, ParserOptions } from './parser/index.js';
+import { Parser, type ParserOptions } from './parser/index.js';
 
 import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
-export { ParserOptions } from './parser/index.js';
-export { serialize, serializeOuter, SerializerOptions } from './serializer/index.js';
+export { type DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/default.js';
+export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
+export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
+export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
+export type { ParserError } from './common/error-codes.js';
+
+/** @internal */
+export * as foreignContent from './common/foreign-content.js';
+/** @internal */
+export * as html from './common/html.js';
+/** @internal */
+export * as Token from './common/token.js';
+/** @internal */
+export { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from './tokenizer/index.js';
 
 // Shorthands
 

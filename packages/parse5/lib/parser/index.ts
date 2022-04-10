@@ -1,15 +1,15 @@
-import { TokenHandler, Tokenizer, TokenizerMode } from '../tokenizer/index.js';
-import { OpenElementStack, StackHandler } from './open-element-stack.js';
-import { FormattingElementList, ElementEntry, EntryType } from './formatting-element-list.js';
-import { defaultTreeAdapter, DefaultTreeAdapterMap } from '../tree-adapters/default.js';
+import { Tokenizer, TokenizerMode, type TokenHandler } from '../tokenizer/index.js';
+import { OpenElementStack, type StackHandler } from './open-element-stack.js';
+import { FormattingElementList, EntryType, type ElementEntry } from './formatting-element-list.js';
+import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
-import { ERR, ParserErrorHandler } from '../common/error-codes.js';
+import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
 import * as unicode from '../common/unicode.js';
 import {
     TAG_ID as $,
     TAG_NAMES as TN,
-    NAMESPACES as NS,
+    NS,
     ATTRS,
     SPECIAL_ELEMENTS,
     DOCUMENT_MODE,
@@ -20,14 +20,14 @@ import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface
 import {
     TokenType,
     getTokenAttr,
-    Token,
-    CommentToken,
-    CharacterToken,
-    TagToken,
-    DoctypeToken,
-    EOFToken,
-    LocationWithAttributes,
-    ElementLocation,
+    type Token,
+    type CommentToken,
+    type CharacterToken,
+    type TagToken,
+    type DoctypeToken,
+    type EOFToken,
+    type LocationWithAttributes,
+    type ElementLocation,
 } from '../common/token.js';
 
 //Misc constants

@@ -1,30 +1,40 @@
-import { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from 'parse5/dist/tokenizer/index.js';
-import { TokenType, TagToken, CommentToken, DoctypeToken, CharacterToken, EOFToken } from 'parse5/dist/common/token.js';
-import * as foreignContent from 'parse5/dist/common/foreign-content.js';
-import * as unicode from 'parse5/dist/common/unicode.js';
-import { TAG_ID as $, TAG_NAMES as TN, NAMESPACES as NS, getTagID } from 'parse5/dist/common/html.js';
+import {
+    Tokenizer,
+    type TokenizerOptions,
+    TokenizerMode,
+    type TokenHandler,
+    Token,
+    foreignContent,
+    html,
+} from 'parse5';
 
-//ParserFeedbackSimulator
-//Simulates adjustment of the Tokenizer which performed by standard parser during tree construction.
+const $ = html.TAG_ID;
+
+const REPLACEMENT_CHARACTER = '\uFFFD';
+const LINE_FEED_CODE_POINT = 0x0a;
+
+/**
+ * Simulates adjustments of the Tokenizer which are performed by the standard parser during tree construction.
+ */
 export class ParserFeedbackSimulator implements TokenHandler {
-    private namespaceStack: NS[] = [];
+    private namespaceStack: html.NS[] = [];
     public inForeignContent = false;
     public skipNextNewLine = false;
     public tokenizer: Tokenizer;
 
     constructor(options: TokenizerOptions, private handler: TokenHandler) {
         this.tokenizer = new Tokenizer(options, this);
-        this._enterNamespace(NS.HTML);
+        this._enterNamespace(html.NS.HTML);
     }
 
     /** @internal */
-    onNullCharacter(token: CharacterToken): void {
+    onNullCharacter(token: Token.CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.inForeignContent) {
             this.handler.onCharacter({
-                type: TokenType.CHARACTER,
-                chars: unicode.REPLACEMENT_CHARACTER,
+                type: Token.TokenType.CHARACTER,
+                chars: REPLACEMENT_CHARACTER,
                 location: token.location,
             });
         } else {
@@ -33,8 +43,8 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacter(token: CharacterToken): void {
-        if (this.skipNextNewLine && token.chars.charCodeAt(0) === unicode.CODE_POINTS.LINE_FEED) {
+    onWhitespaceCharacter(token: Token.CharacterToken): void {
+        if (this.skipNextNewLine && token.chars.charCodeAt(0) === LINE_FEED_CODE_POINT) {
             this.skipNextNewLine = false;
 
             if (token.chars.length === 1) {
@@ -48,44 +58,44 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onCharacter(token: CharacterToken): void {
+    onCharacter(token: Token.CharacterToken): void {
         this.skipNextNewLine = false;
         this.handler.onCharacter(token);
     }
 
     /** @internal */
-    onComment(token: CommentToken): void {
+    onComment(token: Token.CommentToken): void {
         this.skipNextNewLine = false;
         this.handler.onComment(token);
     }
 
     /** @internal */
-    onDoctype(token: DoctypeToken): void {
+    onDoctype(token: Token.DoctypeToken): void {
         this.skipNextNewLine = false;
         this.handler.onDoctype(token);
     }
 
     /** @internal */
-    onEof(token: EOFToken): void {
+    onEof(token: Token.EOFToken): void {
         this.skipNextNewLine = false;
         this.handler.onEof(token);
     }
 
     //Namespace stack mutations
-    private _enterNamespace(namespace: NS): void {
+    private _enterNamespace(namespace: html.NS): void {
         this.namespaceStack.unshift(namespace);
-        this.inForeignContent = namespace !== NS.HTML;
+        this.inForeignContent = namespace !== html.NS.HTML;
         this.tokenizer.inForeignNode = this.inForeignContent;
     }
 
     private _leaveCurrentNamespace(): void {
         this.namespaceStack.shift();
-        this.inForeignContent = this.namespaceStack[0] !== NS.HTML;
+        this.inForeignContent = this.namespaceStack[0] !== html.NS.HTML;
         this.tokenizer.inForeignNode = this.inForeignContent;
     }
 
     //Token handlers
-    private _ensureTokenizerMode(tn: $): void {
+    private _ensureTokenizerMode(tn: html.TAG_ID): void {
         switch (tn) {
             case $.TEXTAREA:
             case $.TITLE: {
@@ -115,16 +125,16 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onStartTag(token: TagToken): void {
+    onStartTag(token: Token.TagToken): void {
         let tn = token.tagID;
 
         switch (tn) {
             case $.SVG: {
-                this._enterNamespace(NS.SVG);
+                this._enterNamespace(html.NS.SVG);
                 break;
             }
             case $.MATH: {
-                this._enterNamespace(NS.MATHML);
+                this._enterNamespace(html.NS.MATHML);
                 break;
             }
             default:
@@ -137,9 +147,9 @@ export class ParserFeedbackSimulator implements TokenHandler {
             } else {
                 const currentNs = this.namespaceStack[0];
 
-                if (currentNs === NS.MATHML) {
+                if (currentNs === html.NS.MATHML) {
                     foreignContent.adjustTokenMathMLAttrs(token);
-                } else if (currentNs === NS.SVG) {
+                } else if (currentNs === html.NS.SVG) {
                     foreignContent.adjustTokenSVGTagName(token);
                     foreignContent.adjustTokenSVGAttrs(token);
                 }
@@ -149,7 +159,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
                 tn = token.tagID;
 
                 if (!token.selfClosing && foreignContent.isIntegrationPoint(tn, currentNs, token.attrs)) {
-                    this._enterNamespace(NS.HTML);
+                    this._enterNamespace(html.NS.HTML);
                 }
             }
         } else {
@@ -161,7 +171,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
                     break;
                 }
                 case $.IMAGE: {
-                    token.tagName = TN.IMG;
+                    token.tagName = html.TAG_NAMES.IMG;
                     token.tagID = $.IMG;
                     break;
                 }
@@ -176,17 +186,17 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onEndTag(token: TagToken): void {
+    onEndTag(token: Token.TagToken): void {
         let tn = token.tagID;
 
         if (!this.inForeignContent) {
             const previousNs = this.namespaceStack[1];
 
-            if (previousNs === NS.SVG) {
+            if (previousNs === html.NS.SVG) {
                 const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
 
                 if (adjustedTagName) {
-                    tn = getTagID(adjustedTagName);
+                    tn = html.getTagID(adjustedTagName);
                 }
             }
 
@@ -195,14 +205,14 @@ export class ParserFeedbackSimulator implements TokenHandler {
                 this._leaveCurrentNamespace();
             }
         } else if (
-            (tn === $.SVG && this.namespaceStack[0] === NS.SVG) ||
-            (tn === $.MATH && this.namespaceStack[0] === NS.MATHML)
+            (tn === $.SVG && this.namespaceStack[0] === html.NS.SVG) ||
+            (tn === $.MATH && this.namespaceStack[0] === html.NS.MATHML)
         ) {
             this._leaveCurrentNamespace();
         }
 
         // NOTE: adjust end tag name as well for consistency
-        if (this.namespaceStack[0] === NS.SVG) {
+        if (this.namespaceStack[0] === html.NS.SVG) {
             foreignContent.adjustTokenSVGTagName(token);
         }
 

@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import * as parse5 from 'parse5';
+import { parseFragment, parse } from 'parse5';
 import { jest } from '@jest/globals';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
@@ -20,9 +20,7 @@ generateParsingTests(
         ],
     },
     (test, opts) => ({
-        node: test.fragmentContext
-            ? parse5.parseFragment(test.fragmentContext, test.input, opts)
-            : parse5.parse(test.input, opts),
+        node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
     })
 );
 
@@ -35,16 +33,14 @@ generateParsingTests(
         expectErrors: ['505.search-element', '506.search-element'],
     },
     (test, opts) => ({
-        node: test.fragmentContext
-            ? parse5.parseFragment(test.fragmentContext, test.input, opts)
-            : parse5.parse(test.input, opts),
+        node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
     })
 );
 
 describe('parser', () => {
     it('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {
         const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
-        const document = parse5.parse(html, { treeAdapter: treeAdapters.htmlparser2 });
+        const document = parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
         assert.ok(treeAdapters.htmlparser2.isDocumentTypeNode(document.childNodes[0]));
         assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
@@ -64,7 +60,7 @@ describe('parser', () => {
         });
 
         it('parses correctly', () => {
-            const fragment = parse5.parseFragment('<div id="123">', {
+            const fragment = parseFragment('<div id="123">', {
                 treeAdapter: treeAdapters.htmlparser2,
             });
 
@@ -74,7 +70,7 @@ describe('parser', () => {
     });
 
     it('Regression - DOCTYPE empty fields (GH-236)', () => {
-        const document = parse5.parse('<!DOCTYPE>');
+        const document = parse('<!DOCTYPE>');
         const doctype = document.childNodes[0];
 
         expect(doctype).toHaveProperty('name', '');
@@ -86,7 +82,7 @@ describe('parser', () => {
         it('should support onItemPush and onItemPop', () => {
             const onItemPush = jest.fn();
             const onItemPop = jest.fn();
-            const document = parse5.parse('<p><p>', {
+            const document = parse('<p><p>', {
                 treeAdapter: {
                     ...treeAdapters.default,
                     onItemPush,

@@ -1,4 +1,4 @@
-import { TAG_ID as $, NAMESPACES as NS, ATTRS, getTagID } from './html.js';
+import { TAG_ID as $, NS, ATTRS, getTagID } from './html.js';
 import type { TagToken, Attribute } from './token.js';
 
 //MIME types

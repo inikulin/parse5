@@ -1,10 +1,9 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5/dist/tokenizer/index.js';
+import type { ParserError, Token } from 'parse5';
+import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5';
 import { makeChunks } from './common.js';
-import type { CommentToken, DoctypeToken, TagToken, CharacterToken } from 'parse5/dist/common/token.js';
-import type { ParserError } from 'parse5/dist/common/error-codes.js';
 
 export type HtmlLibToken = [string, string | null, ...unknown[]];
 
@@ -31,13 +30,13 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
         this.tokens.push(token);
     }
 
-    onComment(token: CommentToken): void {
+    onComment(token: Token.CommentToken): void {
         this.addToken(['Comment', token.data]);
     }
-    onDoctype(token: DoctypeToken): void {
+    onDoctype(token: Token.DoctypeToken): void {
         this.addToken(['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks]);
     }
-    onStartTag(token: TagToken): void {
+    onStartTag(token: Token.TagToken): void {
         const reformatedAttrs = Object.fromEntries(token.attrs.map(({ name, value }) => [name, value]));
         const startTagEntry: HtmlLibToken = ['StartTag', token.tagName, reformatedAttrs];
 
@@ -47,7 +46,7 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
 
         this.addToken(startTagEntry);
     }
-    onEndTag(token: TagToken): void {
+    onEndTag(token: Token.TagToken): void {
         // NOTE: parser feedback simulator can produce adjusted SVG
         // tag names for end tag tokens so we need to lower case it
         this.addToken(['EndTag', token.tagName.toLowerCase()]);
@@ -55,7 +54,7 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
     onEof(): void {
         this.sawEof = true;
     }
-    onCharacter(token: CharacterToken): void {
+    onCharacter(token: Token.CharacterToken): void {
         const lastEntry = this.tokens[this.tokens.length - 1];
 
         if (lastEntry && lastEntry[0] === 'Character' && lastEntry[1] != null) {
@@ -70,10 +69,10 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
         assert.ok(typeof actual[1] === 'string');
         assert.ok(expected[1]?.startsWith(actual[1]));
     }
-    onNullCharacter(token: CharacterToken): void {
+    onNullCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
-    onWhitespaceCharacter(token: CharacterToken): void {
+    onWhitespaceCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
     onParseError(err: ParserError): void {

@@ -1,9 +1,7 @@
-import { Writable, Readable, finished as finishedCb } from 'node:stream';
+import { Writable, finished as finishedCb, type Readable } from 'node:stream';
 import * as assert from 'node:assert';
-import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface.js';
-import { defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
+import { type TreeAdapter, type Token, defaultTreeAdapter } from 'parse5';
 import { adapter as htmlparser2Adapter } from 'parse5-htmlparser2-tree-adapter';
-import type { Location } from 'parse5/dist/common/token.js';
 
 // Ensure the default tree adapter matches the expected type.
 export const treeAdapters = {
@@ -117,7 +115,7 @@ export function getStringDiffMsg(actual: string, expected: string): string {
     return '';
 }
 
-export function getSubstringByLineCol(lines: string[], loc: Location): string {
+export function getSubstringByLineCol(lines: string[], loc: Token.Location): string {
     lines = lines.slice(loc.startLine - 1, loc.endLine);
 
     const last = lines.length - 1;

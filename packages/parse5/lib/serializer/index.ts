@@ -1,5 +1,5 @@
+import { TAG_NAMES as $, NS, hasUnescapedText } from '../common/html.js';
 import { escapeText, escapeAttribute } from 'entities';
-import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 
@@ -31,12 +31,6 @@ function isVoidElement<T extends TreeAdapterTypeMap>(node: T['node'], options: I
         options.treeAdapter.getNamespaceURI(node) === NS.HTML &&
         VOID_ELEMENTS.has(options.treeAdapter.getTagName(node))
     );
-}
-
-const UNESCAPED_TEXT = new Set<string>([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT]);
-
-export function hasUnescapedText(tn: string, scriptingEnabled: boolean): boolean {
-    return UNESCAPED_TEXT.has(tn) || (scriptingEnabled && tn === $.NOSCRIPT);
 }
 
 export interface SerializerOptions<T extends TreeAdapterTypeMap> {
