@@ -1,4 +1,4 @@
-import { escapeText, escapeAttribute } from 'entities';
+import { escapeText, escapeAttribute } from 'entities/lib/escape.js';
 import type { Location } from 'parse5/dist/common/token.js';
 import { SAXParser, EndTag, StartTag, Doctype, Text, Comment, SaxToken } from 'parse5-sax-parser';
 import { hasUnescapedText } from 'parse5/dist/serializer/index.js';

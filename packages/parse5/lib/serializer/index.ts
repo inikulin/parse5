@@ -1,4 +1,4 @@
-import { escapeText, escapeAttribute } from 'entities';
+import { escapeText, escapeAttribute } from 'entities/lib/escape.js';
 import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
