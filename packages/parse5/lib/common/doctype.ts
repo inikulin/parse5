@@ -1,5 +1,5 @@
 import { DOCUMENT_MODE } from './html.js';
-import { DoctypeToken } from './token.js';
+import type { DoctypeToken } from './token.js';
 
 //Const
 const VALID_DOCTYPE_NAME = 'html';
@@ -84,12 +84,6 @@ const LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES = [
 ];
 
 //Utils
-function enquoteDoctypeId(id: string): string {
-    const quote = id.includes('"') ? "'" : '"';
-
-    return quote + id + quote;
-}
-
 function hasPrefix(publicId: string, prefixes: string[]): boolean {
     return prefixes.some((prefix) => publicId.startsWith(prefix));
 }
@@ -138,24 +132,4 @@ export function getDocumentMode(token: DoctypeToken): DOCUMENT_MODE {
     }
 
     return DOCUMENT_MODE.NO_QUIRKS;
-}
-
-export function serializeContent(name: string, publicId: string, systemId: string): string {
-    let str = '!DOCTYPE ';
-
-    if (name) {
-        str += name;
-    }
-
-    if (publicId) {
-        str += ` PUBLIC ${enquoteDoctypeId(publicId)}`;
-    } else if (systemId) {
-        str += ' SYSTEM';
-    }
-
-    if (systemId) {
-        str += ` ${enquoteDoctypeId(systemId)}`;
-    }
-
-    return str;
 }

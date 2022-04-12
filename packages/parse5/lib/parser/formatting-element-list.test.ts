@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
-import { TAG_NAMES as $, NAMESPACES as NS, getTagID } from '../common/html.js';
-import { TagToken, TokenType } from '../common/token.js';
+import { TAG_NAMES as $, NS, getTagID } from '../common/html.js';
+import { type TagToken, TokenType } from '../common/token.js';
 import { FormattingElementList, EntryType } from './formatting-element-list.js';
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 
