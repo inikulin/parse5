@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import format from 'human-format';
 import memwatch from '@airbnb/node-memwatch';
-import { SAXParser } from 'parse5-sax-parser/dist/index.js';
+import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
 import { finished } from 'parse5-test-utils/dist/common.js';
 
 main();

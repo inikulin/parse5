@@ -1,13 +1,5 @@
 import { Transform } from 'node:stream';
-import type { Tokenizer, TokenHandler } from 'parse5/dist/tokenizer/index.js';
-import type {
-    Attribute,
-    Location,
-    TagToken,
-    CommentToken,
-    DoctypeToken,
-    CharacterToken,
-} from 'parse5/dist/common/token.js';
+import type { Tokenizer, TokenHandler, Token } from 'parse5';
 import { DevNullStream } from './dev-null-stream.js';
 import { ParserFeedbackSimulator } from './parser-feedback-simulator.js';
 
@@ -135,7 +127,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onCharacter({ chars, location }: CharacterToken): void {
+    onCharacter({ chars, location }: Token.CharacterToken): void {
         if (this.pendingText === null) {
             this.pendingText = { text: chars, sourceCodeLocation: location };
         } else {
@@ -158,12 +150,12 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacter(token: CharacterToken): void {
+    onWhitespaceCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
 
     /** @internal */
-    onNullCharacter(token: CharacterToken): void {
+    onNullCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
 
@@ -174,7 +166,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onStartTag(token: TagToken): void {
+    onStartTag(token: Token.TagToken): void {
         this._emitPendingText();
 
         const startTag: StartTag = {
@@ -187,7 +179,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onEndTag(token: TagToken): void {
+    onEndTag(token: Token.TagToken): void {
         this._emitPendingText();
 
         const endTag: EndTag = {
@@ -198,7 +190,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onDoctype(token: DoctypeToken): void {
+    onDoctype(token: Token.DoctypeToken): void {
         this._emitPendingText();
 
         const doctype: Doctype = {
@@ -211,7 +203,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onComment(token: CommentToken): void {
+    onComment(token: Token.CommentToken): void {
         this._emitPendingText();
 
         const comment: Comment = {
@@ -245,14 +237,14 @@ export class SAXParser extends Transform implements TokenHandler {
 
 export interface SaxToken {
     /** Source code location info. Available if location info is enabled via {@link SAXParserOptions}. */
-    sourceCodeLocation?: Location | null;
+    sourceCodeLocation?: Token.Location | null;
 }
 
 export interface StartTag extends SaxToken {
     /** Tag name */
     tagName: string;
     /** List of attributes */
-    attrs: Attribute[];
+    attrs: Token.Attribute[];
     /** Indicates if the tag is self-closing */
     selfClosing: boolean;
 }

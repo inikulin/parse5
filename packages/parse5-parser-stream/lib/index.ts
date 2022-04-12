@@ -1,7 +1,5 @@
 import { Writable } from 'node:stream';
-import { Parser, ParserOptions } from 'parse5/dist/parser/index.js';
-import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
-import type { DefaultTreeAdapterMap } from 'parse5/dist/tree-adapters/default.js';
+import { Parser, type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAdapterMap } from 'parse5';
 
 /* eslint-disable unicorn/consistent-function-scoping -- The rule seems to be broken here. */
 

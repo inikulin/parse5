@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import * as parse5 from 'parse5';
+import { serialize } from 'parse5';
 import { PlainTextConversionStream } from '../lib/index.js';
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 
@@ -12,7 +12,7 @@ generateTestsForEachTreeAdapter('plain-test-conversion-stream', (treeAdapter) =>
         converter.write('\u0000');
         converter.end('<html><head><body>');
 
-        const result = parse5.serialize(converter.document, { treeAdapter });
+        const result = serialize(converter.document, { treeAdapter });
 
         assert.strictEqual(
             result,

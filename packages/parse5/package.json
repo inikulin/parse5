@@ -8,7 +8,7 @@
     "homepage": "https://github.com/inikulin/parse5",
     "funding": "https://github.com/inikulin/parse5?sponsor=1",
     "dependencies": {
-        "entities": "^4.2.0"
+        "entities": "^4.3.0"
     },
     "keywords": [
         "html",
@@ -32,14 +32,11 @@
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
     "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/cjs/index.js"
-        },
-        "./dist/*": {
-            "import": "./dist/*",
-            "require": "./dist/cjs/*"
-        }
+        "import": "./dist/index.js",
+        "require": "./dist/cjs/index.js"
+    },
+    "scripts": {
+        "build:cjs": "tsc --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
     },
     "repository": {
         "type": "git",
