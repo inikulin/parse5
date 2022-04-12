@@ -11,6 +11,8 @@
         "noPropertyAccessFromIndexSignature": true,
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
+        "importsNotUsedAsValues": "error",
+        "isolatedModules": true,
 
         "composite": true,
         "declarationMap": true,
