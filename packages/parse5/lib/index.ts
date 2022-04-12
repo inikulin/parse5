@@ -16,7 +16,7 @@ export * as html from './common/html.js';
 /** @internal */
 export * as Token from './common/token.js';
 /** @internal */
-export { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from './tokenizer/index.js';
+export { Tokenizer, type TokenizerOptions, TokenizerMode, type TokenHandler } from './tokenizer/index.js';
 
 // Shorthands
 

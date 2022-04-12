@@ -8,7 +8,7 @@ import {
     type Comment,
     type SaxToken,
 } from 'parse5-sax-parser';
-import { escapeText, escapeAttribute } from 'entities';
+import { escapeText, escapeAttribute } from 'entities/lib/escape.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
