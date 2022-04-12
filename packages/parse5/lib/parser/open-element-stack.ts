@@ -1,4 +1,4 @@
-import { TAG_ID as $, NAMESPACES as NS, isNumberedHeader } from '../common/html.js';
+import { TAG_ID as $, NS, isNumberedHeader } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
 
 //Element utils

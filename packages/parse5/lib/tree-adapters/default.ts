@@ -1,4 +1,4 @@
-import { DOCUMENT_MODE, NAMESPACES } from '../common/html.js';
+import { DOCUMENT_MODE, type NS } from '../common/html.js';
 import type { Attribute, Location, ElementLocation } from '../common/token.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from './interface.js';
 
@@ -41,7 +41,7 @@ export interface Element {
     /** List of element attributes. */
     attrs: Attribute[];
     /** Element namespace. */
-    namespaceURI: NAMESPACES;
+    namespaceURI: NS;
     /** Element source code location info, with attributes. Available if location info is enabled. */
     sourceCodeLocation?: ElementLocation | null;
     /** Parent node. */
@@ -135,7 +135,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         };
     },
 
-    createElement(tagName: string, namespaceURI: NAMESPACES, attrs: Attribute[]): Element {
+    createElement(tagName: string, namespaceURI: NS, attrs: Attribute[]): Element {
         return {
             nodeName: tagName,
             tagName,
@@ -268,7 +268,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         return element.tagName;
     },
 
-    getNamespaceURI(element: Element): NAMESPACES {
+    getNamespaceURI(element: Element): NS {
         return element.namespaceURI;
     },
 

@@ -1,12 +1,10 @@
-import { ParserOptions } from 'parse5';
-import { ParserError } from 'parse5/dist/common/error-codes.js';
+import type { ParserOptions, TreeAdapter, TreeAdapterTypeMap, ParserError } from 'parse5';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as assert from 'node:assert';
 import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
-import { parseDatFile, DatFile } from './parse-dat-file.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
+import { parseDatFile, type DatFile } from './parse-dat-file.js';
 
 export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile<T> {
     idx: number;

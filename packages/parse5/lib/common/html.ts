@@ -1,4 +1,5 @@
-export enum NAMESPACES {
+/** All valid namespaces in HTML. */
+export enum NS {
     HTML = 'http://www.w3.org/1999/xhtml',
     MATHML = 'http://www.w3.org/1998/Math/MathML',
     SVG = 'http://www.w3.org/2000/svg',
@@ -6,8 +7,6 @@ export enum NAMESPACES {
     XML = 'http://www.w3.org/XML/1998/namespace',
     XMLNS = 'http://www.w3.org/2000/xmlns/',
 }
-
-const NS = NAMESPACES;
 
 export enum ATTRS {
     TYPE = 'type',
@@ -461,7 +460,7 @@ export function getTagID(tagName: string): TAG_ID {
 
 const $ = TAG_ID;
 
-export const SPECIAL_ELEMENTS: Record<NAMESPACES, Set<TAG_ID>> = {
+export const SPECIAL_ELEMENTS: Record<NS, Set<TAG_ID>> = {
     [NS.HTML]: new Set([
         $.ADDRESS,
         $.APPLET,
@@ -554,4 +553,18 @@ export const SPECIAL_ELEMENTS: Record<NAMESPACES, Set<TAG_ID>> = {
 
 export function isNumberedHeader(tn: TAG_ID): boolean {
     return tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6;
+}
+
+const UNESCAPED_TEXT = new Set<string>([
+    TAG_NAMES.STYLE,
+    TAG_NAMES.SCRIPT,
+    TAG_NAMES.XMP,
+    TAG_NAMES.IFRAME,
+    TAG_NAMES.NOEMBED,
+    TAG_NAMES.NOFRAMES,
+    TAG_NAMES.PLAINTEXT,
+]);
+
+export function hasUnescapedText(tn: string, scriptingEnabled: boolean): boolean {
+    return UNESCAPED_TEXT.has(tn) || (scriptingEnabled && tn === TAG_NAMES.NOSCRIPT);
 }

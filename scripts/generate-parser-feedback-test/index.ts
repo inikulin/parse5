@@ -1,12 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
-import { Parser } from 'parse5/dist/parser/index.js';
-import { type DefaultTreeAdapterMap, defaultTreeAdapter } from 'parse5/dist/tree-adapters/default.js';
-import { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
+import { Parser, type DefaultTreeAdapterMap, type TreeAdapterTypeMap, type Token, defaultTreeAdapter } from 'parse5';
+import type { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
-import { CharacterToken, CommentToken, DoctypeToken, TagToken } from '../../packages/parse5/dist/common/token.js';
-import type { TreeAdapterTypeMap } from '../../packages/parse5/dist/tree-adapters/interface.js';
 
 // eslint-disable-next-line no-console
 main().catch(console.error);
@@ -60,19 +57,19 @@ function collectParserTokens(html: string): HtmlLibToken[] {
             }
         }
 
-        override onComment(token: CommentToken): void {
+        override onComment(token: Token.CommentToken): void {
             this.guardTopLevel(
                 () => super.onComment(token),
                 () => ['Comment', token.data]
             );
         }
-        override onDoctype(token: DoctypeToken): void {
+        override onDoctype(token: Token.DoctypeToken): void {
             this.guardTopLevel(
                 () => super.onDoctype(token),
                 () => ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks]
             );
         }
-        override onStartTag(token: TagToken): void {
+        override onStartTag(token: Token.TagToken): void {
             this.guardTopLevel(
                 () => super.onStartTag(token),
                 () => {
@@ -87,7 +84,7 @@ function collectParserTokens(html: string): HtmlLibToken[] {
                 }
             );
         }
-        override onEndTag(token: TagToken): void {
+        override onEndTag(token: Token.TagToken): void {
             this.guardTopLevel(
                 () => super.onEndTag(token),
                 // NOTE: parser feedback simulator can produce adjusted SVG
@@ -95,19 +92,19 @@ function collectParserTokens(html: string): HtmlLibToken[] {
                 () => ['EndTag', token.tagName.toLowerCase()]
             );
         }
-        override onCharacter(token: CharacterToken): void {
+        override onCharacter(token: Token.CharacterToken): void {
             this.guardTopLevel(
                 () => super.onCharacter(token),
                 () => ['Character', token.chars]
             );
         }
-        override onNullCharacter(token: CharacterToken): void {
+        override onNullCharacter(token: Token.CharacterToken): void {
             this.guardTopLevel(
                 () => super.onNullCharacter(token),
                 () => ['Character', token.chars]
             );
         }
-        override onWhitespaceCharacter(token: CharacterToken): void {
+        override onWhitespaceCharacter(token: Token.CharacterToken): void {
             const { skipNextNewLine } = this;
             const { chars } = token;
 
