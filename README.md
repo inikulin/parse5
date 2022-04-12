@@ -18,7 +18,9 @@
 <p align="center">
 <b><i>parse5</i></b> provides nearly everything you may need when dealing with HTML. It's the fastest spec-compliant HTML parser
 for Node to date. It parses HTML the way the latest version of your browser does. It has proven itself reliable in such projects
-as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://github.com/angular/angular">Angular</a>, <a href="https://www.polymer-project.org">Polymer</a> and many more.
+as <a href="https://github.com/tmpvar/jsdom">jsdom</a>, <a href="https://angular.io">Angular</a>,
+<a href="https://lit.dev">Lit</a>, <a href="https://github.com/cheeriojs/cheerio">Cheerio</a>,
+<a href="https://github.com/rehypejs/rehype">rehype</a> and many more.
 </p>
 
 ---
