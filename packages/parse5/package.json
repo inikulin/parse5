@@ -32,10 +32,11 @@
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
     "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/cjs/index.js"
-        }
+        "import": "./dist/index.js",
+        "require": "./dist/cjs/index.js"
+    },
+    "scripts": {
+        "build:cjs": "tsc --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
     },
     "repository": {
         "type": "git",
