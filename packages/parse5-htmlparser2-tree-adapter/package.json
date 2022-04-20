@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "domhandler": "^5.0.2",
-        "parse5": "^6.0.1"
+        "parse5": "^7.0.0"
     },
     "scripts": {
         "build:cjs": "tsc --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"

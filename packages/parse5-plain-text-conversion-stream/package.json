@@ -22,8 +22,8 @@
     "types": "dist/index.d.ts",
     "exports": "./dist/index.js",
     "dependencies": {
-        "parse5": "^6.0.1",
-        "parse5-parser-stream": "^6.0.1"
+        "parse5": "^7.0.0",
+        "parse5-parser-stream": "^7.0.0"
     },
     "repository": {
         "type": "git",
