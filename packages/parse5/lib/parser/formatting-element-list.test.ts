@@ -142,6 +142,10 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.clearToLastMarker();
 
         assert.strictEqual(list.entries.length, 2);
+
+        list.clearToLastMarker();
+
+        assert.strictEqual(list.entries.length, 0);
     });
 
     test('Remove entry', () => {

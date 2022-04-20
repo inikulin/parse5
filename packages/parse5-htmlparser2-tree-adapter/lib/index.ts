@@ -149,9 +149,9 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
             adapter.appendChild(document, doctypeNode);
         }
 
-        doctypeNode['x-name'] = name ?? undefined;
-        doctypeNode['x-publicId'] = publicId ?? undefined;
-        doctypeNode['x-systemId'] = systemId ?? undefined;
+        doctypeNode['x-name'] = name;
+        doctypeNode['x-publicId'] = publicId;
+        doctypeNode['x-systemId'] = systemId;
     },
 
     setDocumentMode(document: Document, mode: html.DOCUMENT_MODE): void {
