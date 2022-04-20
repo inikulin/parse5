@@ -12,7 +12,7 @@ permissions:
 env:
     CI: true
     FORCE_COLOR: 2
-    NODE_COV: 18 # The Node.js version to run coveralls on
+    NODE_COV: 16 # The Node.js version to run coveralls on
 
 jobs:
     lint:
