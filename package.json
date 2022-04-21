@@ -68,6 +68,11 @@
             "^(parse5[^/]*)/dist/(.*?)(?:\\.js)?$": "<rootDir>/packages/$1/lib/$2",
             "^(parse5[^/]*)$": "<rootDir>/packages/$1/lib/index.ts",
             "^(.*)\\.js$": "$1"
-        }
+        },
+        "coveragePathIgnorePatterns": [
+            "node_modules",
+            "bench",
+            "test"
+        ]
     }
 }
