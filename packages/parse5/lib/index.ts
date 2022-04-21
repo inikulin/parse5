@@ -57,7 +57,7 @@ export function parse<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
  * console.log(documentFragment.childNodes[0].tagName); //> 'table'
  *
  * // Parses the html fragment in the context of the parsed <table> element.
- * const trFragment = parser.parseFragment(documentFragment.childNodes[0], '<tr><td>Shake it, baby</td></tr>');
+ * const trFragment = parse5.parseFragment(documentFragment.childNodes[0], '<tr><td>Shake it, baby</td></tr>');
  *
  * console.log(trFragment.childNodes[0].childNodes[0].tagName); //> 'td'
  * ```
