@@ -13,6 +13,7 @@
   <a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
   <a href="https://npmjs.org/package/parse5"><img alt="Downloads" src="http://img.shields.io/npm/dm/parse5.svg"></a>
   <a href="https://npmjs.org/package/parse5"><img alt="Downloads total" src="http://img.shields.io/npm/dt/parse5.svg"></a>
+  <a href="https://coveralls.io/github/inikulin/parse5"><img alt="Coverage" src="https://img.shields.io/coveralls/github/inikulin/parse5/master"></a>
 </p>
 
 <p align="center">
