@@ -152,6 +152,6 @@ describe('SAX parser', () => {
 
         await finished(parser);
 
-        assert.ok(foundText);
+        assert.strictEqual(foundText, true);
     });
 });
