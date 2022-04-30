@@ -317,6 +317,8 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
     test('Has numbered header in scope', () => {
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
 
+        assert.ok(stack.hasNumberedHeaderInScope());
+
         stack.push(createElement(TN.HTML), $.HTML);
         stack.push(createElement(TN.DIV), $.DIV);
         assert.ok(!stack.hasNumberedHeaderInScope());
@@ -337,6 +339,8 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
     test('Has element in list item scope', () => {
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
 
+        assert.ok(stack.hasInListItemScope($.P));
+
         stack.push(createElement(TN.HTML), $.HTML);
         stack.push(createElement(TN.DIV), $.DIV);
         assert.ok(!stack.hasInListItemScope($.P));
@@ -352,6 +356,8 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
 
     test('Has element in button scope', () => {
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
+
+        assert.ok(stack.hasInButtonScope($.P));
 
         stack.push(createElement(TN.HTML), $.HTML);
         stack.push(createElement(TN.DIV), $.DIV);
@@ -405,6 +411,8 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
 
     test('Has element in select scope', () => {
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
+
+        assert.ok(stack.hasInSelectScope($.P));
 
         stack.push(createElement(TN.HTML), $.HTML);
         stack.push(createElement(TN.DIV), $.DIV);

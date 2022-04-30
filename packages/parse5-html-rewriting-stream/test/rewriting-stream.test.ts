@@ -203,6 +203,33 @@ describe('RewritingStream', () => {
     );
 
     it(
+        'rewrite doctype (no public id)',
+        createRewriterTest({
+            src: srcHtml,
+            expected: outdent`
+              <!DOCTYPE html SYSTEM "hey">
+              <html>
+                  <!-- comment1 -->
+                  <head /// 123>
+                  </head>
+                  <!-- comment2 -->
+                  <body =123>
+                      <div>Hey ya</div>
+                  </body>
+              </html>
+            `,
+            assignTokenHandlers: (rewriter) => {
+                rewriter.on('doctype', (token) => {
+                    token.publicId = null;
+                    token.systemId = 'hey';
+
+                    rewriter.emitDoctype(token);
+                });
+            },
+        })
+    );
+
+    it(
         'emit multiple',
         createRewriterTest({
             src: srcHtml,
@@ -210,7 +237,7 @@ describe('RewritingStream', () => {
               <!DOCTYPE html "">
               <wrap><html></wrap>
                   <!-- comment1 -->
-                  <wrap><head 123=""></wrap>
+                  <wrap><head 123=""/></wrap>
                   </head>
                   <!-- comment2 -->
                   <wrap><body =123=""></wrap>
@@ -221,6 +248,11 @@ describe('RewritingStream', () => {
             assignTokenHandlers: (rewriter) => {
                 rewriter.on('startTag', (token) => {
                     rewriter.emitRaw('<wrap>');
+
+                    if (token.tagName === 'head') {
+                        token.selfClosing = true;
+                    }
+
                     rewriter.emitStartTag(token);
                     rewriter.emitRaw('</wrap>');
                 });

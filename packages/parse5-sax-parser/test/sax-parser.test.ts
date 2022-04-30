@@ -137,4 +137,21 @@ describe('SAX parser', () => {
 
         assert.throws(() => stream.write(buf), TypeError);
     });
+
+    it('Should treat NULL characters as normal text', async () => {
+        const parser = new SAXParser();
+        let foundText = false;
+
+        parser.on('text', ({ text }) => {
+            foundText = true;
+            assert.strictEqual(text, '\0');
+        });
+
+        parser.write('\0');
+        parser.end();
+
+        await finished(parser);
+
+        assert.strictEqual(foundText, true);
+    });
 });

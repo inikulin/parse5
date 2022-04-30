@@ -132,7 +132,6 @@ const enum State {
     AMBIGUOUS_AMPERSAND,
     NUMERIC_CHARACTER_REFERENCE,
     HEXADEMICAL_CHARACTER_REFERENCE_START,
-    DECIMAL_CHARACTER_REFERENCE_START,
     HEXADEMICAL_CHARACTER_REFERENCE,
     DECIMAL_CHARACTER_REFERENCE,
     NUMERIC_CHARACTER_REFERENCE_END,
@@ -991,10 +990,6 @@ export class Tokenizer {
             }
             case State.HEXADEMICAL_CHARACTER_REFERENCE_START: {
                 this._stateHexademicalCharacterReferenceStart(cp);
-                break;
-            }
-            case State.DECIMAL_CHARACTER_REFERENCE_START: {
-                this._stateDecimalCharacterReferenceStart(cp);
                 break;
             }
             case State.HEXADEMICAL_CHARACTER_REFERENCE: {
@@ -3029,9 +3024,16 @@ export class Tokenizer {
 
         if (cp === $.LATIN_SMALL_X || cp === $.LATIN_CAPITAL_X) {
             this.state = State.HEXADEMICAL_CHARACTER_REFERENCE_START;
+        }
+        // Inlined decimal character reference start state
+        else if (isAsciiDigit(cp)) {
+            this.state = State.DECIMAL_CHARACTER_REFERENCE;
+            this._stateDecimalCharacterReference(cp);
         } else {
-            this.state = State.DECIMAL_CHARACTER_REFERENCE_START;
-            this._stateDecimalCharacterReferenceStart(cp);
+            this._err(ERR.absenceOfDigitsInNumericCharacterReference);
+            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
+            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
+            this._reconsumeInState(this.returnState);
         }
     }
 
@@ -3047,20 +3049,6 @@ export class Tokenizer {
             this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
             this._unconsume(2);
             this.state = this.returnState;
-        }
-    }
-
-    // Decimal character reference start state
-    //------------------------------------------------------------------
-    private _stateDecimalCharacterReferenceStart(cp: number): void {
-        if (isAsciiDigit(cp)) {
-            this.state = State.DECIMAL_CHARACTER_REFERENCE;
-            this._stateDecimalCharacterReference(cp);
-        } else {
-            this._err(ERR.absenceOfDigitsInNumericCharacterReference);
-            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
-            this._reconsumeInState(this.returnState);
         }
     }
 

@@ -17,9 +17,6 @@ export function parseChunked<T extends TreeAdapterTypeMap>(
     parserStream.parser.tokenizer.preprocessor.bufferWaterline = 8;
 
     for (let i = 0; i < chunks.length - 1; i++) {
-        if (typeof chunks[i] !== 'string') {
-            throw new TypeError('Expected chunk to be a string');
-        }
         parserStream.write(chunks[i]);
     }
 

@@ -127,6 +127,11 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         }
     }
 
+    /**
+     * Clears the list of formatting elements up to the last marker.
+     *
+     * @see https://html.spec.whatwg.org/multipage/parsing.html#clear-the-list-of-active-formatting-elements-up-to-the-last-marker
+     */
     clearToLastMarker(): void {
         const markerIdx = this.entries.indexOf(MARKER);
 
