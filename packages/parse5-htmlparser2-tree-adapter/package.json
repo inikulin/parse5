@@ -22,7 +22,7 @@
         "require": "./dist/cjs/index.js"
     },
     "dependencies": {
-        "domhandler": "^5.0.2",
+        "domhandler": "^5.0.3",
         "parse5": "^7.0.0"
     },
     "scripts": {
