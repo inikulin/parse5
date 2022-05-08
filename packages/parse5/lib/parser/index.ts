@@ -2466,6 +2466,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         case $.MAIN:
         case $.MENU:
         case $.ASIDE:
+        case $.BUTTON:
         case $.CENTER:
         case $.FIGURE:
         case $.FOOTER:
