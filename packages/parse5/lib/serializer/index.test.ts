@@ -56,4 +56,10 @@ describe('serializer', () => {
 
         assert.equal(serialize(svgBr), '<div></div>');
     });
+
+    it('serializes unknown node to empty string', () => {
+        const unknown: any = {};
+        assert.strictEqual(serialize(unknown), '');
+        assert.strictEqual(serializeOuter(unknown), '');
+    });
 });
