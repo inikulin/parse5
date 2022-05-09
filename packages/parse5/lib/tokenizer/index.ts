@@ -353,9 +353,9 @@ export class Tokenizer {
         this.preprocessor.retreat(count);
     }
 
-    private _reconsumeInState(state: State): void {
+    private _reconsumeInState(state: State, cp: number): void {
         this.state = state;
-        this._unconsume(1);
+        this._callState(cp);
     }
 
     private _advanceBy(count: number): void {
@@ -1001,7 +1001,7 @@ export class Tokenizer {
                 break;
             }
             case State.NUMERIC_CHARACTER_REFERENCE_END: {
-                this._stateNumericCharacterReferenceEnd();
+                this._stateNumericCharacterReferenceEnd(cp);
                 break;
             }
             default: {
@@ -2979,7 +2979,7 @@ export class Tokenizer {
             this._stateNamedCharacterReference(cp);
         } else {
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this._reconsumeInState(this.returnState);
+            this._reconsumeInState(this.returnState, cp);
         }
     }
 
@@ -3013,7 +3013,7 @@ export class Tokenizer {
                 this._err(ERR.unknownNamedCharacterReference);
             }
 
-            this._reconsumeInState(this.returnState);
+            this._reconsumeInState(this.returnState, cp);
         }
     }
 
@@ -3033,7 +3033,7 @@ export class Tokenizer {
             this._err(ERR.absenceOfDigitsInNumericCharacterReference);
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
             this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
-            this._reconsumeInState(this.returnState);
+            this._reconsumeInState(this.returnState, cp);
         }
     }
 
@@ -3066,7 +3066,7 @@ export class Tokenizer {
         } else {
             this._err(ERR.missingSemicolonAfterCharacterReference);
             this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-            this._stateNumericCharacterReferenceEnd();
+            this._stateNumericCharacterReferenceEnd(cp);
         }
     }
 
@@ -3080,13 +3080,13 @@ export class Tokenizer {
         } else {
             this._err(ERR.missingSemicolonAfterCharacterReference);
             this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-            this._stateNumericCharacterReferenceEnd();
+            this._stateNumericCharacterReferenceEnd(cp);
         }
     }
 
     // Numeric character reference end state
     //------------------------------------------------------------------
-    private _stateNumericCharacterReferenceEnd(): void {
+    private _stateNumericCharacterReferenceEnd(cp: number): void {
         if (this.charRefCode === $.NULL) {
             this._err(ERR.nullCharacterReference);
             this.charRefCode = $.REPLACEMENT_CHARACTER;
@@ -3109,6 +3109,6 @@ export class Tokenizer {
         }
 
         this._flushCodePointConsumedAsCharacterReference(this.charRefCode);
-        this._reconsumeInState(this.returnState);
+        this._reconsumeInState(this.returnState, cp);
     }
 }
