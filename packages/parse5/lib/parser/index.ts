@@ -1573,25 +1573,29 @@ function endTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
             break;
         }
         case $.TEMPLATE: {
-            if (p.openElements.tmplCount > 0) {
-                p.openElements.generateImpliedEndTagsThoroughly();
-
-                if (p.openElements.currentTagId !== $.TEMPLATE) {
-                    p._err(token, ERR.closingOfElementWithOpenChildElements);
-                }
-
-                p.openElements.popUntilTagNamePopped($.TEMPLATE);
-                p.activeFormattingElements.clearToLastMarker();
-                p.tmplInsertionModeStack.shift();
-                p._resetInsertionMode();
-            } else {
-                p._err(token, ERR.endTagWithoutMatchingOpenElement);
-            }
+            templateEndTagInHead<T>(p, token);
             break;
         }
         default: {
             p._err(token, ERR.endTagWithoutMatchingOpenElement);
         }
+    }
+}
+
+function templateEndTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    if (p.openElements.tmplCount > 0) {
+        p.openElements.generateImpliedEndTagsThoroughly();
+
+        if (p.openElements.currentTagId !== $.TEMPLATE) {
+            p._err(token, ERR.closingOfElementWithOpenChildElements);
+        }
+
+        p.openElements.popUntilTagNamePopped($.TEMPLATE);
+        p.activeFormattingElements.clearToLastMarker();
+        p.tmplInsertionModeStack.shift();
+        p._resetInsertionMode();
+    } else {
+        p._err(token, ERR.endTagWithoutMatchingOpenElement);
     }
 }
 
@@ -1709,7 +1713,7 @@ function endTagAfterHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagT
             break;
         }
         case $.TEMPLATE: {
-            endTagInHead(p, token);
+            templateEndTagInHead(p, token);
             break;
         }
         default: {
@@ -2526,7 +2530,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
             break;
         }
         case $.TEMPLATE: {
-            endTagInHead(p, token);
+            templateEndTagInHead(p, token);
             break;
         }
         default: {
@@ -2705,7 +2709,7 @@ function endTagInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTok
             break;
         }
         case $.TEMPLATE: {
-            endTagInHead(p, token);
+            templateEndTagInHead(p, token);
             break;
         }
         case $.BODY:
@@ -2855,7 +2859,7 @@ function endTagInColumnGroup<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
             break;
         }
         case $.TEMPLATE: {
-            endTagInHead(p, token);
+            templateEndTagInHead(p, token);
             break;
         }
         case $.COL: {
@@ -3168,7 +3172,7 @@ function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             break;
         }
         case $.TEMPLATE: {
-            endTagInHead(p, token);
+            templateEndTagInHead(p, token);
             break;
         }
         default:
@@ -3275,7 +3279,7 @@ function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
 
 function endTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     if (token.tagID === $.TEMPLATE) {
-        endTagInHead(p, token);
+        templateEndTagInHead(p, token);
     }
 }
 
