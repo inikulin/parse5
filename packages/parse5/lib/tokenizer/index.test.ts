@@ -47,5 +47,13 @@ describe('Tokenizer methods', () => {
         expect(tokenizer).toHaveProperty('paused', true);
 
         tokenizer.resume();
+
+        assert.strictEqual(count, 4);
+    });
+
+    it('should throw if setting the state to an unknown value', () => {
+        const tokenizer = new Tokenizer(tokenizerOpts, {} as any);
+        tokenizer.state = -1;
+        expect(() => tokenizer.write('foo', true)).toThrow('Unknown state');
     });
 });
