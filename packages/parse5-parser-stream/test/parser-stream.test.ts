@@ -11,12 +11,12 @@ generateParsingTests(
         expectErrors: [
             //TODO(GH-448): Foreign content behaviour was updated in the HTML spec.
             //The old test suite still tests the old behaviour.
-            '269.foreign-fragment',
-            '270.foreign-fragment',
-            '307.foreign-fragment',
-            '309.foreign-fragment',
-            '316.foreign-fragment',
-            '317.foreign-fragment',
+            '0.foreign-fragment',
+            '1.foreign-fragment',
+            '38.foreign-fragment',
+            '40.foreign-fragment',
+            '47.foreign-fragment',
+            '48.foreign-fragment',
         ],
     },
     (test, opts) => parseChunked(test, opts)

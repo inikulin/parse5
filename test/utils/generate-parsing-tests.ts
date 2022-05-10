@@ -31,10 +31,10 @@ export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
         const testSet = fs.readFileSync(filePath, 'utf8');
         const setName = fileName.replace('.dat', '');
 
-        for (const test of parseDatFile(testSet, treeAdapter)) {
+        for (const [idx, test] of parseDatFile(testSet, treeAdapter).entries()) {
             tests.push({
                 ...test,
-                idx: tests.length,
+                idx,
                 setName,
                 dirName,
             });
