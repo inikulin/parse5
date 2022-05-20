@@ -583,13 +583,11 @@ export class Tokenizer {
     }
 
     private _emitCodePoint(cp: number): void {
-        let type = TokenType.CHARACTER;
-
-        if (isWhitespace(cp)) {
-            type = TokenType.WHITESPACE_CHARACTER;
-        } else if (cp === $.NULL) {
-            type = TokenType.NULL_CHARACTER;
-        }
+        const type = isWhitespace(cp)
+            ? TokenType.WHITESPACE_CHARACTER
+            : cp === $.NULL
+            ? TokenType.NULL_CHARACTER
+            : TokenType.CHARACTER;
 
         this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
     }
