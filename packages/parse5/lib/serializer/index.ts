@@ -1,6 +1,6 @@
 import { TAG_NAMES as $, NS, hasUnescapedText } from '../common/html.js';
 import { escapeText, escapeAttribute } from 'entities/lib/escape.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
+import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 
 // Sets
