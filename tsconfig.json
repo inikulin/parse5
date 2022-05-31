@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es2019",
-        "module": "esnext",
+        "module": "Node16",
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
