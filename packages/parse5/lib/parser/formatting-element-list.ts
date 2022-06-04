@@ -1,5 +1,5 @@
 import type { Attribute, TagToken } from '../common/token.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
+import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 
 //Const
 const NOAH_ARK_CAPACITY = 3;

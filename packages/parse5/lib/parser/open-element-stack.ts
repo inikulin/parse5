@@ -1,5 +1,5 @@
 import { TAG_ID as $, NS, isNumberedHeader } from '../common/html.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
+import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 
 //Element utils
 const IMPLICIT_END_TAG_REQUIRED = new Set([$.DD, $.DT, $.LI, $.OPTGROUP, $.OPTION, $.P, $.RB, $.RP, $.RT, $.RTC]);
