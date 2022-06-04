@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es2019",
         "module": "Node16",
+        "moduleResolution": "Node16",
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
