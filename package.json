@@ -19,7 +19,7 @@
         "lint-staged": "^13.0.1",
         "outdent": "^0.8.0",
         "prettier": "^2.6.2",
-        "ts-jest": "^28.0.4",
+        "ts-jest": "^28.0.5",
         "ts-node": "^10.8.1",
         "typedoc": "^0.22.17",
         "typescript": "^4.7.3"
