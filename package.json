@@ -13,7 +13,7 @@
         "@typescript-eslint/parser": "^5.30.0",
         "eslint": "^8.18.0",
         "eslint-config-prettier": "^8.5.0",
-        "eslint-plugin-unicorn": "^42.0.0",
+        "eslint-plugin-unicorn": "^43.0.0",
         "husky": "^8.0.1",
         "jest": "^28.1.2",
         "lint-staged": "^13.0.3",
