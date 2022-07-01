@@ -5,19 +5,12 @@ import type { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
 
-// eslint-disable-next-line no-console
-main().catch(console.error);
+for (const file of process.argv.slice(2)) {
+    const content = await readFile(file, 'utf8');
+    const feedbackTestContent = generateParserFeedbackTest(content);
+    const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
 
-function main(): Promise<void[]> {
-    const convertPromises = process.argv.slice(2).map(async (file) => {
-        const content = await readFile(file, 'utf8');
-        const feedbackTestContent = generateParserFeedbackTest(content);
-        const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
-
-        await writeFile(feedbackTestFile, feedbackTestContent);
-    });
-
-    return Promise.all(convertPromises);
+    await writeFile(feedbackTestFile, feedbackTestContent);
 }
 
 function collectParserTokens(html: string): HtmlLibToken[] {
