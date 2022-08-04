@@ -2,17 +2,9 @@ import { DOCUMENT_MODE, type NS } from '../common/html.js';
 import type { Attribute, Location, ElementLocation } from '../common/token.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from './interface.js';
 
-export enum NodeType {
-    Document = '#document',
-    DocumentFragment = '#document-fragment',
-    Comment = '#comment',
-    Text = '#text',
-    DocumentType = '#documentType',
-}
-
 export interface Document {
     /** The name of the node. */
-    nodeName: NodeType.Document;
+    nodeName: '#document';
     /**
      * Document mode.
      *
@@ -26,7 +18,7 @@ export interface Document {
 
 export interface DocumentFragment {
     /** The name of the node. */
-    nodeName: NodeType.DocumentFragment;
+    nodeName: '#document-fragment';
     /** The node's children. */
     childNodes: ChildNode[];
     /** Comment source code location info. Available if location info is enabled. */
@@ -52,7 +44,7 @@ export interface Element {
 
 export interface CommentNode {
     /** The name of the node. */
-    nodeName: NodeType.Comment;
+    nodeName: '#comment';
     /** Parent node. */
     parentNode: ParentNode | null;
     /** Comment text. */
@@ -62,7 +54,7 @@ export interface CommentNode {
 }
 
 export interface TextNode {
-    nodeName: NodeType.Text;
+    nodeName: '#text';
     /** Parent node. */
     parentNode: ParentNode | null;
     /** Text content. */
@@ -80,7 +72,7 @@ export interface Template extends Element {
 
 export interface DocumentType {
     /** The name of the node. */
-    nodeName: NodeType.DocumentType;
+    nodeName: '#documentType';
     /** Parent node. */
     parentNode: ParentNode | null;
     /** Document type name. */
@@ -112,7 +104,7 @@ export type DefaultTreeAdapterMap = TreeAdapterTypeMap<
 
 function createTextNode(value: string): TextNode {
     return {
-        nodeName: NodeType.Text,
+        nodeName: '#text',
         value,
         parentNode: null,
     };
@@ -122,7 +114,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     //Node construction
     createDocument(): Document {
         return {
-            nodeName: NodeType.Document,
+            nodeName: '#document',
             mode: DOCUMENT_MODE.NO_QUIRKS,
             childNodes: [],
         };
@@ -130,7 +122,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
 
     createDocumentFragment(): DocumentFragment {
         return {
-            nodeName: NodeType.DocumentFragment,
+            nodeName: '#document-fragment',
             childNodes: [],
         };
     },
@@ -148,7 +140,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
 
     createCommentNode(data: string): CommentNode {
         return {
-            nodeName: NodeType.Comment,
+            nodeName: '#comment',
             data,
             parentNode: null,
         };
@@ -176,9 +168,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     },
 
     setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
-        const doctypeNode = document.childNodes.find(
-            (node): node is DocumentType => node.nodeName === NodeType.DocumentType
-        );
+        const doctypeNode = document.childNodes.find((node): node is DocumentType => node.nodeName === '#documentType');
 
         if (doctypeNode) {
             doctypeNode.name = name;
@@ -186,7 +176,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
             doctypeNode.systemId = systemId;
         } else {
             const node: DocumentType = {
-                nodeName: NodeType.DocumentType,
+                nodeName: '#documentType',
                 name,
                 publicId,
                 systemId,
@@ -302,7 +292,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     },
 
     isDocumentTypeNode(node: Node): node is DocumentType {
-        return node.nodeName === NodeType.DocumentType;
+        return node.nodeName === '#documentType';
     },
 
     isElementNode(node: Node): node is Element {
