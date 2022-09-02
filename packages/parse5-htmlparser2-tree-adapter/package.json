@@ -33,6 +33,7 @@
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
+        "dist/cjs/package.json",
         "dist/**/*.js",
         "dist/**/*.d.ts"
     ]

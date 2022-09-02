@@ -2,7 +2,7 @@
     "name": "parse5",
     "type": "module",
     "description": "HTML parser and serializer.",
-    "version": "7.1.0",
+    "version": "7.1.1",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
     "homepage": "https://github.com/inikulin/parse5",
@@ -43,6 +43,7 @@
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
+        "dist/cjs/package.json",
         "dist/**/*.js",
         "dist/**/*.d.ts"
     ]
