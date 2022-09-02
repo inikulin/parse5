@@ -39,9 +39,9 @@ jobs:
             fail-fast: false
             matrix:
                 node:
-                    - 14
-                    - 16
-                    - 18
+                    - '14'
+                    - '16'
+                    - '18'
                     - lts/*
 
         steps:
@@ -53,6 +53,8 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
                   cache: npm
+            - run: npm install -g npm@8.19.1
+              if: matrix.node == '14'
             - run: npm ci
             - run: npm run build --if-present
 
