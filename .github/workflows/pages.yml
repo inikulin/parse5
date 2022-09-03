@@ -4,13 +4,13 @@ on:
         branches:
             - master
 
-permissions:  # added using https://github.com/step-security/secure-workflows
-  contents: read
+permissions:
+    contents: read
 
 jobs:
     deploy:
         permissions:
-          contents: write  # for peaceiris/actions-gh-pages to push pages branch
+            contents: write # for peaceiris/actions-gh-pages to push pages branch
         name: Deploy to GitHub Pages
         runs-on: ubuntu-latest
         steps:

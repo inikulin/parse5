@@ -9,8 +9,8 @@ on:
     schedule:
         - cron: '0 0 * * 0'
 
-permissions:  # added using https://github.com/step-security/secure-workflows
-  contents: read
+permissions:
+    contents: read
 
 jobs:
     analyze:
