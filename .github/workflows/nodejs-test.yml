@@ -18,10 +18,10 @@ jobs:
     lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v3.0.2
               with:
                   submodules: recursive
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v3.4.1
               with:
                   node-version: lts/*
                   cache: npm
@@ -39,21 +39,22 @@ jobs:
             fail-fast: false
             matrix:
                 node:
-                    - 14
-                    - 16
-                    - 18
+                    - '14'
+                    - '16'
+                    - '18'
                     - lts/*
 
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v3.0.2
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v3.4.1
               with:
                   node-version: ${{ matrix.node }}
                   cache: npm
-            - run: npm install -g npm@8
+            - run: npm install -g npm@8.19.1
+              if: matrix.node == '14'
             - run: npm ci
             - run: npm run build --if-present
 
