@@ -7,7 +7,7 @@ export { type DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/
 export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
 export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
 export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
-export type { ParserError } from './common/error-codes.js';
+export { ERR as ErrorCodes, type ParserError } from './common/error-codes.js';
 
 /** @internal */
 export * as foreignContent from './common/foreign-content.js';
