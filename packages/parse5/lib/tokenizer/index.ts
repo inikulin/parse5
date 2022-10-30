@@ -2423,7 +2423,7 @@ export class Tokenizer {
                 this._emitEOFToken();
                 break;
             }
-            default:
+            default: {
                 if (this._consumeSequenceIfMatch($$.PUBLIC, false)) {
                     this.state = State.AFTER_DOCTYPE_PUBLIC_KEYWORD;
                 } else if (this._consumeSequenceIfMatch($$.SYSTEM, false)) {
@@ -2437,6 +2437,7 @@ export class Tokenizer {
                     this.state = State.BOGUS_DOCTYPE;
                     this._stateBogusDoctype(cp);
                 }
+            }
         }
     }
 

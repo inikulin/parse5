@@ -9,12 +9,15 @@ function getElementSerializedNamespaceURI<T extends TreeAdapterTypeMap>(
     treeAdapter: TreeAdapter<T>
 ): string {
     switch (treeAdapter.getNamespaceURI(element)) {
-        case html.NS.SVG:
+        case html.NS.SVG: {
             return 'svg ';
-        case html.NS.MATHML:
+        }
+        case html.NS.MATHML: {
             return 'math ';
-        default:
+        }
+        default: {
             return '';
+        }
     }
 }
 
