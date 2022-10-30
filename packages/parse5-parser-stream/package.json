@@ -14,18 +14,25 @@
         "streaming"
     ],
     "license": "MIT",
-    "main": "dist/index.js",
+    "main": "dist/cjs/index.js",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
-    "exports": "./dist/index.js",
+    "exports": {
+        "import": "./dist/index.js",
+        "require": "./dist/cjs/index.js"
+    },
     "dependencies": {
         "parse5": "^7.0.0"
+    },
+    "scripts": {
+        "build:cjs": "tsc --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
     },
     "repository": {
         "type": "git",
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
+        "dist/cjs/package.json",
         "dist/**/*.js",
         "dist/**/*.d.ts"
     ]
