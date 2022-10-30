@@ -159,7 +159,9 @@ export class Preprocessor {
             return $.EOF;
         }
 
-        return this.html.charCodeAt(pos);
+        const code = this.html.charCodeAt(pos);
+
+        return code === $.CARRIAGE_RETURN ? $.LINE_FEED : code;
     }
 
     public advance(): number {
