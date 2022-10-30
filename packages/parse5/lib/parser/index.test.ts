@@ -78,6 +78,13 @@ describe('parser', () => {
         expect(doctype).toHaveProperty('systemId', '');
     });
 
+    it('Regression - CRLF inside </noscript> (GH-710)', () => {
+        const onParseError = jest.fn();
+        parse('<!doctype html><noscript>foo</noscript\r\n>', { onParseError });
+
+        expect(onParseError).not.toHaveBeenCalled();
+    });
+
     describe('Tree adapters', () => {
         it('should support onItemPush and onItemPop', () => {
             const onItemPush = jest.fn();

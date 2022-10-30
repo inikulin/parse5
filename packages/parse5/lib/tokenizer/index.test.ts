@@ -1,4 +1,4 @@
-import { Tokenizer, TokenizerMode } from 'parse5';
+import { Tokenizer } from 'parse5';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import * as assert from 'node:assert';
 
@@ -55,29 +55,5 @@ describe('Tokenizer methods', () => {
         const tokenizer = new Tokenizer(tokenizerOpts, {} as any);
         tokenizer.state = -1;
         expect(() => tokenizer.write('foo', true)).toThrow('Unknown state');
-    });
-
-    it('should stay in special state on CRLF inside </noscript> (GH-710)', () => {
-        let receivedEOF = false;
-
-        const tokenizer = new Tokenizer(tokenizerOpts, {
-            onEof(): void {
-                receivedEOF = true;
-            },
-            onComment: noop,
-            onDoctype: noop,
-            onStartTag: noop,
-            onEndTag: noop,
-            onCharacter: noop,
-            onNullCharacter: noop,
-            onWhitespaceCharacter: noop,
-        });
-
-        tokenizer.state = TokenizerMode.RAWTEXT;
-        tokenizer.lastStartTagName = 'noscript';
-
-        tokenizer.write('foo</noscript\r\n>', true);
-        expect(receivedEOF).toBeTruthy();
-        expect(tokenizer.state).toBe(TokenizerMode.DATA);
     });
 });
