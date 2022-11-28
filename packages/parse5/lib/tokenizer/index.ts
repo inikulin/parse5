@@ -569,13 +569,13 @@ export class Tokenizer {
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
     private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
         if (this.currentCharacterToken) {
-            if (this.currentCharacterToken.type !== type) {
+            if (this.currentCharacterToken.type === type) {
+                this.currentCharacterToken.chars += ch;
+                return;
+            } else {
                 this.currentLocation = this.getCurrentLocation(0);
                 this._emitCurrentCharacterToken(this.currentLocation);
                 this.preprocessor.dropParsedChunk();
-            } else {
-                this.currentCharacterToken.chars += ch;
-                return;
             }
         }
 
