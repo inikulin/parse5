@@ -207,7 +207,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         for (let i = 0; i < attrs.length; i++) {
             const attrName = attrs[i].name;
 
-            if (typeof recipient.attribs[attrName] === 'undefined') {
+            if (recipient.attribs[attrName] === undefined) {
                 recipient.attribs[attrName] = attrs[i].value;
                 recipient['x-attribsNamespace']![attrName] = attrs[i].namespace!;
                 recipient['x-attribsPrefix']![attrName] = attrs[i].prefix!;
