@@ -10,7 +10,7 @@
     "devDependencies": {
         "@types/jest": "^29.2.3",
         "@typescript-eslint/eslint-plugin": "^5.45.0",
-        "@typescript-eslint/parser": "^5.44.0",
+        "@typescript-eslint/parser": "^5.45.0",
         "eslint": "^8.28.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-unicorn": "^45.0.1",
