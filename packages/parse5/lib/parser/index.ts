@@ -290,7 +290,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     _switchToTextParsing(
         currentToken: TagToken,
-        nextTokenizerState: typeof TokenizerMode[keyof typeof TokenizerMode]
+        nextTokenizerState: (typeof TokenizerMode)[keyof typeof TokenizerMode]
     ): void {
         this._insertElement(currentToken, NS.HTML);
         this.tokenizer.state = nextTokenizerState;
