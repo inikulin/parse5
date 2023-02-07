@@ -25,9 +25,9 @@ jobs:
                   submodules: recursive
 
             - name: Initialize CodeQL
-              uses: github/codeql-action/init@v2.2.1
+              uses: github/codeql-action/init@v2.2.2
               with:
                   languages: 'javascript'
 
             - name: Perform CodeQL Analysis
-              uses: github/codeql-action/analyze@v2.2.1
+              uses: github/codeql-action/analyze@v2.2.2
