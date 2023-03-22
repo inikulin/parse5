@@ -53,7 +53,7 @@ describe('Tokenizer methods', () => {
 
     it('should throw if setting the state to an unknown value', () => {
         const tokenizer = new Tokenizer(tokenizerOpts, {} as any);
-        tokenizer.state = -1;
+        tokenizer.state = -1 as never;
         expect(() => tokenizer.write('foo', true)).toThrow('Unknown state');
     });
 });

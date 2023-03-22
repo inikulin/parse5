@@ -11,7 +11,6 @@
         "noImplicitOverride": true,
         "noPropertyAccessFromIndexSignature": true,
         "forceConsistentCasingInFileNames": true,
-        "importsNotUsedAsValues": "error",
         "isolatedModules": true,
 
         "composite": true,
