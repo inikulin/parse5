@@ -6,7 +6,7 @@ import {
     isSurrogatePair,
     isUndefinedCodePoint,
 } from '../common/unicode.js';
-import { ERR, ParserError, ParserErrorHandler } from '../common/error-codes.js';
+import { ERR, type ParserError, type ParserErrorHandler } from '../common/error-codes.js';
 
 //Const
 const DEFAULT_BUFFER_WATERLINE = 1 << 16;
@@ -159,7 +159,9 @@ export class Preprocessor {
             return $.EOF;
         }
 
-        return this.html.charCodeAt(pos);
+        const code = this.html.charCodeAt(pos);
+
+        return code === $.CARRIAGE_RETURN ? $.LINE_FEED : code;
     }
 
     public advance(): number {

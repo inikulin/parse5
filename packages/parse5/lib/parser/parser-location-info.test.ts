@@ -1,20 +1,16 @@
 import * as assert from 'node:assert';
 import { outdent } from 'outdent';
-import * as parse5 from 'parse5';
+import { type ParserOptions, type TreeAdapterTypeMap, parse, parseFragment } from 'parse5';
 import {
     generateLocationInfoParserTests,
     assertStartTagLocation,
     assertNodeLocation,
 } from 'parse5-test-utils/utils/generate-location-info-parser-tests.js';
 import { generateTestsForEachTreeAdapter, treeAdapters } from 'parse5-test-utils/utils/common.js';
-import { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
 
-generateLocationInfoParserTests(
-    'location-info-parser',
-    (input: string, opts: parse5.ParserOptions<TreeAdapterTypeMap>) => ({
-        node: parse5.parse(input, opts),
-    })
-);
+generateLocationInfoParserTests('location-info-parser', (input: string, opts: ParserOptions<TreeAdapterTypeMap>) => ({
+    node: parse(input, opts),
+}));
 
 generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
     test('Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)', () => {
@@ -25,7 +21,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const fragment = parse5.parseFragment(html, opts);
+        const fragment = parseFragment(html, opts);
         const firstP = treeAdapter.getChildNodes(fragment)[0];
         const firstPLocation = treeAdapter.getNodeSourceCodeLocation(firstP);
 
@@ -41,7 +37,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const fragment = parse5.parseFragment(html, opts);
+        const fragment = parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
         const location = treeAdapter.getNodeSourceCodeLocation(firstChild);
 
@@ -57,7 +53,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const fragment = parse5.parseFragment(html, opts);
+        const fragment = parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
 
         assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild));
@@ -72,7 +68,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         };
 
         assert.doesNotThrow(() => {
-            parse5.parseFragment(html, opts);
+            parseFragment(html, opts);
         });
     });
 
@@ -84,7 +80,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const fragment = parse5.parseFragment(html, opts);
+        const fragment = parseFragment(html, opts);
         const firstChild = treeAdapter.getChildNodes(fragment)[0];
 
         assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild)?.attrs?.['test-attr']);
@@ -104,7 +100,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const document = parse5.parse(html, opts);
+        const document = parse(html, opts);
         const htmlEl = treeAdapter.getChildNodes(document)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
         const scriptEl = treeAdapter.getChildNodes(bodyEl)[0];
@@ -122,7 +118,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const fragment = parse5.parseFragment(html, opts);
+        const fragment = parseFragment(html, opts);
         const p = treeAdapter.getChildNodes(fragment)[0];
         const location = treeAdapter.getNodeSourceCodeLocation(p);
 
@@ -141,7 +137,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const fragment = parse5.parseFragment(html, opts);
+        const fragment = parseFragment(html, opts);
         const svg = treeAdapter.getChildNodes(fragment)[0];
         const foreignObject = treeAdapter.getChildNodes(svg)[0];
         const location = treeAdapter.getNodeSourceCodeLocation(foreignObject);
@@ -161,7 +157,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const fragment = parse5.parseFragment(html, opts);
+        const fragment = parseFragment(html, opts);
         const script = treeAdapter.getChildNodes(fragment)[0];
         const location = treeAdapter.getNodeSourceCodeLocation(script);
         const textLocation = treeAdapter.getNodeSourceCodeLocation(treeAdapter.getChildNodes(script)[0]);
@@ -187,7 +183,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const document = parse5.parse(html, opts);
+        const document = parse(html, opts);
         const htmlEl = treeAdapter.getChildNodes(document)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
 
@@ -218,7 +214,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
             sourceCodeLocationInfo: true,
         };
 
-        const document = parse5.parse(html, opts);
+        const document = parse(html, opts);
         const htmlEl = treeAdapter.getChildNodes(document)[0];
         const bodyEl = treeAdapter.getChildNodes(htmlEl)[1];
 
@@ -263,7 +259,7 @@ describe('location-info-parser', () => {
             },
         };
         const treeAdapter = { ...treeAdapters.default, ...sourceCodeLocationSetter };
-        const document = parse5.parse('<!doctype><body>Testing location</body>', {
+        const document = parse('<!doctype><body>Testing location</body>', {
             treeAdapter,
             sourceCodeLocationInfo: true,
         });

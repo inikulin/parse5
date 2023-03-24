@@ -2,8 +2,12 @@ import * as assert from 'node:assert';
 import { outdent } from 'outdent';
 import { RewritingStream } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
-import { getStringDiffMsg, writeChunkedToStream, WritableStreamStub } from 'parse5-test-utils/utils/common.js';
-import { finished } from 'node:stream';
+import {
+    finished,
+    getStringDiffMsg,
+    writeChunkedToStream,
+    WritableStreamStub,
+} from 'parse5-test-utils/utils/common.js';
 
 const srcHtml = outdent`
   <!DOCTYPE html "">
@@ -32,23 +36,18 @@ function createRewriterTest({
     expected: string;
     assignTokenHandlers?: (rewriter: RewritingStream) => void;
 }) {
-    return (done: (err?: unknown) => void): void => {
+    return async (): Promise<void> => {
         const rewriter = new RewritingStream();
         const writable = new WritableStreamStub();
-
-        finished(writable, () => {
-            try {
-                assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
-                done();
-            } catch (error) {
-                done(error);
-            }
-        });
 
         rewriter.pipe(writable);
 
         assignTokenHandlers(rewriter);
         writeChunkedToStream(src, rewriter);
+
+        await finished(writable);
+
+        assert.ok(writable.writtenData === expected, getStringDiffMsg(writable.writtenData, expected));
     };
 }
 
@@ -204,6 +203,33 @@ describe('RewritingStream', () => {
     );
 
     it(
+        'rewrite doctype (no public id)',
+        createRewriterTest({
+            src: srcHtml,
+            expected: outdent`
+              <!DOCTYPE html SYSTEM "hey">
+              <html>
+                  <!-- comment1 -->
+                  <head /// 123>
+                  </head>
+                  <!-- comment2 -->
+                  <body =123>
+                      <div>Hey ya</div>
+                  </body>
+              </html>
+            `,
+            assignTokenHandlers: (rewriter) => {
+                rewriter.on('doctype', (token) => {
+                    token.publicId = null;
+                    token.systemId = 'hey';
+
+                    rewriter.emitDoctype(token);
+                });
+            },
+        })
+    );
+
+    it(
         'emit multiple',
         createRewriterTest({
             src: srcHtml,
@@ -211,7 +237,7 @@ describe('RewritingStream', () => {
               <!DOCTYPE html "">
               <wrap><html></wrap>
                   <!-- comment1 -->
-                  <wrap><head 123=""></wrap>
+                  <wrap><head 123=""/></wrap>
                   </head>
                   <!-- comment2 -->
                   <wrap><body =123=""></wrap>
@@ -222,6 +248,11 @@ describe('RewritingStream', () => {
             assignTokenHandlers: (rewriter) => {
                 rewriter.on('startTag', (token) => {
                     rewriter.emitRaw('<wrap>');
+
+                    if (token.tagName === 'head') {
+                        token.selfClosing = true;
+                    }
+
                     rewriter.emitStartTag(token);
                     rewriter.emitRaw('</wrap>');
                 });
@@ -289,7 +320,7 @@ describe('RewritingStream', () => {
         })
     );
 
-    it('Last text chunk must be flushed (GH-271)', (done) => {
+    it('Last text chunk must be flushed (GH-271)', async () => {
         const parser = new RewritingStream();
         let foundText = false;
 
@@ -298,13 +329,12 @@ describe('RewritingStream', () => {
             assert.strictEqual(text, 'text');
         });
 
-        parser.once('finish', () => {
-            assert.ok(foundText);
-            done();
-        });
-
         parser.write('text');
         parser.end();
+
+        await finished(parser);
+
+        assert.ok(foundText);
     });
 
     it('Should not accept binary input (GH-269)', () => {

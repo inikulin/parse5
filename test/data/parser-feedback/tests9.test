@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math></math>",
             "input": "<!DOCTYPE html><math></math>",
             "output": [
@@ -23,6 +24,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><math></math>",
             "input": "<!DOCTYPE html><body><math></math>",
             "output": [
@@ -50,6 +52,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math><mi>",
             "input": "<!DOCTYPE html><math><mi>",
             "output": [
@@ -73,6 +76,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><math><annotation-xml><svg><u>",
             "input": "<!DOCTYPE html><math><annotation-xml><svg><u>",
             "output": [
@@ -106,6 +110,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><select><math></math></select>",
             "input": "<!DOCTYPE html><body><select><math></math></select>",
             "output": [
@@ -142,6 +147,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><select><option><math></math></option></select>",
             "input": "<!DOCTYPE html><body><select><option><math></math></option></select>",
             "output": [
@@ -187,6 +193,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><math></math></table>",
             "input": "<!DOCTYPE html><body><table><math></math></table>",
             "output": [
@@ -223,6 +230,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><math><mi>foo</mi></math></table>",
             "input": "<!DOCTYPE html><body><table><math><mi>foo</mi></math></table>",
             "output": [
@@ -272,6 +280,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><math><mi>foo</mi><mi>bar</mi></math></table>",
             "input": "<!DOCTYPE html><body><table><math><mi>foo</mi><mi>bar</mi></math></table>",
             "output": [
@@ -334,6 +343,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><math><mi>foo</mi><mi>bar</mi></math></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><math><mi>foo</mi><mi>bar</mi></math></tbody></table>",
             "output": [
@@ -405,6 +415,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><tr><math><mi>foo</mi><mi>bar</mi></math></tr></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><tr><math><mi>foo</mi><mi>bar</mi></math></tr></tbody></table>",
             "output": [
@@ -485,6 +496,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><tr><td><math><mi>foo</mi><mi>bar</mi></math></td></tr></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><tr><td><math><mi>foo</mi><mi>bar</mi></math></td></tr></tbody></table>",
             "output": [
@@ -574,6 +586,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><tr><td><math><mi>foo</mi><mi>bar</mi></math><p>baz</td></tr></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><tr><td><math><mi>foo</mi><mi>bar</mi></math><p>baz</td></tr></tbody></table>",
             "output": [
@@ -672,6 +685,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><caption><math><mi>foo</mi><mi>bar</mi></math><p>baz</caption></table>",
             "input": "<!DOCTYPE html><body><table><caption><math><mi>foo</mi><mi>bar</mi></math><p>baz</caption></table>",
             "output": [
@@ -752,6 +766,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><caption><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><caption><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "output": [
@@ -833,6 +848,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><caption><math><mi>foo</mi><mi>bar</mi>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><caption><math><mi>foo</mi><mi>bar</mi>baz</table><p>quux",
             "output": [
@@ -909,6 +925,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><colgroup><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><colgroup><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "output": [
@@ -990,6 +1007,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tr><td><select><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><tr><td><select><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "output": [
@@ -1081,6 +1099,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><select><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><select><math><mi>foo</mi><mi>bar</mi><p>baz</table><p>quux",
             "output": [
@@ -1162,6 +1181,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body></body></html><math><mi>foo</mi><mi>bar</mi><p>baz",
             "input": "<!DOCTYPE html><body></body></html><math><mi>foo</mi><mi>bar</mi><p>baz",
             "output": [
@@ -1228,6 +1248,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body></body><math><mi>foo</mi><mi>bar</mi><p>baz",
             "input": "<!DOCTYPE html><body></body><math><mi>foo</mi><mi>bar</mi><p>baz",
             "output": [
@@ -1290,6 +1311,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><frameset><math><mi></mi><mi></mi><p><span>",
             "input": "<!DOCTYPE html><frameset><math><mi></mi><mi></mi><p><span>",
             "output": [
@@ -1341,6 +1363,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><frameset></frameset><math><mi></mi><mi></mi><p><span>",
             "input": "<!DOCTYPE html><frameset></frameset><math><mi></mi><mi></mi><p><span>",
             "output": [
@@ -1396,6 +1419,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo><math xlink:href=foo></math>",
             "input": "<!DOCTYPE html><body xlink:href=foo><math xlink:href=foo></math>",
             "output": [
@@ -1427,6 +1451,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><math><mi xml:lang=en xlink:href=foo></mi></math>",
             "input": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><math><mi xml:lang=en xlink:href=foo></mi></math>",
             "output": [
@@ -1469,6 +1494,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><math><mi xml:lang=en xlink:href=foo /></math>",
             "input": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><math><mi xml:lang=en xlink:href=foo /></math>",
             "output": [
@@ -1508,6 +1534,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><math><mi xml:lang=en xlink:href=foo />bar</math>",
             "input": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><math><mi xml:lang=en xlink:href=foo />bar</math>",
             "output": [

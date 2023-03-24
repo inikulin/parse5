@@ -1,13 +1,7 @@
-import { TAG_NAMES as $, NAMESPACES as NS } from '../common/html.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface';
-import * as DefaultTreeAdapter from '../tree-adapters/default.js';
-
-//Escaping regexes
-const AMP_REGEX = /&/g;
-const NBSP_REGEX = /\u00A0/g;
-const DOUBLE_QUOTE_REGEX = /"/g;
-const LT_REGEX = /</g;
-const GT_REGEX = />/g;
+import { TAG_NAMES as $, NS, hasUnescapedText } from '../common/html.js';
+import { escapeText, escapeAttribute } from 'entities/lib/escape.js';
+import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
+import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 
 // Sets
 const VOID_ELEMENTS = new Set<string>([
@@ -39,12 +33,6 @@ function isVoidElement<T extends TreeAdapterTypeMap>(node: T['node'], options: I
     );
 }
 
-const UNESCAPED_TEXT = new Set<string>([$.STYLE, $.SCRIPT, $.XMP, $.IFRAME, $.NOEMBED, $.NOFRAMES, $.PLAINTEXT]);
-
-export function hasUnescapedText(tn: string, scriptingEnabled: boolean): boolean {
-    return UNESCAPED_TEXT.has(tn) || (scriptingEnabled && tn === $.NOSCRIPT);
-}
-
 export interface SerializerOptions<T extends TreeAdapterTypeMap> {
     /**
      * Specifies input tree format.
@@ -63,7 +51,7 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
 
 type InternalOptions<T extends TreeAdapterTypeMap> = Required<SerializerOptions<T>>;
 
-const defaultOpts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true };
+const defaultOpts: InternalOptions<DefaultTreeAdapterMap> = { treeAdapter: defaultTreeAdapter, scriptingEnabled: true };
 
 /**
  * Serializes an AST node to an HTML string.
@@ -87,11 +75,11 @@ const defaultOpts = { treeAdapter: DefaultTreeAdapter, scriptingEnabled: true };
  * @param node Node to serialize.
  * @param options Serialization options.
  */
-export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
+export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     node: T['parentNode'],
     options?: SerializerOptions<T>
 ): string {
-    const opts = { ...defaultOpts, ...options };
+    const opts = { ...defaultOpts, ...options } as InternalOptions<T>;
 
     if (isVoidElement(node, opts)) {
         return '';
@@ -119,11 +107,11 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapter.Defa
  * @param node Node to serialize.
  * @param options Serialization options.
  */
-export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapter.DefaultTreeAdapterMap>(
+export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     node: T['node'],
     options?: SerializerOptions<T>
 ): string {
-    const opts = { ...defaultOpts, ...options };
+    const opts = { ...defaultOpts, ...options } as InternalOptions<T>;
     return serializeNode(node, opts);
 }
 
@@ -183,9 +171,7 @@ function serializeAttributes<T extends TreeAdapterTypeMap>(
     for (const attr of treeAdapter.getAttrList(node)) {
         html += ' ';
 
-        if (!attr.namespace) {
-            html += attr.name;
-        } else
+        if (attr.namespace) {
             switch (attr.namespace) {
                 case NS.XML: {
                     html += `xml:${attr.name}`;
@@ -207,8 +193,11 @@ function serializeAttributes<T extends TreeAdapterTypeMap>(
                     html += `${attr.prefix}:${attr.name}`;
                 }
             }
+        } else {
+            html += attr.name;
+        }
 
-        html += `="${escapeString(attr.value, true)}"`;
+        html += `="${escapeAttribute(attr.value)}"`;
     }
 
     return html;
@@ -224,7 +213,7 @@ function serializeTextNode<T extends TreeAdapterTypeMap>(node: T['textNode'], op
         treeAdapter.getNamespaceURI(parent) === NS.HTML &&
         hasUnescapedText(parentTn, options.scriptingEnabled)
         ? content
-        : escapeString(content, false);
+        : escapeText(content);
 }
 
 function serializeCommentNode<T extends TreeAdapterTypeMap>(
@@ -239,13 +228,4 @@ function serializeDocumentTypeNode<T extends TreeAdapterTypeMap>(
     { treeAdapter }: InternalOptions<T>
 ): string {
     return `<!DOCTYPE ${treeAdapter.getDocumentTypeNodeName(node)}>`;
-}
-
-// NOTE: used in tests and by rewriting stream
-export function escapeString(str: string, attrMode = false): string {
-    str = str.replace(AMP_REGEX, '&amp;').replace(NBSP_REGEX, '&nbsp;');
-
-    return attrMode
-        ? str.replace(DOUBLE_QUOTE_REGEX, '&quot;')
-        : str.replace(LT_REGEX, '&lt;').replace(GT_REGEX, '&gt;');
 }

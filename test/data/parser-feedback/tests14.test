@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc>",
             "input": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc>",
             "output": [
@@ -33,6 +34,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc><span></span>",
             "input": "<!DOCTYPE html><html><body><xyz:abc></xyz:abc><span></span>",
             "output": [
@@ -74,6 +76,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html><html abc:def=gh><xyz:abc></xyz:abc>",
             "input": "<!DOCTYPE html><html><html abc:def=gh><xyz:abc></xyz:abc>",
             "output": [
@@ -108,6 +111,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html xml:lang=bar><html xml:lang=foo>",
             "input": "<!DOCTYPE html><html xml:lang=bar><html xml:lang=foo>",
             "output": [
@@ -135,6 +139,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html 123=456>",
             "input": "<!DOCTYPE html><html 123=456>",
             "output": [
@@ -155,6 +160,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html 123=456><html 789=012>",
             "input": "<!DOCTYPE html><html 123=456><html 789=012>",
             "output": [
@@ -182,6 +188,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><html><body 789=012>",
             "input": "<!DOCTYPE html><html><body 789=012>",
             "output": [

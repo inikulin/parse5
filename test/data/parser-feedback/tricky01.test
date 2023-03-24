@@ -1,8 +1,9 @@
 {
     "tests": [
         {
-            "description": "<b><p>Bold </b> Not bold</p>\\r\\nAlso not bold.",
-            "input": "<b><p>Bold </b> Not bold</p>\r\nAlso not bold.",
+            "fragmentContext": null,
+            "description": "<b><p>Bold </b> Not bold</p>\\nAlso not bold.",
+            "input": "<b><p>Bold </b> Not bold</p>\nAlso not bold.",
             "output": [
                 [
                     "StartTag",
@@ -37,8 +38,9 @@
             ]
         },
         {
-            "description": "<html>\\r\\n<font color=red><i>Italic and Red<p>Italic and Red </font> Just italic.</p> Italic only.</i> Plain\\r\\n<p>I should not be red. <font color=red>Red. <i>Italic and red.</p>\\r\\n<p>Italic and red. </i> Red.</font> I should not be red.</p>\\r\\n<b>Bold <i>Bold and italic</b> Only Italic </i> Plain",
-            "input": "<html>\r\n<font color=red><i>Italic and Red<p>Italic and Red </font> Just italic.</p> Italic only.</i> Plain\r\n<p>I should not be red. <font color=red>Red. <i>Italic and red.</p>\r\n<p>Italic and red. </i> Red.</font> I should not be red.</p>\r\n<b>Bold <i>Bold and italic</b> Only Italic </i> Plain",
+            "fragmentContext": null,
+            "description": "<html>\\n<font color=red><i>Italic and Red<p>Italic and Red </font> Just italic.</p> Italic only.</i> Plain\\n<p>I should not be red. <font color=red>Red. <i>Italic and red.</p>\\n<p>Italic and red. </i> Red.</font> I should not be red.</p>\\n<b>Bold <i>Bold and italic</b> Only Italic </i> Plain",
+            "input": "<html>\n<font color=red><i>Italic and Red<p>Italic and Red </font> Just italic.</p> Italic only.</i> Plain\n<p>I should not be red. <font color=red>Red. <i>Italic and red.</p>\n<p>Italic and red. </i> Red.</font> I should not be red.</p>\n<b>Bold <i>Bold and italic</b> Only Italic </i> Plain",
             "output": [
                 [
                     "StartTag",
@@ -205,8 +207,9 @@
             ]
         },
         {
-            "description": "<html><body>\\r\\n<p><font size=\"7\">First paragraph.</p>\\r\\n<p>Second paragraph.</p></font>\\r\\n<b><p><i>Bold and Italic</b> Italic</p>",
-            "input": "<html><body>\r\n<p><font size=\"7\">First paragraph.</p>\r\n<p>Second paragraph.</p></font>\r\n<b><p><i>Bold and Italic</b> Italic</p>",
+            "fragmentContext": null,
+            "description": "<html><body>\\n<p><font size=\"7\">First paragraph.</p>\\n<p>Second paragraph.</p></font>\\n<b><p><i>Bold and Italic</b> Italic</p>",
+            "input": "<html><body>\n<p><font size=\"7\">First paragraph.</p>\n<p>Second paragraph.</p></font>\n<b><p><i>Bold and Italic</b> Italic</p>",
             "output": [
                 [
                     "StartTag",
@@ -301,8 +304,9 @@
             ]
         },
         {
-            "description": "<html>\\r\\n<dl>\\r\\n<dt><b>Boo\\r\\n<dd>Goo?\\r\\n</dl>\\r\\n</html>",
-            "input": "<html>\r\n<dl>\r\n<dt><b>Boo\r\n<dd>Goo?\r\n</dl>\r\n</html>",
+            "fragmentContext": null,
+            "description": "<html>\\n<dl>\\n<dt><b>Boo\\n<dd>Goo?\\n</dl>\\n</html>",
+            "input": "<html>\n<dl>\n<dt><b>Boo\n<dd>Goo?\n</dl>\n</html>",
             "output": [
                 [
                     "StartTag",
@@ -360,8 +364,9 @@
             ]
         },
         {
-            "description": "<html><body>\\r\\n<label><a><div>Hello<div>World</div></a></label>  \\r\\n</body></html>",
-            "input": "<html><body>\r\n<label><a><div>Hello<div>World</div></a></label>  \r\n</body></html>",
+            "fragmentContext": null,
+            "description": "<html><body>\\n<label><a><div>Hello<div>World</div></a></label>  \\n</body></html>",
+            "input": "<html><body>\n<label><a><div>Hello<div>World</div></a></label>  \n</body></html>",
             "output": [
                 [
                     "StartTag",
@@ -432,6 +437,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><center> <font>a</center> <img> <tr><td> </td> </tr> </table>",
             "input": "<table><center> <font>a</center> <img> <tr><td> </td> </tr> </table>",
             "output": [
@@ -512,6 +518,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><tr><p><a><p>You should see this text.",
             "input": "<table><tr><p><a><p>You should see this text.",
             "output": [
@@ -547,8 +554,9 @@
             ]
         },
         {
-            "description": "<TABLE>\\r\\n<TR>\\r\\n<CENTER><CENTER><TD></TD></TR><TR>\\r\\n<FONT>\\r\\n<TABLE><tr></tr></TABLE>\\r\\n</P>\\r\\n<a></font><font></a>\\r\\nThis page contains an insanely badly-nested tag sequence.",
-            "input": "<TABLE>\r\n<TR>\r\n<CENTER><CENTER><TD></TD></TR><TR>\r\n<FONT>\r\n<TABLE><tr></tr></TABLE>\r\n</P>\r\n<a></font><font></a>\r\nThis page contains an insanely badly-nested tag sequence.",
+            "fragmentContext": null,
+            "description": "<TABLE>\\n<TR>\\n<CENTER><CENTER><TD></TD></TR><TR>\\n<FONT>\\n<TABLE><tr></tr></TABLE>\\n</P>\\n<a></font><font></a>\\nThis page contains an insanely badly-nested tag sequence.",
+            "input": "<TABLE>\n<TR>\n<CENTER><CENTER><TD></TD></TR><TR>\n<FONT>\n<TABLE><tr></tr></TABLE>\n</P>\n<a></font><font></a>\nThis page contains an insanely badly-nested tag sequence.",
             "output": [
                 [
                     "StartTag",
@@ -664,8 +672,9 @@
             ]
         },
         {
-            "description": "<html>\\r\\n<body>\\r\\n<b><nobr><div>This text is in a div inside a nobr</nobr>More text that should not be in the nobr, i.e., the\\r\\nnobr should have closed the div inside it implicitly. </b><pre>A pre tag outside everything else.</pre>\\r\\n</body>\\r\\n</html>",
-            "input": "<html>\r\n<body>\r\n<b><nobr><div>This text is in a div inside a nobr</nobr>More text that should not be in the nobr, i.e., the\r\nnobr should have closed the div inside it implicitly. </b><pre>A pre tag outside everything else.</pre>\r\n</body>\r\n</html>",
+            "fragmentContext": null,
+            "description": "<html>\\n<body>\\n<b><nobr><div>This text is in a div inside a nobr</nobr>More text that should not be in the nobr, i.e., the\\nnobr should have closed the div inside it implicitly. </b><pre>A pre tag outside everything else.</pre>\\n</body>\\n</html>",
+            "input": "<html>\n<body>\n<b><nobr><div>This text is in a div inside a nobr</nobr>More text that should not be in the nobr, i.e., the\nnobr should have closed the div inside it implicitly. </b><pre>A pre tag outside everything else.</pre>\n</body>\n</html>",
             "output": [
                 [
                     "StartTag",

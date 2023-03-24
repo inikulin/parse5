@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "FOO<script>'Hello'</script>BAR",
             "input": "FOO<script>'Hello'</script>BAR",
             "output": [
@@ -28,6 +29,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script></script>BAR",
             "input": "FOO<script></script>BAR",
             "output": [
@@ -51,6 +53,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script></script >BAR",
             "input": "FOO<script></script >BAR",
             "output": [
@@ -74,6 +77,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script></script/>BAR",
             "input": "FOO<script></script/>BAR",
             "output": [
@@ -97,6 +101,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script></script/ >BAR",
             "input": "FOO<script></script/ >BAR",
             "output": [
@@ -120,6 +125,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\"></scriptx>BAR",
             "input": "FOO<script type=\"text/plain\"></scriptx>BAR",
             "output": [
@@ -141,6 +147,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script></script foo=\">\" dd>BAR",
             "input": "FOO<script></script foo=\">\" dd>BAR",
             "output": [
@@ -164,6 +171,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<'</script>BAR",
             "input": "FOO<script>'<'</script>BAR",
             "output": [
@@ -191,6 +199,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!'</script>BAR",
             "input": "FOO<script>'<!'</script>BAR",
             "output": [
@@ -218,6 +227,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!-'</script>BAR",
             "input": "FOO<script>'<!-'</script>BAR",
             "output": [
@@ -245,6 +255,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!--'</script>BAR",
             "input": "FOO<script>'<!--'</script>BAR",
             "output": [
@@ -272,6 +283,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!---'</script>BAR",
             "input": "FOO<script>'<!---'</script>BAR",
             "output": [
@@ -299,6 +311,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!-->'</script>BAR",
             "input": "FOO<script>'<!-->'</script>BAR",
             "output": [
@@ -326,6 +339,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!-->'</script>BAR",
             "input": "FOO<script>'<!-->'</script>BAR",
             "output": [
@@ -353,6 +367,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!-- potato'</script>BAR",
             "input": "FOO<script>'<!-- potato'</script>BAR",
             "output": [
@@ -380,6 +395,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!-- <sCrIpt'</script>BAR",
             "input": "FOO<script>'<!-- <sCrIpt'</script>BAR",
             "output": [
@@ -407,6 +423,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt>'</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt>'</script>BAR",
             "output": [
@@ -428,6 +445,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -'</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -'</script>BAR",
             "output": [
@@ -449,6 +467,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --'</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --'</script>BAR",
             "output": [
@@ -470,6 +489,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script>'<!-- <sCrIpt> -->'</script>BAR",
             "input": "FOO<script>'<!-- <sCrIpt> -->'</script>BAR",
             "output": [
@@ -497,6 +517,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --!>'</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> --!>'</script>BAR",
             "output": [
@@ -518,6 +539,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -- >'</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt> -- >'</script>BAR",
             "output": [
@@ -539,6 +561,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt '</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt '</script>BAR",
             "output": [
@@ -560,6 +583,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR",
             "output": [
@@ -581,6 +605,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt\\'</script>BAR",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt\\'</script>BAR",
             "output": [
@@ -610,6 +635,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR</script>QUX",
             "input": "FOO<script type=\"text/plain\">'<!-- <sCrIpt/'</script>BAR</script>QUX",
             "output": [
@@ -639,6 +665,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "FOO<script><!--<script>-></script>--></script>QUX",
             "input": "FOO<script><!--<script>-></script>--></script>QUX",
             "output": [

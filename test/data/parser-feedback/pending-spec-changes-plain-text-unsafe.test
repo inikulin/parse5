@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<body><table>\\u0000filler\\u0000text\\u0000",
             "input": "<body><table>\u0000filler\u0000text\u0000",
             "output": [

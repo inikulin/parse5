@@ -2,12 +2,12 @@
     "tests": [
         {
             "fragmentContext": "td",
-            "description": "<math><tr><td><mo><tr>",
-            "input": "<math><tr><td><mo><tr>",
+            "description": "<svg><tr><td><title><tr>",
+            "input": "<svg><tr><td><title><tr>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -22,7 +22,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [
@@ -34,12 +34,12 @@
         },
         {
             "fragmentContext": "tr",
-            "description": "<math><tr><td><mo><tr>",
-            "input": "<math><tr><td><mo><tr>",
+            "description": "<svg><tr><td><title><tr>",
+            "input": "<svg><tr><td><title><tr>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -54,7 +54,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [
@@ -66,12 +66,12 @@
         },
         {
             "fragmentContext": "thead",
-            "description": "<math><thead><mo><tbody>",
-            "input": "<math><thead><mo><tbody>",
+            "description": "<svg><thead><title><tbody>",
+            "input": "<svg><thead><title><tbody>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -81,7 +81,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [
@@ -93,12 +93,12 @@
         },
         {
             "fragmentContext": "tfoot",
-            "description": "<math><tfoot><mo><tbody>",
-            "input": "<math><tfoot><mo><tbody>",
+            "description": "<svg><tfoot><title><tbody>",
+            "input": "<svg><tfoot><title><tbody>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -108,7 +108,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [
@@ -120,12 +120,12 @@
         },
         {
             "fragmentContext": "tbody",
-            "description": "<math><tbody><mo><tfoot>",
-            "input": "<math><tbody><mo><tfoot>",
+            "description": "<svg><tbody><title><tfoot>",
+            "input": "<svg><tbody><title><tfoot>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -135,7 +135,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [
@@ -147,12 +147,12 @@
         },
         {
             "fragmentContext": "tbody",
-            "description": "<math><tbody><mo></table>",
-            "input": "<math><tbody><mo></table>",
+            "description": "<svg><tbody><title></table>",
+            "input": "<svg><tbody><title></table>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -162,7 +162,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [
@@ -173,12 +173,12 @@
         },
         {
             "fragmentContext": "tbody",
-            "description": "<math><thead><mo></table>",
-            "input": "<math><thead><mo></table>",
+            "description": "<svg><thead><title></table>",
+            "input": "<svg><thead><title></table>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -188,7 +188,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [
@@ -199,12 +199,12 @@
         },
         {
             "fragmentContext": "tbody",
-            "description": "<math><tfoot><mo></table>",
-            "input": "<math><tfoot><mo></table>",
+            "description": "<svg><tfoot><title></table>",
+            "input": "<svg><tfoot><title></table>",
             "output": [
                 [
                     "StartTag",
-                    "math",
+                    "svg",
                     {}
                 ],
                 [
@@ -214,7 +214,7 @@
                 ],
                 [
                     "StartTag",
-                    "mo",
+                    "title",
                     {}
                 ],
                 [

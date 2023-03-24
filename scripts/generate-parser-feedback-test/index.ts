@@ -1,26 +1,16 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename } from 'node:path';
-import { Parser } from 'parse5/dist/parser/index.js';
-import * as defaultTreeAdapter from 'parse5/dist/tree-adapters/default.js';
-import { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
+import { Parser, type DefaultTreeAdapterMap, type TreeAdapterTypeMap, type Token, defaultTreeAdapter } from 'parse5';
+import type { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
 import { addSlashes } from 'parse5-test-utils/utils/common.js';
-import { CharacterToken, CommentToken, DoctypeToken, TagToken } from '../../packages/parse5/dist/common/token.js';
-import type { TreeAdapterTypeMap } from '../../packages/parse5/dist/tree-adapters/interface.js';
 
-// eslint-disable-next-line no-console
-main().catch(console.error);
+for (const file of process.argv.slice(2)) {
+    const content = await readFile(file, 'utf8');
+    const feedbackTestContent = generateParserFeedbackTest(content);
+    const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
 
-function main(): Promise<void[]> {
-    const convertPromises = process.argv.slice(2).map(async (file) => {
-        const content = await readFile(file, 'utf8');
-        const feedbackTestContent = generateParserFeedbackTest(content);
-        const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
-
-        await writeFile(feedbackTestFile, feedbackTestContent);
-    });
-
-    return Promise.all(convertPromises);
+    await writeFile(feedbackTestFile, feedbackTestContent);
 }
 
 function collectParserTokens(html: string): HtmlLibToken[] {
@@ -60,19 +50,19 @@ function collectParserTokens(html: string): HtmlLibToken[] {
             }
         }
 
-        override onComment(token: CommentToken): void {
+        override onComment(token: Token.CommentToken): void {
             this.guardTopLevel(
                 () => super.onComment(token),
                 () => ['Comment', token.data]
             );
         }
-        override onDoctype(token: DoctypeToken): void {
+        override onDoctype(token: Token.DoctypeToken): void {
             this.guardTopLevel(
                 () => super.onDoctype(token),
                 () => ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks]
             );
         }
-        override onStartTag(token: TagToken): void {
+        override onStartTag(token: Token.TagToken): void {
             this.guardTopLevel(
                 () => super.onStartTag(token),
                 () => {
@@ -87,7 +77,7 @@ function collectParserTokens(html: string): HtmlLibToken[] {
                 }
             );
         }
-        override onEndTag(token: TagToken): void {
+        override onEndTag(token: Token.TagToken): void {
             this.guardTopLevel(
                 () => super.onEndTag(token),
                 // NOTE: parser feedback simulator can produce adjusted SVG
@@ -95,22 +85,25 @@ function collectParserTokens(html: string): HtmlLibToken[] {
                 () => ['EndTag', token.tagName.toLowerCase()]
             );
         }
-        override onCharacter(token: CharacterToken): void {
+        override onCharacter(token: Token.CharacterToken): void {
             this.guardTopLevel(
                 () => super.onCharacter(token),
                 () => ['Character', token.chars]
             );
         }
-        override onNullCharacter(token: CharacterToken): void {
+        override onNullCharacter(token: Token.CharacterToken): void {
             this.guardTopLevel(
                 () => super.onNullCharacter(token),
                 () => ['Character', token.chars]
             );
         }
-        override onWhitespaceCharacter(token: CharacterToken): void {
+        override onWhitespaceCharacter(token: Token.CharacterToken): void {
+            const { skipNextNewLine } = this;
+            const { chars } = token;
+
             this.guardTopLevel(
                 () => super.onWhitespaceCharacter(token),
-                () => ['Character', token.chars]
+                () => ['Character', skipNextNewLine && chars.startsWith('\n') ? chars.slice(1) : chars]
             );
         }
     }
@@ -121,16 +114,15 @@ function collectParserTokens(html: string): HtmlLibToken[] {
 }
 
 function generateParserFeedbackTest(parserTestFile: string): string {
-    const tests = parseDatFile(parserTestFile, defaultTreeAdapter);
+    const tests = parseDatFile<DefaultTreeAdapterMap>(parserTestFile, defaultTreeAdapter);
 
     const feedbackTest = {
-        tests: tests
-            .filter((test) => !test.fragmentContext) // TODO
-            .map(({ input }) => ({
-                description: addSlashes(input),
-                input,
-                output: collectParserTokens(input),
-            })),
+        tests: tests.map(({ input, fragmentContext }) => ({
+            fragmentContext: fragmentContext?.tagName ?? null,
+            description: addSlashes(input),
+            input,
+            output: collectParserTokens(input),
+        })),
     };
 
     return JSON.stringify(feedbackTest, null, 4);

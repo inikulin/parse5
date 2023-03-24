@@ -2,7 +2,7 @@
     "name": "parse5-parser-stream",
     "type": "module",
     "description": "Streaming HTML parser with scripting support.",
-    "version": "6.0.1",
+    "version": "7.1.2",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
     "homepage": "https://github.com/inikulin/parse5",
@@ -14,15 +14,26 @@
         "streaming"
     ],
     "license": "MIT",
-    "main": "dist/index.js",
+    "main": "dist/cjs/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        "import": "./dist/index.js",
+        "require": "./dist/cjs/index.js"
+    },
     "dependencies": {
-        "parse5": "^6.0.1"
+        "parse5": "^7.0.0"
+    },
+    "scripts": {
+        "build:cjs": "tsc --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
     },
     "repository": {
         "type": "git",
         "url": "git://github.com/inikulin/parse5.git"
     },
     "files": [
-        "dist"
+        "dist/cjs/package.json",
+        "dist/**/*.js",
+        "dist/**/*.d.ts"
     ]
 }

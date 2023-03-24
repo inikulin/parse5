@@ -1,10 +1,8 @@
-import * as doctype from 'parse5/dist/common/doctype.js';
-import { DOCUMENT_MODE, NAMESPACES as NS } from 'parse5/dist/common/html.js';
-import type { Attribute, ElementLocation } from 'parse5/dist/common/token.js';
-import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
+import { type TreeAdapterTypeMap, type TreeAdapter, type Token, html } from 'parse5';
 import {
-    Node,
-    NodeWithChildren,
+    type AnyNode,
+    type ParentNode,
+    type ChildNode,
     Element,
     Document,
     ProcessingInstruction,
@@ -12,13 +10,14 @@ import {
     Text,
     isDirective,
     isText,
+    isComment,
+    isTag,
 } from 'domhandler';
-export { isComment as isCommentNode, isTag as isElementNode, isText as isTextNode } from 'domhandler';
 
 export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
-    Node,
-    NodeWithChildren,
-    Node,
+    AnyNode,
+    ParentNode,
+    ChildNode,
     Document,
     Document,
     Element,
@@ -28,234 +27,266 @@ export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
     ProcessingInstruction
 >;
 
-//Node construction
-export function createDocument(): Document {
-    const node = new Document([]);
-    node['x-mode'] = DOCUMENT_MODE.NO_QUIRKS;
-    return node;
-}
-
-export function createDocumentFragment(): Document {
-    return new Document([]);
-}
-
-export function createElement(tagName: string, namespaceURI: NS, attrs: Attribute[]): Element {
-    const attribs = Object.create(null);
-    const attribsNamespace = Object.create(null);
-    const attribsPrefix = Object.create(null);
-
-    for (let i = 0; i < attrs.length; i++) {
-        const attrName = attrs[i].name;
-
-        attribs[attrName] = attrs[i].value;
-        attribsNamespace[attrName] = attrs[i].namespace;
-        attribsPrefix[attrName] = attrs[i].prefix;
-    }
-
-    const node = new Element(tagName, attribs, []);
-    node.namespace = namespaceURI;
-    node['x-attribsNamespace'] = attribsNamespace;
-    node['x-attribsPrefix'] = attribsPrefix;
-    return node;
-}
-
-export function createCommentNode(data: string): Comment {
-    return new Comment(data);
-}
-
 function createTextNode(value: string): Text {
     return new Text(value);
 }
 
-//Tree mutation
-export function appendChild(parentNode: NodeWithChildren, newNode: Node): void {
-    const prev = parentNode.children[parentNode.children.length - 1];
+function enquoteDoctypeId(id: string): string {
+    const quote = id.includes('"') ? "'" : '"';
 
-    if (prev) {
-        prev.next = newNode;
-        newNode.prev = prev;
+    return quote + id + quote;
+}
+
+/** @internal */
+export function serializeDoctypeContent(name: string, publicId: string, systemId: string): string {
+    let str = '!DOCTYPE ';
+
+    if (name) {
+        str += name;
     }
 
-    parentNode.children.push(newNode);
-    newNode.parent = parentNode;
-}
-
-export function insertBefore(parentNode: NodeWithChildren, newNode: Node, referenceNode: Node): void {
-    const insertionIdx = parentNode.children.indexOf(referenceNode);
-    const { prev } = referenceNode;
-
-    if (prev) {
-        prev.next = newNode;
-        newNode.prev = prev;
+    if (publicId) {
+        str += ` PUBLIC ${enquoteDoctypeId(publicId)}`;
+    } else if (systemId) {
+        str += ' SYSTEM';
     }
 
-    referenceNode.prev = newNode;
-    newNode.next = referenceNode;
-
-    parentNode.children.splice(insertionIdx, 0, newNode);
-    newNode.parent = parentNode;
-}
-
-export function setTemplateContent(templateElement: Element, contentElement: Document): void {
-    appendChild(templateElement, contentElement);
-}
-
-export function getTemplateContent(templateElement: Element): Document {
-    return templateElement.children[0] as Document;
-}
-
-export function setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
-    const data = doctype.serializeContent(name, publicId, systemId);
-    let doctypeNode = document.children.find(
-        (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype'
-    );
-
-    if (doctypeNode) {
-        doctypeNode.data = data ?? null;
-    } else {
-        doctypeNode = new ProcessingInstruction('!doctype', data);
-        appendChild(document, doctypeNode);
+    if (systemId) {
+        str += ` ${enquoteDoctypeId(systemId)}`;
     }
 
-    doctypeNode['x-name'] = name ?? undefined;
-    doctypeNode['x-publicId'] = publicId ?? undefined;
-    doctypeNode['x-systemId'] = systemId ?? undefined;
+    return str;
 }
 
-export function setDocumentMode(document: Document, mode: DOCUMENT_MODE): void {
-    document['x-mode'] = mode;
-}
+export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
+    // Re-exports from domhandler
+    isCommentNode: isComment,
+    isElementNode: isTag,
+    isTextNode: isText,
 
-export function getDocumentMode(document: Document): DOCUMENT_MODE {
-    return document['x-mode'] as DOCUMENT_MODE;
-}
+    //Node construction
+    createDocument(): Document {
+        const node = new Document([]);
+        node['x-mode'] = html.DOCUMENT_MODE.NO_QUIRKS;
+        return node;
+    },
 
-export function detachNode(node: Node): void {
-    if (node.parent) {
-        const idx = node.parent.children.indexOf(node);
-        const { prev, next } = node;
+    createDocumentFragment(): Document {
+        return new Document([]);
+    },
 
-        node.prev = null;
-        node.next = null;
+    createElement(tagName: string, namespaceURI: html.NS, attrs: Token.Attribute[]): Element {
+        const attribs = Object.create(null);
+        const attribsNamespace = Object.create(null);
+        const attribsPrefix = Object.create(null);
+
+        for (let i = 0; i < attrs.length; i++) {
+            const attrName = attrs[i].name;
+
+            attribs[attrName] = attrs[i].value;
+            attribsNamespace[attrName] = attrs[i].namespace;
+            attribsPrefix[attrName] = attrs[i].prefix;
+        }
+
+        const node = new Element(tagName, attribs, []);
+        node.namespace = namespaceURI;
+        node['x-attribsNamespace'] = attribsNamespace;
+        node['x-attribsPrefix'] = attribsPrefix;
+        return node;
+    },
+
+    createCommentNode(data: string): Comment {
+        return new Comment(data);
+    },
+
+    //Tree mutation
+    appendChild(parentNode: ParentNode, newNode: ChildNode): void {
+        const prev = parentNode.children[parentNode.children.length - 1];
 
         if (prev) {
-            prev.next = next;
+            prev.next = newNode;
+            newNode.prev = prev;
         }
 
-        if (next) {
-            next.prev = prev;
+        parentNode.children.push(newNode);
+        newNode.parent = parentNode;
+    },
+
+    insertBefore(parentNode: ParentNode, newNode: ChildNode, referenceNode: ChildNode): void {
+        const insertionIdx = parentNode.children.indexOf(referenceNode);
+        const { prev } = referenceNode;
+
+        if (prev) {
+            prev.next = newNode;
+            newNode.prev = prev;
         }
 
-        node.parent.children.splice(idx, 1);
-        node.parent = null;
-    }
-}
+        referenceNode.prev = newNode;
+        newNode.next = referenceNode;
 
-export function insertText(parentNode: NodeWithChildren, text: string): void {
-    const lastChild = parentNode.children[parentNode.children.length - 1];
+        parentNode.children.splice(insertionIdx, 0, newNode);
+        newNode.parent = parentNode;
+    },
 
-    if (lastChild && isText(lastChild)) {
-        lastChild.data += text;
-    } else {
-        appendChild(parentNode, createTextNode(text));
-    }
-}
+    setTemplateContent(templateElement: Element, contentElement: Document): void {
+        adapter.appendChild(templateElement, contentElement);
+    },
 
-export function insertTextBefore(parentNode: NodeWithChildren, text: string, referenceNode: Node): void {
-    const prevNode = parentNode.children[parentNode.children.indexOf(referenceNode) - 1];
+    getTemplateContent(templateElement: Element): Document {
+        return templateElement.children[0] as Document;
+    },
 
-    if (prevNode && isText(prevNode)) {
-        prevNode.data += text;
-    } else {
-        insertBefore(parentNode, createTextNode(text), referenceNode);
-    }
-}
+    setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
+        const data = serializeDoctypeContent(name, publicId, systemId);
+        let doctypeNode = document.children.find(
+            (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype'
+        );
 
-export function adoptAttributes(recipient: Element, attrs: Attribute[]): void {
-    for (let i = 0; i < attrs.length; i++) {
-        const attrName = attrs[i].name;
-
-        if (typeof recipient.attribs[attrName] === 'undefined') {
-            recipient.attribs[attrName] = attrs[i].value;
-            recipient['x-attribsNamespace']![attrName] = attrs[i].namespace!;
-            recipient['x-attribsPrefix']![attrName] = attrs[i].prefix!;
+        if (doctypeNode) {
+            doctypeNode.data = data ?? null;
+        } else {
+            doctypeNode = new ProcessingInstruction('!doctype', data);
+            adapter.appendChild(document, doctypeNode);
         }
-    }
-}
 
-//Tree traversing
-export function getFirstChild(node: NodeWithChildren): Node | null {
-    return node.children[0];
-}
+        doctypeNode['x-name'] = name;
+        doctypeNode['x-publicId'] = publicId;
+        doctypeNode['x-systemId'] = systemId;
+    },
 
-export function getChildNodes(node: NodeWithChildren): Node[] {
-    return node.children;
-}
+    setDocumentMode(document: Document, mode: html.DOCUMENT_MODE): void {
+        document['x-mode'] = mode;
+    },
 
-export function getParentNode(node: Node): NodeWithChildren | null {
-    return node.parent;
-}
+    getDocumentMode(document: Document): html.DOCUMENT_MODE {
+        return document['x-mode'] as html.DOCUMENT_MODE;
+    },
 
-export function getAttrList(element: Element): Attribute[] {
-    return element.attributes;
-}
+    detachNode(node: ChildNode): void {
+        if (node.parent) {
+            const idx = node.parent.children.indexOf(node);
+            const { prev, next } = node;
 
-//Node data
-export function getTagName(element: Element): string {
-    return element.name;
-}
+            node.prev = null;
+            node.next = null;
 
-export function getNamespaceURI(element: Element): NS {
-    return element.namespace as NS;
-}
+            if (prev) {
+                prev.next = next;
+            }
 
-export function getTextNodeContent(textNode: Text): string {
-    return textNode.data;
-}
+            if (next) {
+                next.prev = prev;
+            }
 
-export function getCommentNodeContent(commentNode: Comment): string {
-    return commentNode.data;
-}
+            node.parent.children.splice(idx, 1);
+            node.parent = null;
+        }
+    },
 
-export function getDocumentTypeNodeName(doctypeNode: ProcessingInstruction): string {
-    return doctypeNode['x-name'] ?? '';
-}
+    insertText(parentNode: ParentNode, text: string): void {
+        const lastChild = parentNode.children[parentNode.children.length - 1];
 
-export function getDocumentTypeNodePublicId(doctypeNode: ProcessingInstruction): string {
-    return doctypeNode['x-publicId'] ?? '';
-}
+        if (lastChild && isText(lastChild)) {
+            lastChild.data += text;
+        } else {
+            adapter.appendChild(parentNode, createTextNode(text));
+        }
+    },
 
-export function getDocumentTypeNodeSystemId(doctypeNode: ProcessingInstruction): string {
-    return doctypeNode['x-systemId'] ?? '';
-}
+    insertTextBefore(parentNode: ParentNode, text: string, referenceNode: ChildNode): void {
+        const prevNode = parentNode.children[parentNode.children.indexOf(referenceNode) - 1];
 
-//Node types
+        if (prevNode && isText(prevNode)) {
+            prevNode.data += text;
+        } else {
+            adapter.insertBefore(parentNode, createTextNode(text), referenceNode);
+        }
+    },
 
-export function isDocumentTypeNode(node: Node): node is ProcessingInstruction {
-    return isDirective(node) && node.name === '!doctype';
-}
+    adoptAttributes(recipient: Element, attrs: Token.Attribute[]): void {
+        for (let i = 0; i < attrs.length; i++) {
+            const attrName = attrs[i].name;
 
-// Source code location
-export function setNodeSourceCodeLocation(node: Node, location: ElementLocation | null): void {
-    if (location) {
-        node.startIndex = location.startOffset;
-        node.endIndex = location.endOffset;
-    }
+            if (recipient.attribs[attrName] === undefined) {
+                recipient.attribs[attrName] = attrs[i].value;
+                recipient['x-attribsNamespace']![attrName] = attrs[i].namespace!;
+                recipient['x-attribsPrefix']![attrName] = attrs[i].prefix!;
+            }
+        }
+    },
 
-    // TODO: Update types in `domhandler`
-    node.sourceCodeLocation = location as any;
-}
+    //Tree traversing
+    getFirstChild(node: ParentNode): ChildNode | null {
+        return node.children[0];
+    },
 
-export function getNodeSourceCodeLocation(node: Node): ElementLocation | null | undefined {
-    return node.sourceCodeLocation as ElementLocation | null | undefined;
-}
+    getChildNodes(node: ParentNode): ChildNode[] {
+        return node.children;
+    },
 
-export function updateNodeSourceCodeLocation(node: Node, endLocation: Partial<ElementLocation>): void {
-    if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
+    getParentNode(node: AnyNode): ParentNode | null {
+        return node.parent;
+    },
 
-    // TODO: Update types in `domhandler`
-    node.sourceCodeLocation = {
-        ...node.sourceCodeLocation,
-        ...endLocation,
-    } as any;
-}
+    getAttrList(element: Element): Token.Attribute[] {
+        return element.attributes;
+    },
+
+    //Node data
+    getTagName(element: Element): string {
+        return element.name;
+    },
+
+    getNamespaceURI(element: Element): html.NS {
+        return element.namespace as html.NS;
+    },
+
+    getTextNodeContent(textNode: Text): string {
+        return textNode.data;
+    },
+
+    getCommentNodeContent(commentNode: Comment): string {
+        return commentNode.data;
+    },
+
+    getDocumentTypeNodeName(doctypeNode: ProcessingInstruction): string {
+        return doctypeNode['x-name'] ?? '';
+    },
+
+    getDocumentTypeNodePublicId(doctypeNode: ProcessingInstruction): string {
+        return doctypeNode['x-publicId'] ?? '';
+    },
+
+    getDocumentTypeNodeSystemId(doctypeNode: ProcessingInstruction): string {
+        return doctypeNode['x-systemId'] ?? '';
+    },
+
+    //Node types
+
+    isDocumentTypeNode(node: AnyNode): node is ProcessingInstruction {
+        return isDirective(node) && node.name === '!doctype';
+    },
+
+    // Source code location
+    setNodeSourceCodeLocation(node: AnyNode, location: Token.ElementLocation | null): void {
+        if (location) {
+            node.startIndex = location.startOffset;
+            node.endIndex = location.endOffset;
+        }
+
+        node.sourceCodeLocation = location;
+    },
+
+    getNodeSourceCodeLocation(node: AnyNode): Token.ElementLocation | null | undefined {
+        return node.sourceCodeLocation;
+    },
+
+    updateNodeSourceCodeLocation(node: AnyNode, endLocation: Token.ElementLocation): void {
+        if (endLocation.endOffset != null) node.endIndex = endLocation.endOffset;
+
+        node.sourceCodeLocation = {
+            ...node.sourceCodeLocation,
+            ...endLocation,
+        };
+    },
+};

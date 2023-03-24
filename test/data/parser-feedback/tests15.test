@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><p><b><i><u></p> <p>X",
             "input": "<!DOCTYPE html><p><b><i><u></p> <p>X",
             "output": [
@@ -51,8 +52,9 @@
             ]
         },
         {
-            "description": "<p><b><i><u></p>\\r\\n<p>X",
-            "input": "<p><b><i><u></p>\r\n<p>X",
+            "fragmentContext": null,
+            "description": "<p><b><i><u></p>\\n<p>X",
+            "input": "<p><b><i><u></p>\n<p>X",
             "output": [
                 [
                     "StartTag",
@@ -94,6 +96,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html></html> <head>",
             "input": "<!doctype html></html> <head>",
             "output": [
@@ -120,6 +123,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html></body><meta>",
             "input": "<!doctype html></body><meta>",
             "output": [
@@ -142,6 +146,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html></html><!-- foo -->",
             "input": "<html></html><!-- foo -->",
             "output": [
@@ -161,6 +166,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html></body><title>X</title>",
             "input": "<!doctype html></body><title>X</title>",
             "output": [
@@ -191,6 +197,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table> X<meta></table>",
             "input": "<!doctype html><table> X<meta></table>",
             "output": [
@@ -222,6 +229,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table> x</table>",
             "input": "<!doctype html><table> x</table>",
             "output": [
@@ -248,6 +256,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table> x </table>",
             "input": "<!doctype html><table> x </table>",
             "output": [
@@ -274,6 +283,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><tr> x</table>",
             "input": "<!doctype html><table><tr> x</table>",
             "output": [
@@ -305,6 +315,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table>X<style> <tr>x </style> </table>",
             "input": "<!doctype html><table>X<style> <tr>x </style> </table>",
             "output": [
@@ -348,6 +359,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><div><table><a>foo</a> <tr><td>bar</td> </tr></table></div>",
             "input": "<!doctype html><div><table><a>foo</a> <tr><td>bar</td> </tr></table></div>",
             "output": [
@@ -422,6 +434,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<frame></frame></frame><frameset><frame><frameset><frame></frameset><noframes></frameset><noframes>",
             "input": "<frame></frame></frame><frameset><frame><frameset><frame></frameset><noframes></frameset><noframes>",
             "output": [
@@ -474,6 +487,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><object></html>",
             "input": "<!DOCTYPE html><object></html>",
             "output": [

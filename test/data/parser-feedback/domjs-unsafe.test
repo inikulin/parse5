@@ -1,8 +1,9 @@
 {
     "tests": [
         {
-            "description": "<svg><![CDATA[foo\\r\\nbar]]>",
-            "input": "<svg><![CDATA[foo\r\nbar]]>",
+            "fragmentContext": null,
+            "description": "<svg><![CDATA[foo\\nbar]]>",
+            "input": "<svg><![CDATA[foo\nbar]]>",
             "output": [
                 [
                     "StartTag",
@@ -16,6 +17,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><![CDATA[foo\\rbar]]>",
             "input": "<svg><![CDATA[foo\rbar]]>",
             "output": [
@@ -31,8 +33,9 @@
             ]
         },
         {
-            "description": "<svg><![CDATA[foo\\r\\nbar]]>",
-            "input": "<svg><![CDATA[foo\r\nbar]]>",
+            "fragmentContext": null,
+            "description": "<svg><![CDATA[foo\\nbar]]>",
+            "input": "<svg><![CDATA[foo\nbar]]>",
             "output": [
                 [
                     "StartTag",
@@ -46,6 +49,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script>a='\\u0000'</script>",
             "input": "<script>a='\u0000'</script>",
             "output": [
@@ -65,6 +69,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--\\u0000</script>",
             "input": "<script type=\"data\"><!--\u0000</script>",
             "output": [
@@ -86,6 +91,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--foo\\u0000</script>",
             "input": "<script type=\"data\"><!--foo\u0000</script>",
             "output": [
@@ -107,6 +113,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!-- foo-\\u0000</script>",
             "input": "<script type=\"data\"><!-- foo-\u0000</script>",
             "output": [
@@ -128,6 +135,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!-- foo--\\u0000</script>",
             "input": "<script type=\"data\"><!-- foo--\u0000</script>",
             "output": [
@@ -149,6 +157,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!-- foo-",
             "input": "<script type=\"data\"><!-- foo-",
             "output": [
@@ -166,6 +175,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!-- foo-<</script>",
             "input": "<script type=\"data\"><!-- foo-<</script>",
             "output": [
@@ -187,6 +197,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!-- foo-<S",
             "input": "<script type=\"data\"><!-- foo-<S",
             "output": [
@@ -204,6 +215,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!-- foo-</SCRIPT>",
             "input": "<script type=\"data\"><!-- foo-</SCRIPT>",
             "output": [
@@ -225,6 +237,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<p></script>",
             "input": "<script type=\"data\"><!--<p></script>",
             "output": [
@@ -246,6 +259,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script></script></script>",
             "input": "<script type=\"data\"><!--<script></script></script>",
             "output": [
@@ -267,6 +281,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script>\\u0000</script></script>",
             "input": "<script type=\"data\"><!--<script>\u0000</script></script>",
             "output": [
@@ -288,6 +303,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script>-\\u0000</script></script>",
             "input": "<script type=\"data\"><!--<script>-\u0000</script></script>",
             "output": [
@@ -309,6 +325,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script>--\\u0000</script></script>",
             "input": "<script type=\"data\"><!--<script>--\u0000</script></script>",
             "output": [
@@ -330,6 +347,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script>---</script></script>",
             "input": "<script type=\"data\"><!--<script>---</script></script>",
             "output": [
@@ -351,6 +369,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script></scrip></SCRIPT></script>",
             "input": "<script type=\"data\"><!--<script></scrip></SCRIPT></script>",
             "output": [
@@ -372,6 +391,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script></scrip </SCRIPT></script>",
             "input": "<script type=\"data\"><!--<script></scrip </SCRIPT></script>",
             "output": [
@@ -393,6 +413,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--<script></scrip/</SCRIPT></script>",
             "input": "<script type=\"data\"><!--<script></scrip/</SCRIPT></script>",
             "output": [
@@ -414,6 +435,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"></scrip/></script>",
             "input": "<script type=\"data\"></scrip/></script>",
             "output": [
@@ -435,6 +457,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"></scrip ></script>",
             "input": "<script type=\"data\"></scrip ></script>",
             "output": [
@@ -456,6 +479,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--</scrip></script>",
             "input": "<script type=\"data\"><!--</scrip></script>",
             "output": [
@@ -477,6 +501,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--</scrip </script>",
             "input": "<script type=\"data\"><!--</scrip </script>",
             "output": [
@@ -498,6 +523,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script type=\"data\"><!--</scrip/</script>",
             "input": "<script type=\"data\"><!--</scrip/</script>",
             "output": [
@@ -519,6 +545,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><!DOCTYPE html>",
             "input": "<!DOCTYPE html><!DOCTYPE html>",
             "output": [
@@ -539,6 +566,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><!DOCTYPE html>",
             "input": "<html><!DOCTYPE html>",
             "output": [
@@ -557,6 +585,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><head><!DOCTYPE html></head>",
             "input": "<html><head><!DOCTYPE html></head>",
             "output": [
@@ -584,6 +613,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><head></head><!DOCTYPE html>",
             "input": "<html><head></head><!DOCTYPE html>",
             "output": [
@@ -611,6 +641,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<body></body><!DOCTYPE html>",
             "input": "<body></body><!DOCTYPE html>",
             "output": [
@@ -633,6 +664,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><!DOCTYPE html></table>",
             "input": "<table><!DOCTYPE html></table>",
             "output": [
@@ -655,6 +687,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><!DOCTYPE html></select>",
             "input": "<select><!DOCTYPE html></select>",
             "output": [
@@ -677,6 +710,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><colgroup><!DOCTYPE html></colgroup></table>",
             "input": "<table><colgroup><!DOCTYPE html></colgroup></table>",
             "output": [
@@ -708,6 +742,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><colgroup><!--test--></colgroup></table>",
             "input": "<table><colgroup><!--test--></colgroup></table>",
             "output": [
@@ -736,6 +771,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><colgroup><html></colgroup></table>",
             "input": "<table><colgroup><html></colgroup></table>",
             "output": [
@@ -765,6 +801,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><colgroup> foo</colgroup></table>",
             "input": "<table><colgroup> foo</colgroup></table>",
             "output": [
@@ -793,6 +830,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><!--test--></select>",
             "input": "<select><!--test--></select>",
             "output": [
@@ -812,6 +850,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<select><html></select>",
             "input": "<select><html></select>",
             "output": [
@@ -832,6 +871,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<frameset><html></frameset>",
             "input": "<frameset><html></frameset>",
             "output": [
@@ -852,6 +892,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<frameset></frameset><html>",
             "input": "<frameset></frameset><html>",
             "output": [
@@ -872,6 +913,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<frameset></frameset><!DOCTYPE html>",
             "input": "<frameset></frameset><!DOCTYPE html>",
             "output": [
@@ -894,6 +936,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><body></body></html><!DOCTYPE html>",
             "input": "<html><body></body></html><!DOCTYPE html>",
             "output": [
@@ -925,6 +968,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><!DOCTYPE html></svg>",
             "input": "<svg><!DOCTYPE html></svg>",
             "output": [
@@ -947,6 +991,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><font></font></svg>",
             "input": "<svg><font></font></svg>",
             "output": [
@@ -971,6 +1016,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><font id=foo></font></svg>",
             "input": "<svg><font id=foo></font></svg>",
             "output": [
@@ -997,6 +1043,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><font size=4></font></svg>",
             "input": "<svg><font size=4></font></svg>",
             "output": [
@@ -1023,6 +1070,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><font color=red></font></svg>",
             "input": "<svg><font color=red></font></svg>",
             "output": [
@@ -1049,6 +1097,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><font font=sans></font></svg>",
             "input": "<svg><font font=sans></font></svg>",
             "output": [

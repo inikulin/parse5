@@ -2,9 +2,9 @@ import * as assert from 'node:assert';
 import { SAXParser } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';
 import { writeChunkedToStream } from 'parse5-test-utils/utils/common.js';
-import type { Location } from 'parse5/dist/common/token.js';
+import type { Token } from 'parse5';
 
-function assertLocation({ sourceCodeLocation }: { sourceCodeLocation: Location }): void {
+function assertLocation({ sourceCodeLocation }: { sourceCodeLocation: Token.Location }): void {
     assert.strictEqual(typeof sourceCodeLocation.startLine, 'number');
     assert.strictEqual(typeof sourceCodeLocation.startCol, 'number');
     assert.strictEqual(typeof sourceCodeLocation.startOffset, 'number');

@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<style> <!-- </style>x",
             "input": "<style> <!-- </style>x",
             "output": [
@@ -24,6 +25,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style> <!-- </style> --> </style>x",
             "input": "<style> <!-- </style> --> </style>x",
             "output": [
@@ -55,6 +57,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style> <!--> </style>x",
             "input": "<style> <!--> </style>x",
             "output": [
@@ -78,6 +81,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style> <!---> </style>x",
             "input": "<style> <!---> </style>x",
             "output": [
@@ -101,6 +105,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<iframe> <!---> </iframe>x",
             "input": "<iframe> <!---> </iframe>x",
             "output": [
@@ -124,6 +129,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<iframe> <!--- </iframe>->x</iframe> --> </iframe>x",
             "input": "<iframe> <!--- </iframe>->x</iframe> --> </iframe>x",
             "output": [
@@ -163,6 +169,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<script> <!-- </script> --> </script>x",
             "input": "<script> <!-- </script> --> </script>x",
             "output": [
@@ -194,6 +201,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<title> <!-- </title> --> </title>x",
             "input": "<title> <!-- </title> --> </title>x",
             "output": [
@@ -225,6 +233,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<textarea> <!--- </textarea>->x</textarea> --> </textarea>x",
             "input": "<textarea> <!--- </textarea>->x</textarea> --> </textarea>x",
             "output": [
@@ -264,6 +273,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<style> <!</-- </style>x",
             "input": "<style> <!</-- </style>x",
             "output": [
@@ -287,6 +297,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p><xmp></xmp>",
             "input": "<p><xmp></xmp>",
             "output": [
@@ -307,6 +318,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<xmp> <!-- > --> </xmp>",
             "input": "<xmp> <!-- > --> </xmp>",
             "output": [
@@ -326,6 +338,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<title>&amp;</title>",
             "input": "<title>&amp;</title>",
             "output": [
@@ -345,6 +358,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<title><!--&amp;--></title>",
             "input": "<title><!--&amp;--></title>",
             "output": [
@@ -364,6 +378,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<title><!--</title>",
             "input": "<title><!--</title>",
             "output": [
@@ -383,6 +398,35 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<noscript><!--</noscript>--></noscript>",
+            "input": "<noscript><!--</noscript>--></noscript>",
+            "output": [
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<!--"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "Character",
+                    "-->"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<noscript><!--</noscript>--></noscript>",
             "input": "<noscript><!--</noscript>--></noscript>",
             "output": [

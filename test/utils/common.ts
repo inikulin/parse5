@@ -1,16 +1,11 @@
-import { Writable } from 'node:stream';
+import { Writable, finished as finishedCb, type Readable } from 'node:stream';
 import * as assert from 'node:assert';
-import type { TreeAdapter } from 'parse5/dist/tree-adapters/interface.js';
-import * as defaultTreeAdapter from 'parse5/dist/tree-adapters/default.js';
-import * as htmlTreeAdapter from 'parse5-htmlparser2-tree-adapter';
-import type { Location } from 'parse5/dist/common/token.js';
-
-const defaultAdapter: TreeAdapter<defaultTreeAdapter.DefaultTreeAdapterMap> = defaultTreeAdapter;
-const htmlparser2Adapter: TreeAdapter<htmlTreeAdapter.Htmlparser2TreeAdapterMap> = htmlTreeAdapter;
+import { type TreeAdapter, type Token, defaultTreeAdapter } from 'parse5';
+import { adapter as htmlparser2Adapter } from 'parse5-htmlparser2-tree-adapter';
 
 // Ensure the default tree adapter matches the expected type.
 export const treeAdapters = {
-    default: defaultAdapter,
+    default: defaultTreeAdapter,
     htmlparser2: htmlparser2Adapter,
 } as const;
 
@@ -120,7 +115,7 @@ export function getStringDiffMsg(actual: string, expected: string): string {
     return '';
 }
 
-export function getSubstringByLineCol(lines: string[], loc: Location): string {
+export function getSubstringByLineCol(lines: string[], loc: Token.Location): string {
     lines = lines.slice(loc.startLine - 1, loc.endLine);
 
     const last = lines.length - 1;
@@ -129,4 +124,10 @@ export function getSubstringByLineCol(lines: string[], loc: Location): string {
     lines[0] = lines[0].substring(loc.startCol - 1);
 
     return lines.join('\n');
+}
+
+// TODO [engine:node@>=16]: Replace this with `finished` from 'node:stream/promises'.
+
+export function finished(stream: Writable | Readable): Promise<void> {
+    return new Promise((resolve, reject) => finishedCb(stream, (err) => (err ? reject(err) : resolve())));
 }

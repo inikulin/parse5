@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><button>",
             "input": "<!doctype html><p><button><button>",
             "output": [
@@ -29,6 +30,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><address>",
             "input": "<!doctype html><p><button><address>",
             "output": [
@@ -57,6 +59,65 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><article>",
+            "input": "<!doctype html><p><button><article>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "article",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><aside>",
+            "input": "<!doctype html><p><button><aside>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><blockquote>",
             "input": "<!doctype html><p><button><blockquote>",
             "output": [
@@ -85,6 +146,384 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><center>",
+            "input": "<!doctype html><p><button><center>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "center",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><details>",
+            "input": "<!doctype html><p><button><details>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "details",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><dialog>",
+            "input": "<!doctype html><p><button><dialog>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dialog",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><dir>",
+            "input": "<!doctype html><p><button><dir>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dir",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><div>",
+            "input": "<!doctype html><p><button><div>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><dl>",
+            "input": "<!doctype html><p><button><dl>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "dl",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><fieldset>",
+            "input": "<!doctype html><p><button><fieldset>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "fieldset",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><figcaption>",
+            "input": "<!doctype html><p><button><figcaption>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "figcaption",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><figure>",
+            "input": "<!doctype html><p><button><figure>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><footer>",
+            "input": "<!doctype html><p><button><footer>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "footer",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><header>",
+            "input": "<!doctype html><p><button><header>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "header",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><hgroup>",
+            "input": "<!doctype html><p><button><hgroup>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "hgroup",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><main>",
+            "input": "<!doctype html><p><button><main>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "main",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><menu>",
             "input": "<!doctype html><p><button><menu>",
             "output": [
@@ -113,6 +552,65 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><nav>",
+            "input": "<!doctype html><p><button><nav>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "nav",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><ol>",
+            "input": "<!doctype html><p><button><ol>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "ol",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><p>",
             "input": "<!doctype html><p><button><p>",
             "output": [
@@ -141,6 +639,94 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><search>",
+            "input": "<!doctype html><p><button><search>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "search",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><section>",
+            "input": "<!doctype html><p><button><section>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "section",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
+            "description": "<!doctype html><p><button><summary>",
+            "input": "<!doctype html><p><button><summary>",
+            "output": [
+                [
+                    "DOCTYPE",
+                    "html",
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "button",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "summary",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><ul>",
             "input": "<!doctype html><p><button><ul>",
             "output": [
@@ -169,6 +755,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><h1>",
             "input": "<!doctype html><p><button><h1>",
             "output": [
@@ -197,6 +784,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><h6>",
             "input": "<!doctype html><p><button><h6>",
             "output": [
@@ -225,6 +813,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><listing>",
             "input": "<!doctype html><p><button><listing>",
             "output": [
@@ -253,6 +842,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><pre>",
             "input": "<!doctype html><p><button><pre>",
             "output": [
@@ -281,6 +871,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><form>",
             "input": "<!doctype html><p><button><form>",
             "output": [
@@ -309,6 +900,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><li>",
             "input": "<!doctype html><p><button><li>",
             "output": [
@@ -337,6 +929,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><dd>",
             "input": "<!doctype html><p><button><dd>",
             "output": [
@@ -365,6 +958,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><dt>",
             "input": "<!doctype html><p><button><dt>",
             "output": [
@@ -393,6 +987,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><plaintext>",
             "input": "<!doctype html><p><button><plaintext>",
             "output": [
@@ -421,6 +1016,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><table>",
             "input": "<!doctype html><p><button><table>",
             "output": [
@@ -449,6 +1045,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><hr>",
             "input": "<!doctype html><p><button><hr>",
             "output": [
@@ -477,6 +1074,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button><xmp>",
             "input": "<!doctype html><p><button><xmp>",
             "output": [
@@ -505,6 +1103,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><button></p>",
             "input": "<!doctype html><p><button></p>",
             "output": [
@@ -532,6 +1131,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><address><button></address>a",
             "input": "<!doctype html><address><button></address>a",
             "output": [
@@ -563,6 +1163,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><address><button></address>a",
             "input": "<!doctype html><address><button></address>a",
             "output": [
@@ -594,6 +1195,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p><table></p>",
             "input": "<p><table></p>",
             "output": [
@@ -614,6 +1216,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg>",
             "input": "<!doctype html><svg>",
             "output": [
@@ -632,6 +1235,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><figcaption>",
             "input": "<!doctype html><p><figcaption>",
             "output": [
@@ -655,6 +1259,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><p><summary>",
             "input": "<!doctype html><p><summary>",
             "output": [
@@ -678,6 +1283,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><form><table><form>",
             "input": "<!doctype html><form><table><form>",
             "output": [
@@ -706,6 +1312,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><form><form>",
             "input": "<!doctype html><table><form><form>",
             "output": [
@@ -734,6 +1341,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><table><form></table><form>",
             "input": "<!doctype html><table><form></table><form>",
             "output": [
@@ -766,6 +1374,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg><foreignObject><p>",
             "input": "<!doctype html><svg><foreignObject><p>",
             "output": [
@@ -794,6 +1403,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><svg><title>abc",
             "input": "<!doctype html><svg><title>abc",
             "output": [
@@ -821,6 +1431,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<option><span><option>",
             "input": "<option><span><option>",
             "output": [
@@ -842,6 +1453,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<option><option>",
             "input": "<option><option>",
             "output": [
@@ -858,6 +1470,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml><div>",
             "input": "<math><annotation-xml><div>",
             "output": [
@@ -879,6 +1492,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml encoding=\"application/svg+xml\"><div>",
             "input": "<math><annotation-xml encoding=\"application/svg+xml\"><div>",
             "output": [
@@ -902,6 +1516,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml encoding=\"application/xhtml+xml\"><div>",
             "input": "<math><annotation-xml encoding=\"application/xhtml+xml\"><div>",
             "output": [
@@ -925,6 +1540,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml encoding=\"aPPlication/xhtmL+xMl\"><div>",
             "input": "<math><annotation-xml encoding=\"aPPlication/xhtmL+xMl\"><div>",
             "output": [
@@ -948,6 +1564,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml encoding=\"text/html\"><div>",
             "input": "<math><annotation-xml encoding=\"text/html\"><div>",
             "output": [
@@ -971,6 +1588,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml encoding=\"Text/htmL\"><div>",
             "input": "<math><annotation-xml encoding=\"Text/htmL\"><div>",
             "output": [
@@ -994,6 +1612,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml encoding=\" text/html \"><div>",
             "input": "<math><annotation-xml encoding=\" text/html \"><div>",
             "output": [
@@ -1017,6 +1636,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml> </annotation-xml>",
             "input": "<math><annotation-xml> </annotation-xml>",
             "output": [
@@ -1041,6 +1661,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml>c</annotation-xml>",
             "input": "<math><annotation-xml>c</annotation-xml>",
             "output": [
@@ -1065,6 +1686,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml><!--foo-->",
             "input": "<math><annotation-xml><!--foo-->",
             "output": [
@@ -1085,6 +1707,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml></svg>x",
             "input": "<math><annotation-xml></svg>x",
             "output": [
@@ -1109,6 +1732,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml><svg>x",
             "input": "<math><annotation-xml><svg>x",
             "output": [

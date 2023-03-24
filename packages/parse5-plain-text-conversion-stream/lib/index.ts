@@ -1,7 +1,7 @@
-import type { ParserOptions } from 'parse5';
+import { type ParserOptions, type TreeAdapterTypeMap, html } from 'parse5';
 import { ParserStream } from 'parse5-parser-stream';
-import { TAG_ID as $, TAG_NAMES as TN } from 'parse5/dist/common/html.js';
-import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js';
+
+const { TAG_ID: $, TAG_NAMES: TN } = html;
 
 /**
  * Converts plain text files into HTML document as required by [HTML specification](https://html.spec.whatwg.org/#read-text).
@@ -12,11 +12,12 @@ import type { TreeAdapterTypeMap } from 'parse5/dist/tree-adapters/interface.js'
  * ```js
  * const PlainTextConversionStream = require('parse5-plain-text-conversion-stream');
  * const fs = require('fs');
+ * const { finished } = require('node:stream');
  *
  * const file = fs.createReadStream('war_and_peace.txt');
  * const converter = new PlainTextConversionStream();
  *
- * converter.once('finish', () => {
+ * finished(converter, () => {
  *     console.log(converter.document.childNodes[1].childNodes[0].tagName); //> 'head'
  * });
  *

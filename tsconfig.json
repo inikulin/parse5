@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "target": "es2019",
-        "module": "esnext",
+        "module": "Node16",
+        "moduleResolution": "Node16",
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -9,8 +10,8 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitOverride": true,
         "noPropertyAccessFromIndexSignature": true,
-        "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
 
         "composite": true,
         "declarationMap": true,
@@ -21,6 +22,8 @@
         "out": "docs/build",
         "name": "parse5",
         "readme": "README.md",
+        "emit": "docs",
+        "excludeInternal": true,
         "entryPointStrategy": "packages"
     }
 }

@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<p><font size=4><font color=red><font size=4><font size=4><font size=4><font size=4><font size=4><font color=red><p>X",
             "input": "<p><font size=4><font color=red><font size=4><font size=4><font size=4><font size=4><font size=4><font color=red><p>X",
             "output": [
@@ -77,6 +78,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p><font size=4><font size=4><font size=4><font size=4><p>X",
             "input": "<p><font size=4><font size=4><font size=4><font size=4><p>X",
             "output": [
@@ -125,6 +127,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p><font size=4><font size=4><font size=4><font size=\"5\"><font size=4><p>X",
             "input": "<p><font size=4><font size=4><font size=4><font size=\"5\"><font size=4><p>X",
             "output": [
@@ -180,6 +183,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p><font size=4 id=a><font size=4 id=b><font size=4><font size=4><p>X",
             "input": "<p><font size=4 id=a><font size=4 id=b><font size=4><font size=4><p>X",
             "output": [
@@ -230,6 +234,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p><b id=a><b id=a><b id=a><b><object><b id=a><b id=a>X</object><p>Y",
             "input": "<p><b id=a><b id=a><b id=a><b><object><b id=a><b id=a>X</object><p>Y",
             "output": [

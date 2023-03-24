@@ -1,3 +1,1307 @@
 {
-    "tests": []
+    "tests": [
+        {
+            "fragmentContext": "path",
+            "description": "<nobr>X",
+            "input": "<nobr>X",
+            "output": [
+                [
+                    "StartTag",
+                    "nobr",
+                    {}
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "path",
+            "description": "<font color></font>X",
+            "input": "<font color></font>X",
+            "output": [
+                [
+                    "StartTag",
+                    "font",
+                    {
+                        "color": ""
+                    }
+                ],
+                [
+                    "EndTag",
+                    "font"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "path",
+            "description": "<font></font>X",
+            "input": "<font></font>X",
+            "output": [
+                [
+                    "StartTag",
+                    "font",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "font"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "path",
+            "description": "<g></path>X",
+            "input": "<g></path>X",
+            "output": [
+                [
+                    "StartTag",
+                    "g",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "path"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "path",
+            "description": "</path>X",
+            "input": "</path>X",
+            "output": [
+                [
+                    "EndTag",
+                    "path"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "foreignObject",
+            "description": "</foreignObject>X",
+            "input": "</foreignObject>X",
+            "output": [
+                [
+                    "EndTag",
+                    "foreignobject"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "</desc>X",
+            "input": "</desc>X",
+            "output": [
+                [
+                    "EndTag",
+                    "desc"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "title",
+            "description": "</title>X",
+            "input": "</title>X",
+            "output": [
+                [
+                    "EndTag",
+                    "title"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "</svg>X",
+            "input": "</svg>X",
+            "output": [
+                [
+                    "EndTag",
+                    "svg"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mfenced",
+            "description": "</mfenced>X",
+            "input": "</mfenced>X",
+            "output": [
+                [
+                    "EndTag",
+                    "mfenced"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "malignmark",
+            "description": "</malignmark>X",
+            "input": "</malignmark>X",
+            "output": [
+                [
+                    "EndTag",
+                    "malignmark"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "math",
+            "description": "</math>X",
+            "input": "</math>X",
+            "output": [
+                [
+                    "EndTag",
+                    "math"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "annotation-xml",
+            "description": "</annotation-xml>X",
+            "input": "</annotation-xml>X",
+            "output": [
+                [
+                    "EndTag",
+                    "annotation-xml"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mtext",
+            "description": "</mtext>X",
+            "input": "</mtext>X",
+            "output": [
+                [
+                    "EndTag",
+                    "mtext"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mi",
+            "description": "</mi>X",
+            "input": "</mi>X",
+            "output": [
+                [
+                    "EndTag",
+                    "mi"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mo",
+            "description": "</mo>X",
+            "input": "</mo>X",
+            "output": [
+                [
+                    "EndTag",
+                    "mo"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mn",
+            "description": "</mn>X",
+            "input": "</mn>X",
+            "output": [
+                [
+                    "EndTag",
+                    "mn"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "ms",
+            "description": "</ms>X",
+            "input": "</ms>X",
+            "output": [
+                [
+                    "EndTag",
+                    "ms"
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "ms",
+            "description": "<b></b><mglyph/><i></i><malignmark/><u></u><ms/>X",
+            "input": "<b></b><mglyph/><i></i><malignmark/><u></u><ms/>X",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "StartTag",
+                    "mglyph",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "i",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "i"
+                ],
+                [
+                    "StartTag",
+                    "malignmark",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "u",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "u"
+                ],
+                [
+                    "StartTag",
+                    "ms",
+                    {},
+                    true
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "ms",
+            "description": "<malignmark></malignmark>",
+            "input": "<malignmark></malignmark>",
+            "output": [
+                [
+                    "StartTag",
+                    "malignmark",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "malignmark"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "ms",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "ms",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mn",
+            "description": "<b></b><mglyph/><i></i><malignmark/><u></u><mn/>X",
+            "input": "<b></b><mglyph/><i></i><malignmark/><u></u><mn/>X",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "StartTag",
+                    "mglyph",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "i",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "i"
+                ],
+                [
+                    "StartTag",
+                    "malignmark",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "u",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "u"
+                ],
+                [
+                    "StartTag",
+                    "mn",
+                    {},
+                    true
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mn",
+            "description": "<malignmark></malignmark>",
+            "input": "<malignmark></malignmark>",
+            "output": [
+                [
+                    "StartTag",
+                    "malignmark",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "malignmark"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mn",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mn",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mo",
+            "description": "<b></b><mglyph/><i></i><malignmark/><u></u><mo/>X",
+            "input": "<b></b><mglyph/><i></i><malignmark/><u></u><mo/>X",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "StartTag",
+                    "mglyph",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "i",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "i"
+                ],
+                [
+                    "StartTag",
+                    "malignmark",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "u",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "u"
+                ],
+                [
+                    "StartTag",
+                    "mo",
+                    {},
+                    true
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mo",
+            "description": "<malignmark></malignmark>",
+            "input": "<malignmark></malignmark>",
+            "output": [
+                [
+                    "StartTag",
+                    "malignmark",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "malignmark"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mo",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mo",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mi",
+            "description": "<b></b><mglyph/><i></i><malignmark/><u></u><mi/>X",
+            "input": "<b></b><mglyph/><i></i><malignmark/><u></u><mi/>X",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "StartTag",
+                    "mglyph",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "i",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "i"
+                ],
+                [
+                    "StartTag",
+                    "malignmark",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "u",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "u"
+                ],
+                [
+                    "StartTag",
+                    "mi",
+                    {},
+                    true
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mi",
+            "description": "<malignmark></malignmark>",
+            "input": "<malignmark></malignmark>",
+            "output": [
+                [
+                    "StartTag",
+                    "malignmark",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "malignmark"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mi",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mi",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mtext",
+            "description": "<b></b><mglyph/><i></i><malignmark/><u></u><mtext/>X",
+            "input": "<b></b><mglyph/><i></i><malignmark/><u></u><mtext/>X",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "StartTag",
+                    "mglyph",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "i",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "i"
+                ],
+                [
+                    "StartTag",
+                    "malignmark",
+                    {},
+                    true
+                ],
+                [
+                    "StartTag",
+                    "u",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "u"
+                ],
+                [
+                    "StartTag",
+                    "mtext",
+                    {},
+                    true
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mtext",
+            "description": "<malignmark></malignmark>",
+            "input": "<malignmark></malignmark>",
+            "output": [
+                [
+                    "StartTag",
+                    "malignmark",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "malignmark"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mtext",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "mtext",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "annotation-xml",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "annotation-xml",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "math",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "math",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "foreignObject",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "foreignObject",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "title",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "title",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "<div><h1>X</h1></div>",
+            "input": "<div><h1>X</h1></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "h1",
+                    {}
+                ],
+                [
+                    "Character",
+                    "X"
+                ],
+                [
+                    "EndTag",
+                    "h1"
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<div></div>",
+            "input": "<div></div>",
+            "output": [
+                [
+                    "StartTag",
+                    "div",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "div"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<figure></figure>",
+            "input": "<figure></figure>",
+            "output": [
+                [
+                    "StartTag",
+                    "figure",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "figure"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<plaintext><foo>",
+            "input": "<plaintext><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "plaintext",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<foo>"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<frameset>X",
+            "input": "<frameset>X",
+            "output": [
+                [
+                    "StartTag",
+                    "frameset",
+                    {}
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<head>X",
+            "input": "<head>X",
+            "output": [
+                [
+                    "StartTag",
+                    "head",
+                    {}
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<body>X",
+            "input": "<body>X",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<html>X",
+            "input": "<html>X",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {}
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<html class=\"foo\">X",
+            "input": "<html class=\"foo\">X",
+            "output": [
+                [
+                    "StartTag",
+                    "html",
+                    {
+                        "class": "foo"
+                    }
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "desc",
+            "description": "<body class=\"foo\">X",
+            "input": "<body class=\"foo\">X",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {
+                        "class": "foo"
+                    }
+                ],
+                [
+                    "Character",
+                    "X"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "div",
+            "description": "<svg><p>",
+            "input": "<svg><p>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "<p>",
+            "input": "<p>",
+            "output": [
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "div",
+            "description": "<svg></p><foo>",
+            "input": "<svg></p><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "div",
+            "description": "<svg></br><foo>",
+            "input": "<svg></br><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "svg",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "br"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "</p><foo>",
+            "input": "</p><foo>",
+            "output": [
+                [
+                    "EndTag",
+                    "p"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "</br><foo>",
+            "input": "</br><foo>",
+            "output": [
+                [
+                    "EndTag",
+                    "br"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "<body><foo>",
+            "input": "<body><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "body",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "<p><foo>",
+            "input": "<p><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "svg",
+            "description": "<p></p><foo>",
+            "input": "<p></p><foo>",
+            "output": [
+                [
+                    "StartTag",
+                    "p",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ]
+            ]
+        }
+    ]
 }

@@ -9,18 +9,18 @@ import {
 } from '../common/unicode.js';
 import {
     TokenType,
-    Token,
-    CharacterToken,
-    DoctypeToken,
-    TagToken,
-    EOFToken,
     getTokenAttr,
-    CommentToken,
-    Attribute,
-    Location,
+    type Token,
+    type CharacterToken,
+    type DoctypeToken,
+    type TagToken,
+    type EOFToken,
+    type CommentToken,
+    type Attribute,
+    type Location,
 } from '../common/token.js';
 import { htmlDecodeTree, BinTrieFlags, determineBranch } from 'entities/lib/decode.js';
-import { ERR, ParserErrorHandler } from '../common/error-codes.js';
+import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
 import { TAG_ID, getTagID } from '../common/html.js';
 
 //C1 Unicode control character reference replacements
@@ -132,7 +132,6 @@ const enum State {
     AMBIGUOUS_AMPERSAND,
     NUMERIC_CHARACTER_REFERENCE,
     HEXADEMICAL_CHARACTER_REFERENCE_START,
-    DECIMAL_CHARACTER_REFERENCE_START,
     HEXADEMICAL_CHARACTER_REFERENCE,
     DECIMAL_CHARACTER_REFERENCE,
     NUMERIC_CHARACTER_REFERENCE_END,
@@ -223,8 +222,9 @@ export interface TokenHandler {
 export class Tokenizer {
     public preprocessor: Preprocessor;
 
-    /** Indicates that the next token has been emitted, and `getNextToken` should return. */
-    private hasEmitted = false;
+    private paused = false;
+    /** Ensures that the parsing loop isn't run multiple times at once. */
+    private inLoop = false;
 
     /**
      * Indicates that the current adjusted node exists, is not an element in the HTML namespace,
@@ -274,10 +274,12 @@ export class Tokenizer {
         };
     }
 
-    //API
-    public getNextToken(): void {
-        this.hasEmitted = false;
-        while (!this.hasEmitted && this.active) {
+    private _runParsingLoop(): void {
+        if (this.inLoop) return;
+
+        this.inLoop = true;
+
+        while (this.active && !this.paused) {
             this.consumedAfterSnapshot = 0;
 
             const cp = this._consume();
@@ -286,16 +288,46 @@ export class Tokenizer {
                 this._callState(cp);
             }
         }
+
+        this.inLoop = false;
     }
 
-    public write(chunk: string, isLastChunk: boolean): void {
+    //API
+    public pause(): void {
+        this.paused = true;
+    }
+
+    public resume(writeCallback?: () => void): void {
+        if (!this.paused) {
+            throw new Error('Parser was already resumed');
+        }
+
+        this.paused = false;
+
+        // Necessary for synchronous resume.
+        if (this.inLoop) return;
+
+        this._runParsingLoop();
+
+        if (!this.paused) {
+            writeCallback?.();
+        }
+    }
+
+    public write(chunk: string, isLastChunk: boolean, writeCallback?: () => void): void {
         this.active = true;
         this.preprocessor.write(chunk, isLastChunk);
+        this._runParsingLoop();
+
+        if (!this.paused) {
+            writeCallback?.();
+        }
     }
 
     public insertHtmlAtCurrentPos(chunk: string): void {
         this.active = true;
         this.preprocessor.insertHtmlAtCurrentPos(chunk);
+        this._runParsingLoop();
     }
 
     //Hibernation
@@ -321,9 +353,9 @@ export class Tokenizer {
         this.preprocessor.retreat(count);
     }
 
-    private _reconsumeInState(state: State): void {
+    private _reconsumeInState(state: State, cp: number): void {
         this.state = state;
-        this._unconsume(1);
+        this._callState(cp);
     }
 
     private _advanceBy(count: number): void {
@@ -440,7 +472,6 @@ export class Tokenizer {
             ct.location.endOffset = this.preprocessor.offset + 1;
         }
 
-        this.hasEmitted = true;
         this.currentLocation = this.getCurrentLocation(-1);
     }
 
@@ -508,7 +539,6 @@ export class Tokenizer {
                 }
             }
 
-            this.hasEmitted = true;
             this.currentCharacterToken = null;
         }
     }
@@ -524,7 +554,7 @@ export class Tokenizer {
 
         this._emitCurrentCharacterToken(location);
         this.handler.onEof({ type: TokenType.EOF, location });
-        this.hasEmitted = true;
+        this.active = false;
     }
 
     //Characters emission
@@ -539,13 +569,13 @@ export class Tokenizer {
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
     private _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
         if (this.currentCharacterToken) {
-            if (this.currentCharacterToken.type !== type) {
+            if (this.currentCharacterToken.type === type) {
+                this.currentCharacterToken.chars += ch;
+                return;
+            } else {
                 this.currentLocation = this.getCurrentLocation(0);
                 this._emitCurrentCharacterToken(this.currentLocation);
                 this.preprocessor.dropParsedChunk();
-            } else {
-                this.currentCharacterToken.chars += ch;
-                return;
             }
         }
 
@@ -553,13 +583,11 @@ export class Tokenizer {
     }
 
     private _emitCodePoint(cp: number): void {
-        let type = TokenType.CHARACTER;
-
-        if (isWhitespace(cp)) {
-            type = TokenType.WHITESPACE_CHARACTER;
-        } else if (cp === $.NULL) {
-            type = TokenType.NULL_CHARACTER;
-        }
+        const type = isWhitespace(cp)
+            ? TokenType.WHITESPACE_CHARACTER
+            : cp === $.NULL
+            ? TokenType.NULL_CHARACTER
+            : TokenType.CHARACTER;
 
         this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
     }
@@ -585,8 +613,13 @@ export class Tokenizer {
 
             current = htmlDecodeTree[i];
 
+            const masked = current & BinTrieFlags.VALUE_LENGTH;
+
             // If the branch is a value, store it and continue
-            if (current & BinTrieFlags.HAS_VALUE) {
+            if (masked) {
+                // The mask is the number of bytes of the value, including the current byte.
+                const valueLength = (masked >> 14) - 1;
+
                 // Attribute values that aren't terminated properly aren't parsed, and shouldn't lead to a parser error.
                 // See the example in https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state
                 if (
@@ -598,16 +631,24 @@ export class Tokenizer {
                     //emitting an ampersand. This is fine, as alphanumeric characters won't be parsed differently in attributes.
                     result = [$.AMPERSAND];
 
-                    // Skip over the value. No need to consider multi-byte values, as legacy entities are always a single byte.
-                    i += 1;
+                    // Skip over the value.
+                    i += valueLength;
                 } else {
                     // If this is a surrogate pair, consume the next two bytes.
                     result =
-                        current & BinTrieFlags.MULTI_BYTE
-                            ? [htmlDecodeTree[++i], htmlDecodeTree[++i]]
-                            : [htmlDecodeTree[++i]];
+                        valueLength === 0
+                            ? [htmlDecodeTree[i] & ~BinTrieFlags.VALUE_LENGTH]
+                            : valueLength === 1
+                            ? [htmlDecodeTree[++i]]
+                            : [htmlDecodeTree[++i], htmlDecodeTree[++i]];
                     excess = 0;
                     withoutSemicolon = cp !== $.SEMICOLON;
+                }
+
+                if (valueLength === 0) {
+                    // If the value is zero-length, we're done.
+                    this._consume();
+                    break;
                 }
             }
         }
@@ -949,10 +990,6 @@ export class Tokenizer {
                 this._stateHexademicalCharacterReferenceStart(cp);
                 break;
             }
-            case State.DECIMAL_CHARACTER_REFERENCE_START: {
-                this._stateDecimalCharacterReferenceStart(cp);
-                break;
-            }
             case State.HEXADEMICAL_CHARACTER_REFERENCE: {
                 this._stateHexademicalCharacterReference(cp);
                 break;
@@ -962,7 +999,7 @@ export class Tokenizer {
                 break;
             }
             case State.NUMERIC_CHARACTER_REFERENCE_END: {
-                this._stateNumericCharacterReferenceEnd();
+                this._stateNumericCharacterReferenceEnd(cp);
                 break;
             }
             default: {
@@ -2386,7 +2423,7 @@ export class Tokenizer {
                 this._emitEOFToken();
                 break;
             }
-            default:
+            default: {
                 if (this._consumeSequenceIfMatch($$.PUBLIC, false)) {
                     this.state = State.AFTER_DOCTYPE_PUBLIC_KEYWORD;
                 } else if (this._consumeSequenceIfMatch($$.SYSTEM, false)) {
@@ -2400,6 +2437,7 @@ export class Tokenizer {
                     this.state = State.BOGUS_DOCTYPE;
                     this._stateBogusDoctype(cp);
                 }
+            }
         }
     }
 
@@ -2940,7 +2978,7 @@ export class Tokenizer {
             this._stateNamedCharacterReference(cp);
         } else {
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this._reconsumeInState(this.returnState);
+            this._reconsumeInState(this.returnState, cp);
         }
     }
 
@@ -2974,7 +3012,7 @@ export class Tokenizer {
                 this._err(ERR.unknownNamedCharacterReference);
             }
 
-            this._reconsumeInState(this.returnState);
+            this._reconsumeInState(this.returnState, cp);
         }
     }
 
@@ -2985,9 +3023,16 @@ export class Tokenizer {
 
         if (cp === $.LATIN_SMALL_X || cp === $.LATIN_CAPITAL_X) {
             this.state = State.HEXADEMICAL_CHARACTER_REFERENCE_START;
+        }
+        // Inlined decimal character reference start state
+        else if (isAsciiDigit(cp)) {
+            this.state = State.DECIMAL_CHARACTER_REFERENCE;
+            this._stateDecimalCharacterReference(cp);
         } else {
-            this.state = State.DECIMAL_CHARACTER_REFERENCE_START;
-            this._stateDecimalCharacterReferenceStart(cp);
+            this._err(ERR.absenceOfDigitsInNumericCharacterReference);
+            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
+            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
+            this._reconsumeInState(this.returnState, cp);
         }
     }
 
@@ -3006,20 +3051,6 @@ export class Tokenizer {
         }
     }
 
-    // Decimal character reference start state
-    //------------------------------------------------------------------
-    private _stateDecimalCharacterReferenceStart(cp: number): void {
-        if (isAsciiDigit(cp)) {
-            this.state = State.DECIMAL_CHARACTER_REFERENCE;
-            this._stateDecimalCharacterReference(cp);
-        } else {
-            this._err(ERR.absenceOfDigitsInNumericCharacterReference);
-            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
-            this._reconsumeInState(this.returnState);
-        }
-    }
-
     // Hexademical character reference state
     //------------------------------------------------------------------
     private _stateHexademicalCharacterReference(cp: number): void {
@@ -3034,7 +3065,7 @@ export class Tokenizer {
         } else {
             this._err(ERR.missingSemicolonAfterCharacterReference);
             this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-            this._stateNumericCharacterReferenceEnd();
+            this._stateNumericCharacterReferenceEnd(cp);
         }
     }
 
@@ -3048,13 +3079,13 @@ export class Tokenizer {
         } else {
             this._err(ERR.missingSemicolonAfterCharacterReference);
             this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-            this._stateNumericCharacterReferenceEnd();
+            this._stateNumericCharacterReferenceEnd(cp);
         }
     }
 
     // Numeric character reference end state
     //------------------------------------------------------------------
-    private _stateNumericCharacterReferenceEnd(): void {
+    private _stateNumericCharacterReferenceEnd(cp: number): void {
         if (this.charRefCode === $.NULL) {
             this._err(ERR.nullCharacterReference);
             this.charRefCode = $.REPLACEMENT_CHARACTER;
@@ -3077,6 +3108,6 @@ export class Tokenizer {
         }
 
         this._flushCodePointConsumedAsCharacterReference(this.charRefCode);
-        this._reconsumeInState(this.returnState);
+        this._reconsumeInState(this.returnState, cp);
     }
 }

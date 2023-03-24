@@ -1,6 +1,6 @@
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
-import { makeChunks, generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
+import { makeChunks, generateTestsForEachTreeAdapter, finished } from 'parse5-test-utils/utils/common.js';
 import { runInNewContext } from 'node:vm';
 
 function pause(): Promise<void> {
@@ -13,32 +13,28 @@ generateParsingTests(
     'ParserStream - Scripting',
     'ParserStream - Scripting',
     {
-        skipFragments: true,
         withoutErrors: true,
         suitePath,
     },
     async (test, opts) => {
         const chunks = makeChunks(test.input);
-        const parser = new ParserStream(opts);
-        const { document } = parser;
+        const parser = test.fragmentContext
+            ? ParserStream.getFragmentStream(test.fragmentContext, opts)
+            : new ParserStream(opts);
 
-        const completionPromise = new Promise<{ node: typeof document }>((resolve, reject) => {
-            parser.once('finish', () => resolve({ node: document }));
+        parser.on('script', async (scriptElement, documentWrite, resume) => {
+            const scriptTextNode = opts.treeAdapter.getChildNodes(scriptElement)[0];
+            const script = scriptTextNode ? opts.treeAdapter.getTextNodeContent(scriptTextNode) : '';
 
-            parser.on('script', async (scriptElement, documentWrite, resume) => {
-                const scriptTextNode = opts.treeAdapter.getChildNodes(scriptElement)[0];
-                const script = scriptTextNode ? opts.treeAdapter.getTextNodeContent(scriptTextNode) : '';
+            //NOTE: emulate postponed script execution
+            await pause();
 
-                //NOTE: emulate postponed script execution
-                await pause();
-
-                try {
-                    runInNewContext(script, { document: { write: documentWrite } });
-                    resume();
-                } catch (error) {
-                    reject(error);
-                }
-            });
+            try {
+                runInNewContext(script, { document: { write: documentWrite } });
+                resume();
+            } catch (error) {
+                parser.emit('error', error);
+            }
         });
 
         //NOTE: emulate async input stream behavior
@@ -49,7 +45,12 @@ generateParsingTests(
 
         parser.end();
 
-        return completionPromise;
+        await finished(parser);
+
+        return {
+            node: test.fragmentContext ? parser.getFragment() : parser.document,
+            chunks,
+        };
     }
 );
 
@@ -64,16 +65,14 @@ generateTestsForEachTreeAdapter('ParserStream', (treeAdapter) => {
         process.nextTick(done);
     });
 
-    test('Regression - Parsing loop lock causes accidental hang ups (GH-101)', (done) => {
+    test('Regression - Parsing loop lock causes accidental hang ups (GH-101)', () => {
         const parser = new ParserStream({ treeAdapter });
 
-        parser.once('finish', () => done());
-
-        parser.on('script', (_scriptElement, _documentWrite, resume) => {
-            process.nextTick(() => resume());
-        });
+        parser.on('script', (_scriptElement, _documentWrite, resume) => process.nextTick(resume));
 
         parser.write('<script>yo</script>');
         parser.end('dawg');
+
+        return finished(parser);
     });
 });

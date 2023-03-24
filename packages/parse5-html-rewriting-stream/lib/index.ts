@@ -1,6 +1,14 @@
-import type { Location } from 'parse5/dist/common/token.js';
-import { SAXParser, EndTag, StartTag, Doctype, Text, Comment, SaxToken } from 'parse5-sax-parser';
-import { hasUnescapedText, escapeString } from 'parse5/dist/serializer/index.js';
+import { html, type Token } from 'parse5';
+import {
+    SAXParser,
+    type EndTag,
+    type StartTag,
+    type Doctype,
+    type Text,
+    type Comment,
+    type SaxToken,
+} from 'parse5-sax-parser';
+import { escapeText, escapeAttribute } from 'entities/lib/escape.js';
 
 /**
  * Streaming [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML)-style HTML rewriter.
@@ -64,7 +72,7 @@ export class RewritingStream extends SAXParser {
         return '';
     }
 
-    private _getRawHtml(location: Location): string {
+    private _getRawHtml(location: Token.Location): string {
         const { droppedBufferSize, html } = this.tokenizer.preprocessor;
         const start = location.startOffset - droppedBufferSize;
         const end = location.endOffset - droppedBufferSize;
@@ -113,7 +121,7 @@ export class RewritingStream extends SAXParser {
         let res = `<${token.tagName}`;
 
         for (const attr of token.attrs) {
-            res += ` ${attr.name}="${escapeString(attr.value, true)}"`;
+            res += ` ${attr.name}="${escapeAttribute(attr.value)}"`;
         }
 
         res += token.selfClosing ? '/>' : '>';
@@ -129,9 +137,10 @@ export class RewritingStream extends SAXParser {
     /** Emits a serialized text token into the output stream. */
     public emitText({ text }: Text): void {
         this.push(
-            !this.parserFeedbackSimulator.inForeignContent && hasUnescapedText(this.tokenizer.lastStartTagName, true)
+            !this.parserFeedbackSimulator.inForeignContent &&
+                html.hasUnescapedText(this.tokenizer.lastStartTagName, true)
                 ? text
-                : escapeString(text, false)
+                : escapeText(text)
         );
     }
 
@@ -144,4 +153,25 @@ export class RewritingStream extends SAXParser {
     public emitRaw(html: string): void {
         this.push(html);
     }
+}
+
+export interface RewritingStream {
+    /** Raised when the rewriter encounters a start tag. */
+    on(event: 'startTag', listener: (startTag: StartTag, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters an end tag. */
+    on(event: 'endTag', listener: (endTag: EndTag, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters a comment. */
+    on(event: 'comment', listener: (comment: Comment, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters text content. */
+    on(event: 'text', listener: (text: Text, rawHtml: string) => void): this;
+    /** Raised when rewriter encounters a [document type declaration](https://en.wikipedia.org/wiki/Document_type_declaration). */
+    on(event: 'doctype', listener: (doctype: Doctype, rawHtml: string) => void): this;
+
+    /**
+     * Base event handler.
+     *
+     * @param event Name of the event
+     * @param handler Event handler
+     */
+    on(event: string, handler: (...args: any[]) => void): this;
 }

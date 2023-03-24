@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<isindex>",
             "input": "<isindex>",
             "output": [
@@ -12,6 +13,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<isindex name=\"A\" action=\"B\" prompt=\"C\" foo=\"D\">",
             "input": "<isindex name=\"A\" action=\"B\" prompt=\"C\" foo=\"D\">",
             "output": [
@@ -28,6 +30,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<form><isindex>",
             "input": "<form><isindex>",
             "output": [
@@ -44,6 +47,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!doctype html><isindex>x</isindex>x",
             "input": "<!doctype html><isindex>x</isindex>x",
             "output": [

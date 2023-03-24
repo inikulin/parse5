@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><svg></svg>",
             "input": "<!DOCTYPE html><svg></svg>",
             "output": [
@@ -23,6 +24,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><svg></svg><![CDATA[a]]>",
             "input": "<!DOCTYPE html><svg></svg><![CDATA[a]]>",
             "output": [
@@ -49,6 +51,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><svg></svg>",
             "input": "<!DOCTYPE html><body><svg></svg>",
             "output": [
@@ -76,6 +79,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><select><svg></svg></select>",
             "input": "<!DOCTYPE html><body><select><svg></svg></select>",
             "output": [
@@ -112,6 +116,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><select><option><svg></svg></option></select>",
             "input": "<!DOCTYPE html><body><select><option><svg></svg></option></select>",
             "output": [
@@ -157,6 +162,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><svg></svg></table>",
             "input": "<!DOCTYPE html><body><table><svg></svg></table>",
             "output": [
@@ -193,6 +199,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><svg><g>foo</g></svg></table>",
             "input": "<!DOCTYPE html><body><table><svg><g>foo</g></svg></table>",
             "output": [
@@ -242,6 +249,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><svg><g>foo</g><g>bar</g></svg></table>",
             "input": "<!DOCTYPE html><body><table><svg><g>foo</g><g>bar</g></svg></table>",
             "output": [
@@ -304,6 +312,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><svg><g>foo</g><g>bar</g></svg></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><svg><g>foo</g><g>bar</g></svg></tbody></table>",
             "output": [
@@ -375,6 +384,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><tr><svg><g>foo</g><g>bar</g></svg></tr></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><tr><svg><g>foo</g><g>bar</g></svg></tr></tbody></table>",
             "output": [
@@ -455,6 +465,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><tr><td><svg><g>foo</g><g>bar</g></svg></td></tr></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><tr><td><svg><g>foo</g><g>bar</g></svg></td></tr></tbody></table>",
             "output": [
@@ -544,6 +555,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tbody><tr><td><svg><g>foo</g><g>bar</g></svg><p>baz</td></tr></tbody></table>",
             "input": "<!DOCTYPE html><body><table><tbody><tr><td><svg><g>foo</g><g>bar</g></svg><p>baz</td></tr></tbody></table>",
             "output": [
@@ -642,6 +654,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><caption><svg><g>foo</g><g>bar</g></svg><p>baz</caption></table>",
             "input": "<!DOCTYPE html><body><table><caption><svg><g>foo</g><g>bar</g></svg><p>baz</caption></table>",
             "output": [
@@ -722,6 +735,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><caption><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><caption><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "output": [
@@ -803,6 +817,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><caption><svg><g>foo</g><g>bar</g>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><caption><svg><g>foo</g><g>bar</g>baz</table><p>quux",
             "output": [
@@ -879,6 +894,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><colgroup><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><colgroup><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "output": [
@@ -960,6 +976,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><tr><td><select><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><tr><td><select><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "output": [
@@ -1051,6 +1068,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body><table><select><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "input": "<!DOCTYPE html><body><table><select><svg><g>foo</g><g>bar</g><p>baz</table><p>quux",
             "output": [
@@ -1132,6 +1150,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body></body></html><svg><g>foo</g><g>bar</g><p>baz",
             "input": "<!DOCTYPE html><body></body></html><svg><g>foo</g><g>bar</g><p>baz",
             "output": [
@@ -1198,6 +1217,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body></body><svg><g>foo</g><g>bar</g><p>baz",
             "input": "<!DOCTYPE html><body></body><svg><g>foo</g><g>bar</g><p>baz",
             "output": [
@@ -1260,6 +1280,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><frameset><svg><g></g><g></g><p><span>",
             "input": "<!DOCTYPE html><frameset><svg><g></g><g></g><p><span>",
             "output": [
@@ -1311,6 +1332,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><frameset></frameset><svg><g></g><g></g><p><span>",
             "input": "<!DOCTYPE html><frameset></frameset><svg><g></g><g></g><p><span>",
             "output": [
@@ -1366,6 +1388,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo><svg xlink:href=foo></svg>",
             "input": "<!DOCTYPE html><body xlink:href=foo><svg xlink:href=foo></svg>",
             "output": [
@@ -1397,6 +1420,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><svg><g xml:lang=en xlink:href=foo></g></svg>",
             "input": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><svg><g xml:lang=en xlink:href=foo></g></svg>",
             "output": [
@@ -1439,6 +1463,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><svg><g xml:lang=en xlink:href=foo /></svg>",
             "input": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><svg><g xml:lang=en xlink:href=foo /></svg>",
             "output": [
@@ -1478,6 +1503,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><svg><g xml:lang=en xlink:href=foo />bar</svg>",
             "input": "<!DOCTYPE html><body xlink:href=foo xml:lang=en><svg><g xml:lang=en xlink:href=foo />bar</svg>",
             "output": [
@@ -1521,6 +1547,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg></path>",
             "input": "<svg></path>",
             "output": [
@@ -1536,6 +1563,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><svg></div>a",
             "input": "<div><svg></div>a",
             "output": [
@@ -1560,6 +1588,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><svg><path></div>a",
             "input": "<div><svg><path></div>a",
             "output": [
@@ -1589,6 +1618,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><svg><path></svg><path>",
             "input": "<div><svg><path></svg><path>",
             "output": [
@@ -1619,6 +1649,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><svg><path><foreignObject><math></div>a",
             "input": "<div><svg><path><foreignObject><math></div>a",
             "output": [
@@ -1658,6 +1689,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><svg><path><foreignObject><p></div>a",
             "input": "<div><svg><path><foreignObject><p></div>a",
             "output": [
@@ -1697,6 +1729,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><svg><desc><div><svg><ul>a",
             "input": "<!DOCTYPE html><svg><desc><div><svg><ul>a",
             "output": [
@@ -1739,6 +1772,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><svg><desc><svg><ul>a",
             "input": "<!DOCTYPE html><svg><desc><svg><ul>a",
             "output": [
@@ -1776,6 +1810,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><p><svg><desc><p>",
             "input": "<!DOCTYPE html><p><svg><desc><p>",
             "output": [
@@ -1809,6 +1844,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<!DOCTYPE html><p><svg><title><p>",
             "input": "<!DOCTYPE html><p><svg><title><p>",
             "output": [
@@ -1842,6 +1878,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<div><svg><path><foreignObject><p></foreignObject><p>",
             "input": "<div><svg><path><foreignObject><p></foreignObject><p>",
             "output": [
@@ -1882,6 +1919,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mi><div><object><div><span></span></div></object></div></mi><mi>",
             "input": "<math><mi><div><object><div><span></span></div></object></div></mi><mi>",
             "output": [
@@ -1943,6 +1981,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mi><svg><foreignObject><div><div></div></div></foreignObject></svg></mi><mi>",
             "input": "<math><mi><svg><foreignObject><div><div></div></div></foreignObject></svg></mi><mi>",
             "output": [
@@ -2004,6 +2043,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><script></script><path>",
             "input": "<svg><script></script><path>",
             "output": [
@@ -2029,6 +2069,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><svg></svg><tr>",
             "input": "<table><svg></svg><tr>",
             "output": [
@@ -2054,6 +2095,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mi><mglyph>",
             "input": "<math><mi><mglyph>",
             "output": [
@@ -2075,6 +2117,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mi><malignmark>",
             "input": "<math><mi><malignmark>",
             "output": [
@@ -2096,6 +2139,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mo><mglyph>",
             "input": "<math><mo><mglyph>",
             "output": [
@@ -2117,6 +2161,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mo><malignmark>",
             "input": "<math><mo><malignmark>",
             "output": [
@@ -2138,6 +2183,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mn><mglyph>",
             "input": "<math><mn><mglyph>",
             "output": [
@@ -2159,6 +2205,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mn><malignmark>",
             "input": "<math><mn><malignmark>",
             "output": [
@@ -2180,6 +2227,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><ms><mglyph>",
             "input": "<math><ms><mglyph>",
             "output": [
@@ -2201,6 +2249,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><ms><malignmark>",
             "input": "<math><ms><malignmark>",
             "output": [
@@ -2222,6 +2271,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mtext><mglyph>",
             "input": "<math><mtext><mglyph>",
             "output": [
@@ -2243,6 +2293,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><mtext><malignmark>",
             "input": "<math><mtext><malignmark>",
             "output": [
@@ -2264,6 +2315,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml><svg></svg></annotation-xml><mi>",
             "input": "<math><annotation-xml><svg></svg></annotation-xml><mi>",
             "output": [
@@ -2298,6 +2350,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml><svg><foreignObject><div><math><mi></mi></math><span></span></div></foreignObject><path></path></svg></annotation-xml><mi>",
             "input": "<math><annotation-xml><svg><foreignObject><div><math><mi></mi></math><span></span></div></foreignObject><path></path></svg></annotation-xml><mi>",
             "output": [
@@ -2386,6 +2439,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<math><annotation-xml><svg><foreignObject><math><mi><svg></svg></mi><mo></mo></math><span></span></foreignObject><path></path></svg></annotation-xml><mi>",
             "input": "<math><annotation-xml><svg><foreignObject><math><mi><svg></svg></mi><mo></mo></math><span></span></foreignObject><path></path></svg></annotation-xml><mi>",
             "output": [

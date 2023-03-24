@@ -1,6 +1,7 @@
 {
     "tests": [
         {
+            "fragmentContext": null,
             "description": "<foo bar=qux/>",
             "input": "<foo bar=qux/>",
             "output": [
@@ -14,6 +15,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
             "input": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
             "output": [
@@ -57,6 +59,51 @@
             ]
         },
         {
+            "fragmentContext": null,
+            "description": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
+            "input": "<p id=\"status\"><noscript><strong>A</strong></noscript><span>B</span></p>",
+            "output": [
+                [
+                    "StartTag",
+                    "p",
+                    {
+                        "id": "status"
+                    }
+                ],
+                [
+                    "StartTag",
+                    "noscript",
+                    {}
+                ],
+                [
+                    "Character",
+                    "<strong>A</strong>"
+                ],
+                [
+                    "EndTag",
+                    "noscript"
+                ],
+                [
+                    "StartTag",
+                    "span",
+                    {}
+                ],
+                [
+                    "Character",
+                    "B"
+                ],
+                [
+                    "EndTag",
+                    "span"
+                ],
+                [
+                    "EndTag",
+                    "p"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<div><sarcasm><div></div></sarcasm></div>",
             "input": "<div><sarcasm><div></div></sarcasm></div>",
             "output": [
@@ -90,6 +137,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<html><body><img src=\"\" border=\"0\" alt=\"><div>A</div></body></html>",
             "input": "<html><body><img src=\"\" border=\"0\" alt=\"><div>A</div></body></html>",
             "output": [
@@ -106,6 +154,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td></tbody>A",
             "input": "<table><td></tbody>A",
             "output": [
@@ -130,6 +179,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td></thead>A",
             "input": "<table><td></thead>A",
             "output": [
@@ -154,6 +204,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><td></tfoot>A",
             "input": "<table><td></tfoot>A",
             "output": [
@@ -178,6 +229,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><thead><td></tbody>A",
             "input": "<table><thead><td></tbody>A",
             "output": [
@@ -207,6 +259,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<legend>test</legend>",
             "input": "<legend>test</legend>",
             "output": [
@@ -226,6 +279,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<table><input>",
             "input": "<table><input>",
             "output": [
@@ -242,6 +296,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<b><em><foo><foo><aside></b>",
             "input": "<b><em><foo><foo><aside></b>",
             "output": [
@@ -277,6 +332,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<b><em><foo><foo><aside></b></em>",
             "input": "<b><em><foo><foo><aside></b></em>",
             "output": [
@@ -316,6 +372,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<b><em><foo><foo><foo><aside></b>",
             "input": "<b><em><foo><foo><foo><aside></b>",
             "output": [
@@ -356,6 +413,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<b><em><foo><foo><foo><aside></b></em>",
             "input": "<b><em><foo><foo><foo><aside></b></em>",
             "output": [
@@ -400,6 +458,188 @@
             ]
         },
         {
+            "fragmentContext": "div",
+            "description": "<b><em><foo><foo><foo><foo><foo><foo><foo><foo><foo><foo><aside></b></em>",
+            "input": "<b><em><foo><foo><foo><foo><foo><foo><foo><foo><foo><foo><aside></b></em>",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "EndTag",
+                    "em"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "div",
+            "description": "<b><em><foo><foob><foob><foob><foob><fooc><fooc><fooc><fooc><food><aside></b></em>",
+            "input": "<b><em><foo><foob><foob><foob><foob><fooc><fooc><fooc><fooc><food><aside></b></em>",
+            "output": [
+                [
+                    "StartTag",
+                    "b",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "em",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foo",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foob",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foob",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foob",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "foob",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "fooc",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "fooc",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "fooc",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "fooc",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "food",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "aside",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "b"
+                ],
+                [
+                    "EndTag",
+                    "em"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": "select",
+            "description": "<option><XH<optgroup></optgroup>",
+            "input": "<option><XH<optgroup></optgroup>",
+            "output": [
+                [
+                    "StartTag",
+                    "option",
+                    {}
+                ],
+                [
+                    "StartTag",
+                    "xh<optgroup",
+                    {}
+                ],
+                [
+                    "EndTag",
+                    "optgroup"
+                ]
+            ]
+        },
+        {
+            "fragmentContext": null,
             "description": "<svg><foreignObject><div>foo</div><plaintext></foreignObject></svg><div>bar</div>",
             "input": "<svg><foreignObject><div>foo</div><plaintext></foreignObject></svg><div>bar</div>",
             "output": [
@@ -438,6 +678,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "<svg><foreignObject></foreignObject><title></svg>foo",
             "input": "<svg><foreignObject></foreignObject><title></svg>foo",
             "output": [
@@ -471,6 +712,7 @@
             ]
         },
         {
+            "fragmentContext": null,
             "description": "</foreignObject><plaintext><div>foo</div>",
             "input": "</foreignObject><plaintext><div>foo</div>",
             "output": [

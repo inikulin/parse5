@@ -1,10 +1,22 @@
-import { Parser, ParserOptions } from './parser/index.js';
+import { Parser, type ParserOptions } from './parser/index.js';
 
 import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
-export { ParserOptions } from './parser/index.js';
-export { serialize, serializeOuter, SerializerOptions } from './serializer/index.js';
+export { type DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/default.js';
+export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
+export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
+export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
+export { ERR as ErrorCodes, type ParserError } from './common/error-codes.js';
+
+/** @internal */
+export * as foreignContent from './common/foreign-content.js';
+/** @internal */
+export * as html from './common/html.js';
+/** @internal */
+export * as Token from './common/token.js';
+/** @internal */
+export { Tokenizer, type TokenizerOptions, TokenizerMode, type TokenHandler } from './tokenizer/index.js';
 
 // Shorthands
 
@@ -45,7 +57,7 @@ export function parse<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
  * console.log(documentFragment.childNodes[0].tagName); //> 'table'
  *
  * // Parses the html fragment in the context of the parsed <table> element.
- * const trFragment = parser.parseFragment(documentFragment.childNodes[0], '<tr><td>Shake it, baby</td></tr>');
+ * const trFragment = parse5.parseFragment(documentFragment.childNodes[0], '<tr><td>Shake it, baby</td></tr>');
  *
  * console.log(trFragment.childNodes[0].childNodes[0].tagName); //> 'td'
  * ```
@@ -75,5 +87,9 @@ export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterM
         fragmentContext = null;
     }
 
-    return Parser.parseFragment(html as string, fragmentContext, options);
+    const parser = Parser.getFragmentParser(fragmentContext, options);
+
+    parser.tokenizer.write(html as string, true);
+
+    return parser.getFragment();
 }
