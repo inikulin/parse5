@@ -30,7 +30,6 @@ generateParsingTests(
     {
         withoutErrors: true,
         suitePath: new URL('../../../../test/data/html5lib-tests/tree-construction', import.meta.url),
-        expectErrors: ['0.search-element', '1.search-element'],
     },
     (test, opts) => ({
         node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),

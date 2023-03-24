@@ -139,6 +139,7 @@ export enum TAG_NAMES {
 
     S = 's',
     SCRIPT = 'script',
+    SEARCH = 'search',
     SECTION = 'section',
     SELECT = 'select',
     SOURCE = 'source',
@@ -292,6 +293,7 @@ export enum TAG_ID {
 
     S,
     SCRIPT,
+    SEARCH,
     SECTION,
     SELECT,
     SOURCE,
@@ -423,6 +425,7 @@ const TAG_NAME_TO_ID = new Map<string, TAG_ID>([
     [TAG_NAMES.RUBY, TAG_ID.RUBY],
     [TAG_NAMES.S, TAG_ID.S],
     [TAG_NAMES.SCRIPT, TAG_ID.SCRIPT],
+    [TAG_NAMES.SEARCH, TAG_ID.SEARCH],
     [TAG_NAMES.SECTION, TAG_ID.SECTION],
     [TAG_NAMES.SELECT, TAG_ID.SELECT],
     [TAG_NAMES.SOURCE, TAG_ID.SOURCE],

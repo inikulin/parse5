@@ -2253,6 +2253,7 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
         case $.DETAILS:
         case $.ADDRESS:
         case $.ARTICLE:
+        case $.SEARCH:
         case $.SECTION:
         case $.SUMMARY:
         case $.FIELDSET:
@@ -2583,6 +2584,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         case $.ADDRESS:
         case $.ARTICLE:
         case $.DETAILS:
+        case $.SEARCH:
         case $.SECTION:
         case $.SUMMARY:
         case $.LISTING:
