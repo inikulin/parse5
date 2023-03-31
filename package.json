@@ -22,7 +22,7 @@
         "ts-jest": "^29.0.5",
         "ts-node": "^10.9.1",
         "typedoc": "^0.23.28",
-        "typescript": "^5.0.2"
+        "typescript": "^5.0.3"
     },
     "scripts": {
         "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
