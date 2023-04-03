@@ -99,7 +99,7 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
  * const document = parse5.parseFragment('<div>Hello, <b>world</b>!</div>');
  *
  * // Serializes the <div> element.
- * const html = parse5.serializeOuter(document.childNodes[0]);
+ * const str = parse5.serializeOuter(document.childNodes[0]);
  *
  * console.log(str); //> '<div>Hello, <b>world</b>!</div>'
  * ```
