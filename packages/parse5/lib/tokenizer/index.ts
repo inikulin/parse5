@@ -19,40 +19,9 @@ import {
     type Attribute,
     type Location,
 } from '../common/token.js';
-import { htmlDecodeTree, BinTrieFlags, determineBranch } from 'entities/lib/decode.js';
+import { htmlDecodeTree, EntityDecoder, DecodingMode } from 'entities/lib/decode.js';
 import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
 import { TAG_ID, getTagID } from '../common/html.js';
-
-//C1 Unicode control character reference replacements
-const C1_CONTROLS_REFERENCE_REPLACEMENTS = new Map([
-    [0x80, 0x20_ac],
-    [0x82, 0x20_1a],
-    [0x83, 0x01_92],
-    [0x84, 0x20_1e],
-    [0x85, 0x20_26],
-    [0x86, 0x20_20],
-    [0x87, 0x20_21],
-    [0x88, 0x02_c6],
-    [0x89, 0x20_30],
-    [0x8a, 0x01_60],
-    [0x8b, 0x20_39],
-    [0x8c, 0x01_52],
-    [0x8e, 0x01_7d],
-    [0x91, 0x20_18],
-    [0x92, 0x20_19],
-    [0x93, 0x20_1c],
-    [0x94, 0x20_1d],
-    [0x95, 0x20_22],
-    [0x96, 0x20_13],
-    [0x97, 0x20_14],
-    [0x98, 0x02_dc],
-    [0x99, 0x21_22],
-    [0x9a, 0x01_61],
-    [0x9b, 0x20_3a],
-    [0x9c, 0x01_53],
-    [0x9e, 0x01_7e],
-    [0x9f, 0x01_78],
-]);
 
 //States
 const enum State {
@@ -128,13 +97,7 @@ const enum State {
     CDATA_SECTION_BRACKET,
     CDATA_SECTION_END,
     CHARACTER_REFERENCE,
-    NAMED_CHARACTER_REFERENCE,
     AMBIGUOUS_AMPERSAND,
-    NUMERIC_CHARACTER_REFERENCE,
-    HEXADEMICAL_CHARACTER_REFERENCE_START,
-    HEXADEMICAL_CHARACTER_REFERENCE,
-    DECIMAL_CHARACTER_REFERENCE,
-    NUMERIC_CHARACTER_REFERENCE_END,
 }
 
 //Tokenizer initial states for different modes
@@ -172,19 +135,6 @@ function isAsciiLetter(cp: number): boolean {
 function isAsciiAlphaNumeric(cp: number): boolean {
     return isAsciiLetter(cp) || isAsciiDigit(cp);
 }
-
-function isAsciiUpperHexDigit(cp: number): boolean {
-    return cp >= $.LATIN_CAPITAL_A && cp <= $.LATIN_CAPITAL_F;
-}
-
-function isAsciiLowerHexDigit(cp: number): boolean {
-    return cp >= $.LATIN_SMALL_A && cp <= $.LATIN_SMALL_F;
-}
-
-function isAsciiHexDigit(cp: number): boolean {
-    return isAsciiDigit(cp) || isAsciiUpperHexDigit(cp) || isAsciiLowerHexDigit(cp);
-}
-
 function toAsciiLower(cp: number): number {
     return cp + 0x00_20;
 }
@@ -193,12 +143,24 @@ function isWhitespace(cp: number): boolean {
     return cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED;
 }
 
-function isEntityInAttributeInvalidEnd(nextCp: number): boolean {
-    return nextCp === $.EQUALS_SIGN || isAsciiAlphaNumeric(nextCp);
-}
-
 function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
     return isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN;
+}
+
+function getErrorForNumericCharacterReference(code: number): ERR | null {
+    if (code === $.NULL) {
+        return ERR.nullCharacterReference;
+    } else if (code > 0x10_ff_ff) {
+        return ERR.characterReferenceOutsideUnicodeRange;
+    } else if (isSurrogate(code)) {
+        return ERR.surrogateCharacterReference;
+    } else if (isUndefinedCodePoint(code)) {
+        return ERR.noncharacterCharacterReference;
+    } else if (isControlCodePoint(code) || code === $.CARRIAGE_RETURN) {
+        return ERR.controlCharacterReference;
+    }
+
+    return null;
 }
 
 export interface TokenizerOptions {
@@ -239,8 +201,8 @@ export class Tokenizer {
     public state = State.DATA;
     private returnState = State.DATA;
 
-    private charRefCode = -1;
-
+    private entityDecoder: EntityDecoder;
+    private entityStartPos = 0;
     private consumedAfterSnapshot = -1;
 
     private currentLocation: Location | null;
@@ -251,11 +213,40 @@ export class Tokenizer {
     constructor(private options: TokenizerOptions, private handler: TokenHandler) {
         this.preprocessor = new Preprocessor(handler);
         this.currentLocation = this.getCurrentLocation(-1);
+
+        this.entityDecoder = new EntityDecoder(
+            htmlDecodeTree,
+            (cp: number, consumed: number) => {
+                this._flushCodePointConsumedAsCharacterReference(cp);
+                this.preprocessor.pos = this.entityStartPos + consumed - 1;
+            },
+            handler.onParseError
+                ? {
+                      missingSemicolonAfterCharacterReference: (): void => {
+                          // We want to emit this error on the code point after the entity.
+                          this._errOnNextCp(ERR.missingSemicolonAfterCharacterReference);
+                      },
+                      absenceOfDigitsInNumericCharacterReference: (): void => {
+                          this._errOnNextCp(ERR.absenceOfDigitsInNumericCharacterReference);
+                      },
+                      validateNumericCharacterReference: (code: number): void => {
+                          const error = getErrorForNumericCharacterReference(code);
+                          if (error) this._errOnNextCp(error);
+                      },
+                  }
+                : undefined
+        );
     }
 
     //Errors
     private _err(code: ERR): void {
         this.handler.onParseError?.(this.preprocessor.getError(code));
+    }
+
+    private _errOnNextCp(error: ERR): void {
+        this._advanceBy(1);
+        this._err(error);
+        this._unconsume(1);
     }
 
     // NOTE: `offset` may never run across line boundaries.
@@ -599,72 +590,13 @@ export class Tokenizer {
     }
 
     // Character reference helpers
-    private _matchNamedCharacterReference(cp: number): number[] | null {
-        let result: number[] | null = null;
-        let excess = 0;
-        let withoutSemicolon = false;
-
-        for (let i = 0, current = htmlDecodeTree[0]; i >= 0; cp = this._consume()) {
-            i = determineBranch(htmlDecodeTree, current, i + 1, cp);
-
-            if (i < 0) break;
-
-            excess += 1;
-
-            current = htmlDecodeTree[i];
-
-            const masked = current & BinTrieFlags.VALUE_LENGTH;
-
-            // If the branch is a value, store it and continue
-            if (masked) {
-                // The mask is the number of bytes of the value, including the current byte.
-                const valueLength = (masked >> 14) - 1;
-
-                // Attribute values that aren't terminated properly aren't parsed, and shouldn't lead to a parser error.
-                // See the example in https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state
-                if (
-                    cp !== $.SEMICOLON &&
-                    this._isCharacterReferenceInAttribute() &&
-                    isEntityInAttributeInvalidEnd(this.preprocessor.peek(1))
-                ) {
-                    //NOTE: we don't flush all consumed code points here, and instead switch back to the original state after
-                    //emitting an ampersand. This is fine, as alphanumeric characters won't be parsed differently in attributes.
-                    result = [$.AMPERSAND];
-
-                    // Skip over the value.
-                    i += valueLength;
-                } else {
-                    // If this is a surrogate pair, consume the next two bytes.
-                    result =
-                        valueLength === 0
-                            ? [htmlDecodeTree[i] & ~BinTrieFlags.VALUE_LENGTH]
-                            : valueLength === 1
-                            ? [htmlDecodeTree[++i]]
-                            : [htmlDecodeTree[++i], htmlDecodeTree[++i]];
-                    excess = 0;
-                    withoutSemicolon = cp !== $.SEMICOLON;
-                }
-
-                if (valueLength === 0) {
-                    // If the value is zero-length, we're done.
-                    this._consume();
-                    break;
-                }
-            }
-        }
-
-        this._unconsume(excess);
-
-        if (withoutSemicolon && !this.preprocessor.endOfChunkHit) {
-            this._err(ERR.missingSemicolonAfterCharacterReference);
-        }
-
-        // We want to emit the error above on the code point after the entity.
-        // We always consume one code point too many in the loop, and we wait to
-        // unconsume it until after the error is emitted.
-        this._unconsume(1);
-
-        return result;
+    private _startCharacterReference(): void {
+        this.returnState = this.state;
+        this.state = State.CHARACTER_REFERENCE;
+        this.entityStartPos = this.preprocessor.pos;
+        this.entityDecoder.startEntity(
+            this._isCharacterReferenceInAttribute() ? DecodingMode.Attribute : DecodingMode.Legacy
+        );
     }
 
     private _isCharacterReferenceInAttribute(): boolean {
@@ -974,32 +906,8 @@ export class Tokenizer {
                 this._stateCharacterReference(cp);
                 break;
             }
-            case State.NAMED_CHARACTER_REFERENCE: {
-                this._stateNamedCharacterReference(cp);
-                break;
-            }
             case State.AMBIGUOUS_AMPERSAND: {
                 this._stateAmbiguousAmpersand(cp);
-                break;
-            }
-            case State.NUMERIC_CHARACTER_REFERENCE: {
-                this._stateNumericCharacterReference(cp);
-                break;
-            }
-            case State.HEXADEMICAL_CHARACTER_REFERENCE_START: {
-                this._stateHexademicalCharacterReferenceStart(cp);
-                break;
-            }
-            case State.HEXADEMICAL_CHARACTER_REFERENCE: {
-                this._stateHexademicalCharacterReference(cp);
-                break;
-            }
-            case State.DECIMAL_CHARACTER_REFERENCE: {
-                this._stateDecimalCharacterReference(cp);
-                break;
-            }
-            case State.NUMERIC_CHARACTER_REFERENCE_END: {
-                this._stateNumericCharacterReferenceEnd(cp);
                 break;
             }
             default: {
@@ -1019,8 +927,7 @@ export class Tokenizer {
                 break;
             }
             case $.AMPERSAND: {
-                this.returnState = State.DATA;
-                this.state = State.CHARACTER_REFERENCE;
+                this._startCharacterReference();
                 break;
             }
             case $.NULL: {
@@ -1043,8 +950,7 @@ export class Tokenizer {
     private _stateRcdata(cp: number): void {
         switch (cp) {
             case $.AMPERSAND: {
-                this.returnState = State.RCDATA;
-                this.state = State.CHARACTER_REFERENCE;
+                this._startCharacterReference();
                 break;
             }
             case $.LESS_THAN_SIGN: {
@@ -1843,8 +1749,7 @@ export class Tokenizer {
                 break;
             }
             case $.AMPERSAND: {
-                this.returnState = State.ATTRIBUTE_VALUE_DOUBLE_QUOTED;
-                this.state = State.CHARACTER_REFERENCE;
+                this._startCharacterReference();
                 break;
             }
             case $.NULL: {
@@ -1872,8 +1777,7 @@ export class Tokenizer {
                 break;
             }
             case $.AMPERSAND: {
-                this.returnState = State.ATTRIBUTE_VALUE_SINGLE_QUOTED;
-                this.state = State.CHARACTER_REFERENCE;
+                this._startCharacterReference();
                 break;
             }
             case $.NULL: {
@@ -1905,8 +1809,7 @@ export class Tokenizer {
                 break;
             }
             case $.AMPERSAND: {
-                this.returnState = State.ATTRIBUTE_VALUE_UNQUOTED;
-                this.state = State.CHARACTER_REFERENCE;
+                this._startCharacterReference();
                 break;
             }
             case $.GREATER_THAN_SIGN: {
@@ -2968,37 +2871,45 @@ export class Tokenizer {
         }
     }
 
+    private _matchCharacterReference(): boolean {
+        this.entityDecoder.startEntity(
+            this._isCharacterReferenceInAttribute() ? DecodingMode.Attribute : DecodingMode.Legacy
+        );
+
+        const length = this.entityDecoder.write(this.preprocessor.html, this.preprocessor.pos);
+
+        if (length < 0) {
+            if (this.preprocessor.lastChunkWritten) {
+                return this.entityDecoder.end() !== 0;
+            }
+
+            this.preprocessor.endOfChunkHit = true;
+            return false;
+        }
+
+        return length !== 0;
+    }
+
     // Character reference state
     //------------------------------------------------------------------
     private _stateCharacterReference(cp: number): void {
-        if (cp === $.NUMBER_SIGN) {
-            this.state = State.NUMERIC_CHARACTER_REFERENCE;
-        } else if (isAsciiAlphaNumeric(cp)) {
-            this.state = State.NAMED_CHARACTER_REFERENCE;
-            this._stateNamedCharacterReference(cp);
-        } else {
-            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this._reconsumeInState(this.returnState, cp);
-        }
-    }
-
-    // Named character reference state
-    //------------------------------------------------------------------
-    private _stateNamedCharacterReference(cp: number): void {
-        const matchResult = this._matchNamedCharacterReference(cp);
+        const matchResult = this._matchCharacterReference();
 
         //NOTE: Matching can be abrupted by hibernation. In that case, match
         //results are no longer valid and we will need to start over.
         if (this._ensureHibernation()) {
             // Stay in the state, try again.
         } else if (matchResult) {
-            for (let i = 0; i < matchResult.length; i++) {
-                this._flushCodePointConsumedAsCharacterReference(matchResult[i]);
-            }
             this.state = this.returnState;
         } else {
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this.state = State.AMBIGUOUS_AMPERSAND;
+
+            if (this.entityStartPos === this.preprocessor.pos + 1 && isAsciiAlphaNumeric(cp)) {
+                this.state = State.AMBIGUOUS_AMPERSAND;
+                this._stateAmbiguousAmpersand(cp);
+            } else {
+                this._reconsumeInState(this.returnState, cp);
+            }
         }
     }
 
@@ -3016,98 +2927,12 @@ export class Tokenizer {
         }
     }
 
+    // The following states are all handled by `entities`:
+
+    // Named character reference state
     // Numeric character reference state
-    //------------------------------------------------------------------
-    private _stateNumericCharacterReference(cp: number): void {
-        this.charRefCode = 0;
-
-        if (cp === $.LATIN_SMALL_X || cp === $.LATIN_CAPITAL_X) {
-            this.state = State.HEXADEMICAL_CHARACTER_REFERENCE_START;
-        }
-        // Inlined decimal character reference start state
-        else if (isAsciiDigit(cp)) {
-            this.state = State.DECIMAL_CHARACTER_REFERENCE;
-            this._stateDecimalCharacterReference(cp);
-        } else {
-            this._err(ERR.absenceOfDigitsInNumericCharacterReference);
-            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
-            this._reconsumeInState(this.returnState, cp);
-        }
-    }
-
     // Hexademical character reference start state
-    //------------------------------------------------------------------
-    private _stateHexademicalCharacterReferenceStart(cp: number): void {
-        if (isAsciiHexDigit(cp)) {
-            this.state = State.HEXADEMICAL_CHARACTER_REFERENCE;
-            this._stateHexademicalCharacterReference(cp);
-        } else {
-            this._err(ERR.absenceOfDigitsInNumericCharacterReference);
-            this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this._flushCodePointConsumedAsCharacterReference($.NUMBER_SIGN);
-            this._unconsume(2);
-            this.state = this.returnState;
-        }
-    }
-
     // Hexademical character reference state
-    //------------------------------------------------------------------
-    private _stateHexademicalCharacterReference(cp: number): void {
-        if (isAsciiUpperHexDigit(cp)) {
-            this.charRefCode = this.charRefCode * 16 + cp - 0x37;
-        } else if (isAsciiLowerHexDigit(cp)) {
-            this.charRefCode = this.charRefCode * 16 + cp - 0x57;
-        } else if (isAsciiDigit(cp)) {
-            this.charRefCode = this.charRefCode * 16 + cp - 0x30;
-        } else if (cp === $.SEMICOLON) {
-            this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-        } else {
-            this._err(ERR.missingSemicolonAfterCharacterReference);
-            this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-            this._stateNumericCharacterReferenceEnd(cp);
-        }
-    }
-
     // Decimal character reference state
-    //------------------------------------------------------------------
-    private _stateDecimalCharacterReference(cp: number): void {
-        if (isAsciiDigit(cp)) {
-            this.charRefCode = this.charRefCode * 10 + cp - 0x30;
-        } else if (cp === $.SEMICOLON) {
-            this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-        } else {
-            this._err(ERR.missingSemicolonAfterCharacterReference);
-            this.state = State.NUMERIC_CHARACTER_REFERENCE_END;
-            this._stateNumericCharacterReferenceEnd(cp);
-        }
-    }
-
     // Numeric character reference end state
-    //------------------------------------------------------------------
-    private _stateNumericCharacterReferenceEnd(cp: number): void {
-        if (this.charRefCode === $.NULL) {
-            this._err(ERR.nullCharacterReference);
-            this.charRefCode = $.REPLACEMENT_CHARACTER;
-        } else if (this.charRefCode > 0x10_ff_ff) {
-            this._err(ERR.characterReferenceOutsideUnicodeRange);
-            this.charRefCode = $.REPLACEMENT_CHARACTER;
-        } else if (isSurrogate(this.charRefCode)) {
-            this._err(ERR.surrogateCharacterReference);
-            this.charRefCode = $.REPLACEMENT_CHARACTER;
-        } else if (isUndefinedCodePoint(this.charRefCode)) {
-            this._err(ERR.noncharacterCharacterReference);
-        } else if (isControlCodePoint(this.charRefCode) || this.charRefCode === $.CARRIAGE_RETURN) {
-            this._err(ERR.controlCharacterReference);
-
-            const replacement = C1_CONTROLS_REFERENCE_REPLACEMENTS.get(this.charRefCode);
-
-            if (replacement !== undefined) {
-                this.charRefCode = replacement;
-            }
-        }
-
-        this._flushCodePointConsumedAsCharacterReference(this.charRefCode);
-        this._reconsumeInState(this.returnState, cp);
-    }
 }

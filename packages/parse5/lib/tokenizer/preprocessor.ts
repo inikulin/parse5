@@ -16,12 +16,12 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream)
 export class Preprocessor {
     public html = '';
-    private pos = -1;
+    public pos = -1;
     // NOTE: Initial `lastGapPos` is -2, to ensure `col` on initialisation is 0
     private lastGapPos = -2;
     private gapStack: number[] = [];
     private skipNextNewLine = false;
-    private lastChunkWritten = false;
+    public lastChunkWritten = false;
     public endOfChunkHit = false;
     public bufferWaterline = DEFAULT_BUFFER_WATERLINE;
 
