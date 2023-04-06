@@ -223,7 +223,6 @@ export class Tokenizer {
             handler.onParseError
                 ? {
                       missingSemicolonAfterCharacterReference: (): void => {
-                          // We want to emit this error on the code point after the entity.
                           this._errOnNextCp(ERR.missingSemicolonAfterCharacterReference);
                       },
                       absenceOfDigitsInNumericCharacterReference: (): void => {
@@ -243,6 +242,7 @@ export class Tokenizer {
         this.handler.onParseError?.(this.preprocessor.getError(code));
     }
 
+    /** For errors we want to emit on the code point after. */
     private _errOnNextCp(error: ERR): void {
         this._advanceBy(1);
         this._err(error);
@@ -2883,6 +2883,8 @@ export class Tokenizer {
                 return this.entityDecoder.end() !== 0;
             }
 
+            this.active = false;
+            this.consumedAfterSnapshot = 1;
             this.preprocessor.endOfChunkHit = true;
             return false;
         }
@@ -2893,18 +2895,22 @@ export class Tokenizer {
     // Character reference state
     //------------------------------------------------------------------
     private _stateCharacterReference(cp: number): void {
-        const matchResult = this._matchCharacterReference();
-
-        //NOTE: Matching can be abrupted by hibernation. In that case, match
-        //results are no longer valid and we will need to start over.
-        if (this._ensureHibernation()) {
-            // Stay in the state, try again.
-        } else if (matchResult) {
+        if (this._matchCharacterReference()) {
             this.state = this.returnState;
+        } else if (this._ensureHibernation()) {
+            /*
+             * NOTE: Matching can be abrupted by hibernation. In that case, match
+             * results are no longer valid and we will need to start over.
+             * Stay in the state, try again.
+             */
         } else {
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
 
-            if (this.entityStartPos === this.preprocessor.pos + 1 && isAsciiAlphaNumeric(cp)) {
+            if (
+                !this._isCharacterReferenceInAttribute() &&
+                this.entityStartPos === this.preprocessor.pos - 1 &&
+                isAsciiAlphaNumeric(cp)
+            ) {
                 this.state = State.AMBIGUOUS_AMPERSAND;
                 this._stateAmbiguousAmpersand(cp);
             } else {
