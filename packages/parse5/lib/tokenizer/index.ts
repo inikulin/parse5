@@ -225,8 +225,10 @@ export class Tokenizer {
                       missingSemicolonAfterCharacterReference: (): void => {
                           this._errOnNextCp(ERR.missingSemicolonAfterCharacterReference);
                       },
-                      absenceOfDigitsInNumericCharacterReference: (): void => {
-                          this._errOnNextCp(ERR.absenceOfDigitsInNumericCharacterReference);
+                      absenceOfDigitsInNumericCharacterReference: (consumed: number): void => {
+                          this._advanceBy(consumed - 1);
+                          this._err(ERR.absenceOfDigitsInNumericCharacterReference);
+                          this._unconsume(consumed - 1);
                       },
                       validateNumericCharacterReference: (code: number): void => {
                           const error = getErrorForNumericCharacterReference(code);
