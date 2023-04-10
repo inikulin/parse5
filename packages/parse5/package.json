@@ -45,6 +45,7 @@
     "files": [
         "dist/cjs/package.json",
         "dist/**/*.js",
+        "dist/**/*.js.map",
         "dist/**/*.d.ts"
     ]
 }
