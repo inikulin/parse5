@@ -81,7 +81,6 @@ const XML_ATTRS_ADJUSTMENT_MAP = new Map([
     ['xlink:show', { prefix: 'xlink', name: 'show', namespace: NS.XLINK }],
     ['xlink:title', { prefix: 'xlink', name: 'title', namespace: NS.XLINK }],
     ['xlink:type', { prefix: 'xlink', name: 'type', namespace: NS.XLINK }],
-    ['xml:base', { prefix: 'xml', name: 'base', namespace: NS.XML }],
     ['xml:lang', { prefix: 'xml', name: 'lang', namespace: NS.XML }],
     ['xml:space', { prefix: 'xml', name: 'space', namespace: NS.XML }],
     ['xmlns', { prefix: '', name: 'xmlns', namespace: NS.XMLNS }],
