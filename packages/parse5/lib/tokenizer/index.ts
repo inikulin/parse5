@@ -230,7 +230,7 @@ export class Tokenizer {
             htmlDecodeTree,
             (cp: number, consumed: number) => {
                 // Note: Set `pos` _before_ flushing, as flushing might drop
-                // the current chunk and make `pos` difficult.
+                // the current chunk and invalidate `entityStartPos`.
                 this.preprocessor.pos = this.entityStartPos + consumed - 1;
                 this._flushCodePointConsumedAsCharacterReference(cp);
             },
@@ -2897,7 +2897,7 @@ export class Tokenizer {
             if (this.preprocessor.lastChunkWritten) {
                 length = this.entityDecoder.end();
             } else {
-                // Wait for the next chunk for the rest of the entity.
+                // Wait for the rest of the entity.
                 this.active = false;
                 // Mark entire buffer as read.
                 this.preprocessor.pos = this.preprocessor.html.length - 1;
@@ -2908,7 +2908,8 @@ export class Tokenizer {
         }
 
         if (length === 0) {
-            // This was not a valid entity.
+            // This was not a valid entity. Go back to the beginning, and
+            // figure out what to do.
             this.preprocessor.pos = this.entityStartPos;
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
 
@@ -2921,7 +2922,7 @@ export class Tokenizer {
                 this._reconsumeInState(this.returnState, cp);
             }
         } else {
-            // We successfully parsed an entity. Return to the return state.
+            // We successfully parsed an entity. Switch to the return state.
             this.state = this.returnState;
         }
     }
