@@ -2899,7 +2899,7 @@ export class Tokenizer {
             } else {
                 // Wait for the rest of the entity.
                 this.active = false;
-                // Mark entire buffer as read.
+                // Mark the entire buffer as read.
                 this.preprocessor.pos = this.preprocessor.html.length - 1;
                 this.consumedAfterSnapshot = 0;
                 this.preprocessor.endOfChunkHit = true;
