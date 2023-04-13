@@ -2876,36 +2876,31 @@ export class Tokenizer {
         }
     }
 
-    private _matchCharacterReference(): boolean {
-        const length = this.entityDecoder.write(this.preprocessor.html, this.preprocessor.pos);
-
-        if (length < 0) {
-            if (this.preprocessor.lastChunkWritten) {
-                return this.entityDecoder.end() !== 0;
-            }
-
-            this.active = false;
-
-            this.preprocessor.pos = this.preprocessor.html.length;
-            this.consumedAfterSnapshot = 1;
-            this.preprocessor.endOfChunkHit = true;
-            return false;
-        }
-
-        return length !== 0;
-    }
-
     // Character reference state
     //------------------------------------------------------------------
     private _stateCharacterReference(): void {
-        if (this._matchCharacterReference()) {
-            this.state = this.returnState;
-        } else if (!this._ensureHibernation()) {
+        let length = this.entityDecoder.write(this.preprocessor.html, this.preprocessor.pos);
+
+        if (length < 0) {
+            if (this.preprocessor.lastChunkWritten) {
+                length = this.entityDecoder.end();
+            } else {
+                // Wait for the next chunk for the rest of the entity.
+                this.active = false;
+                // Mark entire buffer as read.
+                this.preprocessor.pos = this.preprocessor.html.length - 1;
+                this.consumedAfterSnapshot = 0;
+                this.preprocessor.endOfChunkHit = true;
+                return;
+            }
+        }
+
+        if (length === 0) {
+            // This was not a valid entity.
             this.preprocessor.pos = this.entityStartPos;
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
-            this.preprocessor.pos += 1;
 
-            const cp = this.preprocessor.peek(0);
+            const cp = this.preprocessor.advance();
 
             if (!this._isCharacterReferenceInAttribute() && isAsciiAlphaNumeric(cp)) {
                 this.state = State.AMBIGUOUS_AMPERSAND;
@@ -2913,6 +2908,9 @@ export class Tokenizer {
             } else {
                 this._reconsumeInState(this.returnState, cp);
             }
+        } else {
+            // We successfully parsed an entity. Return to the return state.
+            this.state = this.returnState;
         }
     }
 
