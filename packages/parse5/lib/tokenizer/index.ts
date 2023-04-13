@@ -201,6 +201,18 @@ export class Tokenizer {
     public state = State.DATA;
     private returnState = State.DATA;
 
+    /**
+     * We use `entities`' `EntityDecoder` to parse character references.
+     *
+     * All of the following states are handled by the `EntityDecoder`:
+     *
+     * - Named character reference state
+     * - Numeric character reference state
+     * - Hexademical character reference start state
+     * - Hexademical character reference state
+     * - Decimal character reference state
+     * - Numeric character reference end state
+     */
     private entityDecoder: EntityDecoder;
     private entityStartPos = 0;
     private consumedAfterSnapshot = -1;
@@ -2927,13 +2939,4 @@ export class Tokenizer {
             this._reconsumeInState(this.returnState, cp);
         }
     }
-
-    // The following states are all handled by `entities`:
-
-    // Named character reference state
-    // Numeric character reference state
-    // Hexademical character reference start state
-    // Hexademical character reference state
-    // Decimal character reference state
-    // Numeric character reference end state
 }
