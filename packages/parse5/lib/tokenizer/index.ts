@@ -217,8 +217,10 @@ export class Tokenizer {
         this.entityDecoder = new EntityDecoder(
             htmlDecodeTree,
             (cp: number, consumed: number) => {
-                this._flushCodePointConsumedAsCharacterReference(cp);
+                // Note: Set `pos` _before_ flushing, as flushing might drop
+                // the current chunk and make `pos` difficult.
                 this.preprocessor.pos = this.entityStartPos + consumed - 1;
+                this._flushCodePointConsumedAsCharacterReference(cp);
             },
             handler.onParseError
                 ? {
