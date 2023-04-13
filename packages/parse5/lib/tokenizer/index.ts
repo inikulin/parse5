@@ -907,7 +907,7 @@ export class Tokenizer {
                 break;
             }
             case State.CHARACTER_REFERENCE: {
-                this._stateCharacterReference(cp);
+                this._stateCharacterReference();
                 break;
             }
             case State.AMBIGUOUS_AMPERSAND: {
@@ -2876,10 +2876,6 @@ export class Tokenizer {
     }
 
     private _matchCharacterReference(): boolean {
-        this.entityDecoder.startEntity(
-            this._isCharacterReferenceInAttribute() ? DecodingMode.Attribute : DecodingMode.Legacy
-        );
-
         const length = this.entityDecoder.write(this.preprocessor.html, this.preprocessor.pos);
 
         if (length < 0) {
@@ -2888,6 +2884,8 @@ export class Tokenizer {
             }
 
             this.active = false;
+
+            this.preprocessor.pos = this.preprocessor.html.length;
             this.consumedAfterSnapshot = 1;
             this.preprocessor.endOfChunkHit = true;
             return false;
@@ -2898,23 +2896,17 @@ export class Tokenizer {
 
     // Character reference state
     //------------------------------------------------------------------
-    private _stateCharacterReference(cp: number): void {
+    private _stateCharacterReference(): void {
         if (this._matchCharacterReference()) {
             this.state = this.returnState;
-        } else if (this._ensureHibernation()) {
-            /*
-             * NOTE: Matching can be abrupted by hibernation. In that case, match
-             * results are no longer valid and we will need to start over.
-             * Stay in the state, try again.
-             */
-        } else {
+        } else if (!this._ensureHibernation()) {
+            this.preprocessor.pos = this.entityStartPos;
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
+            this.preprocessor.pos += 1;
 
-            if (
-                !this._isCharacterReferenceInAttribute() &&
-                this.entityStartPos === this.preprocessor.pos - 1 &&
-                isAsciiAlphaNumeric(cp)
-            ) {
+            const cp = this.preprocessor.peek(0);
+
+            if (!this._isCharacterReferenceInAttribute() && isAsciiAlphaNumeric(cp)) {
                 this.state = State.AMBIGUOUS_AMPERSAND;
                 this._stateAmbiguousAmpersand(cp);
             } else {
