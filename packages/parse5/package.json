@@ -8,7 +8,7 @@
     "homepage": "https://github.com/inikulin/parse5",
     "funding": "https://github.com/inikulin/parse5?sponsor=1",
     "dependencies": {
-        "entities": "^4.4.0"
+        "entities": "^4.5.0"
     },
     "keywords": [
         "html",
