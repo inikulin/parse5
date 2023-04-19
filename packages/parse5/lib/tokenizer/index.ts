@@ -261,9 +261,9 @@ export class Tokenizer {
 
     /** For errors we want to emit on the code point after. */
     private _errOnNextCp(error: ERR): void {
-        this._advanceBy(1);
+        this.preprocessor.pos += 1;
         this._err(error);
-        this._unconsume(1);
+        this.preprocessor.pos -= 1;
     }
 
     // NOTE: `offset` may never run across line boundaries.
@@ -341,7 +341,8 @@ export class Tokenizer {
     //Hibernation
     private _ensureHibernation(): boolean {
         if (this.preprocessor.endOfChunkHit) {
-            this._unconsume(this.consumedAfterSnapshot);
+            this.preprocessor.retreat(this.consumedAfterSnapshot);
+            this.consumedAfterSnapshot = 0;
             this.active = false;
 
             return true;
@@ -354,16 +355,6 @@ export class Tokenizer {
     private _consume(): number {
         this.consumedAfterSnapshot++;
         return this.preprocessor.advance();
-    }
-
-    private _unconsume(count: number): void {
-        this.consumedAfterSnapshot -= count;
-        this.preprocessor.retreat(count);
-    }
-
-    private _reconsumeInState(state: State, cp: number): void {
-        this.state = state;
-        this._callState(cp);
     }
 
     private _advanceBy(count: number): void {
@@ -2913,14 +2904,10 @@ export class Tokenizer {
             this.preprocessor.pos = this.entityStartPos;
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
 
-            const cp = this.preprocessor.advance();
-
-            if (!this._isCharacterReferenceInAttribute() && isAsciiAlphaNumeric(cp)) {
-                this.state = State.AMBIGUOUS_AMPERSAND;
-                this._stateAmbiguousAmpersand(cp);
-            } else {
-                this._reconsumeInState(this.returnState, cp);
-            }
+            this.state =
+                !this._isCharacterReferenceInAttribute() && isAsciiAlphaNumeric(this.preprocessor.peek(1))
+                    ? State.AMBIGUOUS_AMPERSAND
+                    : this.returnState;
         } else {
             // We successfully parsed an entity. Switch to the return state.
             this.state = this.returnState;
@@ -2937,7 +2924,8 @@ export class Tokenizer {
                 this._err(ERR.unknownNamedCharacterReference);
             }
 
-            this._reconsumeInState(this.returnState, cp);
+            this.state = this.returnState;
+            this._callState(cp);
         }
     }
 }
