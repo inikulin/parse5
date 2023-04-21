@@ -551,7 +551,7 @@ export class Tokenizer {
 
     //Characters emission
 
-    //OPTIMIZATION: specification uses only one type of character tokens (one token per character).
+    //OPTIMIZATION: The specification uses only one type of character token (one token per character).
     //This causes a huge memory overhead and a lot of unnecessary parser loops. parse5 uses 3 groups of characters.
     //If we have a sequence of characters that belong to the same group, the parser can process it
     //as a single solid character token.
