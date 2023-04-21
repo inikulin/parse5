@@ -237,17 +237,17 @@ export class Tokenizer {
             handler.onParseError
                 ? {
                       missingSemicolonAfterCharacterReference: (): void => {
-                          this._errOnNextCp(ERR.missingSemicolonAfterCharacterReference);
+                          this._err(ERR.missingSemicolonAfterCharacterReference, 1);
                       },
                       absenceOfDigitsInNumericCharacterReference: (consumed: number): void => {
-                          const { pos } = this.preprocessor;
-                          this.preprocessor.pos = this.entityStartPos + consumed;
-                          this._err(ERR.absenceOfDigitsInNumericCharacterReference);
-                          this.preprocessor.pos = pos;
+                          this._err(
+                              ERR.absenceOfDigitsInNumericCharacterReference,
+                              this.entityStartPos - this.preprocessor.pos + consumed
+                          );
                       },
                       validateNumericCharacterReference: (code: number): void => {
                           const error = getErrorForNumericCharacterReference(code);
-                          if (error) this._errOnNextCp(error);
+                          if (error) this._err(error, 1);
                       },
                   }
                 : undefined
@@ -255,15 +255,8 @@ export class Tokenizer {
     }
 
     //Errors
-    private _err(code: ERR): void {
-        this.handler.onParseError?.(this.preprocessor.getError(code));
-    }
-
-    /** For errors we want to emit on the code point after. */
-    private _errOnNextCp(error: ERR): void {
-        this.preprocessor.pos += 1;
-        this._err(error);
-        this.preprocessor.pos -= 1;
+    private _err(code: ERR, cpOffset = 0): void {
+        this.handler.onParseError?.(this.preprocessor.getError(code, cpOffset));
     }
 
     // NOTE: `offset` may never run across line boundaries.
