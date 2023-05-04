@@ -394,6 +394,10 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
 
+    /**
+     * For self-closing tags. Add an element to the tree, but skip adding it
+     * to the stack.
+     */
     _appendElement(token: TagToken, namespaceURI: NS): void {
         const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
 
@@ -3222,6 +3226,19 @@ function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
             }
 
             p._insertElement(token, NS.HTML);
+            break;
+        }
+        case $.HR: {
+            if (p.openElements.currentTagId === $.OPTION) {
+                p.openElements.pop();
+            }
+
+            if (p.openElements.currentTagId === $.OPTGROUP) {
+                p.openElements.pop();
+            }
+
+            p._appendElement(token, NS.HTML);
+            token.ackSelfClosing = true;
             break;
         }
         case $.INPUT:
