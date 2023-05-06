@@ -27,7 +27,7 @@
     "scripts": {
         "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
         "build:esm": "tsc --build packages/* test",
-        "build:docs": "node --max-old-space-size=8192 node_modules/.bin/typedoc .",
+        "build:docs": "typedoc",
         "prettier": "prettier '**/*.{js,ts,md,json,yml}' --loglevel warn",
         "format": "npm run format:es && npm run format:prettier",
         "format:es": "npm run lint:es -- --fix",

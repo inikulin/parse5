@@ -41,6 +41,7 @@ export interface SAXParserOptions {
  */
 export class SAXParser extends Transform implements TokenHandler {
     protected options: SAXParserOptions;
+    /** @internal */
     protected parserFeedbackSimulator: ParserFeedbackSimulator;
     private pendingText: Text | null = null;
     private lastChunkWritten = false;

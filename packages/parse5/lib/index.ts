@@ -4,16 +4,15 @@ import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
 export { type DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/default.js';
+export type * as DefaultTreeAdapterTypes from './tree-adapters/default.js';
 export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
 export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
 export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
-export { ERR as ErrorCodes, type ParserError } from './common/error-codes.js';
+export { ERR as ErrorCodes, type ParserError, type ParserErrorHandler } from './common/error-codes.js';
 
 /** @internal */
 export * as foreignContent from './common/foreign-content.js';
-/** @internal */
 export * as html from './common/html.js';
-/** @internal */
 export * as Token from './common/token.js';
 /** @internal */
 export { Tokenizer, type TokenizerOptions, TokenizerMode, type TokenHandler } from './tokenizer/index.js';
