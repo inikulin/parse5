@@ -59,11 +59,6 @@
         "preset": "ts-jest/presets/default-esm",
         "testEnvironment": "node",
         "coverageProvider": "v8",
-        "globals": {
-            "ts-jest": {
-                "useESM": true
-            }
-        },
         "moduleNameMapper": {
             "^(parse5[^/]*)/dist/(.*?)(?:\\.js)?$": "<rootDir>/packages/$1/lib/$2",
             "^(parse5[^/]*)$": "<rootDir>/packages/$1/lib/index.ts",

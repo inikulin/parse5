@@ -16,12 +16,12 @@ const DEFAULT_BUFFER_WATERLINE = 1 << 16;
 //(see: http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#preprocessing-the-input-stream)
 export class Preprocessor {
     public html = '';
-    private pos = -1;
+    public pos = -1;
     // NOTE: Initial `lastGapPos` is -2, to ensure `col` on initialisation is 0
     private lastGapPos = -2;
     private gapStack: number[] = [];
     private skipNextNewLine = false;
-    private lastChunkWritten = false;
+    public lastChunkWritten = false;
     public endOfChunkHit = false;
     public bufferWaterline = DEFAULT_BUFFER_WATERLINE;
 
@@ -41,17 +41,19 @@ export class Preprocessor {
         return this.droppedBufferSize + this.pos;
     }
 
-    public getError(code: ERR): ParserError {
+    public getError(code: ERR, cpOffset: number): ParserError {
         const { line, col, offset } = this;
+        const startCol = col + cpOffset;
+        const startOffset = offset + cpOffset;
 
         return {
             code,
             startLine: line,
             endLine: line,
-            startCol: col,
-            endCol: col,
-            startOffset: offset,
-            endOffset: offset,
+            startCol,
+            endCol: startCol,
+            startOffset,
+            endOffset: startOffset,
         };
     }
 
@@ -60,7 +62,7 @@ export class Preprocessor {
     private _err(code: ERR): void {
         if (this.handler.onParseError && this.lastErrOffset !== this.offset) {
             this.lastErrOffset = this.offset;
-            this.handler.onParseError(this.getError(code));
+            this.handler.onParseError(this.getError(code, 0));
         }
     }
 
