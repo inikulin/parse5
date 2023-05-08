@@ -30,7 +30,7 @@ export interface TreeAdapterTypeMap<
  * Note that `TreeAdapter` is not designed to be a general purpose AST manipulation library. You can build such library
  * on top of existing `TreeAdapter` or use one of the existing libraries from npm.
  *
- * @see The default implementation {@link parse5.treeAdapters.default}
+ * @see Have a look at the default tree adapter for reference.
  */
 export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> {
     /**
