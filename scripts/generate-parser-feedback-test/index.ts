@@ -38,7 +38,7 @@ function collectParserTokens(html: string): HtmlLibToken[] {
                         return;
                     }
 
-                    const lastToken = tokens[tokens.length - 1];
+                    const lastToken = tokens.at(-1);
 
                     if (lastToken?.[0] === 'Character') {
                         lastToken[1] += token[1];
