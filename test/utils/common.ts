@@ -65,7 +65,7 @@ export function normalizeNewLine(str: string): string {
 }
 
 export function removeNewLines(str: string): string {
-    return str.replace(/\r/g, '').replace(/\n/g, '');
+    return str.replace(/[\n\r]/g, '');
 }
 
 export function writeChunkedToStream(str: string, stream: Writable): void {

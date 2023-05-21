@@ -30,6 +30,8 @@
         "unicorn/no-array-push-push": "off",
         "unicorn/no-for-loop": "off",
         "unicorn/consistent-destructuring": "off",
+        "unicorn/prefer-string-replace-all": "off",
+        "unicorn/prefer-at": "off",
         "unicorn/prefer-switch": ["error", { "emptyDefaultCase": "do-nothing-comment" }]
     },
     "parserOptions": {
