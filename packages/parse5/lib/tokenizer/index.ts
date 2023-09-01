@@ -222,7 +222,10 @@ export class Tokenizer {
     private currentToken: Token | null = null;
     private currentAttr: Attribute = { name: '', value: '' };
 
-    constructor(private options: TokenizerOptions, private handler: TokenHandler) {
+    constructor(
+        private options: TokenizerOptions,
+        private handler: TokenHandler
+    ) {
         this.preprocessor = new Preprocessor(handler);
         this.currentLocation = this.getCurrentLocation(-1);
 

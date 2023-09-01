@@ -52,7 +52,10 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     /**
      * @param options Parsing options.
      */
-    constructor(options?: ParserOptions<T>, public parser: Parser<T> = new Parser(options)) {
+    constructor(
+        options?: ParserOptions<T>,
+        public parser: Parser<T> = new Parser(options)
+    ) {
         super({ decodeStrings: false });
 
         const resume = (): void => {

@@ -11,7 +11,7 @@ export interface TreeAdapterTypeMap<
     CommentNode = unknown,
     TextNode = unknown,
     Template = unknown,
-    DocumentType = unknown
+    DocumentType = unknown,
 > {
     node: Node;
     parentNode: ParentNode;
