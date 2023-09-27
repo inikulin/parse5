@@ -57,6 +57,13 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
     createCommentNode(data: string): T['commentNode'];
 
     /**
+     * Creates a text node.
+     *
+     * @param value - Text.
+     */
+    createTextNode(value: string): T['textNode'];
+
+    /**
      * Creates a document node.
      */
     createDocument(): T['document'];
