@@ -102,14 +102,6 @@ export type DefaultTreeAdapterMap = TreeAdapterTypeMap<
     DocumentType
 >;
 
-function createTextNode(value: string): TextNode {
-    return {
-        nodeName: '#text',
-        value,
-        parentNode: null,
-    };
-}
-
 export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     //Node construction
     createDocument(): Document {
@@ -142,6 +134,14 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         return {
             nodeName: '#comment',
             data,
+            parentNode: null,
+        };
+    },
+
+    createTextNode(value: string): TextNode {
+        return {
+            nodeName: '#text',
+            value,
             parentNode: null,
         };
     },
@@ -213,7 +213,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
             }
         }
 
-        defaultTreeAdapter.appendChild(parentNode, createTextNode(text));
+        defaultTreeAdapter.appendChild(parentNode, defaultTreeAdapter.createTextNode(text));
     },
 
     insertTextBefore(parentNode: ParentNode, text: string, referenceNode: ChildNode): void {
@@ -222,7 +222,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         if (prevNode && defaultTreeAdapter.isTextNode(prevNode)) {
             prevNode.value += text;
         } else {
-            defaultTreeAdapter.insertBefore(parentNode, createTextNode(text), referenceNode);
+            defaultTreeAdapter.insertBefore(parentNode, defaultTreeAdapter.createTextNode(text), referenceNode);
         }
     },
 
