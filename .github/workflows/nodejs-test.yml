@@ -6,22 +6,23 @@ on:
             - 'dependabot/**'
     pull_request:
 
-permissions:
-    contents: read
-
 env:
     CI: true
     FORCE_COLOR: 2
-    NODE_COV: 16 # The Node.js version to run coveralls on
+    NODE_COV: lts/* # The Node.js version to run coveralls on
+
+permissions:
+    contents: read #  to fetch code (actions/checkout)
 
 jobs:
     lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3.6.0
+            - uses: actions/checkout@v4.1.1
               with:
                   submodules: recursive
-            - uses: actions/setup-node@v3.8.1
+            - name: Use Node.js ${{ matrix.node }}
+              uses: actions/setup-node@v4.0.1
               with:
                   node-version: lts/*
                   cache: npm
@@ -29,36 +30,34 @@ jobs:
             - run: npm run lint
 
     test:
+        permissions:
+            contents: read #  to fetch code (actions/checkout)
+            checks: write #  to create new checks (coverallsapp/github-action)
+
         name: Node ${{ matrix.node }}
         runs-on: ubuntu-latest
-        permissions:
-            checks: write # for coverallsapp/github-action to create new checks
-            contents: read # for actions/checkout to fetch code
 
         strategy:
             fail-fast: false
             matrix:
                 node:
-                    - '14'
-                    - '16'
-                    - '18'
+                    - 18
+                    - 20
                     - lts/*
 
         steps:
-            - uses: actions/checkout@v3.6.0
+            - uses: actions/checkout@v4.1.1
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v3.8.1
+              uses: actions/setup-node@v4.0.1
               with:
                   node-version: ${{ matrix.node }}
                   cache: npm
-            - run: npm install -g npm@8.19.1
-              if: matrix.node == '14'
             - run: npm ci
             - run: npm run build --if-present
 
-            - name: Run Tests
+            - name: Run Jest
               run: npm run unit-tests
               if: matrix.node != env.NODE_COV
 
@@ -67,7 +66,7 @@ jobs:
               if: matrix.node == env.NODE_COV
 
             - name: Run Coveralls
-              uses: coverallsapp/github-action@v2.2.1
+              uses: coverallsapp/github-action@v2.2.3
               if: matrix.node == env.NODE_COV
               continue-on-error: true
               with:

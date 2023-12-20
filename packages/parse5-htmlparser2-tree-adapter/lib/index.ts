@@ -27,10 +27,6 @@ export type Htmlparser2TreeAdapterMap = TreeAdapterTypeMap<
     ProcessingInstruction
 >;
 
-function createTextNode(value: string): Text {
-    return new Text(value);
-}
-
 function enquoteDoctypeId(id: string): string {
     const quote = id.includes('"') ? "'" : '"';
 
@@ -97,6 +93,10 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
 
     createCommentNode(data: string): Comment {
         return new Comment(data);
+    },
+
+    createTextNode(value: string): Text {
+        return new Text(value);
     },
 
     //Tree mutation
@@ -189,7 +189,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         if (lastChild && isText(lastChild)) {
             lastChild.data += text;
         } else {
-            adapter.appendChild(parentNode, createTextNode(text));
+            adapter.appendChild(parentNode, adapter.createTextNode(text));
         }
     },
 
@@ -199,7 +199,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
         if (prevNode && isText(prevNode)) {
             prevNode.data += text;
         } else {
-            adapter.insertBefore(parentNode, createTextNode(text), referenceNode);
+            adapter.insertBefore(parentNode, adapter.createTextNode(text), referenceNode);
         }
     },
 
