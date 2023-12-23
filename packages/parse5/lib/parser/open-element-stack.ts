@@ -1,4 +1,4 @@
-import { TAG_ID as $, NS, isNumberedHeader } from '../common/html.js';
+import { TAG_ID as $, NS, NUMBERED_HEADERS } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 
 //Element utils
@@ -14,32 +14,26 @@ const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set([
     $.THEAD,
     $.TR,
 ]);
-const SCOPING_ELEMENT_NS = new Map<$, NS>([
-    [$.APPLET, NS.HTML],
-    [$.CAPTION, NS.HTML],
-    [$.HTML, NS.HTML],
-    [$.MARQUEE, NS.HTML],
-    [$.OBJECT, NS.HTML],
-    [$.TABLE, NS.HTML],
-    [$.TD, NS.HTML],
-    [$.TEMPLATE, NS.HTML],
-    [$.TH, NS.HTML],
-    [$.ANNOTATION_XML, NS.MATHML],
-    [$.MI, NS.MATHML],
-    [$.MN, NS.MATHML],
-    [$.MO, NS.MATHML],
-    [$.MS, NS.MATHML],
-    [$.MTEXT, NS.MATHML],
-    [$.DESC, NS.SVG],
-    [$.FOREIGN_OBJECT, NS.SVG],
-    [$.TITLE, NS.SVG],
+const SCOPING_ELEMENTS_HTML = new Set([
+    $.APPLET,
+    $.CAPTION,
+    $.HTML,
+    $.MARQUEE,
+    $.OBJECT,
+    $.TABLE,
+    $.TD,
+    $.TEMPLATE,
+    $.TH,
 ]);
+const SCOPING_ELEMENTS_HTML_LIST = new Set([...SCOPING_ELEMENTS_HTML, $.OL, $.UL]);
+const SCOPING_ELEMENTS_HTML_BUTTON = new Set([...SCOPING_ELEMENTS_HTML, $.BUTTON]);
+const SCOPING_ELEMENTS_MATHML = new Set([$.ANNOTATION_XML, $.MI, $.MN, $.MO, $.MS, $.MTEXT]);
+const SCOPING_ELEMENTS_SVG = new Set([$.DESC, $.FOREIGN_OBJECT, $.TITLE]);
 
-const NAMED_HEADERS = [$.H1, $.H2, $.H3, $.H4, $.H5, $.H6];
-const TABLE_ROW_CONTEXT = [$.TR, $.TEMPLATE, $.HTML];
-const TABLE_BODY_CONTEXT = [$.TBODY, $.TFOOT, $.THEAD, $.TEMPLATE, $.HTML];
-const TABLE_CONTEXT = [$.TABLE, $.TEMPLATE, $.HTML];
-const TABLE_CELLS = [$.TD, $.TH];
+const TABLE_ROW_CONTEXT = new Set([$.TR, $.TEMPLATE, $.HTML]);
+const TABLE_BODY_CONTEXT = new Set([$.TBODY, $.TFOOT, $.THEAD, $.TEMPLATE, $.HTML]);
+const TABLE_CONTEXT = new Set([$.TABLE, $.TEMPLATE, $.HTML]);
+const TABLE_CELLS = new Set([$.TD, $.TH]);
 
 export interface StackHandler<T extends TreeAdapterTypeMap> {
     onItemPush: (node: T['parentNode'], tid: number, isTop: boolean) => void;
@@ -161,13 +155,13 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(idx < 0 ? 0 : idx);
     }
 
-    private popUntilPopped(tagNames: $[], targetNS: NS): void {
+    private popUntilPopped(tagNames: Set<$>, targetNS: NS): void {
         const idx = this._indexOfTagNames(tagNames, targetNS);
         this.shortenToLength(idx < 0 ? 0 : idx);
     }
 
     popUntilNumberedHeaderPopped(): void {
-        this.popUntilPopped(NAMED_HEADERS, NS.HTML);
+        this.popUntilPopped(NUMBERED_HEADERS, NS.HTML);
     }
 
     popUntilTableCellPopped(): void {
@@ -181,16 +175,16 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(1);
     }
 
-    private _indexOfTagNames(tagNames: $[], namespace: NS): number {
+    private _indexOfTagNames(tagNames: Set<$>, namespace: NS): number {
         for (let i = this.stackTop; i >= 0; i--) {
-            if (tagNames.includes(this.tagIDs[i]) && this.treeAdapter.getNamespaceURI(this.items[i]) === namespace) {
+            if (tagNames.has(this.tagIDs[i]) && this.treeAdapter.getNamespaceURI(this.items[i]) === namespace) {
                 return i;
             }
         }
         return -1;
     }
 
-    private clearBackTo(tagNames: $[], targetNS: NS): void {
+    private clearBackTo(tagNames: Set<$>, targetNS: NS): void {
         const idx = this._indexOfTagNames(tagNames, targetNS);
         this.shortenToLength(idx + 1);
     }
@@ -244,68 +238,60 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Element in scope
-    hasInScope(tagName: $): boolean {
+    private hasInDynamicScope(tagName: $, htmlScope: Set<$>): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
-            if (tn === tagName && ns === NS.HTML) {
-                return true;
-            }
-
-            if (SCOPING_ELEMENT_NS.get(tn) === ns) {
-                return false;
+            switch (this.treeAdapter.getNamespaceURI(this.items[i])) {
+                case NS.HTML: {
+                    if (tn === tagName) return true;
+                    if (htmlScope.has(tn)) return false;
+                    break;
+                }
+                case NS.SVG: {
+                    if (SCOPING_ELEMENTS_SVG.has(tn)) return false;
+                    break;
+                }
+                case NS.MATHML: {
+                    if (SCOPING_ELEMENTS_MATHML.has(tn)) return false;
+                    break;
+                }
             }
         }
 
         return true;
+    }
+
+    hasInScope(tagName: $): boolean {
+        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML);
+    }
+
+    hasInListItemScope(tagName: $): boolean {
+        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_LIST);
+    }
+
+    hasInButtonScope(tagName: $): boolean {
+        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_BUTTON);
     }
 
     hasNumberedHeaderInScope(): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
 
-            if (isNumberedHeader(tn) && ns === NS.HTML) {
-                return true;
-            }
-
-            if (SCOPING_ELEMENT_NS.get(tn) === ns) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    hasInListItemScope(tagName: $): boolean {
-        for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
-
-            if (tn === tagName && ns === NS.HTML) {
-                return true;
-            }
-
-            if (((tn === $.UL || tn === $.OL) && ns === NS.HTML) || SCOPING_ELEMENT_NS.get(tn) === ns) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    hasInButtonScope(tagName: $): boolean {
-        for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
-
-            if (tn === tagName && ns === NS.HTML) {
-                return true;
-            }
-
-            if ((tn === $.BUTTON && ns === NS.HTML) || SCOPING_ELEMENT_NS.get(tn) === ns) {
-                return false;
+            switch (this.treeAdapter.getNamespaceURI(this.items[i])) {
+                case NS.HTML: {
+                    if (NUMBERED_HEADERS.has(tn)) return true;
+                    if (SCOPING_ELEMENTS_HTML.has(tn)) return false;
+                    break;
+                }
+                case NS.SVG: {
+                    if (SCOPING_ELEMENTS_SVG.has(tn)) return false;
+                    break;
+                }
+                case NS.MATHML: {
+                    if (SCOPING_ELEMENTS_MATHML.has(tn)) return false;
+                    break;
+                }
             }
         }
 
@@ -314,19 +300,18 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     hasInTableScope(tagName: $): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
-
-            if (ns !== NS.HTML) {
+            if (this.treeAdapter.getNamespaceURI(this.items[i]) !== NS.HTML) {
                 continue;
             }
 
-            if (tn === tagName) {
-                return true;
-            }
-
-            if (tn === $.TABLE || tn === $.TEMPLATE || tn === $.HTML) {
-                return false;
+            switch (this.tagIDs[i]) {
+                case tagName: {
+                    return true;
+                }
+                case $.TABLE:
+                case $.HTML: {
+                    return false;
+                }
             }
         }
 
@@ -335,19 +320,20 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     hasTableBodyContextInTableScope(): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
-
-            if (ns !== NS.HTML) {
+            if (this.treeAdapter.getNamespaceURI(this.items[i]) !== NS.HTML) {
                 continue;
             }
 
-            if (tn === $.TBODY || tn === $.THEAD || tn === $.TFOOT) {
-                return true;
-            }
-
-            if (tn === $.TABLE || tn === $.HTML) {
-                return false;
+            switch (this.tagIDs[i]) {
+                case $.TBODY:
+                case $.THEAD:
+                case $.TFOOT: {
+                    return true;
+                }
+                case $.TABLE:
+                case $.HTML: {
+                    return false;
+                }
             }
         }
 
@@ -356,19 +342,21 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     hasInSelectScope(tagName: $): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
-            const tn = this.tagIDs[i];
-            const ns = this.treeAdapter.getNamespaceURI(this.items[i]);
-
-            if (ns !== NS.HTML) {
+            if (this.treeAdapter.getNamespaceURI(this.items[i]) !== NS.HTML) {
                 continue;
             }
 
-            if (tn === tagName) {
-                return true;
-            }
-
-            if (tn !== $.OPTION && tn !== $.OPTGROUP) {
-                return false;
+            switch (this.tagIDs[i]) {
+                case tagName: {
+                    return true;
+                }
+                case $.OPTION:
+                case $.OPTGROUP: {
+                    break;
+                }
+                default: {
+                    return false;
+                }
             }
         }
 

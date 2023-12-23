@@ -554,9 +554,7 @@ export const SPECIAL_ELEMENTS: Record<NS, Set<TAG_ID>> = {
     [NS.XMLNS]: new Set(),
 };
 
-export function isNumberedHeader(tn: TAG_ID): boolean {
-    return tn === $.H1 || tn === $.H2 || tn === $.H3 || tn === $.H4 || tn === $.H5 || tn === $.H6;
-}
+export const NUMBERED_HEADERS = new Set([$.H1, $.H2, $.H3, $.H4, $.H5, $.H6]);
 
 const UNESCAPED_TEXT = new Set<string>([
     TAG_NAMES.STYLE,
