@@ -2,7 +2,7 @@ import { html, type TreeAdapterTypeMap, type TreeAdapter } from 'parse5';
 
 function createFragmentContext<T extends TreeAdapterTypeMap>(
     tagName: string | undefined,
-    treeAdapter: TreeAdapter<T>
+    treeAdapter: TreeAdapter<T>,
 ): T['element'] | null {
     if (!tagName) {
         return null;

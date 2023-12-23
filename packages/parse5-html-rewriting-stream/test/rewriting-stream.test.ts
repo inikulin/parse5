@@ -61,7 +61,7 @@ describe('RewritingStream', () => {
             createRewriterTest({
                 src: data.src,
                 expected: data.src,
-            })
+            }),
         );
     }
 
@@ -92,7 +92,7 @@ describe('RewritingStream', () => {
                     rewriter.emitStartTag(token);
                 });
             },
-        })
+        }),
     );
 
     it(
@@ -118,7 +118,7 @@ describe('RewritingStream', () => {
                     rewriter.emitEndTag(token);
                 });
             },
-        })
+        }),
     );
 
     it(
@@ -146,7 +146,7 @@ describe('RewritingStream', () => {
                     rewriter.emitText(token);
                 });
             },
-        })
+        }),
     );
 
     it(
@@ -172,7 +172,7 @@ describe('RewritingStream', () => {
                     rewriter.emitComment(token);
                 });
             },
-        })
+        }),
     );
 
     it(
@@ -199,7 +199,7 @@ describe('RewritingStream', () => {
                     rewriter.emitDoctype(token);
                 });
             },
-        })
+        }),
     );
 
     it(
@@ -226,7 +226,7 @@ describe('RewritingStream', () => {
                     rewriter.emitDoctype(token);
                 });
             },
-        })
+        }),
     );
 
     it(
@@ -257,7 +257,7 @@ describe('RewritingStream', () => {
                     rewriter.emitRaw('</wrap>');
                 });
             },
-        })
+        }),
     );
 
     it(
@@ -287,7 +287,7 @@ describe('RewritingStream', () => {
                     .on('endTag', rewriteRaw)
                     .on('comment', rewriteRaw);
             },
-        })
+        }),
     );
 
     it(
@@ -317,7 +317,7 @@ describe('RewritingStream', () => {
                 rewriter.on('startTag', (token) => rewriter.emitStartTag(token));
                 rewriter.on('text', (token) => rewriter.emitText(token));
             },
-        })
+        }),
     );
 
     it('Last text chunk must be flushed (GH-271)', async () => {
@@ -349,7 +349,7 @@ describe('RewritingStream', () => {
         createRewriterTest({
             src: LONG_TEXT,
             expected: LONG_TEXT,
-        })
+        }),
     );
 
     it(
@@ -357,7 +357,7 @@ describe('RewritingStream', () => {
         createRewriterTest({
             src: LONG_TEXT_WITH_COMMENT,
             expected: LONG_TEXT_WITH_COMMENT,
-        })
+        }),
     );
 
     it(
@@ -374,6 +374,6 @@ describe('RewritingStream', () => {
                     }
                 });
             },
-        })
+        }),
     );
 });

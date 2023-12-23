@@ -16,7 +16,7 @@ generateTestsForEachTreeAdapter('plain-test-conversion-stream', (treeAdapter) =>
 
         assert.strictEqual(
             result,
-            '<html><head></head><body><pre>\nHey\nyo\uFFFD&lt;html&gt;&lt;head&gt;&lt;body&gt;</pre></body></html>'
+            '<html><head></head><body><pre>\nHey\nyo\uFFFD&lt;html&gt;&lt;head&gt;&lt;body&gt;</pre></body></html>',
         );
     });
 });

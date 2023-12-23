@@ -35,7 +35,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     //lightweight heuristics without thorough attributes check.
     private _getNoahArkConditionCandidates(
         newElement: T['element'],
-        neAttrs: Attribute[]
+        neAttrs: Attribute[],
     ): { idx: number; attrs: Attribute[] }[] {
         const candidates = [];
 
@@ -145,7 +145,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     //Search
     getElementEntryInScopeWithTagName(tagName: string): ElementEntry<T> | null {
         const entry = this.entries.find(
-            (entry) => entry.type === EntryType.Marker || this.treeAdapter.getTagName(entry.element) === tagName
+            (entry) => entry.type === EntryType.Marker || this.treeAdapter.getTagName(entry.element) === tagName,
         );
 
         return entry && entry.type === EntryType.Element ? entry : null;
@@ -153,7 +153,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
 
     getElementEntry(element: T['element']): ElementEntry<T> | undefined {
         return this.entries.find(
-            (entry): entry is ElementEntry<T> => entry.type === EntryType.Element && entry.element === element
+            (entry): entry is ElementEntry<T> => entry.type === EntryType.Element && entry.element === element,
         );
     }
 }

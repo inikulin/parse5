@@ -21,7 +21,7 @@ generateParsingTests(
     },
     (test, opts) => ({
         node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
-    })
+    }),
 );
 
 generateParsingTests(
@@ -33,7 +33,7 @@ generateParsingTests(
     },
     (test, opts) => ({
         node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
-    })
+    }),
 );
 
 describe('parser', () => {

@@ -53,13 +53,13 @@ function collectParserTokens(html: string): HtmlLibToken[] {
         override onComment(token: Token.CommentToken): void {
             this.guardTopLevel(
                 () => super.onComment(token),
-                () => ['Comment', token.data]
+                () => ['Comment', token.data],
             );
         }
         override onDoctype(token: Token.DoctypeToken): void {
             this.guardTopLevel(
                 () => super.onDoctype(token),
-                () => ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks]
+                () => ['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks],
             );
         }
         override onStartTag(token: Token.TagToken): void {
@@ -74,7 +74,7 @@ function collectParserTokens(html: string): HtmlLibToken[] {
                     }
 
                     return startTagEntry;
-                }
+                },
             );
         }
         override onEndTag(token: Token.TagToken): void {
@@ -82,19 +82,19 @@ function collectParserTokens(html: string): HtmlLibToken[] {
                 () => super.onEndTag(token),
                 // NOTE: parser feedback simulator can produce adjusted SVG
                 // tag names for end tag tokens so we need to lower case it
-                () => ['EndTag', token.tagName.toLowerCase()]
+                () => ['EndTag', token.tagName.toLowerCase()],
             );
         }
         override onCharacter(token: Token.CharacterToken): void {
             this.guardTopLevel(
                 () => super.onCharacter(token),
-                () => ['Character', token.chars]
+                () => ['Character', token.chars],
             );
         }
         override onNullCharacter(token: Token.CharacterToken): void {
             this.guardTopLevel(
                 () => super.onNullCharacter(token),
-                () => ['Character', token.chars]
+                () => ['Character', token.chars],
             );
         }
         override onWhitespaceCharacter(token: Token.CharacterToken): void {
@@ -103,7 +103,7 @@ function collectParserTokens(html: string): HtmlLibToken[] {
 
             this.guardTopLevel(
                 () => super.onWhitespaceCharacter(token),
-                () => ['Character', skipNextNewLine && chars.startsWith('\n') ? chars.slice(1) : chars]
+                () => ['Character', skipNextNewLine && chars.startsWith('\n') ? chars.slice(1) : chars],
             );
         }
     }

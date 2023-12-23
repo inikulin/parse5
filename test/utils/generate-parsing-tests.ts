@@ -14,7 +14,7 @@ export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends 
 
 export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
     dataDir: URL,
-    treeAdapter: TreeAdapter<T>
+    treeAdapter: TreeAdapter<T>,
 ): TreeConstructionTestData<T>[] {
     const tests: TreeConstructionTestData<T>[] = [];
 
@@ -72,14 +72,14 @@ interface ParseResult<T extends TreeAdapterTypeMap> {
 
 type ParseMethod<T extends TreeAdapterTypeMap> = (
     input: TreeConstructionTestData<T>,
-    options: ParseMethodOptions<T>
+    options: ParseMethodOptions<T>,
 ) => ParseResult<T> | Promise<ParseResult<T>>;
 
 function createParsingTest<T extends TreeAdapterTypeMap>(
     test: TreeConstructionTestData<T>,
     treeAdapter: TreeAdapter<T>,
     parse: ParseMethod<T>,
-    { withoutErrors, expectError }: { withoutErrors?: boolean; expectError?: boolean } = {}
+    { withoutErrors, expectError }: { withoutErrors?: boolean; expectError?: boolean } = {},
 ): () => Promise<void> {
     return async (): Promise<void> => {
         const errs: string[] = [];
@@ -139,7 +139,7 @@ export function generateParsingTests(
         expectErrors: expectError = [],
         suitePath = treePath,
     }: { withoutErrors?: boolean; expectErrors?: string[]; suitePath?: URL },
-    parse: ParseMethod<TreeAdapterTypeMap>
+    parse: ParseMethod<TreeAdapterTypeMap>,
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         const errorsToExpect = new Set(expectError);
@@ -152,7 +152,7 @@ export function generateParsingTests(
                 createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, {
                     withoutErrors,
                     expectError,
-                })
+                }),
             );
         }
 

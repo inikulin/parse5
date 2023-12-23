@@ -6,5 +6,5 @@ const feedbackPath = new URL('../../../test/data/parser-feedback', import.meta.u
 generateTokenizationTests(
     'ParserFeedbackSimulator',
     feedbackPath.pathname,
-    (handler) => new ParserFeedbackSimulator({}, handler).tokenizer
+    (handler) => new ParserFeedbackSimulator({}, handler).tokenizer,
 );

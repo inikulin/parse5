@@ -140,7 +140,7 @@ export class RewritingStream extends SAXParser {
             !this.parserFeedbackSimulator.inForeignContent &&
                 html.hasUnescapedText(this.tokenizer.lastStartTagName, true)
                 ? text
-                : escapeText(text)
+                : escapeText(text),
         );
     }
 

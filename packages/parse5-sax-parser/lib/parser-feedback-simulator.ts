@@ -22,7 +22,10 @@ export class ParserFeedbackSimulator implements TokenHandler {
     public skipNextNewLine = false;
     public tokenizer: Tokenizer;
 
-    constructor(options: TokenizerOptions, private handler: TokenHandler) {
+    constructor(
+        options: TokenizerOptions,
+        private handler: TokenHandler,
+    ) {
         this.tokenizer = new Tokenizer(options, this);
         this._enterNamespace(html.NS.HTML);
     }

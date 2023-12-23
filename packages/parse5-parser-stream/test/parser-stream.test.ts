@@ -19,7 +19,7 @@ generateParsingTests(
             '48.foreign-fragment',
         ],
     },
-    (test, opts) => parseChunked(test, opts)
+    (test, opts) => parseChunked(test, opts),
 );
 
 describe('ParserStream', () => {
