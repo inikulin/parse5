@@ -133,7 +133,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         /** @internal */
         public fragmentContext: T['element'] | null = null,
         /** @internal */
-        public scriptHandler: null | ((pendingScript: T['element']) => void) = null
+        public scriptHandler: null | ((pendingScript: T['element']) => void) = null,
     ) {
         this.options = {
             ...defaultParserOptions,
@@ -170,7 +170,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     public static getFragmentParser<T extends TreeAdapterTypeMap>(
         fragmentContext?: T['parentNode'] | null,
-        options?: ParserOptions<T>
+        options?: ParserOptions<T>,
     ): Parser<T> {
         const opts: Required<ParserOptions<T>> = {
             ...defaultParserOptions,
@@ -313,7 +313,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     /** @protected */
     _switchToTextParsing(
         currentToken: TagToken,
-        nextTokenizerState: (typeof TokenizerMode)[keyof typeof TokenizerMode]
+        nextTokenizerState: (typeof TokenizerMode)[keyof typeof TokenizerMode],
     ): void {
         this._insertElement(currentToken, NS.HTML);
         this.tokenizer.state = nextTokenizerState;
@@ -640,7 +640,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
         if (listLength) {
             const endIndex = this.activeFormattingElements.entries.findIndex(
-                (entry) => entry.type === EntryType.Marker || this.openElements.contains(entry.element)
+                (entry) => entry.type === EntryType.Marker || this.openElements.contains(entry.element),
             );
 
             const unopenIdx = endIndex < 0 ? listLength - 1 : endIndex - 1;
@@ -1380,7 +1380,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 //Steps 5-8 of the algorithm
 function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
-    token: TagToken
+    token: TagToken,
 ): ElementEntry<T> | null {
     let formattingElementEntry = p.activeFormattingElements.getElementEntryInScopeWithTagName(token.tagName);
 
@@ -1401,7 +1401,7 @@ function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(
 //Steps 9 and 10 of the algorithm
 function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
-    formattingElementEntry: ElementEntry<T>
+    formattingElementEntry: ElementEntry<T>,
 ): T['parentNode'] | null {
     let furthestBlock = null;
     let idx = p.openElements.stackTop;
@@ -1430,7 +1430,7 @@ function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(
 function aaInnerLoop<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     furthestBlock: T['element'],
-    formattingElement: T['element']
+    formattingElement: T['element'],
 ): T['element'] {
     let lastElement = furthestBlock;
     let nextElement = p.openElements.getCommonAncestor(furthestBlock) as T['element'];
@@ -1468,7 +1468,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
 //Step 13.7 of the algorithm
 function aaRecreateElementFromEntry<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
-    elementEntry: ElementEntry<T>
+    elementEntry: ElementEntry<T>,
 ): T['element'] {
     const ns = p.treeAdapter.getNamespaceURI(elementEntry.element);
     const newElement = p.treeAdapter.createElement(elementEntry.token.tagName, ns, elementEntry.token.attrs);
@@ -1483,7 +1483,7 @@ function aaRecreateElementFromEntry<T extends TreeAdapterTypeMap>(
 function aaInsertLastNodeInCommonAncestor<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     commonAncestor: T['parentNode'],
-    lastElement: T['element']
+    lastElement: T['element'],
 ): void {
     const tn = p.treeAdapter.getTagName(commonAncestor);
     const tid = getTagID(tn);
@@ -1505,7 +1505,7 @@ function aaInsertLastNodeInCommonAncestor<T extends TreeAdapterTypeMap>(
 function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     furthestBlock: T['parentNode'],
-    formattingElementEntry: ElementEntry<T>
+    formattingElementEntry: ElementEntry<T>,
 ): void {
     const ns = p.treeAdapter.getNamespaceURI(formattingElementEntry.element);
     const { token } = formattingElementEntry;

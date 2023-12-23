@@ -222,7 +222,10 @@ export class Tokenizer {
     protected currentToken: Token | null = null;
     protected currentAttr: Attribute = { name: '', value: '' };
 
-    constructor(protected options: TokenizerOptions, protected handler: TokenHandler) {
+    constructor(
+        protected options: TokenizerOptions,
+        protected handler: TokenHandler,
+    ) {
         this.preprocessor = new Preprocessor(handler);
         this.currentLocation = this.getCurrentLocation(-1);
 
@@ -242,7 +245,7 @@ export class Tokenizer {
                       absenceOfDigitsInNumericCharacterReference: (consumed: number): void => {
                           this._err(
                               ERR.absenceOfDigitsInNumericCharacterReference,
-                              this.entityStartPos - this.preprocessor.pos + consumed
+                              this.entityStartPos - this.preprocessor.pos + consumed,
                           );
                       },
                       validateNumericCharacterReference: (code: number): void => {
@@ -250,7 +253,7 @@ export class Tokenizer {
                           if (error) this._err(error, 1);
                       },
                   }
-                : undefined
+                : undefined,
         );
     }
 
@@ -578,8 +581,8 @@ export class Tokenizer {
         const type = isWhitespace(cp)
             ? TokenType.WHITESPACE_CHARACTER
             : cp === $.NULL
-            ? TokenType.NULL_CHARACTER
-            : TokenType.CHARACTER;
+              ? TokenType.NULL_CHARACTER
+              : TokenType.CHARACTER;
 
         this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
     }
@@ -596,7 +599,7 @@ export class Tokenizer {
         this.state = State.CHARACTER_REFERENCE;
         this.entityStartPos = this.preprocessor.pos;
         this.entityDecoder.startEntity(
-            this._isCharacterReferenceInAttribute() ? DecodingMode.Attribute : DecodingMode.Legacy
+            this._isCharacterReferenceInAttribute() ? DecodingMode.Attribute : DecodingMode.Legacy,
         );
     }
 

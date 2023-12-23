@@ -54,7 +54,11 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : this.current;
     }
 
-    constructor(document: T['document'], private treeAdapter: TreeAdapter<T>, private handler: StackHandler<T>) {
+    constructor(
+        document: T['document'],
+        private treeAdapter: TreeAdapter<T>,
+        private handler: StackHandler<T>,
+    ) {
         this.current = document;
     }
 

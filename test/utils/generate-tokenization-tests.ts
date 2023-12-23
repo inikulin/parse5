@@ -78,8 +78,8 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
     onParseError(err: ParserError): void {
         assert.ok(
             this.testData.expectedErrors.some(
-                ({ code, line, col }) => code === err.code && line === err.startLine && col === err.startCol
-            )
+                ({ code, line, col }) => code === err.code && line === err.startLine && col === err.startCol,
+            ),
         );
 
         this.errors.push({
@@ -217,7 +217,7 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 export function generateTokenizationTests(
     prefix: string,
     testSuite: string,
-    createTokenSource: TokenSourceCreator
+    createTokenSource: TokenSourceCreator,
 ): void {
     for (const testData of loadTests(testSuite)) {
         const testName = `${prefix} - ${testData.idx}.${testData.setName} - ${testData.name} - Initial state: ${testData.initialStateName}`;

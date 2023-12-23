@@ -8,8 +8,8 @@ export function generateSerializerTests(
     prefix: string,
     serialize: (
         document: TreeAdapterTypeMap['document'],
-        opts: SerializerOptions<TreeAdapterTypeMap>
-    ) => Promise<string> | string
+        opts: SerializerOptions<TreeAdapterTypeMap>,
+    ) => Promise<string> | string,
 ): void {
     const data = fs.readFileSync(new URL('../data/serialization/tests.json', import.meta.url)).toString('utf8');
     const tests = JSON.parse(data) as {

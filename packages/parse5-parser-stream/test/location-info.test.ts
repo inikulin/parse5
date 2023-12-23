@@ -5,7 +5,7 @@ import { parseChunked } from './utils/parse-chunked.js';
 
 generateLocationInfoParserTests('location-info', (input, opts) =>
     // NOTE: because of performance use bigger chunks here
-    parseChunked({ input }, opts, 100, 400)
+    parseChunked({ input }, opts, 100, 400),
 );
 
 generateTestsForEachTreeAdapter('location-info', (treeAdapter) => {

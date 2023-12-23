@@ -6,7 +6,7 @@ export function parseChunked<T extends TreeAdapterTypeMap>(
     test: { input: string; fragmentContext?: T['parentNode'] },
     opts: ParserOptions<T>,
     minChunkSize?: number,
-    maxChunkSize?: number
+    maxChunkSize?: number,
 ): { node: TreeAdapterTypeMap['document']; chunks: string[] } {
     const parserStream = test.fragmentContext
         ? ParserStream.getFragmentStream(test.fragmentContext, opts)

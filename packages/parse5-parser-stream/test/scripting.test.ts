@@ -51,7 +51,7 @@ generateParsingTests(
             node: test.fragmentContext ? parser.getFragment() : parser.document,
             chunks,
         };
-    }
+    },
 );
 
 generateTestsForEachTreeAdapter('ParserStream', (treeAdapter) => {

@@ -6,7 +6,7 @@ function getSerializedTreeIndent(indent: number): string {
 
 function getElementSerializedNamespaceURI<T extends TreeAdapterTypeMap>(
     element: T['element'],
-    treeAdapter: TreeAdapter<T>
+    treeAdapter: TreeAdapter<T>,
 ): string {
     switch (treeAdapter.getNamespaceURI(element)) {
         case html.NS.SVG: {
@@ -24,7 +24,7 @@ function getElementSerializedNamespaceURI<T extends TreeAdapterTypeMap>(
 function serializeNodeList<T extends TreeAdapterTypeMap>(
     nodes: T['node'][],
     indent: number,
-    treeAdapter: TreeAdapter<T>
+    treeAdapter: TreeAdapter<T>,
 ): string {
     let str = '';
 
@@ -81,7 +81,7 @@ function serializeNodeList<T extends TreeAdapterTypeMap>(
 
 export function serializeToDatFileFormat<T extends TreeAdapterTypeMap>(
     rootNode: T['parentNode'],
-    treeAdapter: TreeAdapter<T>
+    treeAdapter: TreeAdapter<T>,
 ): string {
     return serializeNodeList(treeAdapter.getChildNodes(rootNode), 0, treeAdapter);
 }

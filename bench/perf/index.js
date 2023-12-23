@@ -25,7 +25,7 @@ global.microTests = loadTreeConstructionTestData(treeConstructionPath, treeAdapt
     .filter(
         (test) =>
             //NOTE: this test caused a stack overflow in parse5 v1.x
-            test.input !== '<button><p><button>'
+            test.input !== '<button><p><button>',
     )
     .map((test) => ({
         html: test.input,

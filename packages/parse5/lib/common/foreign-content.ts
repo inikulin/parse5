@@ -70,7 +70,7 @@ const SVG_ATTRS_ADJUSTMENT_MAP = new Map(
         'xChannelSelector',
         'yChannelSelector',
         'zoomAndPan',
-    ].map((attr) => [attr.toLowerCase(), attr])
+    ].map((attr) => [attr.toLowerCase(), attr]),
 );
 
 const XML_ATTRS_ADJUSTMENT_MAP = new Map([
@@ -126,7 +126,7 @@ export const SVG_TAG_NAMES_ADJUSTMENT_MAP = new Map(
         'linearGradient',
         'radialGradient',
         'textPath',
-    ].map((tn) => [tn.toLowerCase(), tn])
+    ].map((tn) => [tn.toLowerCase(), tn]),
 );
 
 //Tags that causes exit from foreign content

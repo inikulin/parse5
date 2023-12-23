@@ -139,7 +139,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     setDocumentType(document: Document, name: string, publicId: string, systemId: string): void {
         const data = serializeDoctypeContent(name, publicId, systemId);
         let doctypeNode = document.children.find(
-            (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype'
+            (node): node is ProcessingInstruction => isDirective(node) && node.name === '!doctype',
         );
 
         if (doctypeNode) {

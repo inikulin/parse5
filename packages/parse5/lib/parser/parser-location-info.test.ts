@@ -145,7 +145,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.ok(location && location.startTag && location.endTag);
         assert.strictEqual(
             html.slice(location.startTag.startOffset, location.endTag.endOffset),
-            '<foreignObject></foreignObject>'
+            '<foreignObject></foreignObject>',
         );
     });
 

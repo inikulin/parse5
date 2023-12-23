@@ -14,7 +14,7 @@ import { serializeDoctypeContent } from 'parse5-htmlparser2-tree-adapter';
 function walkTree<T extends TreeAdapterTypeMap>(
     parent: T['parentNode'],
     treeAdapter: TreeAdapter<T>,
-    handler: (node: T['node']) => void
+    handler: (node: T['node']) => void,
 ): void {
     for (const node of treeAdapter.getChildNodes(parent)) {
         if (treeAdapter.isElementNode(node)) {
@@ -46,7 +46,7 @@ export function assertStartTagLocation(
     location: Token.ElementLocation,
     serializedNode: string,
     html: string,
-    lines: string[]
+    lines: string[],
 ): void {
     assert.ok(location.startTag, 'Expected startTag to be defined');
     const length = location.startTag.endOffset - location.startTag.startOffset;
@@ -60,7 +60,7 @@ function assertEndTagLocation(
     location: Token.ElementLocation,
     serializedNode: string,
     html: string,
-    lines: string[]
+    lines: string[],
 ): void {
     assert.ok(location.endTag, 'Expected endTag to be defined');
     const length = location.endTag.endOffset - location.endTag.startOffset;
@@ -73,14 +73,14 @@ function assertAttrsLocation(
     location: Token.ElementLocation,
     serializedNode: string,
     html: string,
-    lines: string[]
+    lines: string[],
 ): void {
     assert.ok(location.attrs, 'Expected attrs to be defined');
 
     for (const attr of Object.values(location.attrs)) {
         const expected = serializedNode.slice(
             attr.startOffset - location.startOffset,
-            attr.endOffset - location.startOffset
+            attr.endOffset - location.startOffset,
         );
 
         assertLocation(attr, expected, html, lines);
@@ -91,7 +91,7 @@ export function assertNodeLocation(
     location: Token.Location,
     serializedNode: string,
     html: string,
-    lines: string[]
+    lines: string[],
 ): void {
     const expected = removeNewLines(serializedNode);
 
@@ -115,7 +115,7 @@ function loadParserLocationInfoTestData(): { name: string; data: string }[] {
 
 export function generateLocationInfoParserTests(
     name: string,
-    parse: (html: string, opts: ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] }
+    parse: (html: string, opts: ParserOptions<TreeAdapterTypeMap>) => { node: TreeAdapterTypeMap['node'] },
 ): void {
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         for (const test of loadParserLocationInfoTestData()) {
@@ -143,7 +143,7 @@ export function generateLocationInfoParserTests(
                         ? `<${serializeDoctypeContent(
                               treeAdapter.getDocumentTypeNodeName(node),
                               treeAdapter.getDocumentTypeNodePublicId(node),
-                              treeAdapter.getDocumentTypeNodeSystemId(node)
+                              treeAdapter.getDocumentTypeNodeSystemId(node),
                           )}>`
                         : serializeOuter(node, { treeAdapter });
 
