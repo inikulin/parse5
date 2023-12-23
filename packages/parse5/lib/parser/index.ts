@@ -13,7 +13,7 @@ import {
     ATTRS,
     SPECIAL_ELEMENTS,
     DOCUMENT_MODE,
-    isNumberedHeader,
+    NUMBERED_HEADERS,
     getTagID,
 } from '../common/html.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
@@ -1986,7 +1986,7 @@ function numberedHeaderStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>
         p._closePElement();
     }
 
-    if (isNumberedHeader(p.openElements.currentTagId)) {
+    if (NUMBERED_HEADERS.has(p.openElements.currentTagId)) {
         p.openElements.pop();
     }
 
