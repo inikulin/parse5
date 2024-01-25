@@ -19,15 +19,17 @@
         "lint-staged": "^15.2.0",
         "outdent": "^0.8.0",
         "prettier": "^3.2.2",
+        "rimraf": "^5.0.5",
         "ts-jest": "^29.1.1",
         "ts-node": "^10.9.2",
         "typedoc": "^0.25.7",
         "typescript": "^5.1.6"
     },
     "scripts": {
-        "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
+        "build": "npm run build:clean && npm run build:esm && npm run build:cjs --workspaces --if-present",
         "build:esm": "tsc --build packages/* test",
         "build:docs": "typedoc",
+        "build:clean": "rimraf packages/*/dist",
         "prettier": "prettier '**/*.{js,ts,md,json,yml}' --log-level warn",
         "format": "npm run format:es && npm run format:prettier",
         "format:es": "npm run lint:es -- --fix",
