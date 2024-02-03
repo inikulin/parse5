@@ -12,10 +12,7 @@
         "noPropertyAccessFromIndexSignature": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-
-        "composite": true,
-        "declarationMap": true,
-        "sourceMap": true
+        "composite": true
     },
     "references": [{ "path": "packages/parse5/tsconfig.json" }],
     "typedocOptions": {
