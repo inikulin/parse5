@@ -21,7 +21,7 @@
         "prettier": "^3.2.5",
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
-        "typedoc": "^0.25.8",
+        "typedoc": "^0.25.9",
         "typescript": "^5.1.6"
     },
     "scripts": {
