@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import * as path from 'node:path';
+import path from 'node:path';
 import type { ParserError, Token } from 'parse5';
 import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5';
 import { makeChunks } from './common.js';
