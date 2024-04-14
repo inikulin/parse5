@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { basename } from 'node:path';
+import path from 'node:path';
 import { Parser, type DefaultTreeAdapterMap, type TreeAdapterTypeMap, type Token, defaultTreeAdapter } from 'parse5';
 import type { HtmlLibToken } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { parseDatFile } from 'parse5-test-utils/utils/parse-dat-file.js';
@@ -8,7 +8,7 @@ import { addSlashes } from 'parse5-test-utils/utils/common.js';
 for (const file of process.argv.slice(2)) {
     const content = await readFile(file, 'utf8');
     const feedbackTestContent = generateParserFeedbackTest(content);
-    const feedbackTestFile = `test/data/parser-feedback/${basename(file, '.dat')}.test`;
+    const feedbackTestFile = `test/data/parser-feedback/${path.basename(file, '.dat')}.test`;
 
     await writeFile(feedbackTestFile, feedbackTestContent);
 }
