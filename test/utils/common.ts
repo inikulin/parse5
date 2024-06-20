@@ -11,11 +11,11 @@ export const treeAdapters = {
 
 export function addSlashes(str: string): string {
     return str
-        .replace(/\t/g, '\\t')
-        .replace(/\n/g, '\\n')
-        .replace(/\f/g, '\\f')
-        .replace(/\r/g, '\\r')
-        .replace(/\0/g, '\\u0000');
+        .replace(/\t/g, String.raw`\t`)
+        .replace(/\n/g, String.raw`\n`)
+        .replace(/\f/g, String.raw`\f`)
+        .replace(/\r/g, String.raw`\r`)
+        .replace(/\0/g, String.raw`\u0000`);
 }
 
 function createDiffMarker(markerPosition: number): string {
