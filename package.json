@@ -8,21 +8,22 @@
         "test"
     ],
     "devDependencies": {
-        "@types/jest": "^29.5.13",
-        "@typescript-eslint/eslint-plugin": "^7.18.0",
-        "@typescript-eslint/parser": "^7.18.0",
-        "eslint": "^8.57.1",
+        "@eslint/js": "^9.10.0",
+        "@types/mocha": "^10.0.8",
+        "c8": "^10.1.2",
+        "eslint": "^9.10.0",
         "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-unicorn": "^55.0.0",
+        "globals": "^15.9.0",
         "husky": "^9.1.6",
-        "jest": "^29.7.0",
         "lint-staged": "^15.2.10",
+        "mocha": "^10.7.3",
         "outdent": "^0.8.0",
         "prettier": "^3.3.3",
-        "ts-jest": "^29.2.5",
+        "tinyspy": "^3.0.2",
         "ts-node": "^10.9.2",
         "typedoc": "^0.26.7",
-        "typescript": "^5.1.6"
+        "typescript": "^5.1.6",
+        "typescript-eslint": "^8.6.0"
     },
     "scripts": {
         "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
@@ -35,7 +36,8 @@
         "lint": "npm run lint:es && npm run lint:prettier",
         "lint:es": "eslint .",
         "lint:prettier": "npm run prettier -- --check",
-        "unit-tests": "NODE_OPTIONS=--experimental-vm-modules jest",
+        "unit-tests": "mocha",
+        "unit-tests-coverage": "c8 mocha",
         "test": "npm run lint && npm run unit-tests",
         "generate-feedback-tests": "node --loader ts-node/esm scripts/generate-parser-feedback-test/index.ts test/data/html5lib-tests/tree-construction/*.dat",
         "bench-perf": "npm run build && node bench/perf/index.js",
@@ -53,24 +55,6 @@
         ],
         "*.{md,json,yml}": [
             "prettier --write"
-        ]
-    },
-    "jest": {
-        "preset": "ts-jest/presets/default-esm",
-        "testEnvironment": "node",
-        "coverageProvider": "v8",
-        "moduleNameMapper": {
-            "^(parse5[^/]*)/dist/(.*?)(?:\\.js)?$": "<rootDir>/packages/$1/lib/$2",
-            "^(parse5[^/]*)$": "<rootDir>/packages/$1/lib/index.ts",
-            "^(.*)\\.js$": [
-                "$1",
-                "$1.js"
-            ]
-        },
-        "coveragePathIgnorePatterns": [
-            "node_modules",
-            "bench",
-            "test"
         ]
     }
 }

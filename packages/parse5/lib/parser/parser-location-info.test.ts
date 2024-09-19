@@ -13,7 +13,7 @@ generateLocationInfoParserTests('location-info-parser', (input: string, opts: Pa
 }));
 
 generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
-    test('Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)', () => {
+    it('Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)', () => {
         const html = '<p>1<p class="2">3';
 
         const opts = {
@@ -29,7 +29,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     });
 
-    test('Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)', () => {
+    it('Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)', () => {
         const html = '<i>1</i>2';
 
         const opts = {
@@ -45,7 +45,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<i>1</i>');
     });
 
-    test('Regression - Location info not exposed with parseFragment (GH-82)', () => {
+    it('Regression - Location info not exposed with parseFragment (GH-82)', () => {
         const html = '<html><head></head><body>foo</body></html>';
 
         const opts = {
@@ -59,7 +59,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild));
     });
 
-    test('Regression - location info mixin error when parsing <template> elements (GH-90)', () => {
+    it('Regression - location info mixin error when parsing <template> elements (GH-90)', () => {
         const html = '<template>hello</template>';
 
         const opts = {
@@ -72,7 +72,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         });
     });
 
-    test('Regression - location info not attached for empty attributes (GH-96)', () => {
+    it('Regression - location info not attached for empty attributes (GH-96)', () => {
         const html = '<div test-attr></div>';
 
         const opts = {
@@ -86,7 +86,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild)?.attrs?.['test-attr']);
     });
 
-    test('Regression - location line incorrect when a character is unconsumed (GH-151)', () => {
+    it('Regression - location line incorrect when a character is unconsumed (GH-151)', () => {
         const html = outdent`
           <html><body><script>
             var x = window.scrollY <
@@ -110,7 +110,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.equal(scriptLocation?.endTag?.startLine, 4);
     });
 
-    test('Regression - location.startTag should be available if end tag is missing (GH-181)', () => {
+    it('Regression - location.startTag should be available if end tag is missing (GH-181)', () => {
         const html = '<p>test';
 
         const opts = {
@@ -129,7 +129,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.ok(!location.endTag);
     });
 
-    test('Regression - location.endTag should be available adjusted SVG elements (GH-352)', () => {
+    it('Regression - location.endTag should be available adjusted SVG elements (GH-352)', () => {
         const html = '<svg><foreignObject></foreignObject></svg>';
 
         const opts = {
@@ -149,7 +149,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         );
     });
 
-    test('Regression - Escaped script content has incorrect location info (GH-265)', () => {
+    it('Regression - Escaped script content has incorrect location info (GH-265)', () => {
         const html = '<script>"<!--";</script>';
 
         const opts = {
@@ -169,7 +169,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assertNodeLocation(textLocation, html.slice(8, 15), html, [html]);
     });
 
-    test("Should use the HTML element's position for BODY, if BODY isn't closed", () => {
+    it("Should use the HTML element's position for BODY, if BODY isn't closed", () => {
         const html = outdent`
           <html>
             <body>
@@ -201,7 +201,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.notStrictEqual(htmlLocation.endOffset, html.length);
     });
 
-    test('Should set HTML location to EOF if no end tag is supplied', () => {
+    it('Should set HTML location to EOF if no end tag is supplied', () => {
         const html = outdent`
           <html>
             <body>

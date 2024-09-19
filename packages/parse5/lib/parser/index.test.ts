@@ -1,8 +1,9 @@
-import * as assert from 'node:assert';
+import * as assert from 'node:assert/strict';
 import { parseFragment, parse } from 'parse5';
-import { jest } from '@jest/globals';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
+import { type DocumentType } from '../tree-adapters/default.js';
+import { spy } from 'tinyspy';
 
 generateParsingTests(
     'parser',
@@ -47,10 +48,8 @@ describe('parser', () => {
 
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
-            /*eslint-disable no-extend-native*/
             // @ts-expect-error Adding unknown prototype method
             Object.prototype.heyYo = 123;
-            /*eslint-enable no-extend-native*/
         });
 
         afterEach(() => {
@@ -70,24 +69,27 @@ describe('parser', () => {
 
     it('Regression - DOCTYPE empty fields (GH-236)', () => {
         const document = parse('<!DOCTYPE>');
-        const doctype = document.childNodes[0];
+        const doctype = document.childNodes[0] as DocumentType;
 
-        expect(doctype).toHaveProperty('name', '');
-        expect(doctype).toHaveProperty('publicId', '');
-        expect(doctype).toHaveProperty('systemId', '');
+        assert.ok(Object.prototype.hasOwnProperty.call(doctype, 'name'));
+        assert.equal(doctype.name, '');
+        assert.ok(Object.prototype.hasOwnProperty.call(doctype, 'publicId'));
+        assert.equal(doctype.publicId, '');
+        assert.ok(Object.prototype.hasOwnProperty.call(doctype, 'systemId'));
+        assert.equal(doctype.systemId, '');
     });
 
     it('Regression - CRLF inside </noscript> (GH-710)', () => {
-        const onParseError = jest.fn();
+        const onParseError = spy();
         parse('<!doctype html><noscript>foo</noscript\r\n>', { onParseError });
 
-        expect(onParseError).not.toHaveBeenCalled();
+        assert.equal(onParseError.called, false);
     });
 
     describe('Tree adapters', () => {
         it('should support onItemPush and onItemPop', () => {
-            const onItemPush = jest.fn();
-            const onItemPop = jest.fn();
+            const onItemPush = spy();
+            const onItemPop = spy();
             const document = parse('<p><p>', {
                 treeAdapter: {
                     ...treeAdapters.default,
@@ -101,15 +103,15 @@ describe('parser', () => {
             const bodyElement = htmlElement.childNodes[1];
             assert.ok(treeAdapters.default.isElementNode(bodyElement));
             // Expect 5 opened elements; in order: html, head, body, and 2x p
-            expect(onItemPush).toHaveBeenCalledTimes(5);
-            expect(onItemPush).toHaveBeenNthCalledWith(1, htmlElement);
-            expect(onItemPush).toHaveBeenNthCalledWith(3, bodyElement);
+            assert.equal(onItemPush.callCount, 5);
+            assert.deepEqual(onItemPush.calls[0], [htmlElement]);
+            assert.deepEqual(onItemPush.calls[2], [bodyElement]);
             // The last opened element is the second p
-            expect(onItemPush).toHaveBeenLastCalledWith(bodyElement.childNodes[1]);
+            assert.deepEqual(onItemPush.calls[onItemPush.calls.length - 1], [bodyElement.childNodes[1]]);
             // The second p isn't closed, plus we never pop body and html. Alas, only 2 pop events (head and p).
-            expect(onItemPop).toHaveBeenCalledTimes(2);
+            assert.equal(onItemPop.callCount, 2);
             // The last pop event should be the first p.
-            expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0], bodyElement);
+            assert.deepEqual(onItemPop.calls[onItemPop.calls.length - 1], [bodyElement.childNodes[0], bodyElement]);
         });
     });
 });
