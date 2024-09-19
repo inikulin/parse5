@@ -1,8 +1,6 @@
 import { Writable } from 'node:stream';
 import { Parser, type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAdapterMap } from 'parse5';
 
-/* eslint-disable unicorn/consistent-function-scoping -- The rule seems to be broken here. */
-
 /**
  * Streaming HTML parser with scripting support.
  * A [writable stream](https://nodejs.org/api/stream.html#stream_class_stream_writable).
