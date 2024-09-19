@@ -23,7 +23,11 @@
         "ts-node": "^10.9.2",
         "typedoc": "^0.27.6",
         "typescript": "^5.7.3",
-        "typescript-eslint": "^8.20.0"
+        "typescript-eslint": "^8.20.0",
+        "@types/mocha": "^10.0.8",
+        "c8": "^10.1.2",
+        "mocha": "^10.7.3",
+        "tinyspy": "^3.0.2"
     },
     "scripts": {
         "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
@@ -36,7 +40,8 @@
         "lint": "npm run lint:es && npm run lint:prettier",
         "lint:es": "eslint .",
         "lint:prettier": "npm run prettier -- --check",
-        "unit-tests": "NODE_OPTIONS=--experimental-vm-modules jest",
+        "unit-tests": "mocha",
+        "unit-tests-coverage": "c8 mocha",
         "test": "npm run lint && npm run unit-tests",
         "generate-feedback-tests": "node --loader ts-node/esm scripts/generate-parser-feedback-test/index.ts test/data/html5lib-tests/tree-construction/*.dat",
         "bench-perf": "npm run build && node bench/perf/index.js",
@@ -54,24 +59,6 @@
         ],
         "*.{md,json,yml}": [
             "prettier --write"
-        ]
-    },
-    "jest": {
-        "preset": "ts-jest/presets/default-esm",
-        "testEnvironment": "node",
-        "coverageProvider": "v8",
-        "moduleNameMapper": {
-            "^(parse5[^/]*)/dist/(.*?)(?:\\.js)?$": "<rootDir>/packages/$1/lib/$2",
-            "^(parse5[^/]*)$": "<rootDir>/packages/$1/lib/index.ts",
-            "^(.*)\\.js$": [
-                "$1",
-                "$1.js"
-            ]
-        },
-        "coveragePathIgnorePatterns": [
-            "node_modules",
-            "bench",
-            "test"
         ]
     }
 }

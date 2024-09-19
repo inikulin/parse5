@@ -1,0 +1,5 @@
+{
+    "reporter": ["lcov"],
+    "include": ["packages/*/lib/**/*.ts"],
+    "exclude": []
+}

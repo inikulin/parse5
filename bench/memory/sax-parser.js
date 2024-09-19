@@ -6,6 +6,8 @@ import memwatch from '@airbnb/node-memwatch';
 import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
 import { finished } from 'parse5-test-utils/dist/common.js';
 
+/* eslint-disable no-console */
+
 const heapDiffMeasurement = new memwatch.HeapDiff();
 
 let maxMemUsage = 0;
