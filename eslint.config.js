@@ -56,6 +56,14 @@ export default [
         },
     },
     {
+        files: testFiles,
+        languageOptions: {
+            globals: {
+                ...globals.mocha,
+            },
+        },
+    },
+    {
         files: ['**/*.ts'],
         rules: {
             '@typescript-eslint/no-unsafe-declaration-merging': 'off',
