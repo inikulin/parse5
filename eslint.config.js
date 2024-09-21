@@ -2,6 +2,7 @@ import eslintjs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import { configs as tseslintConfigs } from 'typescript-eslint';
 import globals from 'globals';
+import eslintUnicorn from 'eslint-plugin-unicorn';
 
 const { configs: eslintConfigs } = eslintjs;
 
@@ -13,6 +14,7 @@ const ignoreFiles = [
     'packages/*/dist/',
     'test/dist/',
     'docs/build/',
+    'coverage/',
 ];
 const allFiles = [...sourceFiles, ...testFiles];
 
@@ -66,4 +68,22 @@ export default [
         },
     },
     eslintConfigPrettier,
+    eslintUnicorn.configs['flat/recommended'],
+    {
+        rules: {
+            'unicorn/no-null': 'off',
+            'unicorn/prevent-abbreviations': 'off',
+            'unicorn/prefer-string-slice': 'off',
+            'unicorn/prefer-code-point': 'off',
+            'unicorn/no-array-push-push': 'off',
+            'unicorn/no-for-loop': 'off',
+            'unicorn/consistent-destructuring': 'off',
+            'unicorn/prefer-string-replace-all': 'off',
+            'unicorn/prefer-at': 'off',
+            'unicorn/number-literal-case': 'off',
+            'unicorn/no-nested-ternary': 'off',
+            'unicorn/consistent-function-scoping': 'off',
+            'unicorn/prefer-switch': ['error', { emptyDefaultCase: 'do-nothing-comment' }],
+        },
+    },
 ];
