@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { readFileSync, createReadStream, readdirSync } from 'node:fs';
 import Benchmark from 'benchmark';
 import { loadTreeConstructionTestData } from 'parse5-test-utils/dist/generate-parsing-tests.js';
