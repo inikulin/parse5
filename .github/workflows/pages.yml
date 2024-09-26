@@ -9,7 +9,7 @@ jobs:
         name: Deploy to GitHub Pages
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4.1.7
+            - uses: actions/checkout@v4.2.0
             - uses: actions/setup-node@v4.0.4
               with:
                   node-version: lts/*
