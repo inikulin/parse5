@@ -116,35 +116,36 @@ describe('parser', () => {
     });
 
     describe('rawtext parsing', () => {
-        it.each([
-            ['iframe'],
-            ['noembed'],
-            ['noframes'],
-            ['noscript'],
-            ['script'],
-            ['style'],
-            ['textarea'],
-            ['title'],
-            ['xmp'],
-        ])('<%s>', (tagName) => {
+        const tagNames = [
+            'iframe',
+            'noembed',
+            'noframes',
+            'noscript',
+            'script',
+            'style',
+            'textarea',
+            'title',
+            'xmp',
+        ];
+        for (const tagName of tagNames) {
             const html = `<r><${tagName}><math id="</${tagName}><b>should be outside</b>">`;
             const fragment = parseFragment(html);
 
-            expect(fragment.childNodes.length).toBe(1);
+            assert.equal(fragment.childNodes.length, 1);
             const r = fragment.childNodes[0] as Element;
-            expect(r.nodeName).toBe('r');
-            expect(r.childNodes).toHaveLength(3);
-            expect(r.childNodes.map((_) => _.nodeName)).toEqual([tagName, 'b', '#text']);
+            assert.equal(r.nodeName, 'r');
+            assert.equal(r.childNodes.length, 3);
+            assert.deepEqual(r.childNodes.map((_) => _.nodeName), [tagName, 'b', '#text']);
 
             const target = r.childNodes[0] as Element;
-            expect(target.childNodes).toHaveLength(1);
-            expect(target.childNodes[0].nodeName).toBe('#text');
-            expect((target.childNodes[0] as TextNode).value).toBe('<math id="');
+            assert.equal(target.childNodes.length, 1);
+            assert.equal(target.childNodes[0].nodeName, '#text');
+            assert.equal((target.childNodes[0] as TextNode).value, '<math id="');
 
             const b = r.childNodes[1] as Element;
-            expect(b.childNodes).toHaveLength(1);
-            expect(b.childNodes[0].nodeName).toBe('#text');
-            expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
-        });
+            assert.equal(b.childNodes.length, 1);
+            assert.equal(b.childNodes[0].nodeName, '#text');
+            assert.equal((b.childNodes[0] as TextNode).value, 'should be outside');
+        }
     });
 });
