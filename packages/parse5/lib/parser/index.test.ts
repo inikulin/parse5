@@ -131,11 +131,7 @@ describe('parser', () => {
             const r = fragment.childNodes[0] as Element;
             expect(r.nodeName).toBe('r');
             expect(r.childNodes).toHaveLength(3);
-            expect(r.childNodes.map(_ => _.nodeName)).toEqual([
-                tagName,
-                'b',
-                '#text'
-            ]);
+            expect(r.childNodes.map((_) => _.nodeName)).toEqual([tagName, 'b', '#text']);
 
             const target = r.childNodes[0] as Element;
             expect(target.childNodes).toHaveLength(1);
