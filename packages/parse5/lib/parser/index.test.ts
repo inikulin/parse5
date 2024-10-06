@@ -3,6 +3,7 @@ import { parseFragment, parse } from 'parse5';
 import { jest } from '@jest/globals';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
+import type { Element, TextNode } from '../tree-adapters/default.js';
 
 generateParsingTests(
     'parser',
@@ -108,6 +109,39 @@ describe('parser', () => {
             expect(onItemPop).toHaveBeenCalledTimes(2);
             // The last pop event should be the first p.
             expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0], bodyElement);
+        });
+    });
+
+    describe('rawtext parsing', () => {
+        it.each([
+            ['iframe'],
+            ['noembed'],
+            ['noframes'],
+            ['noscript'],
+            ['script'],
+            ['style'],
+            ['textarea'],
+            ['title'],
+            ['xmp'],
+        ])('<%s>', (tagName) => {
+            const html = `<r><${tagName}><math id="</${tagName}><b>should be outside</b>">`;
+            const fragment = parseFragment(html);
+
+            expect(fragment.childNodes.length).toBe(1);
+            const r = fragment.childNodes[0] as Element;
+            expect(r.nodeName).toBe('r');
+            expect(r.childNodes).toHaveLength(3);
+            expect(r.childNodes.map((_) => _.nodeName)).toEqual([tagName, 'b', '#text']);
+
+            const target = r.childNodes[0] as Element;
+            expect(target.childNodes).toHaveLength(1);
+            expect(target.childNodes[0].nodeName).toBe('#text');
+            expect((target.childNodes[0] as TextNode).value).toBe('<math id="');
+
+            const b = r.childNodes[1] as Element;
+            expect(b.childNodes).toHaveLength(1);
+            expect(b.childNodes[0].nodeName).toBe('#text');
+            expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
         });
     });
 });

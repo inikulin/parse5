@@ -2195,9 +2195,9 @@ function iframeStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     p._switchToTextParsing(token, TokenizerMode.RAWTEXT);
 }
 
-//NOTE: here we assume that we always act as an user agent with enabled plugins, so we parse
-//<noembed> as rawtext.
-function noembedStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+//NOTE: here we assume that we always act as a user agent with enabled plugins/frames, so we parse
+//<noembed>/<noframes> as rawtext.
+function rawTextStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p._switchToTextParsing(token, TokenizerMode.RAWTEXT);
 }
 
@@ -2449,8 +2449,9 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             optgroupStartTagInBody(p, token);
             break;
         }
-        case $.NOEMBED: {
-            noembedStartTagInBody(p, token);
+        case $.NOEMBED:
+        case $.NOFRAMES: {
+            rawTextStartTagInBody(p, token);
             break;
         }
         case $.FRAMESET: {
@@ -2463,7 +2464,7 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
         }
         case $.NOSCRIPT: {
             if (p.options.scriptingEnabled) {
-                noembedStartTagInBody(p, token);
+                rawTextStartTagInBody(p, token);
             } else {
                 genericStartTagInBody(p, token);
             }
