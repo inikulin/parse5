@@ -18,7 +18,7 @@ jobs:
     lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4.2.1
+            - uses: actions/checkout@v4.2.2
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
@@ -46,7 +46,7 @@ jobs:
                     - lts/*
 
         steps:
-            - uses: actions/checkout@v4.2.1
+            - uses: actions/checkout@v4.2.2
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
