@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { TAG_ID as $, TAG_NAMES as TN, NS } from '../common/html.js';
 import { OpenElementStack } from './open-element-stack.js';
-import type { TreeAdapterTypeMap } from '../tree-adapters/interface';
+import type { TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 
 function ignore(): void {
