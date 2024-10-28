@@ -4,7 +4,21 @@ import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
 import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
 export { type DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/default.js';
-export type * as DefaultTreeAdapterTypes from './tree-adapters/default.js';
+import type * as DefaultTreeAdapter from './tree-adapters/default.js';
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace DefaultTreeAdapterTypes {
+    export type Document = DefaultTreeAdapter.Document;
+    export type DocumentFragment = DefaultTreeAdapter.DocumentFragment;
+    export type Element = DefaultTreeAdapter.Element;
+    export type CommentNode = DefaultTreeAdapter.CommentNode;
+    export type TextNode = DefaultTreeAdapter.TextNode;
+    export type Template = DefaultTreeAdapter.Template;
+    export type DocumentType = DefaultTreeAdapter.DocumentType;
+    export type ParentNode = DefaultTreeAdapter.ParentNode;
+    export type ChildNode = DefaultTreeAdapter.ChildNode;
+    export type Node = DefaultTreeAdapter.Node;
+    export type DefaultTreeAdapterMap = DefaultTreeAdapter.DefaultTreeAdapterMap;
+}
 export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
 export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
 export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
