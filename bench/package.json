@@ -9,7 +9,7 @@
     "dependencies": {
         "benchmark": "^2.1.4",
         "human-format": "^1.2.0",
-        "@airbnb/node-memwatch": "^2.0.0",
+        "@airbnb/node-memwatch": "^3.0.0",
         "parse5": "npm:parse5"
     }
 }
