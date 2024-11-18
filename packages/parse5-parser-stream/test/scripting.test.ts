@@ -55,7 +55,7 @@ generateParsingTests(
 );
 
 generateTestsForEachTreeAdapter('ParserStream', (treeAdapter) => {
-    test('Regression - Synchronously calling resume() leads to crash (GH-98)', (done) => {
+    it('Regression - Synchronously calling resume() leads to crash (GH-98)', (done) => {
         const parser = new ParserStream({ treeAdapter });
 
         parser.on('script', (_el, _docWrite, resume) => resume());
@@ -65,7 +65,7 @@ generateTestsForEachTreeAdapter('ParserStream', (treeAdapter) => {
         process.nextTick(done);
     });
 
-    test('Regression - Parsing loop lock causes accidental hang ups (GH-101)', () => {
+    it('Regression - Parsing loop lock causes accidental hang ups (GH-101)', () => {
         const parser = new ParserStream({ treeAdapter });
 
         parser.on('script', (_scriptElement, _documentWrite, resume) => process.nextTick(resume));
