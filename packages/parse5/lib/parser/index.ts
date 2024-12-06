@@ -54,8 +54,6 @@ enum InsertionMode {
     IN_TABLE_BODY,
     IN_ROW,
     IN_CELL,
-    IN_SELECT,
-    IN_SELECT_IN_TABLE,
     IN_TEMPLATE,
     AFTER_BODY,
     IN_FRAMESET,
@@ -706,10 +704,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                     this.insertionMode = InsertionMode.IN_FRAMESET;
                     return;
                 }
-                case $.SELECT: {
-                    this._resetInsertionModeForSelect(i);
-                    return;
-                }
                 case $.TEMPLATE: {
                     this.insertionMode = this.tmplInsertionModeStack[0];
                     return;
@@ -737,24 +731,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
 
         this.insertionMode = InsertionMode.IN_BODY;
-    }
-
-    /** @protected */
-    _resetInsertionModeForSelect(selectIdx: number): void {
-        if (selectIdx > 0) {
-            for (let i = selectIdx - 1; i > 0; i--) {
-                const tn = this.openElements.tagIDs[i];
-
-                if (tn === $.TEMPLATE) {
-                    break;
-                } else if (tn === $.TABLE) {
-                    this.insertionMode = InsertionMode.IN_SELECT_IN_TABLE;
-                    return;
-                }
-            }
-        }
-
-        this.insertionMode = InsertionMode.IN_SELECT;
     }
 
     //Foster parenting
@@ -859,9 +835,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                 characterInBody(this, token);
                 break;
             }
-            case InsertionMode.TEXT:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE: {
+            case InsertionMode.TEXT: {
                 this._insertCharacters(token);
                 break;
             }
@@ -974,8 +948,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             case InsertionMode.IN_TABLE_BODY:
             case InsertionMode.IN_ROW:
             case InsertionMode.IN_CELL:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE:
             case InsertionMode.IN_TEMPLATE:
             case InsertionMode.IN_FRAMESET:
             case InsertionMode.AFTER_FRAMESET: {
@@ -1110,14 +1082,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                 startTagInCell(this, token);
                 break;
             }
-            case InsertionMode.IN_SELECT: {
-                startTagInSelect(this, token);
-                break;
-            }
-            case InsertionMode.IN_SELECT_IN_TABLE: {
-                startTagInSelectInTable(this, token);
-                break;
-            }
             case InsertionMode.IN_TEMPLATE: {
                 startTagInTemplate(this, token);
                 break;
@@ -1220,14 +1184,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                 endTagInCell(this, token);
                 break;
             }
-            case InsertionMode.IN_SELECT: {
-                endTagInSelect(this, token);
-                break;
-            }
-            case InsertionMode.IN_SELECT_IN_TABLE: {
-                endTagInSelectInTable(this, token);
-                break;
-            }
             case InsertionMode.IN_TEMPLATE: {
                 endTagInTemplate(this, token);
                 break;
@@ -1285,9 +1241,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             case InsertionMode.IN_COLUMN_GROUP:
             case InsertionMode.IN_TABLE_BODY:
             case InsertionMode.IN_ROW:
-            case InsertionMode.IN_CELL:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE: {
+            case InsertionMode.IN_CELL: {
                 eofInBody(this, token);
                 break;
             }
@@ -1340,8 +1294,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             case InsertionMode.AFTER_HEAD:
             case InsertionMode.TEXT:
             case InsertionMode.IN_COLUMN_GROUP:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE:
             case InsertionMode.IN_FRAMESET:
             case InsertionMode.AFTER_FRAMESET: {
                 this._insertCharacters(token);
@@ -2158,6 +2110,13 @@ function hrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
         p._closePElement();
     }
 
+    if (p.openElements.hasInScope($.SELECT)) {
+        p.openElements.generateImpliedEndTagsWithExclusion($.OPTGROUP);
+        if (p.openElements.hasInScope($.OPTION)) {
+            p._err(token, ERR.characterReferenceOutsideUnicodeRange); // TODO correct error type
+        }
+    }
+
     p._appendElement(token, NS.HTML);
     p.framesetOk = false;
     token.ackSelfClosing = true;
@@ -2202,26 +2161,45 @@ function rawTextStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token
 }
 
 function selectStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    p._reconstructActiveFormattingElements();
-    p._insertElement(token, NS.HTML);
-    p.framesetOk = false;
-
-    p.insertionMode =
-        p.insertionMode === InsertionMode.IN_TABLE ||
-        p.insertionMode === InsertionMode.IN_CAPTION ||
-        p.insertionMode === InsertionMode.IN_TABLE_BODY ||
-        p.insertionMode === InsertionMode.IN_ROW ||
-        p.insertionMode === InsertionMode.IN_CELL
-            ? InsertionMode.IN_SELECT_IN_TABLE
-            : InsertionMode.IN_SELECT;
-}
-
-function optgroupStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    if (p.openElements.currentTagId === $.OPTION) {
-        p.openElements.pop();
+    if (p.openElements.hasInScope($.SELECT)) {
+        p._err(token, ERR.characterReferenceOutsideUnicodeRange); // TODO correct error type
+        p.openElements.popUntilTagNamePopped($.SELECT);
     }
 
     p._reconstructActiveFormattingElements();
+    p._insertElement(token, NS.HTML);
+    p.framesetOk = false;
+}
+
+function optionStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    if (p.openElements.hasInScope($.SELECT)) {
+        p.openElements.generateImpliedEndTagsWithExclusion($.OPTGROUP);
+        if (p.openElements.hasInScope($.OPTION)) {
+            p._err(token, ERR.characterReferenceOutsideUnicodeRange); // TODO correct error type
+        }
+    } else {
+        if (p.openElements.currentTagId === $.OPTION) {
+            p.openElements.pop();
+        }
+        p._reconstructActiveFormattingElements();
+    }
+
+    p._insertElement(token, NS.HTML);
+}
+
+function optgroupStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    if (p.openElements.hasInScope($.SELECT)) {
+        p.openElements.generateImpliedEndTags();
+        if (p.openElements.hasInScope($.OPTION) || p.openElements.hasInScope($.OPTGROUP)) {
+            p._err(token, ERR.characterReferenceOutsideUnicodeRange); // TODO correct error type
+        }
+    } else {
+        if (p.openElements.currentTagId == $.OPTION) {
+            p.openElements.pop();
+        }
+        p._reconstructActiveFormattingElements();
+    }
+
     p._insertElement(token, NS.HTML);
 }
 
@@ -2444,7 +2422,10 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             selectStartTagInBody(p, token);
             break;
         }
-        case $.OPTION:
+        case $.OPTION: {
+            optionStartTagInBody(p, token);
+            break;
+        }
         case $.OPTGROUP: {
             optgroupStartTagInBody(p, token);
             break;
@@ -3266,155 +3247,6 @@ function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         default: {
             endTagInBody(p, token);
         }
-    }
-}
-
-// The "in select" insertion mode
-//------------------------------------------------------------------
-function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    switch (token.tagID) {
-        case $.HTML: {
-            startTagInBody(p, token);
-            break;
-        }
-        case $.OPTION: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-
-            p._insertElement(token, NS.HTML);
-            break;
-        }
-        case $.OPTGROUP: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-
-            if (p.openElements.currentTagId === $.OPTGROUP) {
-                p.openElements.pop();
-            }
-
-            p._insertElement(token, NS.HTML);
-            break;
-        }
-        case $.HR: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-
-            if (p.openElements.currentTagId === $.OPTGROUP) {
-                p.openElements.pop();
-            }
-
-            p._appendElement(token, NS.HTML);
-            token.ackSelfClosing = true;
-            break;
-        }
-        case $.INPUT:
-        case $.KEYGEN:
-        case $.TEXTAREA:
-        case $.SELECT: {
-            if (p.openElements.hasInSelectScope($.SELECT)) {
-                p.openElements.popUntilTagNamePopped($.SELECT);
-                p._resetInsertionMode();
-
-                if (token.tagID !== $.SELECT) {
-                    p._processStartTag(token);
-                }
-            }
-            break;
-        }
-        case $.SCRIPT:
-        case $.TEMPLATE: {
-            startTagInHead(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
-function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    switch (token.tagID) {
-        case $.OPTGROUP: {
-            if (
-                p.openElements.stackTop > 0 &&
-                p.openElements.currentTagId === $.OPTION &&
-                p.openElements.tagIDs[p.openElements.stackTop - 1] === $.OPTGROUP
-            ) {
-                p.openElements.pop();
-            }
-
-            if (p.openElements.currentTagId === $.OPTGROUP) {
-                p.openElements.pop();
-            }
-            break;
-        }
-        case $.OPTION: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-            break;
-        }
-        case $.SELECT: {
-            if (p.openElements.hasInSelectScope($.SELECT)) {
-                p.openElements.popUntilTagNamePopped($.SELECT);
-                p._resetInsertionMode();
-            }
-            break;
-        }
-        case $.TEMPLATE: {
-            templateEndTagInHead(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
-// The "in select in table" insertion mode
-//------------------------------------------------------------------
-function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (
-        tn === $.CAPTION ||
-        tn === $.TABLE ||
-        tn === $.TBODY ||
-        tn === $.TFOOT ||
-        tn === $.THEAD ||
-        tn === $.TR ||
-        tn === $.TD ||
-        tn === $.TH
-    ) {
-        p.openElements.popUntilTagNamePopped($.SELECT);
-        p._resetInsertionMode();
-        p._processStartTag(token);
-    } else {
-        startTagInSelect(p, token);
-    }
-}
-
-function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (
-        tn === $.CAPTION ||
-        tn === $.TABLE ||
-        tn === $.TBODY ||
-        tn === $.TFOOT ||
-        tn === $.THEAD ||
-        tn === $.TR ||
-        tn === $.TD ||
-        tn === $.TH
-    ) {
-        if (p.openElements.hasInTableScope(tn)) {
-            p.openElements.popUntilTagNamePopped($.SELECT);
-            p._resetInsertionMode();
-            p.onEndTag(token);
-        }
-    } else {
-        endTagInSelect(p, token);
     }
 }
 
