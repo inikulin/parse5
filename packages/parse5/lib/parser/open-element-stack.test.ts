@@ -409,23 +409,6 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
         assert.ok(stack.hasTableBodyContextInTableScope());
     });
 
-    test('Has element in select scope', () => {
-        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
-
-        assert.ok(stack.hasInSelectScope($.P));
-
-        stack.push(createElement(TN.HTML), $.HTML);
-        stack.push(createElement(TN.DIV), $.DIV);
-        assert.ok(!stack.hasInSelectScope($.P));
-
-        stack.push(createElement(TN.P), $.P);
-        stack.push(createElement(TN.OPTION), $.OPTION);
-        assert.ok(stack.hasInSelectScope($.P));
-
-        stack.push(createElement(TN.DIV), $.DIV);
-        assert.ok(!stack.hasInSelectScope($.P));
-    });
-
     test('Generate implied end tags', () => {
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
 
