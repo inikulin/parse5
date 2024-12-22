@@ -643,7 +643,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                 (entry) => entry.type === EntryType.Marker || this.openElements.contains(entry.element),
             );
 
-            const unopenIdx = endIndex < 0 ? listLength - 1 : endIndex - 1;
+            const unopenIdx = endIndex === -1 ? listLength - 1 : endIndex - 1;
 
             for (let i = unopenIdx; i >= 0; i--) {
                 const entry = this.activeFormattingElements.entries[i] as ElementEntry<T>;
@@ -1419,7 +1419,7 @@ function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(
     }
 
     if (!furthestBlock) {
-        p.openElements.shortenToLength(idx < 0 ? 0 : idx);
+        p.openElements.shortenToLength(Math.max(idx, 0));
         p.activeFormattingElements.removeEntry(formattingElementEntry);
     }
 
