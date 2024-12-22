@@ -2,7 +2,7 @@
     "name": "parse5-htmlparser2-tree-adapter",
     "type": "module",
     "description": "htmlparser2 tree adapter for parse5.",
-    "version": "7.0.0",
+    "version": "7.1.0",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": "https://github.com/inikulin/parse5/graphs/contributors",
     "homepage": "https://parse5.js.org",
@@ -26,7 +26,7 @@
         "parse5": "^7.0.0"
     },
     "scripts": {
-        "build:cjs": "tsc --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
+        "build:cjs": "tsc --moduleResolution node10 --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
     },
     "repository": {
         "type": "git",

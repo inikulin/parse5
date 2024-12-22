@@ -18,11 +18,11 @@ jobs:
     lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4.1.7
+            - uses: actions/checkout@v4.2.2
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v4.0.2
+              uses: actions/setup-node@v4.1.0
               with:
                   node-version: lts/*
                   cache: npm
@@ -46,11 +46,11 @@ jobs:
                     - lts/*
 
         steps:
-            - uses: actions/checkout@v4.1.7
+            - uses: actions/checkout@v4.2.2
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v4.0.2
+              uses: actions/setup-node@v4.1.0
               with:
                   node-version: ${{ matrix.node }}
                   cache: npm
@@ -66,7 +66,7 @@ jobs:
               if: matrix.node == env.NODE_COV
 
             - name: Run Coveralls
-              uses: coverallsapp/github-action@v2.3.0
+              uses: coverallsapp/github-action@v2.3.4
               if: matrix.node == env.NODE_COV
               continue-on-error: true
               with:
