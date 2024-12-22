@@ -15,15 +15,15 @@ const saxPath = new URL('../../test/data/sax/', import.meta.url);
 
 //HACK: https://github.com/bestiejs/benchmark.js/issues/51
 /* global workingCopy, WorkingCopyParserStream, upstreamParser, hugePage, microTests, runMicro, runPages, files */
-global.workingCopy = parse5;
-global.WorkingCopyParserStream = parse5Stream;
-global.upstreamParser = parse5Upstream;
+globalThis.workingCopy = parse5;
+globalThis.WorkingCopyParserStream = parse5Stream;
+globalThis.upstreamParser = parse5Upstream;
 
 // Huge page data
-global.hugePage = readFileSync(hugePagePath).toString();
+globalThis.hugePage = readFileSync(hugePagePath).toString();
 
 // Micro data
-global.microTests = loadTreeConstructionTestData(treeConstructionPath, treeAdapters.default)
+globalThis.microTests = loadTreeConstructionTestData(treeConstructionPath, treeAdapters.default)
     .filter(
         (test) =>
             //NOTE: this test caused a stack overflow in parse5 v1.x
@@ -34,7 +34,7 @@ global.microTests = loadTreeConstructionTestData(treeConstructionPath, treeAdapt
         fragmentContext: test.fragmentContext,
     }));
 
-global.runMicro = function (parser) {
+globalThis.runMicro = function (parser) {
     for (const test of microTests) {
         if (test.fragmentContext) {
             parser.parseFragment(test.fragmentContext, test.html);
@@ -47,14 +47,14 @@ global.runMicro = function (parser) {
 // Pages data
 const pages = loadSAXParserTestData().map((test) => test.src);
 
-global.runPages = function (parser) {
+globalThis.runPages = function (parser) {
     for (const page of pages) {
         parser.parse(page);
     }
 };
 
 // Stream data
-global.files = readdirSync(saxPath).map((dirName) => new URL(`${dirName}/src.html`, saxPath).pathname);
+globalThis.files = readdirSync(saxPath).map((dirName) => new URL(`${dirName}/src.html`, saxPath).pathname);
 
 // Utils
 function getHz(suite, testName) {

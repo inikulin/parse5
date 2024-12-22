@@ -136,7 +136,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             targetIdx = this.tagIDs.lastIndexOf(tagName, targetIdx - 1);
         } while (targetIdx > 0 && this.treeAdapter.getNamespaceURI(this.items[targetIdx]) !== NS.HTML);
 
-        this.shortenToLength(targetIdx < 0 ? 0 : targetIdx);
+        this.shortenToLength(Math.max(targetIdx, 0));
     }
 
     shortenToLength(idx: number): void {
@@ -156,12 +156,12 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     popUntilElementPopped(element: T['element']): void {
         const idx = this._indexOf(element);
-        this.shortenToLength(idx < 0 ? 0 : idx);
+        this.shortenToLength(Math.max(idx, 0));
     }
 
     private popUntilPopped(tagNames: Set<$>, targetNS: NS): void {
         const idx = this._indexOfTagNames(tagNames, targetNS);
-        this.shortenToLength(idx < 0 ? 0 : idx);
+        this.shortenToLength(Math.max(idx, 0));
     }
 
     popUntilNumberedHeaderPopped(): void {
