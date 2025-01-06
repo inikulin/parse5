@@ -173,5 +173,5 @@ export interface RewritingStream {
      * @param event Name of the event
      * @param handler Event handler
      */
-    on(event: string, handler: (...args: any[]) => void): this;
+    on(event: string, handler: (...args: never[]) => void): this;
 }
