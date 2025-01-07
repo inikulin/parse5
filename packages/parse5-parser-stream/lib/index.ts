@@ -144,5 +144,6 @@ export interface ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterM
      * @param event Name of the event
      * @param handler Event handler
      */
-    on(event: string, handler: (...args: never[]) => void): this;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    on(event: string, handler: (...args: any[]) => void): this;
 }
