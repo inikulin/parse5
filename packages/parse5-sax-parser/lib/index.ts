@@ -291,5 +291,6 @@ export interface SAXParser {
      * @param event Name of the event
      * @param handler Event handler
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     on(event: string, handler: (...args: any[]) => void): this;
 }
