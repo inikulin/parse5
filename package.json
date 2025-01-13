@@ -10,7 +10,7 @@
     "devDependencies": {
         "@eslint/js": "^9.17.0",
         "@types/jest": "^29.5.14",
-        "eslint": "^9.17.0",
+        "eslint": "^9.18.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-unicorn": "^56.0.1",
         "globals": "^15.14.0",
