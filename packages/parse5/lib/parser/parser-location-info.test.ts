@@ -1,6 +1,13 @@
 import * as assert from 'node:assert';
 import { outdent } from 'outdent';
-import { type ParserOptions, type TreeAdapterTypeMap, parse, parseFragment } from 'parse5';
+import {
+    type ParserOptions,
+    type TreeAdapterTypeMap,
+    parse,
+    parseFragment,
+    type DefaultTreeAdapterMap,
+    type Token,
+} from 'parse5';
 import {
     generateLocationInfoParserTests,
     assertStartTagLocation,
@@ -230,32 +237,34 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 describe('location-info-parser', () => {
     it('Updating node source code location (GH-314)', () => {
         const sourceCodeLocationSetter = {
-            setNodeSourceCodeLocation(node: any, location: any): void {
+            setNodeSourceCodeLocation(
+                node: DefaultTreeAdapterMap['node'],
+                location: Token.ElementLocation | null,
+            ): void {
                 node.sourceCodeLocation =
                     location === null
                         ? null
                         : {
-                              start: {
-                                  line: location.startLine,
-                                  column: location.startCol,
-                                  offset: location.startOffset,
-                              },
-                              end: {
-                                  line: location.endLine,
-                                  column: location.endCol,
-                                  offset: location.endOffset,
-                              },
+                              startLine: location.startLine * 2,
+                              startCol: location.startCol * 2,
+                              startOffset: location.startOffset * 2,
+                              endLine: location.endLine * 2,
+                              endCol: location.endCol * 2,
+                              endOffset: location.endOffset * 2,
                           };
             },
-            updateNodeSourceCodeLocation(node: any, endLocation: any): void {
-                node.sourceCodeLocation = {
-                    start: node.sourceCodeLocation.start,
-                    end: {
-                        line: endLocation.endLine,
-                        column: endLocation.endCol,
-                        offset: endLocation.endOffset,
-                    },
-                };
+            updateNodeSourceCodeLocation(
+                node: DefaultTreeAdapterMap['node'],
+                endLocation: Token.ElementLocation,
+            ): void {
+                if (node.sourceCodeLocation) {
+                    node.sourceCodeLocation = {
+                        ...node.sourceCodeLocation,
+                        endLine: endLocation.endLine * 2,
+                        endCol: endLocation.endCol * 2,
+                        endOffset: endLocation.endOffset * 2,
+                    };
+                }
             },
         };
         const treeAdapter = { ...treeAdapters.default, ...sourceCodeLocationSetter };
@@ -270,18 +279,30 @@ describe('location-info-parser', () => {
         const [text] = body.childNodes;
 
         assert.deepEqual(doctype.sourceCodeLocation, {
-            start: { line: 1, column: 1, offset: 0 },
-            end: { line: 1, column: 11, offset: 10 },
+            startLine: 2,
+            startCol: 2,
+            startOffset: 0,
+            endLine: 2,
+            endCol: 22,
+            endOffset: 20,
         });
         assert.strictEqual(html.sourceCodeLocation, null);
         assert.strictEqual(head.sourceCodeLocation, null);
         assert.deepEqual(body.sourceCodeLocation, {
-            start: { line: 1, column: 11, offset: 10 },
-            end: { line: 1, column: 40, offset: 39 },
+            startLine: 2,
+            startCol: 22,
+            startOffset: 20,
+            endLine: 2,
+            endCol: 80,
+            endOffset: 78,
         });
         assert.deepEqual(text.sourceCodeLocation, {
-            start: { line: 1, column: 17, offset: 16 },
-            end: { line: 1, column: 33, offset: 32 },
+            startLine: 2,
+            startCol: 34,
+            startOffset: 32,
+            endLine: 2,
+            endCol: 66,
+            endOffset: 64,
         });
     });
 });

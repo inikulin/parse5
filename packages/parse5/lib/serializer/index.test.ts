@@ -58,7 +58,7 @@ describe('serializer', () => {
     });
 
     it('serializes unknown node to empty string', () => {
-        const unknown: any = {};
+        const unknown = {} as never;
         assert.strictEqual(serialize(unknown), '');
         assert.strictEqual(serializeOuter(unknown), '');
     });
