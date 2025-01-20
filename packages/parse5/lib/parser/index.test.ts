@@ -143,7 +143,7 @@ describe('parser', () => {
             const r = fragment.childNodes[0] as Element;
             assert.equal(r.nodeName, 'r');
             assert.equal(r.childNodes.length, 3);
-            assert.equal(
+            assert.deepEqual(
                 r.childNodes.map((_) => _.nodeName),
                 [tagName, 'b', '#text'],
             );
