@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert, describe } from 'vitest';
 import { outdent } from 'outdent';
 import { RewritingStream } from '../lib/index.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/utils/load-sax-parser-test-data.js';

@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import { generateLocationInfoParserTests } from 'parse5-test-utils/utils/generate-location-info-parser-tests.js';
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 import { parseChunked } from './utils/parse-chunked.js';

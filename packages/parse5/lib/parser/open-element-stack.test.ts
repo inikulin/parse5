@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import { TAG_ID as $, TAG_NAMES as TN, NS } from '../common/html.js';
 import { OpenElementStack } from './open-element-stack.js';
 import type { TreeAdapterTypeMap } from '../tree-adapters/interface.js';

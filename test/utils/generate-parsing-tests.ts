@@ -1,7 +1,7 @@
+import { it, assert } from 'vitest';
 import type { ParserOptions, TreeAdapter, TreeAdapterTypeMap, ParserError } from 'parse5';
 import * as fs from 'node:fs';
 import path from 'node:path';
-import * as assert from 'node:assert';
 import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
 import { parseDatFile, type DatFile } from './parse-dat-file.js';

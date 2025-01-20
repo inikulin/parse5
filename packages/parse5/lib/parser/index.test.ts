@@ -1,10 +1,11 @@
-import * as assert from 'node:assert/strict';
+import { it, assert, describe, beforeEach, afterEach } from 'vitest';
 import { parseFragment, parse } from 'parse5';
-import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
-import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import type { Element, TextNode } from '../tree-adapters/default.js';
+import { generateParsingTests } from 'parse5-test-utils/dist/generate-parsing-tests.js';
+import { treeAdapters } from 'parse5-test-utils/dist/common.js';
 import { type DocumentType } from '../tree-adapters/default.js';
 import { spy } from 'tinyspy';
+import type { Htmlparser2TreeAdapterMap } from 'parse5-htmlparser2-tree-adapter';
 
 generateParsingTests(
     'parser',
@@ -44,7 +45,10 @@ describe('parser', () => {
         const document = parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
         assert.ok(treeAdapters.htmlparser2.isDocumentTypeNode(document.childNodes[0]));
-        assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
+        assert.strictEqual(
+            (document.childNodes[0] as Htmlparser2TreeAdapterMap['documentType']).data,
+            '!DOCTYPE html SYSTEM "about:legacy-compat"',
+        );
     });
 
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
@@ -64,7 +68,11 @@ describe('parser', () => {
             });
 
             assert.ok(treeAdapters.htmlparser2.isElementNode(fragment.childNodes[0]));
-            assert.strictEqual(treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
+            assert.strictEqual(
+                treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0] as Htmlparser2TreeAdapterMap['element'])
+                    .length,
+                1,
+            );
         });
     });
 
@@ -101,7 +109,7 @@ describe('parser', () => {
 
             const htmlElement = document.childNodes[0];
             assert.ok(treeAdapters.default.isElementNode(htmlElement));
-            const bodyElement = htmlElement.childNodes[1];
+            const bodyElement = (htmlElement as Element).childNodes[1] as Element;
             assert.ok(treeAdapters.default.isElementNode(bodyElement));
             // Expect 5 opened elements; in order: html, head, body, and 2x p
             assert.equal(onItemPush.callCount, 5);
@@ -131,21 +139,24 @@ describe('parser', () => {
             const html = `<r><${tagName}><math id="</${tagName}><b>should be outside</b>">`;
             const fragment = parseFragment(html);
 
-            expect(fragment.childNodes.length).toBe(1);
+            assert.equal(fragment.childNodes.length, 1);
             const r = fragment.childNodes[0] as Element;
-            expect(r.nodeName).toBe('r');
-            expect(r.childNodes).toHaveLength(3);
-            expect(r.childNodes.map((_) => _.nodeName)).toEqual([tagName, 'b', '#text']);
+            assert.equal(r.nodeName, 'r');
+            assert.equal(r.childNodes.length, 3);
+            assert.equal(
+                r.childNodes.map((_) => _.nodeName),
+                [tagName, 'b', '#text'],
+            );
 
             const target = r.childNodes[0] as Element;
-            expect(target.childNodes).toHaveLength(1);
-            expect(target.childNodes[0].nodeName).toBe('#text');
-            expect((target.childNodes[0] as TextNode).value).toBe('<math id="');
+            assert.equal(target.childNodes.length, 1);
+            assert.equal(target.childNodes[0].nodeName, '#text');
+            assert.equal((target.childNodes[0] as TextNode).value, '<math id="');
 
             const b = r.childNodes[1] as Element;
-            expect(b.childNodes).toHaveLength(1);
-            expect(b.childNodes[0].nodeName).toBe('#text');
-            expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
+            assert.equal(b.childNodes.length, 1);
+            assert.equal(b.childNodes[0].nodeName, '#text');
+            assert.equal((b.childNodes[0] as TextNode).value, 'should be outside');
         });
     });
 });

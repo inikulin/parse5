@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { readFile } from 'node:fs/promises';
 import format from 'human-format';
 import memwatch from '@airbnb/node-memwatch';

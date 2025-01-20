@@ -7,7 +7,7 @@ import eslintUnicorn from 'eslint-plugin-unicorn';
 const { configs: eslintConfigs } = eslintjs;
 
 const sourceFiles = ['bench/**/*.js', 'scripts/**/*.ts', 'packages/*/lib/**/*.ts'];
-const testFiles = ['test/**/*.{ts,js}'];
+const testFiles = ['test/**/*.{ts,js}', '**/*.test.ts'];
 const ignoreFiles = [
     'test/data/html5lib-tests',
     'test/data/html5lib-tests-fork',
@@ -56,14 +56,6 @@ export default [
         },
     },
     {
-        files: testFiles,
-        languageOptions: {
-            globals: {
-                ...globals.mocha,
-            },
-        },
-    },
-    {
         files: ['**/*.ts'],
         rules: {
             '@typescript-eslint/no-unsafe-declaration-merging': 'off',
@@ -72,6 +64,12 @@ export default [
             '@typescript-eslint/consistent-type-imports': 'error',
 
             '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        },
+    },
+    {
+        files: testFiles,
+        rules: {
+            '@typescript-eslint/no-non-null-assertion': 'off',
         },
     },
     eslintConfigPrettier,

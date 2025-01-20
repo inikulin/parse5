@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import { TAG_NAMES as $, NS, getTagID } from '../common/html.js';
 import { type TagToken, TokenType } from '../common/token.js';
 import { type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
@@ -40,14 +40,14 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.pushElement(element1, element1Token);
         assert.strictEqual(list.entries.length, 1);
         assert.strictEqual(list.entries[0].type, EntryType.Element as const);
-        assert.strictEqual(list.entries[0].element, element1);
-        assert.strictEqual(list.entries[0].token, element1Token);
+        assert.strictEqual((list.entries[0] as ElementEntry<DefaultTreeAdapterMap>).element, element1);
+        assert.strictEqual((list.entries[0] as ElementEntry<DefaultTreeAdapterMap>).token, element1Token);
 
         list.pushElement(element2, element2Token);
         assert.strictEqual(list.entries.length, 2);
         assert.strictEqual(list.entries[0].type, EntryType.Element);
-        assert.strictEqual(list.entries[0].element, element2);
-        assert.strictEqual(list.entries[0].token, element2Token);
+        assert.strictEqual((list.entries[0] as ElementEntry<DefaultTreeAdapterMap>).element, element2);
+        assert.strictEqual((list.entries[0] as ElementEntry<DefaultTreeAdapterMap>).token, element2Token);
     });
 
     it('Insert element after bookmark', () => {
@@ -220,11 +220,11 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.pushElement(element2, token);
         list.insertMarker();
 
-        const entry = list.getElementEntry(element1);
+        const entry = list.getElementEntry(element1)!;
 
         assert.ok(entry);
         assert.strictEqual(entry.type, EntryType.Element);
         assert.strictEqual(entry.token, token);
-        assert.strictEqual(entry.element, element1);
+        assert.strictEqual((entry as ElementEntry<DefaultTreeAdapterMap>).element, element1);
     });
 });

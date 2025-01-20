@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert, describe } from 'vitest';
 import { outdent } from 'outdent';
 import {
     type ParserOptions,

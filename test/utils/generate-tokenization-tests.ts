@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import type { ParserError, Token } from 'parse5';
@@ -67,7 +67,7 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
         const expected = this.testData.expected[this.tokens.length - 1];
         assert.strictEqual('Character', expected[0]);
         assert.ok(typeof actual[1] === 'string');
-        assert.ok(expected[1]?.startsWith(actual[1]));
+        assert.ok(expected[1]?.startsWith(actual[1] as string));
     }
     onNullCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
