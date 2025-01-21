@@ -1,9 +1,8 @@
-import { it, assert, describe, beforeEach, afterEach, vi } from 'vitest';
+import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest';
 import { parseFragment, parse } from 'parse5';
 import type { Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/dist/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/dist/common.js';
-import { type DocumentType } from '../tree-adapters/default.js';
 import type { Htmlparser2TreeAdapterMap } from 'parse5-htmlparser2-tree-adapter';
 
 generateParsingTests(
@@ -77,21 +76,18 @@ describe('parser', () => {
 
     it('Regression - DOCTYPE empty fields (GH-236)', () => {
         const document = parse('<!DOCTYPE>');
-        const doctype = document.childNodes[0] as DocumentType;
+        const doctype = document.childNodes[0];
 
-        assert.ok(Object.prototype.hasOwnProperty.call(doctype, 'name'));
-        assert.equal(doctype.name, '');
-        assert.ok(Object.prototype.hasOwnProperty.call(doctype, 'publicId'));
-        assert.equal(doctype.publicId, '');
-        assert.ok(Object.prototype.hasOwnProperty.call(doctype, 'systemId'));
-        assert.equal(doctype.systemId, '');
+        expect(doctype).toHaveProperty('name', '');
+        expect(doctype).toHaveProperty('publicId', '');
+        expect(doctype).toHaveProperty('systemId', '');
     });
 
     it('Regression - CRLF inside </noscript> (GH-710)', () => {
         const onParseError = vi.fn();
         parse('<!doctype html><noscript>foo</noscript\r\n>', { onParseError });
 
-        assert.equal(onParseError.mock.calls.length, 0);
+        expect(onParseError).not.toHaveBeenCalled();
     });
 
     describe('Tree adapters', () => {
@@ -111,18 +107,15 @@ describe('parser', () => {
             const bodyElement = (htmlElement as Element).childNodes[1] as Element;
             assert.ok(treeAdapters.default.isElementNode(bodyElement));
             // Expect 5 opened elements; in order: html, head, body, and 2x p
-            assert.equal(onItemPush.mock.calls.length, 5);
-            assert.deepEqual(onItemPush.mock.calls[0], [htmlElement]);
-            assert.deepEqual(onItemPush.mock.calls[2], [bodyElement]);
+            expect(onItemPush).toHaveBeenCalledTimes(5);
+            expect(onItemPush).toHaveBeenNthCalledWith(1, htmlElement);
+            expect(onItemPush).toHaveBeenNthCalledWith(3, bodyElement);
             // The last opened element is the second p
-            assert.deepEqual(onItemPush.mock.calls[onItemPush.mock.calls.length - 1], [bodyElement.childNodes[1]]);
+            expect(onItemPush).toHaveBeenLastCalledWith(bodyElement.childNodes[1]);
             // The second p isn't closed, plus we never pop body and html. Alas, only 2 pop events (head and p).
-            assert.equal(onItemPop.mock.calls.length, 2);
+            expect(onItemPop).toHaveBeenCalledTimes(2);
             // The last pop event should be the first p.
-            assert.deepEqual(onItemPop.mock.calls[onItemPop.mock.calls.length - 1], [
-                bodyElement.childNodes[0],
-                bodyElement,
-            ]);
+            expect(onItemPop).toHaveBeenLastCalledWith(bodyElement.childNodes[0], bodyElement);
         });
     });
 
@@ -141,24 +134,21 @@ describe('parser', () => {
             const html = `<r><${tagName}><math id="</${tagName}><b>should be outside</b>">`;
             const fragment = parseFragment(html);
 
-            assert.equal(fragment.childNodes.length, 1);
+            expect(fragment.childNodes.length).toBe(1);
             const r = fragment.childNodes[0] as Element;
-            assert.equal(r.nodeName, 'r');
-            assert.equal(r.childNodes.length, 3);
-            assert.deepEqual(
-                r.childNodes.map((_) => _.nodeName),
-                [tagName, 'b', '#text'],
-            );
+            expect(r.nodeName).toBe('r');
+            expect(r.childNodes).toHaveLength(3);
+            expect(r.childNodes.map((_) => _.nodeName)).toEqual([tagName, 'b', '#text']);
 
             const target = r.childNodes[0] as Element;
-            assert.equal(target.childNodes.length, 1);
-            assert.equal(target.childNodes[0].nodeName, '#text');
-            assert.equal((target.childNodes[0] as TextNode).value, '<math id="');
+            expect(target.childNodes).toHaveLength(1);
+            expect(target.childNodes[0].nodeName).toBe('#text');
+            expect((target.childNodes[0] as TextNode).value).toBe('<math id="');
 
             const b = r.childNodes[1] as Element;
-            assert.equal(b.childNodes.length, 1);
-            assert.equal(b.childNodes[0].nodeName, '#text');
-            assert.equal((b.childNodes[0] as TextNode).value, 'should be outside');
+            expect(b.childNodes).toHaveLength(1);
+            expect(b.childNodes[0].nodeName).toBe('#text');
+            expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
         });
     });
 });

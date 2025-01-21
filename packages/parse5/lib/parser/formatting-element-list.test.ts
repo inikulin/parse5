@@ -1,4 +1,4 @@
-import { it, assert } from 'vitest';
+import { it, assert, expect } from 'vitest';
 import { TAG_NAMES as $, NS, getTagID } from '../common/html.js';
 import { type TagToken, TokenType } from '../common/token.js';
 import { type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
@@ -66,8 +66,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.insertElementAfterBookmark(element4, createToken($.TITLE));
 
         assert.strictEqual(list.entries.length, 4);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[2], 'element'));
-        assert.equal((list.entries[2] as ElementEntry<DefaultTreeAdapterMap>).element, element4);
+        expect(list.entries[2]).toHaveProperty('element', element4);
     });
 
     it('Push element - Noah Ark condition', () => {
@@ -95,43 +94,29 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         list.pushElement(element1, token4);
 
         assert.strictEqual(list.entries.length, 4);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[3], 'token'));
-        assert.equal((list.entries[3] as ElementEntry<DefaultTreeAdapterMap>).token, token1);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[2], 'token'));
-        assert.equal((list.entries[2] as ElementEntry<DefaultTreeAdapterMap>).token, token2);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[1], 'token'));
-        assert.equal((list.entries[1] as ElementEntry<DefaultTreeAdapterMap>).token, token3);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[0], 'token'));
-        assert.equal((list.entries[0] as ElementEntry<DefaultTreeAdapterMap>).token, token4);
+        expect(list.entries[3]).toHaveProperty('token', token1);
+        expect(list.entries[2]).toHaveProperty('token', token2);
+        expect(list.entries[1]).toHaveProperty('token', token3);
+        expect(list.entries[0]).toHaveProperty('token', token4);
 
         list.pushElement(element1, token5);
 
         assert.strictEqual(list.entries.length, 4);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[3], 'token'));
-        assert.equal((list.entries[3] as ElementEntry<DefaultTreeAdapterMap>).token, token2);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[2], 'token'));
-        assert.equal((list.entries[2] as ElementEntry<DefaultTreeAdapterMap>).token, token3);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[1], 'token'));
-        assert.equal((list.entries[1] as ElementEntry<DefaultTreeAdapterMap>).token, token4);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[0], 'token'));
-        assert.equal((list.entries[0] as ElementEntry<DefaultTreeAdapterMap>).token, token5);
+        expect(list.entries[3]).toHaveProperty('token', token2);
+        expect(list.entries[2]).toHaveProperty('token', token3);
+        expect(list.entries[1]).toHaveProperty('token', token4);
+        expect(list.entries[0]).toHaveProperty('token', token5);
 
         list.insertMarker();
         list.pushElement(element1, token6);
 
         assert.strictEqual(list.entries.length, 6);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[5], 'token'));
-        assert.equal((list.entries[5] as ElementEntry<DefaultTreeAdapterMap>).token, token2);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[4], 'token'));
-        assert.equal((list.entries[4] as ElementEntry<DefaultTreeAdapterMap>).token, token3);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[3], 'token'));
-        assert.equal((list.entries[3] as ElementEntry<DefaultTreeAdapterMap>).token, token4);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[2], 'token'));
-        assert.equal((list.entries[2] as ElementEntry<DefaultTreeAdapterMap>).token, token5);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[1], 'type'));
-        assert.equal(list.entries[1].type, EntryType.Marker);
-        assert.ok(Object.prototype.hasOwnProperty.call(list.entries[0], 'token'));
-        assert.equal((list.entries[0] as ElementEntry<DefaultTreeAdapterMap>).token, token6);
+        expect(list.entries[5]).toHaveProperty('token', token2);
+        expect(list.entries[4]).toHaveProperty('token', token3);
+        expect(list.entries[3]).toHaveProperty('token', token4);
+        expect(list.entries[2]).toHaveProperty('token', token5);
+        expect(list.entries[1]).toHaveProperty('type', EntryType.Marker);
+        expect(list.entries[0]).toHaveProperty('token', token6);
     });
 
     it('Clear to the last marker', () => {
@@ -187,7 +172,7 @@ generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
         assert.strictEqual(list.entries.length, 2);
 
         for (let i = 0; i < list.entries.length; i++) {
-            assert.notEqual((list.entries[i] as ElementEntry<DefaultTreeAdapterMap>).element, element1);
+            expect(list.entries[i]).not.toHaveProperty('element', element1);
         }
     });
 
