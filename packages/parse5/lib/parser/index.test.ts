@@ -1,10 +1,9 @@
-import { it, assert, describe, beforeEach, afterEach } from 'vitest';
+import { it, assert, describe, beforeEach, afterEach, vi } from 'vitest';
 import { parseFragment, parse } from 'parse5';
 import type { Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/dist/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/dist/common.js';
 import { type DocumentType } from '../tree-adapters/default.js';
-import { spy } from 'tinyspy';
 import type { Htmlparser2TreeAdapterMap } from 'parse5-htmlparser2-tree-adapter';
 
 generateParsingTests(
@@ -89,16 +88,16 @@ describe('parser', () => {
     });
 
     it('Regression - CRLF inside </noscript> (GH-710)', () => {
-        const onParseError = spy();
+        const onParseError = vi.fn();
         parse('<!doctype html><noscript>foo</noscript\r\n>', { onParseError });
 
-        assert.equal(onParseError.called, false);
+        assert.equal(onParseError.mock.calls.length, 0);
     });
 
     describe('Tree adapters', () => {
         it('should support onItemPush and onItemPop', () => {
-            const onItemPush = spy();
-            const onItemPop = spy();
+            const onItemPush = vi.fn();
+            const onItemPop = vi.fn();
             const document = parse('<p><p>', {
                 treeAdapter: {
                     ...treeAdapters.default,
@@ -112,15 +111,18 @@ describe('parser', () => {
             const bodyElement = (htmlElement as Element).childNodes[1] as Element;
             assert.ok(treeAdapters.default.isElementNode(bodyElement));
             // Expect 5 opened elements; in order: html, head, body, and 2x p
-            assert.equal(onItemPush.callCount, 5);
-            assert.deepEqual(onItemPush.calls[0], [htmlElement]);
-            assert.deepEqual(onItemPush.calls[2], [bodyElement]);
+            assert.equal(onItemPush.mock.calls.length, 5);
+            assert.deepEqual(onItemPush.mock.calls[0], [htmlElement]);
+            assert.deepEqual(onItemPush.mock.calls[2], [bodyElement]);
             // The last opened element is the second p
-            assert.deepEqual(onItemPush.calls[onItemPush.calls.length - 1], [bodyElement.childNodes[1]]);
+            assert.deepEqual(onItemPush.mock.calls[onItemPush.mock.calls.length - 1], [bodyElement.childNodes[1]]);
             // The second p isn't closed, plus we never pop body and html. Alas, only 2 pop events (head and p).
-            assert.equal(onItemPop.callCount, 2);
+            assert.equal(onItemPop.mock.calls.length, 2);
             // The last pop event should be the first p.
-            assert.deepEqual(onItemPop.calls[onItemPop.calls.length - 1], [bodyElement.childNodes[0], bodyElement]);
+            assert.deepEqual(onItemPop.mock.calls[onItemPop.mock.calls.length - 1], [
+                bodyElement.childNodes[0],
+                bodyElement,
+            ]);
         });
     });
 
