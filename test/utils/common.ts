@@ -1,5 +1,5 @@
+import { describe, assert } from 'vitest';
 import { Writable, finished as finishedCb, type Readable } from 'node:stream';
-import * as assert from 'node:assert';
 import { type TreeAdapter, type Token, defaultTreeAdapter } from 'parse5';
 import { adapter as htmlparser2Adapter } from 'parse5-htmlparser2-tree-adapter';
 

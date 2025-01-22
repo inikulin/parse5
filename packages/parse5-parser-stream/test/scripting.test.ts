@@ -1,3 +1,4 @@
+import { it } from 'vitest';
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { makeChunks, generateTestsForEachTreeAdapter, finished } from 'parse5-test-utils/utils/common.js';
@@ -55,17 +56,19 @@ generateParsingTests(
 );
 
 generateTestsForEachTreeAdapter('ParserStream', (treeAdapter) => {
-    test('Regression - Synchronously calling resume() leads to crash (GH-98)', (done) => {
+    it('Regression - Synchronously calling resume() leads to crash (GH-98)', async () => {
         const parser = new ParserStream({ treeAdapter });
 
         parser.on('script', (_el, _docWrite, resume) => resume());
 
         parser.end('<!doctype html><script>abc</script>');
 
-        process.nextTick(done);
+        await new Promise((resolve) => {
+            process.nextTick(resolve);
+        });
     });
 
-    test('Regression - Parsing loop lock causes accidental hang ups (GH-101)', () => {
+    it('Regression - Parsing loop lock causes accidental hang ups (GH-101)', () => {
         const parser = new ParserStream({ treeAdapter });
 
         parser.on('script', (_scriptElement, _documentWrite, resume) => process.nextTick(resume));

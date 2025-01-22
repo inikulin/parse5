@@ -1,6 +1,6 @@
+import { it, assert, describe } from 'vitest';
 import { Tokenizer } from 'parse5';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
-import * as assert from 'node:assert';
 
 const dataPath = new URL('../../../../test/data/html5lib-tests/tokenizer', import.meta.url);
 const tokenizerOpts = {
@@ -28,7 +28,7 @@ describe('Tokenizer methods', () => {
                 assert.strictEqual(t.name, 'foo');
                 assert.strictEqual(count++, 2);
 
-                expect(() => tokenizer.resume()).toThrow('Parser was already resumed');
+                assert.throws(() => tokenizer.resume(), 'Parser was already resumed');
                 tokenizer.write('<next>', true);
             },
             onStartTag(t): void {
@@ -44,7 +44,8 @@ describe('Tokenizer methods', () => {
 
         tokenizer.write('<!--INIT-->', false);
         assert.strictEqual(count++, 1);
-        expect(tokenizer).toHaveProperty('paused', true);
+        assert.ok(Object.prototype.hasOwnProperty.call(tokenizer, 'paused'));
+        assert.equal((tokenizer as typeof tokenizer & { paused: boolean }).paused, true);
 
         tokenizer.resume();
 
@@ -54,6 +55,6 @@ describe('Tokenizer methods', () => {
     it('should throw if setting the state to an unknown value', () => {
         const tokenizer = new Tokenizer(tokenizerOpts, {} as never);
         tokenizer.state = -1 as never;
-        expect(() => tokenizer.write('foo', true)).toThrow('Unknown state');
+        assert.throws(() => tokenizer.write('foo', true), 'Unknown state');
     });
 });

@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import * as fs from 'node:fs';
 import { type TreeAdapterTypeMap, type SerializerOptions, parse } from 'parse5';
 import { generateTestsForEachTreeAdapter, getStringDiffMsg } from './common.js';

@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import { type TreeAdapterTypeMap, type TreeAdapter, type ParserOptions, type Token, serializeOuter } from 'parse5';
@@ -49,10 +49,11 @@ export function assertStartTagLocation(
     lines: string[],
 ): void {
     assert.ok(location.startTag, 'Expected startTag to be defined');
-    const length = location.startTag.endOffset - location.startTag.startOffset;
+    const startTag = location.startTag!;
+    const length = startTag.endOffset - startTag.startOffset;
     const expected = serializedNode.substring(0, length);
 
-    assertLocation(location.startTag, expected, html, lines);
+    assertLocation(startTag, expected, html, lines);
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
@@ -63,10 +64,11 @@ function assertEndTagLocation(
     lines: string[],
 ): void {
     assert.ok(location.endTag, 'Expected endTag to be defined');
-    const length = location.endTag.endOffset - location.endTag.startOffset;
+    const endTag = location.endTag!;
+    const length = endTag.endOffset - endTag.startOffset;
     const expected = serializedNode.slice(-length);
 
-    assertLocation(location.endTag, expected, html, lines);
+    assertLocation(endTag, expected, html, lines);
 }
 
 function assertAttrsLocation(
@@ -77,7 +79,7 @@ function assertAttrsLocation(
 ): void {
     assert.ok(location.attrs, 'Expected attrs to be defined');
 
-    for (const attr of Object.values(location.attrs)) {
+    for (const attr of Object.values(location.attrs!)) {
         const expected = serializedNode.slice(
             attr.startOffset - location.startOffset,
             attr.endOffset - location.startOffset,
@@ -135,7 +137,7 @@ export function generateLocationInfoParserTests(
                 const document = parsingResult.node;
 
                 walkTree(document, treeAdapter, (node) => {
-                    const location = treeAdapter.getNodeSourceCodeLocation(node);
+                    const location = treeAdapter.getNodeSourceCodeLocation(node)!;
 
                     assert.ok(location);
 

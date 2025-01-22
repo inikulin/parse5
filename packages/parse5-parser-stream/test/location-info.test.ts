@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import { generateLocationInfoParserTests } from 'parse5-test-utils/utils/generate-location-info-parser-tests.js';
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 import { parseChunked } from './utils/parse-chunked.js';
@@ -9,7 +9,7 @@ generateLocationInfoParserTests('location-info', (input, opts) =>
 );
 
 generateTestsForEachTreeAdapter('location-info', (treeAdapter) => {
-    test('Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)', () => {
+    it('Regression - location info for the implicitly generated <body>, <html> and <head> (GH-44)', () => {
         const html = '</head><div class="test"></div></body></html>';
 
         const opts = {
