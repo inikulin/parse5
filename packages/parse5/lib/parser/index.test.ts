@@ -1,8 +1,8 @@
 import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest';
 import { parseFragment, parse } from 'parse5';
 import type { Element, TextNode } from '../tree-adapters/default.js';
-import { generateParsingTests } from 'parse5-test-utils/dist/generate-parsing-tests.js';
-import { treeAdapters } from 'parse5-test-utils/dist/common.js';
+import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
+import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import type { Htmlparser2TreeAdapterMap } from 'parse5-htmlparser2-tree-adapter';
 
 generateParsingTests(
