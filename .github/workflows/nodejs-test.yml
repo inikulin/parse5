@@ -22,7 +22,7 @@ jobs:
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v4.1.0
+              uses: actions/setup-node@v4.2.0
               with:
                   node-version: lts/*
                   cache: npm
@@ -50,7 +50,7 @@ jobs:
               with:
                   submodules: recursive
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v4.1.0
+              uses: actions/setup-node@v4.2.0
               with:
                   node-version: ${{ matrix.node }}
                   cache: npm
