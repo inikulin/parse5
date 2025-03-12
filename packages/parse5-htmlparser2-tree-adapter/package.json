@@ -26,7 +26,7 @@
         "parse5": "^7.0.0"
     },
     "scripts": {
-        "build:cjs": "tsc --moduleResolution node10 --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
+        "build:cjs": "tsc --noCheck --moduleResolution node10 --module CommonJS --target ES6 --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json"
     },
     "repository": {
         "type": "git",

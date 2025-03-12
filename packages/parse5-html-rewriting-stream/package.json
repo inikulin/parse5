@@ -22,7 +22,7 @@
     "types": "dist/index.d.ts",
     "exports": "./dist/index.js",
     "dependencies": {
-        "entities": "^4.5.0",
+        "entities": "^6.0.0",
         "parse5": "^7.0.0",
         "parse5-sax-parser": "^7.0.0"
     },
