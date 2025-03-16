@@ -303,7 +303,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
 
-    protected _setContextModes(current: T['parentNode'], tid: number): void {
+    protected _setContextModes(current: T['parentNode'] | undefined, tid: number | undefined): void {
         const isHTML = current === this.document || (current && this.treeAdapter.getNamespaceURI(current) === NS.HTML);
 
         this.currentNotInHTML = !isHTML;
@@ -557,8 +557,8 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         // Check that neither current === document, or ns === NS.HTML
         if (!this.currentNotInHTML) return false;
 
-        let current: T['parentNode'];
-        let currentTagId: number;
+        let current: T['parentNode'] | undefined;
+        let currentTagId: number | undefined;
 
         if (this.openElements.stackTop === 0 && this.fragmentContext) {
             current = this.fragmentContext;
@@ -581,6 +581,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             // If it _is_ an integration point, then we might have to check that it is not an HTML
             // integration point.
             ((token.tagID === $.MGLYPH || token.tagID === $.MALIGNMARK) &&
+                currentTagId !== undefined &&
                 !this._isIntegrationPoint(currentTagId, current, NS.HTML))
         );
     }
@@ -767,7 +768,11 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _shouldFosterParentOnInsertion(): boolean {
-        return this.fosterParentingEnabled && this._isElementCausesFosterParenting(this.openElements.currentTagId);
+        return (
+            this.fosterParentingEnabled &&
+            this.openElements.currentTagId !== undefined &&
+            this._isElementCausesFosterParenting(this.openElements.currentTagId)
+        );
     }
 
     /** @protected */
@@ -1987,7 +1992,7 @@ function numberedHeaderStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>
         p._closePElement();
     }
 
-    if (NUMBERED_HEADERS.has(p.openElements.currentTagId)) {
+    if (p.openElements.currentTagId !== undefined && NUMBERED_HEADERS.has(p.openElements.currentTagId)) {
         p.openElements.pop();
     }
 
@@ -2747,7 +2752,7 @@ function eofInText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken):
 // The "in table" insertion mode
 //------------------------------------------------------------------
 function characterInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: CharacterToken): void {
-    if (TABLE_STRUCTURE_TAGS.has(p.openElements.currentTagId)) {
+    if (p.openElements.currentTagId !== undefined && TABLE_STRUCTURE_TAGS.has(p.openElements.currentTagId)) {
         p.pendingCharacterTokens.length = 0;
         p.hasNonWhitespacePendingCharacterToken = false;
         p.originalInsertionMode = p.insertionMode;
@@ -3637,6 +3642,7 @@ function characterInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, t
 function popUntilHtmlOrIntegrationPoint<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
     while (
         p.treeAdapter.getNamespaceURI(p.openElements.current) !== NS.HTML &&
+        p.openElements.currentTagId !== undefined &&
         !p._isIntegrationPoint(p.openElements.currentTagId, p.openElements.current)
     ) {
         p.openElements.pop();
