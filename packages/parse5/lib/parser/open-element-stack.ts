@@ -44,11 +44,11 @@ export interface StackHandler<T extends TreeAdapterTypeMap> {
 export class OpenElementStack<T extends TreeAdapterTypeMap> {
     items: T['parentNode'][] = [];
     tagIDs: $[] = [];
-    current: T['parentNode'];
+    current: T['parentNode'] | undefined;
     stackTop = -1;
     tmplCount = 0;
 
-    currentTagId = $.UNKNOWN;
+    currentTagId: number | undefined = $.UNKNOWN;
 
     get currentTmplContentOrNode(): T['parentNode'] {
         return this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : this.current;
@@ -126,7 +126,9 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             this._updateCurrentElement();
         }
 
-        this.handler.onItemPush(this.current, this.currentTagId, insertionIdx === this.stackTop);
+        if (this.current && this.currentTagId !== undefined) {
+            this.handler.onItemPush(this.current, this.currentTagId, insertionIdx === this.stackTop);
+        }
     }
 
     popUntilTagNamePopped(tagName: $): void {
@@ -369,19 +371,23 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     //Implied end tags
     generateImpliedEndTags(): void {
-        while (IMPLICIT_END_TAG_REQUIRED.has(this.currentTagId)) {
+        while (this.currentTagId !== undefined && IMPLICIT_END_TAG_REQUIRED.has(this.currentTagId)) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsThoroughly(): void {
-        while (IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)) {
+        while (this.currentTagId !== undefined && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsWithExclusion(exclusionId: $): void {
-        while (this.currentTagId !== exclusionId && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)) {
+        while (
+            this.currentTagId !== undefined &&
+            this.currentTagId !== exclusionId &&
+            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)
+        ) {
             this.pop();
         }
     }
