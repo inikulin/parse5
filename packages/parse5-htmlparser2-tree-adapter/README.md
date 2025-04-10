@@ -16,7 +16,7 @@
 <br>
 
 <p align="center">
-  📖 <a href="https://parse5.js.org/modules/parse5_htmlparser2_tree_adapter.html"><b>Documentation</b></a> 📖
+  📖 <a href="https://parse5.js.org/modules/parse5-htmlparser2-tree-adapter.html"><b>Documentation</b></a> 📖
 </p>
 
 ---
