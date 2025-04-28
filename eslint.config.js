@@ -73,7 +73,7 @@ export default [
         },
     },
     eslintConfigPrettier,
-    eslintUnicorn.configs['flat/recommended'],
+    eslintUnicorn.configs.recommended,
     {
         rules: {
             'unicorn/no-null': 'off',
@@ -89,6 +89,7 @@ export default [
             'unicorn/no-nested-ternary': 'off',
             'unicorn/consistent-function-scoping': 'off',
             'unicorn/prefer-switch': ['error', { emptyDefaultCase: 'do-nothing-comment' }],
+            'unicorn/prefer-single-call': 'off',
         },
     },
 ];
