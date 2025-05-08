@@ -27,8 +27,7 @@
         "vitest": "^3.0.1"
     },
     "scripts": {
-        "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
-        "build:esm": "tsc --build packages/* test",
+        "build": "tsc --build packages/* test",
         "build:docs": "typedoc",
         "prettier": "prettier '**/*.{js,ts,md,json,yml}' --log-level warn",
         "format": "npm run format:es && npm run format:prettier",
