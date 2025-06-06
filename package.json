@@ -22,7 +22,7 @@
         "typedoc": "^0.28.5",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.33.1",
-        "vitest": "^3.0.1"
+        "vitest": "^3.2.2"
     },
     "scripts": {
         "build": "npm run build:esm && npm run build:cjs --workspaces --if-present",
