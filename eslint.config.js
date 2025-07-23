@@ -2,7 +2,7 @@ import eslintjs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import { configs as tseslintConfigs } from 'typescript-eslint';
 import globals from 'globals';
-import eslintUnicorn from 'eslint-plugin-unicorn';
+import eslintUnicorn from 'eslint-plugin-unicorn-x';
 
 const { configs: eslintConfigs } = eslintjs;
 
@@ -76,20 +76,20 @@ export default [
     eslintUnicorn.configs.recommended,
     {
         rules: {
-            'unicorn/no-null': 'off',
-            'unicorn/prevent-abbreviations': 'off',
-            'unicorn/prefer-string-slice': 'off',
-            'unicorn/prefer-code-point': 'off',
-            'unicorn/no-array-push-push': 'off',
-            'unicorn/no-for-loop': 'off',
-            'unicorn/consistent-destructuring': 'off',
-            'unicorn/prefer-string-replace-all': 'off',
-            'unicorn/prefer-at': 'off',
-            'unicorn/number-literal-case': 'off',
-            'unicorn/no-nested-ternary': 'off',
-            'unicorn/consistent-function-scoping': 'off',
-            'unicorn/prefer-switch': ['error', { emptyDefaultCase: 'do-nothing-comment' }],
-            'unicorn/prefer-single-call': 'off',
+            'unicorn-x/no-null': 'off',
+            'unicorn-x/prevent-abbreviations': 'off',
+            'unicorn-x/prefer-string-slice': 'off',
+            'unicorn-x/prefer-code-point': 'off',
+            'unicorn-x/no-array-push-push': 'off',
+            'unicorn-x/no-for-loop': 'off',
+            'unicorn-x/consistent-destructuring': 'off',
+            'unicorn-x/prefer-string-replace-all': 'off',
+            'unicorn-x/prefer-at': 'off',
+            'unicorn-x/number-literal-case': 'off',
+            'unicorn-x/no-nested-ternary': 'off',
+            'unicorn-x/consistent-function-scoping': 'off',
+            'unicorn-x/prefer-switch': ['error', { emptyDefaultCase: 'do-nothing-comment' }],
+            'unicorn-x/prefer-single-call': 'off',
         },
     },
 ];
