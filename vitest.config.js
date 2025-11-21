@@ -1,5 +1,4 @@
-/// <reference types="vitest/config" />
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import path from 'node:path';
 import { readdirSync } from 'node:fs';
 
@@ -13,7 +12,7 @@ const packages = readdirSync('./packages');
 export default defineConfig({
     test: {
         include: ['**/*.test.ts'],
-        workspace: packages.map((name) => ({
+        projects: packages.map((name) => ({
             test: {
                 name,
                 root: `packages/${name}`,
