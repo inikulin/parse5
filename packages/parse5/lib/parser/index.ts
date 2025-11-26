@@ -28,6 +28,7 @@ import {
     type EOFToken,
     type LocationWithAttributes,
     type ElementLocation,
+    hasTokenAttr,
 } from '../common/token.js';
 
 //Misc constants
@@ -97,6 +98,13 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
     sourceCodeLocationInfo?: boolean;
 
     /**
+     * Whether declarative shadow roots should be parsed or treated as ordinary templates.
+     *
+     * @default `false`
+     */
+    allowDeclarativeShadowRoots?: boolean;
+
+    /**
      * Specifies the resulting tree format.
      *
      * @default `treeAdapters.default`
@@ -114,6 +122,7 @@ export interface ParserOptions<T extends TreeAdapterTypeMap> {
 const defaultParserOptions: Required<ParserOptions<DefaultTreeAdapterMap>> = {
     scriptingEnabled: true,
     sourceCodeLocationInfo: false,
+    allowDeclarativeShadowRoots: false,
     treeAdapter: defaultTreeAdapter,
     onParseError: null,
 };
@@ -453,14 +462,17 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _insertTemplate(token: TagToken): void {
+    _insertTemplate(token: TagToken, onlyAddElementToStack: boolean = false): T['element'] {
         const tmpl = this.treeAdapter.createElement(token.tagName, NS.HTML, token.attrs);
         const content = this.treeAdapter.createDocumentFragment();
 
         this.treeAdapter.setTemplateContent(tmpl, content);
-        this._attachElementToTree(tmpl, token.location);
+        if (!onlyAddElementToStack) {
+            this._attachElementToTree(tmpl, token.location);
+        }
         this.openElements.push(tmpl, token.tagID);
         if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(content, null);
+        return tmpl;
     }
 
     /** @protected */
@@ -1723,11 +1735,41 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             break;
         }
         case $.TEMPLATE: {
-            p._insertTemplate(token);
             p.activeFormattingElements.insertMarker();
             p.framesetOk = false;
             p.insertionMode = InsertionMode.IN_TEMPLATE;
             p.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
+
+            const mode = getTokenAttr(token, ATTRS.SHADOWROOTMODE);
+            if (
+                !p.options.allowDeclarativeShadowRoots ||
+                (mode !== 'open' && mode !== 'closed') ||
+                p._getAdjustedCurrentElement() !== p.openElements.current
+            ) {
+                p._insertTemplate(token);
+            } else {
+                const declarativeShadowHostElement = p._getAdjustedCurrentElement();
+                const shadowRoot = p.treeAdapter.getShadowRoot(declarativeShadowHostElement);
+                if (shadowRoot) {
+                    p._insertTemplate(token);
+                } else {
+                    const template = p._insertTemplate(token, true);
+                    const clonable = hasTokenAttr(token, ATTRS.SHADOWROOTCLONABLE);
+                    const serializable = hasTokenAttr(token, ATTRS.SHADOWROOTSERIALIZABLE);
+                    const delegatesFocus = hasTokenAttr(token, ATTRS.SHADOWROOTDELEGATESFOCUS);
+                    const customElementRegistry = getTokenAttr(token, ATTRS.SHADOWROOTCUSTOMELEMENTREGISTRY);
+                    const shadowRoot = p.treeAdapter.attachDeclarativeShadowRoot(declarativeShadowHostElement, {
+                        mode,
+                        clonable,
+                        serializable,
+                        delegatesFocus,
+                        customElementRegistry,
+                        declarativeTemplateAttributes: token.attrs,
+                    });
+                    p.treeAdapter.setTemplateContentForDeclarativeShadowRootParsing(template, shadowRoot);
+                }
+            }
+
             break;
         }
         case $.HEAD: {

@@ -101,7 +101,9 @@
     },
     {
         "name": "Text nodes escaping - <noscript> with scripting disabled (GH-332)",
-        "options": { "scriptingEnabled": false },
+        "options": {
+            "scriptingEnabled": false
+        },
         "input": "<body><noscript>& ><</noscript></body>",
         "expected": "<html><head></head><body><noscript>&amp; &gt;&lt;</noscript></body></html>"
     },

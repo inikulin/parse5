@@ -12,6 +12,7 @@ export interface TreeAdapterTypeMap<
     TextNode = unknown,
     Template = unknown,
     DocumentType = unknown,
+    ShadowRoot = unknown,
 > {
     node: Node;
     parentNode: ParentNode;
@@ -23,7 +24,17 @@ export interface TreeAdapterTypeMap<
     textNode: TextNode;
     template: Template;
     documentType: DocumentType;
+    shadowRoot: ShadowRoot;
 }
+
+export type ShadowRootInit = {
+    mode: 'open' | 'closed';
+    clonable: boolean;
+    serializable: boolean;
+    delegatesFocus: boolean;
+    customElementRegistry: string | null;
+    declarativeTemplateAttributes: Attribute[];
+};
 
 /**
  * Tree adapter is a set of utility functions that provides minimal required abstraction layer beetween parser and a specific AST format.
@@ -285,7 +296,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param templateElement - `<template>` element.
      * @param contentElement -  Content element.
      */
-    setTemplateContent(templateElement: T['template'], contentElement: T['documentFragment']): void;
+    setTemplateContent(templateElement: T['template'], contentElement: T['documentFragment'] | T['shadowRoot']): void;
 
     /**
      * Optional callback for elements being pushed to the stack of open elements.
@@ -300,4 +311,34 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param item The element being popped.
      */
     onItemPop?: (item: T['element'], newTop: T['parentNode']) => void;
+
+    /**
+     * Attaches a declarative shadow root to the given element.
+     *
+     * @param element - Element
+     *
+     */
+    attachDeclarativeShadowRoot(element: T['element'], shadowRootInit: ShadowRootInit): T['shadowRoot'];
+
+    /**
+     * Returns the element's shadow root if it has one.
+     *
+     * @param element - Element
+     */
+    getShadowRoot(element: T['element']): T['shadowRoot'] | null;
+
+    /**
+     * Returns an object with the neccessary properties to initialize the given shadow root.
+     *
+     * @param shadowRoot - Shadow root
+     */
+    getShadowRootInit(shadowRoot: T['shadowRoot']): ShadowRootInit;
+
+    /**
+     * Sets the template's content to the given shadow root. Unlike setTemplateContent this must not change the shadow root's host.
+     *
+     * @param template - The template to attach to
+     * @param shadowRoot - The shadow root to attach
+     */
+    setTemplateContentForDeclarativeShadowRootParsing(template: T['template'], shadowRoot: T['shadowRoot']): void;
 }

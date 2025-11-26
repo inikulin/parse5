@@ -1,7 +1,8 @@
-import { TAG_NAMES as $, NS, hasUnescapedText } from '../common/html.js';
+import { TAG_NAMES as $, ATTRS, NS, hasUnescapedText } from '../common/html.js';
 import { escapeText, escapeAttribute } from 'entities/escape';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
+import type { Attribute } from '../common/token.js';
 
 // Sets
 const VOID_ELEMENTS = new Set<string>([
@@ -33,6 +34,21 @@ function isVoidElement<T extends TreeAdapterTypeMap>(node: T['node'], options: I
     );
 }
 
+const KNOWN_DECLARATIVE_SHADOW_ROOT_ATTRIBUTES = new Set<string>([
+    ATTRS.SHADOWROOTCLONABLE,
+    ATTRS.SHADOWROOTCUSTOMELEMENTREGISTRY,
+    ATTRS.SHADOWROOTDELEGATESFOCUS,
+    ATTRS.SHADOWROOTMODE,
+    ATTRS.SHADOWROOTSERIALIZABLE,
+]);
+
+function isKnownDeclarativeShadowRootAttribute(attr: Attribute): boolean {
+    if (attr.namespace !== undefined) {
+        return false;
+    }
+    return KNOWN_DECLARATIVE_SHADOW_ROOT_ATTRIBUTES.has(attr.name);
+}
+
 export interface SerializerOptions<T extends TreeAdapterTypeMap> {
     /**
      * Specifies input tree format.
@@ -47,11 +63,29 @@ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
      *  @default `true`
      */
     scriptingEnabled?: boolean;
+    /**
+     * Whether to serialize shadow roots.
+     *
+     * @default `false`
+     */
+    serializableShadowRoots?: boolean;
+
+    /**
+     * Shadow roots to always serialize.
+     *
+     * @default `[]`
+     */
+    shadowRoots?: Array<T['shadowRoot']>;
 }
 
 type InternalOptions<T extends TreeAdapterTypeMap> = Required<SerializerOptions<T>>;
 
-const defaultOpts: InternalOptions<DefaultTreeAdapterMap> = { treeAdapter: defaultTreeAdapter, scriptingEnabled: true };
+const defaultOpts: InternalOptions<DefaultTreeAdapterMap> = {
+    treeAdapter: defaultTreeAdapter,
+    scriptingEnabled: true,
+    serializableShadowRoots: false,
+    shadowRoots: [],
+};
 
 /**
  * Serializes an AST node to an HTML string.
@@ -158,17 +192,50 @@ function serializeNode<T extends TreeAdapterTypeMap>(node: T['node'], options: I
 function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], options: InternalOptions<T>): string {
     const tn = options.treeAdapter.getTagName(node);
 
-    return `<${tn}${serializeAttributes(node, options)}>${
-        isVoidElement(node, options) ? '' : `${serializeChildNodes(node, options)}</${tn}>`
-    }`;
+    let html = `<${tn}${serializeAttributes(options.treeAdapter.getAttrList(node))}>`;
+    if (isVoidElement(node, options)) {
+        return html;
+    }
+    const shadowRoot = options.treeAdapter.getShadowRoot(node);
+    if (shadowRoot !== null) {
+        const shadowRootInit = options.treeAdapter.getShadowRootInit(shadowRoot);
+
+        if (
+            (options.serializableShadowRoots && shadowRootInit.serializable) ||
+            options.shadowRoots.includes(shadowRoot)
+        ) {
+            const declarativeTemplateAttrs: Attribute[] = [];
+            declarativeTemplateAttrs.push({ name: ATTRS.SHADOWROOTMODE, value: shadowRootInit.mode });
+            if (shadowRootInit.delegatesFocus) {
+                declarativeTemplateAttrs.push({ name: ATTRS.SHADOWROOTMODE, value: '' });
+            }
+            if (shadowRootInit.serializable) {
+                declarativeTemplateAttrs.push({ name: ATTRS.SHADOWROOTSERIALIZABLE, value: '' });
+            }
+            if (shadowRootInit.clonable) {
+                declarativeTemplateAttrs.push({ name: ATTRS.SHADOWROOTCLONABLE, value: '' });
+            }
+            if (shadowRootInit.customElementRegistry !== null) {
+                declarativeTemplateAttrs.push({ name: ATTRS.SHADOWROOTCUSTOMELEMENTREGISTRY, value: '' });
+            }
+
+            declarativeTemplateAttrs.push(
+                ...shadowRootInit.declarativeTemplateAttributes.filter(
+                    (attr) => !isKnownDeclarativeShadowRootAttribute(attr),
+                ),
+            );
+
+            html += `<template${serializeAttributes(declarativeTemplateAttrs)}>${serializeChildNodes(options.treeAdapter.getChildNodes(shadowRoot), options)}</template>`;
+        }
+    }
+
+    html += `</${tn}>`;
+    return html;
 }
 
-function serializeAttributes<T extends TreeAdapterTypeMap>(
-    node: T['element'],
-    { treeAdapter }: InternalOptions<T>,
-): string {
+function serializeAttributes(attrs: Attribute[]): string {
     let html = '';
-    for (const attr of treeAdapter.getAttrList(node)) {
+    for (const attr of attrs) {
         html += ' ';
 
         if (attr.namespace) {

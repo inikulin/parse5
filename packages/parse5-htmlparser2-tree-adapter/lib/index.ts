@@ -289,4 +289,12 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
             ...endLocation,
         };
     },
+
+    // Shadow roots
+    attachDeclarativeShadowRoot(): never {
+        throw new Error('not supported');
+    },
+    getShadowRoot(): never {
+        throw new Error('not supported');
+    },
 };
