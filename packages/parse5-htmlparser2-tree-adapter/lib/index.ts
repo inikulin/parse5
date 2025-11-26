@@ -292,9 +292,15 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
 
     // Shadow roots
     attachDeclarativeShadowRoot(): never {
-        throw new Error('not supported');
+        throw new Error("htmlparser2 doesn't support declarative shadow roots");
     },
     getShadowRoot(): never {
-        throw new Error('not supported');
+        throw new Error("htmlparser2 doesn't support declarative shadow roots");
+    },
+    getShadowRootInit(): never {
+        throw new Error("htmlparser2 doesn't support declarative shadow roots");
+    },
+    setTemplateContentForDeclarativeShadowRootParsing(): never {
+        throw new Error("htmlparser2 doesn't support declarative shadow roots");
     },
 };
