@@ -332,34 +332,43 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
     },
 
-    // Shadow roots
-    attachDeclarativeShadowRoot(
-        element: Element,
-        { mode, clonable, serializable, delegatesFocus, customElementRegistry, declarativeTemplateAttributes },
-    ): ShadowRoot {
-        const shadowRoot: ShadowRoot = {
-            nodeName: '#shadow-root',
-            childNodes: [],
-            mode,
-            clonable,
-            serializable,
-            delegatesFocus,
-            customElementRegistry,
-            declarativeTemplateAttributes,
-        };
-        element.shadowRoot = shadowRoot;
-        return shadowRoot;
-    },
+    declarativeShadowRootAdapter: {
+        // Shadow roots
+        attachDeclarativeShadowRoot(
+            element: Element,
+            {
+                mode,
+                clonable,
+                serializable,
+                delegatesFocus,
+                customElementRegistry,
+                declarativeTemplateAttributes,
+            }: ShadowRootInit,
+        ): ShadowRoot {
+            const shadowRoot: ShadowRoot = {
+                nodeName: '#shadow-root',
+                childNodes: [],
+                mode,
+                clonable,
+                serializable,
+                delegatesFocus,
+                customElementRegistry,
+                declarativeTemplateAttributes,
+            };
+            element.shadowRoot = shadowRoot;
+            return shadowRoot;
+        },
 
-    getShadowRoot(element: Element): ShadowRoot | null {
-        return element.shadowRoot;
-    },
+        getShadowRoot(element: Element): ShadowRoot | null {
+            return element.shadowRoot;
+        },
 
-    getShadowRootInit(shadowRoot: ShadowRoot): ShadowRootInit {
-        return shadowRoot;
-    },
+        getShadowRootInit(shadowRoot: ShadowRoot): ShadowRootInit {
+            return shadowRoot;
+        },
 
-    setTemplateContentForDeclarativeShadowRootParsing(template: Template, shadowRoot: ShadowRoot): void {
-        template.content = shadowRoot;
+        setTemplateContentForDeclarativeShadowRootParsing(template: Template, shadowRoot: ShadowRoot): void {
+            template.content = shadowRoot;
+        },
     },
 };
