@@ -87,6 +87,17 @@ const defaultOpts: InternalOptions<DefaultTreeAdapterMap> = {
     shadowRoots: [],
 };
 
+function validateDeclarativeShadowRootSupport<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
+    opts: InternalOptions<T>,
+): void {
+    if (
+        (opts.serializableShadowRoots || opts.shadowRoots.length > 0) &&
+        !opts.treeAdapter.declarativeShadowRootAdapter
+    ) {
+        throw new TypeError(`the given tree adapter does not support serializing shadow roots`);
+    }
+}
+
 /**
  * Serializes an AST node to an HTML string.
  *
@@ -114,6 +125,8 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     options?: SerializerOptions<T>,
 ): string {
     const opts = { ...defaultOpts, ...options } as InternalOptions<T>;
+
+    validateDeclarativeShadowRootSupport(opts);
 
     if (isVoidElement(node, opts)) {
         return '';
@@ -146,6 +159,7 @@ export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapter
     options?: SerializerOptions<T>,
 ): string {
     const opts = { ...defaultOpts, ...options } as InternalOptions<T>;
+    validateDeclarativeShadowRootSupport(opts);
     return serializeNode(node, opts);
 }
 
@@ -196,9 +210,9 @@ function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], opti
     if (isVoidElement(node, options)) {
         return html;
     }
-    const shadowRoot = options.treeAdapter.getShadowRoot(node);
+    const shadowRoot = options.treeAdapter.declarativeShadowRootAdapter!.getShadowRoot(node);
     if (shadowRoot !== null) {
-        const shadowRootInit = options.treeAdapter.getShadowRootInit(shadowRoot);
+        const shadowRootInit = options.treeAdapter.declarativeShadowRootAdapter!.getShadowRootInit(shadowRoot);
 
         if (
             (options.serializableShadowRoots && shadowRootInit.serializable) ||

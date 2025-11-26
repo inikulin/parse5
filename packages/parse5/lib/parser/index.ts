@@ -152,6 +152,10 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         this.treeAdapter = this.options.treeAdapter;
         this.onParseError = this.options.onParseError;
 
+        if (this.options.allowDeclarativeShadowRoots && !this.treeAdapter.declarativeShadowRootAdapter) {
+            throw new TypeError(`the given tree adapter does not have declarative shadow dom support`);
+        }
+
         // Always enable location info if we report parse errors.
         if (this.onParseError) {
             this.options.sourceCodeLocationInfo = true;
@@ -1749,7 +1753,8 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
                 p._insertTemplate(token);
             } else {
                 const declarativeShadowHostElement = p._getAdjustedCurrentElement();
-                const shadowRoot = p.treeAdapter.getShadowRoot(declarativeShadowHostElement);
+                const shadowRoot =
+                    p.treeAdapter.declarativeShadowRootAdapter!.getShadowRoot(declarativeShadowHostElement);
                 if (shadowRoot) {
                     p._insertTemplate(token);
                 } else {
@@ -1758,15 +1763,21 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
                     const serializable = hasTokenAttr(token, ATTRS.SHADOWROOTSERIALIZABLE);
                     const delegatesFocus = hasTokenAttr(token, ATTRS.SHADOWROOTDELEGATESFOCUS);
                     const customElementRegistry = getTokenAttr(token, ATTRS.SHADOWROOTCUSTOMELEMENTREGISTRY);
-                    const shadowRoot = p.treeAdapter.attachDeclarativeShadowRoot(declarativeShadowHostElement, {
-                        mode,
-                        clonable,
-                        serializable,
-                        delegatesFocus,
-                        customElementRegistry,
-                        declarativeTemplateAttributes: token.attrs,
-                    });
-                    p.treeAdapter.setTemplateContentForDeclarativeShadowRootParsing(template, shadowRoot);
+                    const shadowRoot = p.treeAdapter.declarativeShadowRootAdapter!.attachDeclarativeShadowRoot(
+                        declarativeShadowHostElement,
+                        {
+                            mode,
+                            clonable,
+                            serializable,
+                            delegatesFocus,
+                            customElementRegistry,
+                            declarativeTemplateAttributes: token.attrs,
+                        },
+                    );
+                    p.treeAdapter.declarativeShadowRootAdapter!.setTemplateContentForDeclarativeShadowRootParsing(
+                        template,
+                        shadowRoot,
+                    );
                 }
             }
 
