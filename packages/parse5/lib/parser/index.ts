@@ -2292,7 +2292,7 @@ function selectStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
     p.framesetOk = false;
 
     // Initialize selectedcontent state for this select
-    p.selectedcontentSelect = p.openElements.current;
+    p.selectedcontentSelect = getTokenAttr(token, 'multiple') === null ? p.openElements.current : null;
     p.enabledSelectedcontent = null;
     p.firstOptionInSelect = null;
     p.selectedOptionInSelect = null;
