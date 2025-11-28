@@ -17,6 +17,7 @@ export enum ATTRS {
     COLOR = 'color',
     FACE = 'face',
     SIZE = 'size',
+    SELECTED = 'selected',
 }
 
 /**
@@ -142,6 +143,7 @@ export enum TAG_NAMES {
     SEARCH = 'search',
     SECTION = 'section',
     SELECT = 'select',
+    SELECTEDCONTENT = 'selectedcontent',
     SOURCE = 'source',
     SMALL = 'small',
     SPAN = 'span',
@@ -296,6 +298,7 @@ export enum TAG_ID {
     SEARCH,
     SECTION,
     SELECT,
+    SELECTEDCONTENT,
     SOURCE,
     SMALL,
     SPAN,
@@ -428,6 +431,7 @@ const TAG_NAME_TO_ID = new Map<string, TAG_ID>([
     [TAG_NAMES.SEARCH, TAG_ID.SEARCH],
     [TAG_NAMES.SECTION, TAG_ID.SECTION],
     [TAG_NAMES.SELECT, TAG_ID.SELECT],
+    [TAG_NAMES.SELECTEDCONTENT, TAG_ID.SELECTEDCONTENT],
     [TAG_NAMES.SOURCE, TAG_ID.SOURCE],
     [TAG_NAMES.SMALL, TAG_ID.SMALL],
     [TAG_NAMES.SPAN, TAG_ID.SPAN],
