@@ -19,7 +19,7 @@
         "outdent": "^0.8.0",
         "prettier": "^3.7.1",
         "ts-node": "^10.9.2",
-        "typedoc": "^0.28.14",
+        "typedoc": "^0.28.15",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.48.0",
         "vitest": "^4.0.10"
