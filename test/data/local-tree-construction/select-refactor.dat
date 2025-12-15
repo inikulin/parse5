@@ -1,0 +1,176 @@
+#data
+<select><hr></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <hr>
+
+#data
+<select><option>A<hr></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <option>
+|         "A"
+|       <hr>
+
+#data
+<select><option>A</option><hr></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <option>
+|         "A"
+|       <hr>
+
+#data
+<select><optgroup><hr></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <optgroup>
+|       <hr>
+
+#data
+<select><optgroup><option>A<hr></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <optgroup>
+|         <option>
+|           "A"
+|       <hr>
+
+#data
+<select><hr /></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <hr>
+
+#data
+<select><hr><option>A</option></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <hr>
+|       <option>
+|         "A"
+
+#data
+<select><option>A</option><hr><option>B</option></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <option>
+|         "A"
+|       <hr>
+|       <option>
+|         "B"
+
+#data
+<select><hr><hr></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <hr>
+|       <hr>
+
+#data
+<select><optgroup label="Group"><option>A</option><hr><option>B</option></optgroup></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <optgroup>
+|         label="Group"
+|         <option>
+|           "A"
+|       <hr>
+|       <option>
+|         "B"
+
+#data
+<select><option>A<option>B<hr></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <option>
+|         "A"
+|       <option>
+|         "B"
+|       <hr>
+
+#data
+<select><optgroup label="G1"><option>A</option></optgroup><hr><optgroup label="G2"><option>B</option></optgroup></select>
+#errors
+#new-errors
+(1:1) missing-doctype
+#document
+| <html>
+|   <head>
+|   <body>
+|     <select>
+|       <optgroup>
+|         label="G1"
+|         <option>
+|           "A"
+|       <hr>
+|       <optgroup>
+|         label="G2"
+|         <option>
+|           "B"

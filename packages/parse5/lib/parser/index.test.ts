@@ -37,6 +37,17 @@ generateParsingTests(
     }),
 );
 
+generateParsingTests(
+    'parser local-tree-construction',
+    'Parser',
+    {
+        suitePath: new URL('../../../../test/data/local-tree-construction', import.meta.url),
+    },
+    (test, opts) => ({
+        node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
+    }),
+);
+
 describe('parser', () => {
     it('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {
         const html = '<!DOCTYPE html SYSTEM "about:legacy-compat"><html><head></head><body>Hi there!</body></html>';
