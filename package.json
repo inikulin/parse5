@@ -10,7 +10,7 @@
     "devDependencies": {
         "@eslint/js": "^9.39.1",
         "@vitest/coverage-v8": "^4.0.15",
-        "eslint": "^9.39.1",
+        "eslint": "^9.39.2",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-unicorn-x": "^3.2.1",
         "globals": "^16.5.0",
