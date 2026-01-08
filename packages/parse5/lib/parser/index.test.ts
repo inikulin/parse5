@@ -18,6 +18,27 @@ generateParsingTests(
             '40.foreign-fragment',
             '47.foreign-fragment',
             '48.foreign-fragment',
+            // Select parsing was relaxed in the HTML spec.
+            // https://github.com/whatwg/html/pull/10548
+            // The forked test suite still tests the old behaviour.
+            '13.menuitem-element',
+            '29.tests1',
+            '101.tests1',
+            '3.tests10',
+            '4.tests10',
+            '16.tests10',
+            '17.tests10',
+            '4.tests9',
+            '5.tests9',
+            '17.tests9',
+            '18.tests9',
+            '13.tests18',
+            '14.tests18',
+            '17.webkit02',
+            '30.tests7',
+            '79.tests_innerHTML_1',
+            '80.tests_innerHTML_1',
+            '81.tests_innerHTML_1',
         ],
     },
     (test, opts) => ({
@@ -149,6 +170,53 @@ describe('parser', () => {
             expect(b.childNodes).toHaveLength(1);
             expect(b.childNodes[0].nodeName).toBe('#text');
             expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
+        });
+    });
+
+    describe('Customizable Select', () => {
+        it('should NOT enable selectedcontent for select multiple', () => {
+            const html = `
+                <select multiple>
+                    <button>
+                        <selectedcontent></selectedcontent>
+                    </button>
+                    <option selected>foo</option>
+                </select>
+            `;
+
+            const doc = parse(html);
+            const htmlEl = doc.childNodes.find((n) => n.nodeName === 'html') as Element;
+            const body = htmlEl.childNodes.find((n) => n.nodeName === 'body') as Element;
+            const select = body.childNodes.find((n) => (n as Element).tagName === 'select') as Element;
+            const button = select.childNodes.find((n) => (n as Element).tagName === 'button') as Element;
+            const selectedcontent = button.childNodes.find(
+                (n) => (n as Element).tagName === 'selectedcontent',
+            ) as Element;
+
+            expect(selectedcontent.childNodes.length).toBe(0);
+        });
+
+        it('should enable selectedcontent for select without multiple', () => {
+            const html = `
+                <select>
+                    <button>
+                        <selectedcontent></selectedcontent>
+                    </button>
+                    <option selected>foo</option>
+                </select>
+            `;
+
+            const doc = parse(html);
+            const htmlEl = doc.childNodes.find((n) => n.nodeName === 'html') as Element;
+            const body = htmlEl.childNodes.find((n) => n.nodeName === 'body') as Element;
+            const select = body.childNodes.find((n) => (n as Element).tagName === 'select') as Element;
+            const button = select.childNodes.find((n) => (n as Element).tagName === 'button') as Element;
+            const selectedcontent = button.childNodes.find(
+                (n) => (n as Element).tagName === 'selectedcontent',
+            ) as Element;
+
+            expect(selectedcontent.childNodes.length).toBeGreaterThan(0);
+            expect((selectedcontent.childNodes[0] as TextNode).value).toBe('foo');
         });
     });
 });
