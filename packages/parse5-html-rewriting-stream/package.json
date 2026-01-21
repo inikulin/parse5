@@ -31,7 +31,7 @@
         }
     },
     "dependencies": {
-        "entities": "^6.0.0",
+        "entities": "^7.0.0",
         "parse5": "^8.0.0",
         "parse5-sax-parser": "^8.0.0"
     },
