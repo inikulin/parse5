@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert, describe } from 'vitest';
 import * as fs from 'node:fs';
 import type { SAXParserOptions } from '../lib/index.js';
 import { SAXParser } from '../lib/index.js';

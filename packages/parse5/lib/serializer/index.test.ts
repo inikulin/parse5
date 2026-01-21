@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert, describe } from 'vitest';
 import { html, parse, parseFragment, serialize, serializeOuter, type DefaultTreeAdapterMap } from 'parse5';
 import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
@@ -58,7 +58,7 @@ describe('serializer', () => {
     });
 
     it('serializes unknown node to empty string', () => {
-        const unknown: any = {};
+        const unknown = {} as never;
         assert.strictEqual(serialize(unknown), '');
         assert.strictEqual(serializeOuter(unknown), '');
     });

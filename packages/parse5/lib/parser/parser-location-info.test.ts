@@ -1,6 +1,13 @@
-import * as assert from 'node:assert';
+import { it, assert, describe } from 'vitest';
 import { outdent } from 'outdent';
-import { type ParserOptions, type TreeAdapterTypeMap, parse, parseFragment } from 'parse5';
+import {
+    type ParserOptions,
+    type TreeAdapterTypeMap,
+    parse,
+    parseFragment,
+    type DefaultTreeAdapterMap,
+    type Token,
+} from 'parse5';
 import {
     generateLocationInfoParserTests,
     assertStartTagLocation,
@@ -13,7 +20,7 @@ generateLocationInfoParserTests('location-info-parser', (input: string, opts: Pa
 }));
 
 generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
-    test('Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)', () => {
+    it('Regression - Incorrect LocationInfo.endOffset for implicitly closed <p> element (GH-109)', () => {
         const html = '<p>1<p class="2">3';
 
         const opts = {
@@ -29,7 +36,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     });
 
-    test('Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)', () => {
+    it('Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)', () => {
         const html = '<i>1</i>2';
 
         const opts = {
@@ -45,7 +52,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<i>1</i>');
     });
 
-    test('Regression - Location info not exposed with parseFragment (GH-82)', () => {
+    it('Regression - Location info not exposed with parseFragment (GH-82)', () => {
         const html = '<html><head></head><body>foo</body></html>';
 
         const opts = {
@@ -59,7 +66,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild));
     });
 
-    test('Regression - location info mixin error when parsing <template> elements (GH-90)', () => {
+    it('Regression - location info mixin error when parsing <template> elements (GH-90)', () => {
         const html = '<template>hello</template>';
 
         const opts = {
@@ -72,7 +79,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         });
     });
 
-    test('Regression - location info not attached for empty attributes (GH-96)', () => {
+    it('Regression - location info not attached for empty attributes (GH-96)', () => {
         const html = '<div test-attr></div>';
 
         const opts = {
@@ -86,7 +93,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.ok(treeAdapter.getNodeSourceCodeLocation(firstChild)?.attrs?.['test-attr']);
     });
 
-    test('Regression - location line incorrect when a character is unconsumed (GH-151)', () => {
+    it('Regression - location line incorrect when a character is unconsumed (GH-151)', () => {
         const html = outdent`
           <html><body><script>
             var x = window.scrollY <
@@ -110,7 +117,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.equal(scriptLocation?.endTag?.startLine, 4);
     });
 
-    test('Regression - location.startTag should be available if end tag is missing (GH-181)', () => {
+    it('Regression - location.startTag should be available if end tag is missing (GH-181)', () => {
         const html = '<p>test';
 
         const opts = {
@@ -129,7 +136,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.ok(!location.endTag);
     });
 
-    test('Regression - location.endTag should be available adjusted SVG elements (GH-352)', () => {
+    it('Regression - location.endTag should be available adjusted SVG elements (GH-352)', () => {
         const html = '<svg><foreignObject></foreignObject></svg>';
 
         const opts = {
@@ -149,7 +156,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         );
     });
 
-    test('Regression - Escaped script content has incorrect location info (GH-265)', () => {
+    it('Regression - Escaped script content has incorrect location info (GH-265)', () => {
         const html = '<script>"<!--";</script>';
 
         const opts = {
@@ -169,7 +176,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assertNodeLocation(textLocation, html.slice(8, 15), html, [html]);
     });
 
-    test("Should use the HTML element's position for BODY, if BODY isn't closed", () => {
+    it("Should use the HTML element's position for BODY, if BODY isn't closed", () => {
         const html = outdent`
           <html>
             <body>
@@ -201,7 +208,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.notStrictEqual(htmlLocation.endOffset, html.length);
     });
 
-    test('Should set HTML location to EOF if no end tag is supplied', () => {
+    it('Should set HTML location to EOF if no end tag is supplied', () => {
         const html = outdent`
           <html>
             <body>
@@ -230,32 +237,34 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
 describe('location-info-parser', () => {
     it('Updating node source code location (GH-314)', () => {
         const sourceCodeLocationSetter = {
-            setNodeSourceCodeLocation(node: any, location: any): void {
+            setNodeSourceCodeLocation(
+                node: DefaultTreeAdapterMap['node'],
+                location: Token.ElementLocation | null,
+            ): void {
                 node.sourceCodeLocation =
                     location === null
                         ? null
                         : {
-                              start: {
-                                  line: location.startLine,
-                                  column: location.startCol,
-                                  offset: location.startOffset,
-                              },
-                              end: {
-                                  line: location.endLine,
-                                  column: location.endCol,
-                                  offset: location.endOffset,
-                              },
+                              startLine: location.startLine * 2,
+                              startCol: location.startCol * 2,
+                              startOffset: location.startOffset * 2,
+                              endLine: location.endLine * 2,
+                              endCol: location.endCol * 2,
+                              endOffset: location.endOffset * 2,
                           };
             },
-            updateNodeSourceCodeLocation(node: any, endLocation: any): void {
-                node.sourceCodeLocation = {
-                    start: node.sourceCodeLocation.start,
-                    end: {
-                        line: endLocation.endLine,
-                        column: endLocation.endCol,
-                        offset: endLocation.endOffset,
-                    },
-                };
+            updateNodeSourceCodeLocation(
+                node: DefaultTreeAdapterMap['node'],
+                endLocation: Token.ElementLocation,
+            ): void {
+                if (node.sourceCodeLocation) {
+                    node.sourceCodeLocation = {
+                        ...node.sourceCodeLocation,
+                        endLine: endLocation.endLine * 2,
+                        endCol: endLocation.endCol * 2,
+                        endOffset: endLocation.endOffset * 2,
+                    };
+                }
             },
         };
         const treeAdapter = { ...treeAdapters.default, ...sourceCodeLocationSetter };
@@ -270,18 +279,30 @@ describe('location-info-parser', () => {
         const [text] = body.childNodes;
 
         assert.deepEqual(doctype.sourceCodeLocation, {
-            start: { line: 1, column: 1, offset: 0 },
-            end: { line: 1, column: 11, offset: 10 },
+            startLine: 2,
+            startCol: 2,
+            startOffset: 0,
+            endLine: 2,
+            endCol: 22,
+            endOffset: 20,
         });
         assert.strictEqual(html.sourceCodeLocation, null);
         assert.strictEqual(head.sourceCodeLocation, null);
         assert.deepEqual(body.sourceCodeLocation, {
-            start: { line: 1, column: 11, offset: 10 },
-            end: { line: 1, column: 40, offset: 39 },
+            startLine: 2,
+            startCol: 22,
+            startOffset: 20,
+            endLine: 2,
+            endCol: 80,
+            endOffset: 78,
         });
         assert.deepEqual(text.sourceCodeLocation, {
-            start: { line: 1, column: 17, offset: 16 },
-            end: { line: 1, column: 33, offset: 32 },
+            startLine: 2,
+            startCol: 34,
+            startOffset: 32,
+            endLine: 2,
+            endCol: 66,
+            endOffset: 64,
         });
     });
 });

@@ -20,14 +20,14 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4.2.2
+              uses: actions/checkout@v6.0.1
               with:
                   submodules: recursive
 
             - name: Initialize CodeQL
-              uses: github/codeql-action/init@v3.27.9
+              uses: github/codeql-action/init@v4.31.10
               with:
                   languages: 'javascript'
 
             - name: Perform CodeQL Analysis
-              uses: github/codeql-action/analyze@v3.27.9
+              uses: github/codeql-action/analyze@v4.31.10

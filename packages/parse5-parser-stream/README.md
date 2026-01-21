@@ -16,7 +16,7 @@
 <br>
 
 <p align="center">
-  📖 <a href="https://parse5.js.org/modules/parse5_parser_stream.html"><b>Documentation</b></a> 📖
+  📖 <a href="https://parse5.js.org/modules/parse5-parser-stream.html"><b>Documentation</b></a> 📖
 </p>
 
 ---

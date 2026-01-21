@@ -1,29 +1,17 @@
+import { readFile } from 'node:fs/promises';
+import { finished } from 'node:stream/promises';
+import format from 'human-format';
+import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
+
 /* eslint-disable no-console */
 
-import { readFile } from 'node:fs/promises';
-import format from 'human-format';
-import memwatch from '@airbnb/node-memwatch';
-import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
-import { finished } from 'parse5-test-utils/dist/common.js';
-
-const heapDiffMeasurement = new memwatch.HeapDiff();
-
-let maxMemUsage = 0;
-
-memwatch.on('stats', (stats) => {
-    maxMemUsage = Math.max(maxMemUsage, stats.used_heap_size);
-});
-
-const statsPromise = new Promise((resolve) => memwatch.once('stats', resolve));
+const usageStart = process.memoryUsage().heapUsed;
 
 const startDate = new Date();
 
 const parsedDataSize = await parse();
 const endDate = new Date();
-const heapDiff = heapDiffMeasurement.end();
-
-// NOTE: we need at least one `stats` result to get maxMemUsage
-await statsPromise;
+const usageEnd = process.memoryUsage().heapUsed;
 
 async function parse() {
     const data = await readFile(new URL('../../test/data/huge-page/huge-page.html', import.meta.url), 'utf8');
@@ -51,6 +39,5 @@ const scale = new format.Scale({
 });
 
 console.log('Duration:', format((endDate - startDate) / 1000, { scale }));
-console.log('Memory before:', heapDiff.before.size);
-console.log('Memory after:', heapDiff.after.size);
-console.log('Memory max:', format(maxMemUsage, { unit: 'B' }));
+console.log('Memory before:', usageStart);
+console.log('Memory after:', usageEnd);

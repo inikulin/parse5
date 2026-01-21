@@ -1,9 +1,9 @@
-import * as assert from 'node:assert';
+import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest';
 import { parseFragment, parse } from 'parse5';
-import { jest } from '@jest/globals';
+import type { Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
-import type { Element, TextNode } from '../tree-adapters/default.js';
+import type { Htmlparser2TreeAdapterMap } from 'parse5-htmlparser2-tree-adapter';
 
 generateParsingTests(
     'parser',
@@ -43,7 +43,10 @@ describe('parser', () => {
         const document = parse(html, { treeAdapter: treeAdapters.htmlparser2 });
 
         assert.ok(treeAdapters.htmlparser2.isDocumentTypeNode(document.childNodes[0]));
-        assert.strictEqual(document.childNodes[0].data, '!DOCTYPE html SYSTEM "about:legacy-compat"');
+        assert.strictEqual(
+            (document.childNodes[0] as Htmlparser2TreeAdapterMap['documentType']).data,
+            '!DOCTYPE html SYSTEM "about:legacy-compat"',
+        );
     });
 
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
@@ -63,7 +66,11 @@ describe('parser', () => {
             });
 
             assert.ok(treeAdapters.htmlparser2.isElementNode(fragment.childNodes[0]));
-            assert.strictEqual(treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0]).length, 1);
+            assert.strictEqual(
+                treeAdapters.htmlparser2.getAttrList(fragment.childNodes[0] as Htmlparser2TreeAdapterMap['element'])
+                    .length,
+                1,
+            );
         });
     });
 
@@ -77,7 +84,7 @@ describe('parser', () => {
     });
 
     it('Regression - CRLF inside </noscript> (GH-710)', () => {
-        const onParseError = jest.fn();
+        const onParseError = vi.fn();
         parse('<!doctype html><noscript>foo</noscript\r\n>', { onParseError });
 
         expect(onParseError).not.toHaveBeenCalled();
@@ -85,8 +92,8 @@ describe('parser', () => {
 
     describe('Tree adapters', () => {
         it('should support onItemPush and onItemPop', () => {
-            const onItemPush = jest.fn();
-            const onItemPop = jest.fn();
+            const onItemPush = vi.fn();
+            const onItemPop = vi.fn();
             const document = parse('<p><p>', {
                 treeAdapter: {
                     ...treeAdapters.default,
@@ -97,7 +104,7 @@ describe('parser', () => {
 
             const htmlElement = document.childNodes[0];
             assert.ok(treeAdapters.default.isElementNode(htmlElement));
-            const bodyElement = htmlElement.childNodes[1];
+            const bodyElement = (htmlElement as Element).childNodes[1] as Element;
             assert.ok(treeAdapters.default.isElementNode(bodyElement));
             // Expect 5 opened elements; in order: html, head, body, and 2x p
             expect(onItemPush).toHaveBeenCalledTimes(5);

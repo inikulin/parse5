@@ -1,4 +1,4 @@
-import * as assert from 'node:assert';
+import { it, assert } from 'vitest';
 import { Tokenizer, TokenizerMode, type TokenHandler } from './index.js';
 import type { Location, EOFToken, CharacterToken, DoctypeToken, TagToken, CommentToken } from '../common/token.js';
 import { getSubstringByLineCol, normalizeNewLine } from 'parse5-test-utils/utils/common.js';
@@ -22,13 +22,13 @@ class LocationInfoHandler implements TokenHandler {
         assert.ok(location);
 
         //Offsets
-        const actual = this.html.substring(location.startOffset, location.endOffset);
+        const actual = this.html.substring(location!.startOffset, location!.endOffset);
         const chunk = this.htmlChunks[this.idx];
 
         assert.strictEqual(actual, chunk);
 
         //Line/col
-        const line = getSubstringByLineCol(this.lines, location);
+        const line = getSubstringByLineCol(this.lines, location!);
         const expected = normalizeNewLine(chunk);
 
         assert.strictEqual(line, expected);
@@ -59,8 +59,8 @@ class LocationInfoHandler implements TokenHandler {
     }
     onEof({ location }: EOFToken): void {
         assert.ok(location);
-        assert.strictEqual(location.endOffset, location.startOffset);
-        assert.strictEqual(location.endOffset, this.html.length);
+        assert.strictEqual(location!.endOffset, location!.startOffset);
+        assert.strictEqual(location!.endOffset, this.html.length);
 
         assert.strictEqual(this.idx, this.htmlChunks.length);
 
