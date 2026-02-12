@@ -54,8 +54,6 @@ enum InsertionMode {
     IN_TABLE_BODY,
     IN_ROW,
     IN_CELL,
-    IN_SELECT,
-    IN_SELECT_IN_TABLE,
     IN_TEMPLATE,
     AFTER_BODY,
     IN_FRAMESET,
@@ -252,6 +250,16 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     /** @internal */
     fosterParentingEnabled = false;
 
+    // Selectedcontent cloning state
+    /** @internal */
+    enabledSelectedcontent: T['element'] | null = null;
+    /** @internal */
+    selectedcontentSelect: T['element'] | null = null;
+    /** @internal */
+    firstOptionInSelect: T['element'] | null = null;
+    /** @internal */
+    selectedOptionInSelect: T['element'] | null = null;
+
     //Errors
 
     /** @internal */
@@ -288,6 +296,12 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
         this.treeAdapter.onItemPop?.(node, this.openElements.current);
 
+        // Handle selectedcontent cloning when SELECT is popped
+        const tid = this.treeAdapter.isElementNode(node) ? getTagID(this.treeAdapter.getTagName(node)) : $.UNKNOWN;
+        if (tid === $.SELECT) {
+            this._finalizeSelectedcontent();
+        }
+
         if (isTop) {
             let current;
             let currentTagId;
@@ -309,6 +323,84 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         this.currentNotInHTML = !isHTML;
         this.tokenizer.inForeignNode =
             !isHTML && current !== undefined && tid !== undefined && !this._isIntegrationPoint(tid, current);
+    }
+
+    // Selectedcontent cloning helpers
+
+    /** @internal */
+    /** @internal */
+    _finalizeSelectedcontent(): void {
+        if (this.enabledSelectedcontent) {
+            this._maybeCloneOptionIntoSelectedcontent();
+            this.enabledSelectedcontent = null;
+            this.selectedcontentSelect = null;
+            this.firstOptionInSelect = null;
+            this.selectedOptionInSelect = null;
+        }
+    }
+
+    protected _maybeCloneOptionIntoSelectedcontent(): void {
+        // Only clone if we have a selectedcontent and an option to clone
+        if (!this.enabledSelectedcontent) return;
+
+        // Determine which option should be cloned:
+        // - If there's a selectedOptionInSelect (option with 'selected' attribute), clone that
+        // - Otherwise, clone the firstOptionInSelect (first option in the select)
+        const optionToClone = this.selectedOptionInSelect ?? this.firstOptionInSelect;
+        if (!optionToClone) return;
+
+        // Clone the option's children into the selectedcontent
+        this._cloneChildrenInto(optionToClone, this.enabledSelectedcontent);
+    }
+
+    /** @internal */
+    protected _cloneChildrenInto(source: T['element'], target: T['element']): void {
+        // First, clear the target's children
+        for (
+            let child = this.treeAdapter.getFirstChild(target);
+            child;
+            child = this.treeAdapter.getFirstChild(target)
+        ) {
+            this.treeAdapter.detachNode(child);
+        }
+
+        // Clone each child from source to target
+        const children = this.treeAdapter.getChildNodes(source);
+        for (const child of children) {
+            const cloned = this._deepCloneNode(child);
+            this.treeAdapter.appendChild(target, cloned);
+        }
+    }
+
+    /** @internal */
+    protected _deepCloneNode(node: T['childNode']): T['childNode'] {
+        if (this.treeAdapter.isTextNode(node)) {
+            return this.treeAdapter.createTextNode(this.treeAdapter.getTextNodeContent(node)) as T['childNode'];
+        }
+
+        if (this.treeAdapter.isCommentNode(node)) {
+            return this.treeAdapter.createCommentNode(this.treeAdapter.getCommentNodeContent(node)) as T['childNode'];
+        }
+
+        if (this.treeAdapter.isElementNode(node)) {
+            const tagName = this.treeAdapter.getTagName(node);
+            const ns = this.treeAdapter.getNamespaceURI(node);
+            const attrs = this.treeAdapter.getAttrList(node);
+            const clone = this.treeAdapter.createElement(tagName, ns, attrs) as T['element'];
+
+            // Recursively clone children
+            const children = this.treeAdapter.getChildNodes(node as T['parentNode']);
+            for (const child of children) {
+                const clonedChild = this._deepCloneNode(child);
+                this.treeAdapter.appendChild(clone, clonedChild);
+            }
+
+            return clone as T['childNode'];
+        }
+
+        // For other node types (like document type), we don't clone them
+        // This shouldn't happen in practice for option children
+        return node;
     }
 
     /** @protected */
@@ -708,10 +800,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                     this.insertionMode = InsertionMode.IN_FRAMESET;
                     return;
                 }
-                case $.SELECT: {
-                    this._resetInsertionModeForSelect(i);
-                    return;
-                }
                 case $.TEMPLATE: {
                     this.insertionMode = this.tmplInsertionModeStack[0];
                     return;
@@ -739,24 +827,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
 
         this.insertionMode = InsertionMode.IN_BODY;
-    }
-
-    /** @protected */
-    _resetInsertionModeForSelect(selectIdx: number): void {
-        if (selectIdx > 0) {
-            for (let i = selectIdx - 1; i > 0; i--) {
-                const tn = this.openElements.tagIDs[i];
-
-                if (tn === $.TEMPLATE) {
-                    break;
-                } else if (tn === $.TABLE) {
-                    this.insertionMode = InsertionMode.IN_SELECT_IN_TABLE;
-                    return;
-                }
-            }
-        }
-
-        this.insertionMode = InsertionMode.IN_SELECT;
     }
 
     //Foster parenting
@@ -865,9 +935,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                 characterInBody(this, token);
                 break;
             }
-            case InsertionMode.TEXT:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE: {
+            case InsertionMode.TEXT: {
                 this._insertCharacters(token);
                 break;
             }
@@ -980,8 +1048,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             case InsertionMode.IN_TABLE_BODY:
             case InsertionMode.IN_ROW:
             case InsertionMode.IN_CELL:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE:
             case InsertionMode.IN_TEMPLATE:
             case InsertionMode.IN_FRAMESET:
             case InsertionMode.AFTER_FRAMESET: {
@@ -1116,14 +1182,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                 startTagInCell(this, token);
                 break;
             }
-            case InsertionMode.IN_SELECT: {
-                startTagInSelect(this, token);
-                break;
-            }
-            case InsertionMode.IN_SELECT_IN_TABLE: {
-                startTagInSelectInTable(this, token);
-                break;
-            }
             case InsertionMode.IN_TEMPLATE: {
                 startTagInTemplate(this, token);
                 break;
@@ -1226,14 +1284,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                 endTagInCell(this, token);
                 break;
             }
-            case InsertionMode.IN_SELECT: {
-                endTagInSelect(this, token);
-                break;
-            }
-            case InsertionMode.IN_SELECT_IN_TABLE: {
-                endTagInSelectInTable(this, token);
-                break;
-            }
             case InsertionMode.IN_TEMPLATE: {
                 endTagInTemplate(this, token);
                 break;
@@ -1291,9 +1341,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             case InsertionMode.IN_COLUMN_GROUP:
             case InsertionMode.IN_TABLE_BODY:
             case InsertionMode.IN_ROW:
-            case InsertionMode.IN_CELL:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE: {
+            case InsertionMode.IN_CELL: {
                 eofInBody(this, token);
                 break;
             }
@@ -1346,8 +1394,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             case InsertionMode.AFTER_HEAD:
             case InsertionMode.TEXT:
             case InsertionMode.IN_COLUMN_GROUP:
-            case InsertionMode.IN_SELECT:
-            case InsertionMode.IN_SELECT_IN_TABLE:
             case InsertionMode.IN_FRAMESET:
             case InsertionMode.AFTER_FRAMESET: {
                 this._insertCharacters(token);
@@ -1568,6 +1614,9 @@ function appendCommentToDocument<T extends TreeAdapterTypeMap>(p: Parser<T>, tok
 }
 
 function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken): void {
+    // Handle selectedcontent cloning before parsing stops (when select wasn't explicitly closed)
+    p._finalizeSelectedcontent();
+
     p.stopped = true;
 
     // NOTE: Set end locations for elements that remain on the open element stack.
@@ -2144,6 +2193,12 @@ function isHiddenInput(token: TagToken): boolean {
 }
 
 function inputStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    // If there's a <select> element in scope, close it
+    if (p.openElements.hasInScope($.SELECT)) {
+        p.openElements.popUntilTagNamePopped($.SELECT);
+        p._resetInsertionMode();
+    }
+
     p._reconstructActiveFormattingElements();
     p._appendElement(token, NS.HTML);
 
@@ -2164,6 +2219,12 @@ function hrStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
         p._closePElement();
     }
 
+    // If there's a <select> element in scope, generate implied end tags
+    if (p.openElements.hasInScope($.SELECT)) {
+        p.openElements.generateImpliedEndTags();
+        // Note: spec says it's a parse error if option or optgroup is in scope, but we don't emit parse errors
+    }
+
     p._appendElement(token, NS.HTML);
     p.framesetOk = false;
     token.ackSelfClosing = true;
@@ -2176,6 +2237,12 @@ function imageStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
 }
 
 function textareaStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    // If there's a <select> element in scope, close it
+    if (p.openElements.hasInScope($.SELECT)) {
+        p.openElements.popUntilTagNamePopped($.SELECT);
+        p._resetInsertionMode();
+    }
+
     p._insertElement(token, NS.HTML);
     //NOTE: If the next token is a U+000A LINE FEED (LF) character token, then ignore that token and move
     //on to the next one. (Newlines at the start of textarea elements are ignored as an authoring convenience.)
@@ -2208,22 +2275,74 @@ function rawTextStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token
 }
 
 function selectStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    // Fragment case: If context element is <select>, ignore the token
+    if (p.fragmentContext && p.fragmentContextID === $.SELECT) {
+        return;
+    }
+
+    // If there's a <select> element in scope, close it and ignore the token
+    if (p.openElements.hasInScope($.SELECT)) {
+        p.openElements.popUntilTagNamePopped($.SELECT);
+        p._resetInsertionMode();
+        return;
+    }
+
     p._reconstructActiveFormattingElements();
     p._insertElement(token, NS.HTML);
     p.framesetOk = false;
 
-    p.insertionMode =
-        p.insertionMode === InsertionMode.IN_TABLE ||
-        p.insertionMode === InsertionMode.IN_CAPTION ||
-        p.insertionMode === InsertionMode.IN_TABLE_BODY ||
-        p.insertionMode === InsertionMode.IN_ROW ||
-        p.insertionMode === InsertionMode.IN_CELL
-            ? InsertionMode.IN_SELECT_IN_TABLE
-            : InsertionMode.IN_SELECT;
+    // Initialize selectedcontent state for this select
+    p.selectedcontentSelect = getTokenAttr(token, 'multiple') === null ? p.openElements.current : null;
+    p.enabledSelectedcontent = null;
+    p.firstOptionInSelect = null;
+    p.selectedOptionInSelect = null;
+}
+
+function selectedcontentStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    p._reconstructActiveFormattingElements();
+    p._insertElement(token, NS.HTML);
+
+    // Track this as the enabled selectedcontent if:
+    // 1. We're inside a select (selectedcontentSelect is set)
+    // 2. We don't already have an enabled selectedcontent
+    // 3. The select doesn't have the 'multiple' attribute (checked via selectedcontentSelect being set)
+    if (p.selectedcontentSelect && !p.enabledSelectedcontent) {
+        p.enabledSelectedcontent = p.openElements.current;
+    }
+}
+
+function optionStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    if (p.openElements.hasInScope($.SELECT)) {
+        // When a select is in scope, generate implied end tags except for optgroup
+        p.openElements.generateImpliedEndTagsWithExclusion($.OPTGROUP);
+        // Note: spec says it's a parse error if option is in scope, but we don't emit parse errors
+    } else if (p.openElements.currentTagId === $.OPTION) {
+        p.openElements.pop();
+    }
+
+    p._reconstructActiveFormattingElements();
+    p._insertElement(token, NS.HTML);
+
+    // Track option for selectedcontent cloning
+    if (p.selectedcontentSelect) {
+        const optionElement = p.openElements.current;
+        // Track first option
+        if (!p.firstOptionInSelect) {
+            p.firstOptionInSelect = optionElement;
+        }
+        // Track selected option (one with 'selected' attribute)
+        if (getTokenAttr(token, ATTRS.SELECTED) !== null) {
+            p.selectedOptionInSelect = optionElement;
+        }
+    }
 }
 
 function optgroupStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    if (p.openElements.currentTagId === $.OPTION) {
+    if (p.openElements.hasInScope($.SELECT)) {
+        // When a select is in scope, generate implied end tags
+        p.openElements.generateImpliedEndTags();
+        // Note: spec says it's a parse error if option or optgroup is in scope, but we don't emit parse errors
+    } else if (p.openElements.currentTagId === $.OPTION) {
         p.openElements.pop();
     }
 
@@ -2450,7 +2569,10 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             selectStartTagInBody(p, token);
             break;
         }
-        case $.OPTION:
+        case $.OPTION: {
+            optionStartTagInBody(p, token);
+            break;
+        }
         case $.OPTGROUP: {
             optgroupStartTagInBody(p, token);
             break;
@@ -2493,6 +2615,10 @@ function startTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
         case $.CAPTION:
         case $.COLGROUP: {
             // Ignore token
+            break;
+        }
+        case $.SELECTEDCONTENT: {
+            selectedcontentStartTagInBody(p, token);
             break;
         }
         default: {
@@ -2665,6 +2791,7 @@ function endTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         case $.DETAILS:
         case $.SEARCH:
         case $.SECTION:
+        case $.SELECT:
         case $.SUMMARY:
         case $.LISTING:
         case $.FIELDSET:
@@ -3272,155 +3399,6 @@ function endTagInCell<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToke
         default: {
             endTagInBody(p, token);
         }
-    }
-}
-
-// The "in select" insertion mode
-//------------------------------------------------------------------
-function startTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    switch (token.tagID) {
-        case $.HTML: {
-            startTagInBody(p, token);
-            break;
-        }
-        case $.OPTION: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-
-            p._insertElement(token, NS.HTML);
-            break;
-        }
-        case $.OPTGROUP: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-
-            if (p.openElements.currentTagId === $.OPTGROUP) {
-                p.openElements.pop();
-            }
-
-            p._insertElement(token, NS.HTML);
-            break;
-        }
-        case $.HR: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-
-            if (p.openElements.currentTagId === $.OPTGROUP) {
-                p.openElements.pop();
-            }
-
-            p._appendElement(token, NS.HTML);
-            token.ackSelfClosing = true;
-            break;
-        }
-        case $.INPUT:
-        case $.KEYGEN:
-        case $.TEXTAREA:
-        case $.SELECT: {
-            if (p.openElements.hasInSelectScope($.SELECT)) {
-                p.openElements.popUntilTagNamePopped($.SELECT);
-                p._resetInsertionMode();
-
-                if (token.tagID !== $.SELECT) {
-                    p._processStartTag(token);
-                }
-            }
-            break;
-        }
-        case $.SCRIPT:
-        case $.TEMPLATE: {
-            startTagInHead(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
-function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    switch (token.tagID) {
-        case $.OPTGROUP: {
-            if (
-                p.openElements.stackTop > 0 &&
-                p.openElements.currentTagId === $.OPTION &&
-                p.openElements.tagIDs[p.openElements.stackTop - 1] === $.OPTGROUP
-            ) {
-                p.openElements.pop();
-            }
-
-            if (p.openElements.currentTagId === $.OPTGROUP) {
-                p.openElements.pop();
-            }
-            break;
-        }
-        case $.OPTION: {
-            if (p.openElements.currentTagId === $.OPTION) {
-                p.openElements.pop();
-            }
-            break;
-        }
-        case $.SELECT: {
-            if (p.openElements.hasInSelectScope($.SELECT)) {
-                p.openElements.popUntilTagNamePopped($.SELECT);
-                p._resetInsertionMode();
-            }
-            break;
-        }
-        case $.TEMPLATE: {
-            templateEndTagInHead(p, token);
-            break;
-        }
-        default:
-        // Do nothing
-    }
-}
-
-// The "in select in table" insertion mode
-//------------------------------------------------------------------
-function startTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (
-        tn === $.CAPTION ||
-        tn === $.TABLE ||
-        tn === $.TBODY ||
-        tn === $.TFOOT ||
-        tn === $.THEAD ||
-        tn === $.TR ||
-        tn === $.TD ||
-        tn === $.TH
-    ) {
-        p.openElements.popUntilTagNamePopped($.SELECT);
-        p._resetInsertionMode();
-        p._processStartTag(token);
-    } else {
-        startTagInSelect(p, token);
-    }
-}
-
-function endTagInSelectInTable<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagID;
-
-    if (
-        tn === $.CAPTION ||
-        tn === $.TABLE ||
-        tn === $.TBODY ||
-        tn === $.TFOOT ||
-        tn === $.THEAD ||
-        tn === $.TR ||
-        tn === $.TD ||
-        tn === $.TH
-    ) {
-        if (p.openElements.hasInTableScope(tn)) {
-            p.openElements.popUntilTagNamePopped($.SELECT);
-            p._resetInsertionMode();
-            p.onEndTag(token);
-        }
-    } else {
-        endTagInSelect(p, token);
     }
 }
 
