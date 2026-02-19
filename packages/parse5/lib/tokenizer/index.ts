@@ -584,7 +584,12 @@ export class Tokenizer {
               ? TokenType.NULL_CHARACTER
               : TokenType.CHARACTER;
 
-        this._appendCharToCurrentCharacterToken(type, String.fromCodePoint(cp));
+        // OPTIMIZATION: Use String.fromCharCode for BMP characters (< 0x10000) which is faster
+        // than String.fromCodePoint. Characters outside BMP are rare in HTML.
+        this._appendCharToCurrentCharacterToken(
+            type,
+            cp < 0x1_00_00 ? String.fromCharCode(cp) : String.fromCodePoint(cp),
+        );
     }
 
     //NOTE: used when we emit characters explicitly.
