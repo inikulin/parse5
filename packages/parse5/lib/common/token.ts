@@ -87,6 +87,10 @@ export function getTokenAttr(token: TagToken, attrName: string): string | null {
     return null;
 }
 
+export function hasTokenAttr(token: TagToken, attrName: string): boolean {
+    return getTokenAttr(token, attrName) !== null;
+}
+
 export interface CommentToken extends TokenBase {
     readonly type: TokenType.COMMENT;
     data: string;
