@@ -129,8 +129,9 @@ export const SVG_TAG_NAMES_ADJUSTMENT_MAP = new Map(
     ].map((tn) => [tn.toLowerCase(), tn]),
 );
 
-//Tags that causes exit from foreign content
-const EXITS_FOREIGN_CONTENT = new Set([
+//Tags that causes exit from foreign content - using bitmap for faster lookup
+const EXITS_FOREIGN_CONTENT_BITMAP = new Uint8Array(128);
+for (const id of [
     $.B,
     $.BIG,
     $.BLOCKQUOTE,
@@ -175,7 +176,9 @@ const EXITS_FOREIGN_CONTENT = new Set([
     $.U,
     $.UL,
     $.VAR,
-]);
+]) {
+    EXITS_FOREIGN_CONTENT_BITMAP[id] = 1;
+}
 
 //Check exit from foreign content
 export function causesExit(startTagToken: TagToken): boolean {
@@ -184,7 +187,7 @@ export function causesExit(startTagToken: TagToken): boolean {
         tn === $.FONT &&
         startTagToken.attrs.some(({ name }) => name === ATTRS.COLOR || name === ATTRS.SIZE || name === ATTRS.FACE);
 
-    return isFontWithAttrs || EXITS_FOREIGN_CONTENT.has(tn);
+    return isFontWithAttrs || EXITS_FOREIGN_CONTENT_BITMAP[tn] === 1;
 }
 
 //Token adjustments
