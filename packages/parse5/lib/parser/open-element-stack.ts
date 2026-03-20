@@ -1,4 +1,5 @@
 import { TAG_ID as $, NS, NUMBERED_HEADERS } from '../common/html.js';
+import { createBitmap, bitmapHas } from '../common/tag-id-bitmap.js';
 import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 
 //Element utils
@@ -14,22 +15,20 @@ const IMPLICIT_END_TAG_REQUIRED_THOROUGHLY = new Set([
     $.THEAD,
     $.TR,
 ]);
-const SCOPING_ELEMENTS_HTML = new Set([
-    $.APPLET,
-    $.CAPTION,
-    $.HTML,
-    $.MARQUEE,
-    $.OBJECT,
-    $.TABLE,
-    $.TD,
-    $.TEMPLATE,
-    $.TH,
-]);
-const SCOPING_ELEMENTS_HTML_LIST = new Set([...SCOPING_ELEMENTS_HTML, $.OL, $.UL]);
-const SCOPING_ELEMENTS_HTML_BUTTON = new Set([...SCOPING_ELEMENTS_HTML, $.BUTTON]);
-const SCOPING_ELEMENTS_MATHML = new Set([$.ANNOTATION_XML, $.MI, $.MN, $.MO, $.MS, $.MTEXT]);
-const SCOPING_ELEMENTS_SVG = new Set([$.DESC, $.FOREIGN_OBJECT, $.TITLE]);
 
+// OPTIMIZATION: Use bit-packed Uint8Array bitmaps instead of Sets for scope checking.
+// See tag-id-bitmap.ts for implementation details.
+
+// Base scoping elements shared by all HTML scope variants
+const SCOPING_HTML_IDS: $[] = [$.APPLET, $.CAPTION, $.HTML, $.MARQUEE, $.OBJECT, $.TABLE, $.TD, $.TEMPLATE, $.TH];
+
+const SCOPING_ELEMENTS_HTML_BITMAP = createBitmap(SCOPING_HTML_IDS);
+const SCOPING_ELEMENTS_HTML_LIST_BITMAP = createBitmap([...SCOPING_HTML_IDS, $.OL, $.UL]);
+const SCOPING_ELEMENTS_HTML_BUTTON_BITMAP = createBitmap([...SCOPING_HTML_IDS, $.BUTTON]);
+const SCOPING_ELEMENTS_MATHML_BITMAP = createBitmap([$.ANNOTATION_XML, $.MI, $.MN, $.MO, $.MS, $.MTEXT]);
+const SCOPING_ELEMENTS_SVG_BITMAP = createBitmap([$.DESC, $.FOREIGN_OBJECT, $.TITLE]);
+
+// These Sets are not in the hot scope-checking path, so the bitmap optimization is unnecessary.
 const TABLE_ROW_CONTEXT = new Set([$.TR, $.TEMPLATE, $.HTML]);
 const TABLE_BODY_CONTEXT = new Set([$.TBODY, $.TFOOT, $.THEAD, $.TEMPLATE, $.HTML]);
 const TABLE_CONTEXT = new Set([$.TABLE, $.TEMPLATE, $.HTML]);
@@ -244,22 +243,22 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Element in scope
-    private hasInDynamicScope(tagName: $, htmlScope: Set<$>): boolean {
+    private hasInDynamicScope(tagName: $, htmlScopeBitmap: Uint8Array): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.tagIDs[i];
 
             switch (this.treeAdapter.getNamespaceURI(this.items[i])) {
                 case NS.HTML: {
                     if (tn === tagName) return true;
-                    if (htmlScope.has(tn)) return false;
+                    if (bitmapHas(htmlScopeBitmap, tn)) return false;
                     break;
                 }
                 case NS.SVG: {
-                    if (SCOPING_ELEMENTS_SVG.has(tn)) return false;
+                    if (bitmapHas(SCOPING_ELEMENTS_SVG_BITMAP, tn)) return false;
                     break;
                 }
                 case NS.MATHML: {
-                    if (SCOPING_ELEMENTS_MATHML.has(tn)) return false;
+                    if (bitmapHas(SCOPING_ELEMENTS_MATHML_BITMAP, tn)) return false;
                     break;
                 }
             }
@@ -269,15 +268,15 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     hasInScope(tagName: $): boolean {
-        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML);
+        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_BITMAP);
     }
 
     hasInListItemScope(tagName: $): boolean {
-        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_LIST);
+        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_LIST_BITMAP);
     }
 
     hasInButtonScope(tagName: $): boolean {
-        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_BUTTON);
+        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_BUTTON_BITMAP);
     }
 
     hasNumberedHeaderInScope(): boolean {
@@ -287,15 +286,15 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
             switch (this.treeAdapter.getNamespaceURI(this.items[i])) {
                 case NS.HTML: {
                     if (NUMBERED_HEADERS.has(tn)) return true;
-                    if (SCOPING_ELEMENTS_HTML.has(tn)) return false;
+                    if (bitmapHas(SCOPING_ELEMENTS_HTML_BITMAP, tn)) return false;
                     break;
                 }
                 case NS.SVG: {
-                    if (SCOPING_ELEMENTS_SVG.has(tn)) return false;
+                    if (bitmapHas(SCOPING_ELEMENTS_SVG_BITMAP, tn)) return false;
                     break;
                 }
                 case NS.MATHML: {
-                    if (SCOPING_ELEMENTS_MATHML.has(tn)) return false;
+                    if (bitmapHas(SCOPING_ELEMENTS_MATHML_BITMAP, tn)) return false;
                     break;
                 }
             }
