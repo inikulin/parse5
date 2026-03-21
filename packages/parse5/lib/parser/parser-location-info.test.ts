@@ -156,6 +156,53 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         );
     });
 
+    it('Regression - SVG attribute location keys should match adjusted camelCase names (GH-318)', () => {
+        const html = '<svg viewBox="0 0 100 100"></svg>';
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
+        const fragment = parseFragment(html, opts);
+        const svg = treeAdapter.getChildNodes(fragment)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(svg);
+        const attrs = treeAdapter.getAttrList(svg);
+
+        assert.ok(location?.attrs);
+
+        // The attrs array should have the camelCase name
+        const viewBoxAttr = attrs.find((a) => a.name === 'viewBox');
+        assert.ok(viewBoxAttr, 'attrs should contain viewBox with camelCase name');
+
+        // The location attrs should use the same camelCase key
+        assert.ok(location.attrs['viewBox'], 'location.attrs should have camelCase key "viewBox"');
+        assert.ok(!location.attrs['viewbox'], 'location.attrs should not have lowercase key "viewbox"');
+    });
+
+    it('Regression - MathML definitionURL attribute location key should match adjusted name (GH-318)', () => {
+        const html = '<math><mprescripts definitionURL="http://example.com"></mprescripts></math>';
+
+        const opts = {
+            treeAdapter,
+            sourceCodeLocationInfo: true,
+        };
+
+        const fragment = parseFragment(html, opts);
+        const math = treeAdapter.getChildNodes(fragment)[0];
+        const mprescripts = treeAdapter.getChildNodes(math)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(mprescripts);
+        const attrs = treeAdapter.getAttrList(mprescripts);
+
+        assert.ok(location?.attrs);
+
+        const attr = attrs.find((a) => a.name === 'definitionURL');
+        assert.ok(attr, 'attrs should contain definitionURL');
+
+        assert.ok(location.attrs['definitionURL'], 'location.attrs should have "definitionURL"');
+        assert.ok(!location.attrs['definitionurl'], 'location.attrs should not have "definitionurl"');
+    });
+
     it('Regression - Escaped script content has incorrect location info (GH-265)', () => {
         const html = '<script>"<!--";</script>';
 
