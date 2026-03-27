@@ -1,5 +1,4 @@
 import { TAG_ID as $, NS, ATTRS, getTagID } from './html.js';
-import { createBitmap, bitmapHas } from './tag-id-bitmap.js';
 import type { TagToken, Attribute } from './token.js';
 
 //MIME types
@@ -130,8 +129,8 @@ export const SVG_TAG_NAMES_ADJUSTMENT_MAP = new Map(
     ].map((tn) => [tn.toLowerCase(), tn]),
 );
 
-//Tags that causes exit from foreign content - using bit-packed bitmap for faster lookup
-const EXITS_FOREIGN_CONTENT_BITMAP = createBitmap([
+//Tags that causes exit from foreign content
+const EXITS_FOREIGN_CONTENT = new Set([
     $.B,
     $.BIG,
     $.BLOCKQUOTE,
@@ -185,7 +184,7 @@ export function causesExit(startTagToken: TagToken): boolean {
         tn === $.FONT &&
         startTagToken.attrs.some(({ name }) => name === ATTRS.COLOR || name === ATTRS.SIZE || name === ATTRS.FACE);
 
-    return isFontWithAttrs || bitmapHas(EXITS_FOREIGN_CONTENT_BITMAP, tn);
+    return isFontWithAttrs || EXITS_FOREIGN_CONTENT.has(tn);
 }
 
 //Token adjustments
