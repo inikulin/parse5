@@ -60,6 +60,7 @@ export default [
         rules: {
             '@typescript-eslint/no-unsafe-declaration-merging': 'off',
             '@typescript-eslint/no-non-null-assertion': 'warn',
+            '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/explicit-function-return-type': 'error',
             '@typescript-eslint/consistent-type-imports': 'error',
 
