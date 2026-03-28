@@ -24,5 +24,7 @@ export default defineConfig({
             include: ['packages'],
             exclude: ['**/dist/**'],
         },
+        globals: true,
+        environment: 'node',
     },
 });
