@@ -328,7 +328,6 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     // Selectedcontent cloning helpers
 
     /** @internal */
-    /** @internal */
     _finalizeSelectedcontent(): void {
         if (this.enabledSelectedcontent) {
             this._maybeCloneOptionIntoSelectedcontent();
@@ -339,6 +338,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
 
+    /** @internal */
     protected _maybeCloneOptionIntoSelectedcontent(): void {
         // Only clone if we have a selectedcontent and an option to clone
         if (!this.enabledSelectedcontent) return;
