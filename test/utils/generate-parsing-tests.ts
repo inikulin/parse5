@@ -105,7 +105,6 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
         const { node, chunks } = await parse(test, opts);
         const actual = serializeToDatFileFormat(node, opts.treeAdapter);
         const msg = prettyPrintParserAssertionArgs(actual, test.expected, chunks);
-        let sawError = false;
 
         try {
             assert.ok(actual === test.expected, msg);
@@ -117,12 +116,11 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
             if (expectError) {
                 return;
             }
-            sawError = true;
 
             throw error;
         }
 
-        if (!sawError && expectError) {
+        if (expectError) {
             throw new Error(`Expected error but none was thrown`);
         }
     };
