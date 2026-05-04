@@ -13,7 +13,7 @@
         "eslint": "^10.3.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-unicorn-x": "^3.2.1",
-        "globals": "^17.5.0",
+        "globals": "^17.6.0",
         "husky": "^9.1.7",
         "nano-staged": "^1.0.2",
         "outdent": "^0.8.0",
