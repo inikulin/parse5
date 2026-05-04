@@ -20,6 +20,7 @@ const SCOPING_ELEMENTS_HTML = new Set([
     $.HTML,
     $.MARQUEE,
     $.OBJECT,
+    $.SELECT,
     $.TABLE,
     $.TD,
     $.TEMPLATE,
@@ -338,29 +339,6 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
                 }
                 case $.TABLE:
                 case $.HTML: {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    hasInSelectScope(tagName: $): boolean {
-        for (let i = this.stackTop; i >= 0; i--) {
-            if (this.treeAdapter.getNamespaceURI(this.items[i]) !== NS.HTML) {
-                continue;
-            }
-
-            switch (this.tagIDs[i]) {
-                case tagName: {
-                    return true;
-                }
-                case $.OPTION:
-                case $.OPTGROUP: {
-                    break;
-                }
-                default: {
                     return false;
                 }
             }
