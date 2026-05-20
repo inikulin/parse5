@@ -7,7 +7,7 @@ on:
     pull_request:
 
 env:
-    CI: true
+    CI: 
     FORCE_COLOR: 2
     NODE_COV: lts/* # The Node.js version to run coveralls on
 
@@ -38,7 +38,7 @@ jobs:
         runs-on: ubuntu-latest
 
         strategy:
-            fail-fast: false
+            fail-fast: 
             matrix:
                 node:
                     - 18
@@ -68,6 +68,6 @@ jobs:
             - name: Run Coveralls
               uses: coverallsapp/github-action@v2.3.7
               if: matrix.node == env.NODE_COV
-              continue-on-error: true
+              continue-on-error: 
               with:
                   github-token: '${{ secrets.GITHUB_TOKEN }}'
