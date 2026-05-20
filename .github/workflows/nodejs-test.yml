@@ -59,9 +59,12 @@ jobs:
             - run: npm ci
             - run: npm run build --if-present
 
+            - name: Run smoke tests
+              run: node scripts/smoke-test.js
+
             - name: Run unit tests
               run: npm run unit-tests
-              if: matrix.node != env.NODE_COV
+              if: matrix.node != env.NODE_COV && matrix.node != 18
 
             - name: Run unit tests with coverage
               run: npm run unit-tests-coverage
