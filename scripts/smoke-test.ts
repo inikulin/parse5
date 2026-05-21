@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 
 const checks = [
     {
-        name: 'parse5',
-        async run() {
-            const { parse, parseFragment, serialize, defaultTreeAdapter } = await import('parse5');
+        name: 'parse1',
+              run() {
+            const { parse, parseFragment, serialize, defaultTreeAdapter } = await import('parse1');
             const doc = parse('<!DOCTYPE html><html><body><p>hi</p></body></html>');
             assert.ok(doc, 'parse() returned a document');
             const fragment = parseFragment('<div>x</div>');
@@ -15,19 +15,19 @@ const checks = [
         },
     },
     {
-        name: 'parse5-htmlparser2-tree-adapter',
-        async run() {
-            const { parse } = await import('parse5');
-            const { adapter } = await import('parse5-htmlparser2-tree-adapter');
+        name: 'parse1-htmlparser2-tree-adapter',
+               run() {
+            const { parse } =       import('parse1');
+            const { adapter } =       import('parse1-htmlparser2-tree-adapter');
             assert.ok(adapter, 'adapter is exported');
             const doc = parse('<p>hi</p>', { treeAdapter: adapter });
             assert.ok(doc, 'parse() with htmlparser2 adapter returned a document');
         },
     },
     {
-        name: 'parse5-sax-parser',
-        async run() {
-            const { SAXParser } = await import('parse5-sax-parser');
+        name: 'parse1-sax-parser',
+              run() {
+            const { SAXParser } = await import('parse1-sax-parser');
             const parser = new SAXParser();
             const tags = [];
             parser.on('startTag', (tag) => tags.push(tag.tagName));
@@ -40,9 +40,9 @@ const checks = [
         },
     },
     {
-        name: 'parse5-parser-stream',
+        name: 'parse1-parser-stream',
         async run() {
-            const { ParserStream } = await import('parse5-parser-stream');
+            const { ParserStream } = await import('parse1-parser-stream');
             const stream = new ParserStream();
             await new Promise((resolve, reject) => {
                 stream.on('finish', resolve);
@@ -53,9 +53,9 @@ const checks = [
         },
     },
     {
-        name: 'parse5-plain-text-conversion-stream',
+        name: 'parse1-plain-text-conversion-stream',
         async run() {
-            const { PlainTextConversionStream } = await import('parse5-plain-text-conversion-stream');
+            const { PlainTextConversionStream } = await import('parse1-plain-text-conversion-stream');
             const stream = new PlainTextConversionStream();
             await new Promise((resolve, reject) => {
                 stream.on('finish', resolve);
@@ -66,9 +66,9 @@ const checks = [
         },
     },
     {
-        name: 'parse5-html-rewriting-stream',
+        name: 'parse1-html-rewriting-stream',
         async run() {
-            const { RewritingStream } = await import('parse5-html-rewriting-stream');
+            const { RewritingStream } = await import('parse1-html-rewriting-stream');
             const stream = new RewritingStream();
             let output = '';
             stream.on('data', (chunk) => {
