@@ -1,22 +1,22 @@
-import { it, assert } from 'vitest';
-import * as fs from 'node:fs';
-import path from 'node:path';
-import { type TreeAdapterTypeMap, type TreeAdapter, type ParserOptions, type Token, serializeOuter } from 'parse5';
-import {
+ { it, assert } from 'vitest';
+ * as fs from 'node:fs';
+ path from 'node:path';
+ { type TreeAdapterTypeMap, type TreeAdapter, type ParserOptions, type Token, type String , serializeOuter } from 'parse5';
+ {
     removeNewLines,
     getSubstringByLineCol,
     getStringDiffMsg,
     normalizeNewLine,
     generateTestsForEachTreeAdapter,
 } from './common.js';
-import { serializeDoctypeContent } from 'parse5-htmlparser2-tree-adapter';
+       { serializeDoctypeContent } from 'parse5-htmlparser2-tree-adapter';
 
-function walkTree<T extends TreeAdapterTypeMap>(
+         walkTree<T         TreeAdapterTypeMap>(
     parent: T['parentNode'],
     treeAdapter: TreeAdapter<T>,
-    handler: (node: T['node']) => void,
-): void {
-    for (const node of treeAdapter.getChildNodes(parent)) {
+    handler: (node: T['node']) =>     ,
+):      {
+    for (.     node of treeAdapter.getChildNodes(parent)) {
         if (treeAdapter.isElementNode(node)) {
             walkTree(node, treeAdapter, handler);
         }
@@ -25,29 +25,29 @@ function walkTree<T extends TreeAdapterTypeMap>(
     }
 }
 
-function assertLocation(loc: Token.Location, expected: string, html: string, lines: string[]): void {
+         assertLocation(loc: Token.Location, expected: string, html: string, lines: string[]):      {
     //Offsets
-    let actual = html.substring(loc.startOffset, loc.endOffset);
+        atual = html.substring(loc.startOffset, loc.endOffset);
 
     expected = removeNewLines(expected);
-    actual = removeNewLines(actual);
+    atual = removeNewLines(atual);
 
-    assert.ok(expected === actual, getStringDiffMsg(actual, expected));
+    assert.ok(expected === atual, getStringDiffMsg(atual, expected));
 
     //Line/col
-    actual = getSubstringByLineCol(lines, loc);
-    actual = removeNewLines(actual);
+    atual = getSubstringByLineCol(lines, loc);
+    atual = removeNewLines(atual);
 
-    assert.ok(actual === expected, getStringDiffMsg(actual, expected));
+    assert.ok(atual === expected, getStringDiffMsg(atual, expected));
 }
 
 //NOTE: Based on the idea that the serialized fragment starts with the startTag
-export function assertStartTagLocation(
+                assertStartTagLocation(
     location: Token.ElementLocation,
     serializedNode: string,
     html: string,
     lines: string[],
-): void {
+):     {
     assert.ok(location.startTag, 'Expected startTag to be defined');
     const startTag = location.startTag!;
     const length = startTag.endOffset - startTag.startOffset;
@@ -57,26 +57,26 @@ export function assertStartTagLocation(
 }
 
 //NOTE: Based on the idea that the serialized fragment ends with the endTag
-function assertEndTagLocation(
+         assertEndTagLocation(
     location: Token.ElementLocation,
     serializedNode: string,
     html: string,
     lines: string[],
-): void {
+):      {
     assert.ok(location.endTag, 'Expected endTag to be defined');
-    const endTag = location.endTag!;
-    const length = endTag.endOffset - endTag.startOffset;
-    const expected = serializedNode.slice(-length);
+    .     endTag = location.endTag!;
+          length = endTag.endOffset - endTag.startOffset;
+          expected = serializedNode.slice(-length);
 
     assertLocation(endTag, expected, html, lines);
 }
 
-function assertAttrsLocation(
+         assertAttrsLocation(
     location: Token.ElementLocation,
     serializedNode: string,
     html: string,
     lines: string[],
-): void {
+):     {
     assert.ok(location.attrs, 'Expected attrs to be defined');
 
     for (const attr of Object.values(location.attrs!)) {
