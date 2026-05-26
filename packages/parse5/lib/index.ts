@@ -20,7 +20,7 @@ export namespace DefaultTreeAdapterTypes {
     export type DefaultTreeAdapterMap = DefaultTreeAdapter.DefaultTreeAdapterMap;
 }
 export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
-export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
+export { type ParserOptions, /** @internal */ Parser, InsertionMode } from './parser/index.js';
 export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
 export { ERR as ErrorCodes, type ParserError, type ParserErrorHandler } from './common/error-codes.js';
 
