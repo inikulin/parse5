@@ -33,7 +33,7 @@
     "scripts": {},
     "repository": {
         "type": "git",
-        "url": "git://github.com/inikulin/parse5.git"
+        "url": "https://github.com/inikulin/parse5.git"
     },
     "files": [
         "dist/**/*.js",
