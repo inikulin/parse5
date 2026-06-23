@@ -2652,7 +2652,12 @@ function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
         const elementId = p.openElements.tagIDs[i];
 
         // Compare the tag name here, as the tag might not be a known tag with an ID.
-        if (tid === elementId && (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)) {
+        // Only HTML elements match; a foreign element falls through to the special-element check.
+        if (
+            tid === elementId &&
+            p.treeAdapter.getNamespaceURI(element) === NS.HTML &&
+            (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)
+        ) {
             p.openElements.generateImpliedEndTagsWithExclusion(tid);
             if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
             break;
