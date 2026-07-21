@@ -17,6 +17,11 @@ export enum ATTRS {
     COLOR = 'color',
     FACE = 'face',
     SIZE = 'size',
+    SHADOWROOTMODE = 'shadowrootmode',
+    SHADOWROOTCLONABLE = 'shadowrootclonable',
+    SHADOWROOTSERIALIZABLE = 'shadowrootserializable',
+    SHADOWROOTDELEGATESFOCUS = 'shadowrootdelegatesfocus',
+    SHADOWROOTCUSTOMELEMENTREGISTRY = 'shadowrootcustomelementregistry',
 }
 
 /**

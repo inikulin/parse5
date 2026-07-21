@@ -1,6 +1,6 @@
 import { DOCUMENT_MODE, type NS } from '../common/html.js';
 import type { Attribute, Location, ElementLocation } from '../common/token.js';
-import type { TreeAdapter, TreeAdapterTypeMap } from './interface.js';
+import type { ShadowRootInit, TreeAdapter, TreeAdapterTypeMap } from './interface.js';
 
 export interface Document {
     /** The name of the node. */
@@ -18,11 +18,28 @@ export interface Document {
 
 export interface DocumentFragment {
     /** The name of the node. */
-    nodeName: '#document-fragment';
+    nodeName: '#document-fragment' | '#shadow-root';
     /** The node's children. */
     childNodes: ChildNode[];
     /** Comment source code location info. Available if location info is enabled. */
     sourceCodeLocation?: Location | null;
+}
+
+export interface ShadowRoot extends DocumentFragment {
+    /** The name of the node. */
+    nodeName: '#shadow-root';
+    /** The shadow root mode. */
+    mode: 'open' | 'closed';
+    /** Whether the shadow root delegates focus. */
+    delegatesFocus: boolean;
+    /** Whether the shadow root is clonable or not. */
+    clonable: boolean;
+    /** Whether the shadow root is clonable or not. */
+    serializable: boolean;
+    /** The custom element registry this node belongs to. */
+    customElementRegistry: string | null;
+    /** Attributes that appear on the <template> element when serialized as a declarative shadow root. */
+    declarativeTemplateAttributes: Attribute[];
 }
 
 export interface Element {
@@ -38,6 +55,8 @@ export interface Element {
     sourceCodeLocation?: ElementLocation | null;
     /** Parent node. */
     parentNode: ParentNode | null;
+    /** Shadow root if present. */
+    shadowRoot: ShadowRoot | null;
     /** The node's children. */
     childNodes: ChildNode[];
 }
@@ -85,7 +104,7 @@ export interface DocumentType {
     sourceCodeLocation?: Location | null;
 }
 
-export type ParentNode = Document | DocumentFragment | Element | Template;
+export type ParentNode = Document | DocumentFragment | ShadowRoot | Element | Template;
 export type ChildNode = Element | Template | CommentNode | TextNode | DocumentType;
 export type Node = ParentNode | ChildNode;
 
@@ -127,6 +146,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
             namespaceURI,
             childNodes: [],
             parentNode: null,
+            shadowRoot: null,
         };
     },
 
@@ -310,5 +330,45 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
 
     updateNodeSourceCodeLocation(node: Node, endLocation: ElementLocation): void {
         node.sourceCodeLocation = { ...node.sourceCodeLocation, ...endLocation };
+    },
+
+    declarativeShadowRootAdapter: {
+        // Shadow roots
+        attachDeclarativeShadowRoot(
+            element: Element,
+            {
+                mode,
+                clonable,
+                serializable,
+                delegatesFocus,
+                customElementRegistry,
+                declarativeTemplateAttributes,
+            }: ShadowRootInit,
+        ): ShadowRoot {
+            const shadowRoot: ShadowRoot = {
+                nodeName: '#shadow-root',
+                childNodes: [],
+                mode,
+                clonable,
+                serializable,
+                delegatesFocus,
+                customElementRegistry,
+                declarativeTemplateAttributes,
+            };
+            element.shadowRoot = shadowRoot;
+            return shadowRoot;
+        },
+
+        getShadowRoot(element: Element): ShadowRoot | null {
+            return element.shadowRoot;
+        },
+
+        getShadowRootInit(shadowRoot: ShadowRoot): ShadowRootInit {
+            return shadowRoot;
+        },
+
+        setTemplateContentForDeclarativeShadowRootParsing(template: Template, shadowRoot: ShadowRoot): void {
+            template.content = shadowRoot;
+        },
     },
 };
