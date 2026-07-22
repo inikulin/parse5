@@ -17,7 +17,7 @@
         "husky": "^9.1.7",
         "nano-staged": "^1.0.2",
         "outdent": "^0.8.0",
-        "prettier": "^3.9.5",
+        "prettier": "^3.9.6",
         "ts-node": "^10.9.2",
         "typedoc": "^0.28.20",
         "typescript": "^6.0.3",
