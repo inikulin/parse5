@@ -1,5 +1,5 @@
 import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest';
-import { parseFragment, parse } from 'parse5';
+import { parseFragment, parse, serialize } from 'parse5';
 import type { Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
@@ -88,6 +88,14 @@ describe('parser', () => {
         parse('<!doctype html><noscript>foo</noscript\r\n>', { onParseError });
 
         expect(onParseError).not.toHaveBeenCalled();
+    });
+
+    it('Regression - numeric character reference for CR treated as whitespace (GH-1828)', () => {
+        const space = serialize(parse('&#32;A'));
+
+        assert.strictEqual(serialize(parse('&#13;A')), space);
+        assert.strictEqual(serialize(parse('&#x0D;A')), space);
+        assert.ok(!serialize(parse('&#13;A')).includes('\r'));
     });
 
     describe('Tree adapters', () => {
