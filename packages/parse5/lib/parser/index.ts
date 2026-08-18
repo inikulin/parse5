@@ -2608,7 +2608,14 @@ function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: 
         const elementId = p.openElements.tagIDs[i];
 
         // Compare the tag name here, as the tag might not be a known tag with an ID.
-        if (tid === elementId && (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)) {
+        // The matched element must be an HTML element (per the WHATWG "any other end tag"
+        // rule); a foreign element with a colliding tag ID must fall through to the
+        // special-element check below so the end tag is ignored.
+        if (
+            tid === elementId &&
+            p.treeAdapter.getNamespaceURI(element) === NS.HTML &&
+            (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)
+        ) {
             p.openElements.generateImpliedEndTagsWithExclusion(tid);
             if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
             break;
