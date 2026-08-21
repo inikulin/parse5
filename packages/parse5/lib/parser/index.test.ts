@@ -1,5 +1,5 @@
 import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest';
-import { parseFragment, parse } from 'parse5';
+import { parseFragment, parse, InsertionMode } from 'parse5';
 import type { Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
@@ -150,5 +150,14 @@ describe('parser', () => {
             expect(b.childNodes[0].nodeName).toBe('#text');
             expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
         });
+    });
+});
+
+describe('InsertionMode', () => {
+    it('should be exported and have stable numeric values', () => {
+        assert.strictEqual(InsertionMode.INITIAL, 0);
+        assert.strictEqual(InsertionMode.BEFORE_HTML, 1);
+        assert.strictEqual(InsertionMode.IN_BODY, 6);
+        assert.strictEqual(InsertionMode.AFTER_AFTER_FRAMESET, 22);
     });
 });
