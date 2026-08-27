@@ -90,7 +90,8 @@ describe('parser', () => {
         expect(onParseError).not.toHaveBeenCalled();
     });
 
-    it('Regression - foreign end tag must not close an HTML element with a colliding tag id', () => {
+    // TODO: this belongs in html5lib-tests upstream; kept here for now.
+    it('end tag in body must not match a foreign element with the same tag ID', () => {
         // `<svg desc>` is a foreign element whose lowercase name collides with the HTML
         // `desc` tag id. The "any other end tag" rule in body requires an HTML element,
         // so `</desc>` must be ignored and the open `<b>` must stay open and collect "y".
