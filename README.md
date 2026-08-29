@@ -11,8 +11,8 @@
 <p align="center">
   <a href="https://github.com/inikulin/parse5/actions/workflows/nodejs-test.yml"><img alt="Build Status" src="https://github.com/inikulin/parse5/actions/workflows/nodejs-test.yml/badge.svg"></a>
   <a href="https://www.npmjs.com/package/parse5"><img alt="NPM Version" src="https://img.shields.io/npm/v/parse5.svg"></a>
-  <a href="https://npmjs.org/package/parse5"><img alt="Downloads" src="https://img.shields.io/npm/dm/parse5.svg"></a>
-  <a href="https://npmjs.org/package/parse5"><img alt="Downloads total" src="https://img.shields.io/npm/dt/parse5.svg"></a>
+  <a href="https://npm-compare.com/parse5/#timeRange=ALL"><img alt="Downloads" src="https://img.shields.io/npm/dm/parse5.svg"></a>
+  <a href="https://npm-compare.com/parse5/#timeRange=ALL"><img alt="Downloads total" src="https://img.shields.io/npm/dt/parse5.svg"></a>
   <a href="https://coveralls.io/github/inikulin/parse5"><img alt="Coverage" src="https://img.shields.io/coveralls/github/inikulin/parse5/master"></a>
 </p>
 
