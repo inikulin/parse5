@@ -1,5 +1,11 @@
 import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest';
-import { parseFragment, parse } from 'parse5';
+import {
+    parseFragment,
+    parse,
+    type ElementCreationContext,
+    type TreeAdapter,
+    type DefaultTreeAdapterMap,
+} from 'parse5';
 import type { Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
@@ -91,6 +97,49 @@ describe('parser', () => {
     });
 
     describe('Tree adapters', () => {
+        it('should provide element creation context', () => {
+            const contexts = new Map<string, ElementCreationContext<DefaultTreeAdapterMap>>();
+            let rootContext: ElementCreationContext<DefaultTreeAdapterMap> | undefined;
+            const treeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
+                ...treeAdapters.default,
+                onElementCreated(element, context) {
+                    expect(treeAdapters.default.getParentNode(element)).toBeNull();
+
+                    if (treeAdapters.default.getTagName(element) === 'html') rootContext = context;
+
+                    const id = treeAdapters.default.getAttrList(element).find((attr) => attr.name === 'id')?.value;
+
+                    if (id) contexts.set(id, context);
+                },
+            };
+
+            const document = parse('<form id="form"><input id="normal"><template><input id="template"></template>', {
+                treeAdapter,
+            });
+
+            expect(rootContext!.intendedParent).toBe(document);
+            const normal = contexts.get('normal')!;
+            expect(treeAdapters.default.getTagName(normal.intendedParent as Element)).toBe('form');
+            expect(
+                treeAdapters.default.getAttrList(normal.formElement!).find((attr) => attr.name === 'id')?.value,
+            ).toBe('form');
+            expect(normal.isInTemplate).toBe(false);
+
+            const template = contexts.get('template')!;
+            expect(template.intendedParent).toHaveProperty('nodeName', '#document-fragment');
+            expect(template.formElement).toBe(normal.formElement);
+            expect(template.isInTemplate).toBe(true);
+
+            parse('<table><form id="foster-form"><input id="fostered"></table>', { treeAdapter });
+
+            const fostered = contexts.get('fostered')!;
+            expect(treeAdapters.default.getTagName(fostered.intendedParent as Element)).toBe('body');
+            expect(
+                treeAdapters.default.getAttrList(fostered.formElement!).find((attr) => attr.name === 'id')?.value,
+            ).toBe('foster-form');
+            expect(fostered.isInTemplate).toBe(false);
+        });
+
         it('should support onItemPush and onItemPop', () => {
             const onItemPush = vi.fn();
             const onItemPop = vi.fn();

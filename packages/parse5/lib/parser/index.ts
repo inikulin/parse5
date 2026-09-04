@@ -28,6 +28,7 @@ import {
     type EOFToken,
     type LocationWithAttributes,
     type ElementLocation,
+    type Attribute,
 } from '../common/token.js';
 
 //Misc constants
@@ -74,6 +75,11 @@ const BASE_LOC = {
 };
 
 const TABLE_STRUCTURE_TAGS = new Set([$.TABLE, $.TBODY, $.TFOOT, $.THEAD, $.TR]);
+
+interface InsertionLocation<T extends TreeAdapterTypeMap> {
+    parent: T['parentNode'];
+    beforeElement: T['element'] | null;
+}
 
 export interface ParserOptions<T extends TreeAdapterTypeMap> {
     /**
@@ -405,7 +411,11 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _attachElementToTree(element: T['element'], location: LocationWithAttributes | null): void {
+    _attachElementToTree(
+        element: T['element'],
+        location: LocationWithAttributes | null,
+        insertionLocation: InsertionLocation<T>,
+    ): void {
         if (this.options.sourceCodeLocationInfo) {
             const loc = location && {
                 ...location,
@@ -415,13 +425,41 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             this.treeAdapter.setNodeSourceCodeLocation(element, loc);
         }
 
-        if (this._shouldFosterParentOnInsertion()) {
-            this._fosterParentElement(element);
+        if (insertionLocation.beforeElement) {
+            this.treeAdapter.insertBefore(insertionLocation.parent, element, insertionLocation.beforeElement);
         } else {
-            const parent = this.openElements.currentTmplContentOrNode;
-
-            this.treeAdapter.appendChild(parent ?? this.document, element);
+            this.treeAdapter.appendChild(insertionLocation.parent, element);
         }
+    }
+
+    /** @protected */
+    _getInsertionLocation(): InsertionLocation<T> {
+        if (this._shouldFosterParentOnInsertion()) {
+            return this._findFosterParentingLocation();
+        }
+
+        return {
+            parent: this.openElements.currentTmplContentOrNode ?? this.document,
+            beforeElement: null,
+        };
+    }
+
+    /** @protected */
+    _createElement(
+        tagName: string,
+        namespaceURI: NS,
+        attrs: Attribute[],
+        intendedParent: T['parentNode'],
+    ): T['element'] {
+        const element = this.treeAdapter.createElement(tagName, namespaceURI, attrs);
+
+        this.treeAdapter.onElementCreated?.(element, {
+            intendedParent,
+            formElement: this.formElement,
+            isInTemplate: this.openElements.tmplCount > 0,
+        });
+
+        return element;
     }
 
     /**
@@ -431,44 +469,48 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _appendElement(token: TagToken, namespaceURI: NS): void {
-        const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
+        const insertionLocation = this._getInsertionLocation();
+        const element = this._createElement(token.tagName, namespaceURI, token.attrs, insertionLocation.parent);
 
-        this._attachElementToTree(element, token.location);
+        this._attachElementToTree(element, token.location, insertionLocation);
     }
 
     /** @protected */
     _insertElement(token: TagToken, namespaceURI: NS): void {
-        const element = this.treeAdapter.createElement(token.tagName, namespaceURI, token.attrs);
+        const insertionLocation = this._getInsertionLocation();
+        const element = this._createElement(token.tagName, namespaceURI, token.attrs, insertionLocation.parent);
 
-        this._attachElementToTree(element, token.location);
+        this._attachElementToTree(element, token.location, insertionLocation);
         this.openElements.push(element, token.tagID);
     }
 
     /** @protected */
     _insertFakeElement(tagName: string, tagID: $): void {
-        const element = this.treeAdapter.createElement(tagName, NS.HTML, []);
+        const insertionLocation = this._getInsertionLocation();
+        const element = this._createElement(tagName, NS.HTML, [], insertionLocation.parent);
 
-        this._attachElementToTree(element, null);
+        this._attachElementToTree(element, null, insertionLocation);
         this.openElements.push(element, tagID);
     }
 
     /** @protected */
     _insertTemplate(token: TagToken): void {
-        const tmpl = this.treeAdapter.createElement(token.tagName, NS.HTML, token.attrs);
+        const insertionLocation = this._getInsertionLocation();
+        const tmpl = this._createElement(token.tagName, NS.HTML, token.attrs, insertionLocation.parent);
         const content = this.treeAdapter.createDocumentFragment();
 
         this.treeAdapter.setTemplateContent(tmpl, content);
-        this._attachElementToTree(tmpl, token.location);
+        this._attachElementToTree(tmpl, token.location, insertionLocation);
         this.openElements.push(tmpl, token.tagID);
         if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(content, null);
     }
 
     /** @protected */
     _insertFakeRootElement(): void {
-        const element = this.treeAdapter.createElement(TN.HTML, NS.HTML, []);
+        const element = this._createElement(TN.HTML, NS.HTML, [], this.document);
         if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(element, null);
 
-        this.treeAdapter.appendChild(this.openElements.current, element);
+        this.treeAdapter.appendChild(this.document, element);
         this.openElements.push(element, $.HTML);
     }
 
@@ -776,7 +818,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _findFosterParentingLocation(): { parent: T['parentNode']; beforeElement: T['element'] | null } {
+    _findFosterParentingLocation(): InsertionLocation<T> {
         for (let i = this.openElements.stackTop; i >= 0; i--) {
             const openElement = this.openElements.items[i];
 
@@ -1440,6 +1482,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
 ): T['element'] {
     let lastElement = furthestBlock;
     let nextElement = p.openElements.getCommonAncestor(furthestBlock) as T['element'];
+    const intendedParent = p.openElements.getCommonAncestor(formattingElement) as T['parentNode'];
 
     for (let i = 0, element = nextElement; element !== formattingElement; i++, element = nextElement) {
         //NOTE: store the next element for the next loop iteration (it may be deleted from the stack by step 9.5)
@@ -1456,7 +1499,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
 
             p.openElements.remove(element);
         } else {
-            element = aaRecreateElementFromEntry(p, elementEntry);
+            element = aaRecreateElementFromEntry(p, elementEntry, intendedParent);
 
             if (lastElement === furthestBlock) {
                 p.activeFormattingElements.bookmark = elementEntry;
@@ -1475,9 +1518,10 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
 function aaRecreateElementFromEntry<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     elementEntry: ElementEntry<T>,
+    intendedParent: T['parentNode'],
 ): T['element'] {
     const ns = p.treeAdapter.getNamespaceURI(elementEntry.element);
-    const newElement = p.treeAdapter.createElement(elementEntry.token.tagName, ns, elementEntry.token.attrs);
+    const newElement = p._createElement(elementEntry.token.tagName, ns, elementEntry.token.attrs, intendedParent);
 
     p.openElements.replace(elementEntry.element, newElement);
     elementEntry.element = newElement;
@@ -1515,7 +1559,7 @@ function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
 ): void {
     const ns = p.treeAdapter.getNamespaceURI(formattingElementEntry.element);
     const { token } = formattingElementEntry;
-    const newElement = p.treeAdapter.createElement(token.tagName, ns, token.attrs);
+    const newElement = p._createElement(token.tagName, ns, token.attrs, furthestBlock);
 
     p._adoptNodes(furthestBlock, newElement);
     p.treeAdapter.appendChild(furthestBlock, newElement);
