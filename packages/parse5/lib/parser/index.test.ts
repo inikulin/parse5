@@ -90,6 +90,25 @@ describe('parser', () => {
         expect(onParseError).not.toHaveBeenCalled();
     });
 
+    // TODO: this belongs in html5lib-tests upstream; kept here for now.
+    it('end tag in body must not match a foreign element with the same tag ID', () => {
+        // `<svg desc>` is a foreign element whose lowercase name collides with the HTML
+        // `desc` tag id. The "any other end tag" rule in body requires an HTML element,
+        // so `</desc>` must be ignored and the open `<b>` must stay open and collect "y".
+        const document = parse('<svg><desc><b>x</desc>y');
+
+        const html = document.childNodes[0] as Element;
+        const body = html.childNodes[1] as Element;
+        const svg = body.childNodes[0] as Element;
+        const desc = svg.childNodes[0] as Element;
+        const b = desc.childNodes[0] as Element;
+
+        expect(b.nodeName).toBe('b');
+        expect(b.childNodes).toHaveLength(1);
+        expect(b.childNodes[0].nodeName).toBe('#text');
+        expect((b.childNodes[0] as TextNode).value).toBe('xy');
+    });
+
     describe('Tree adapters', () => {
         it('should support onItemPush and onItemPop', () => {
             const onItemPush = vi.fn();
