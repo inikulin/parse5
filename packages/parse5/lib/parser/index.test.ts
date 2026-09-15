@@ -96,6 +96,22 @@ describe('parser', () => {
         expect(onParseError).not.toHaveBeenCalled();
     });
 
+    it('Regression - numeric character reference for CR treated as whitespace (GH-1828)', () => {
+        const bodyText = (html: string): string => {
+            const document = parse(html);
+            const htmlEl = document.childNodes[0] as Element;
+            const body = htmlEl.childNodes[1] as Element;
+            const text = body.childNodes[0] as TextNode;
+            return text.value;
+        };
+
+        // &#32; is whitespace and does not insert a text node before body content.
+        assert.strictEqual(bodyText('&#13;A'), bodyText('&#32;A'));
+        assert.strictEqual(bodyText('&#x0D;A'), bodyText('&#32;A'));
+        assert.ok(!bodyText('&#13;A').includes('\r'));
+        assert.strictEqual(bodyText('&#13;A'), 'A');
+    });
+
     describe('Tree adapters', () => {
         it('should provide element creation context', () => {
             const contexts = new Map<string, ElementCreationContext<DefaultTreeAdapterMap>>();
