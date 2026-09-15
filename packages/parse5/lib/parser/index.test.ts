@@ -93,12 +93,10 @@ describe('parser', () => {
     it('Regression - numeric character reference for CR treated as whitespace (GH-1828)', () => {
         const bodyText = (html: string): string => {
             const document = parse(html);
-            const htmlEl = document.childNodes.find((node) => node.nodeName === 'html') as Element;
-            const body = htmlEl.childNodes.find((node) => node.nodeName === 'body') as Element;
-            return body.childNodes
-                .filter((node): node is TextNode => node.nodeName === '#text')
-                .map((node) => node.value)
-                .join('');
+            const htmlEl = document.childNodes[0] as Element;
+            const body = htmlEl.childNodes[1] as Element;
+            const text = body.childNodes[0] as TextNode;
+            return text.value;
         };
 
         // &#32; is whitespace and does not insert a text node before body content.
