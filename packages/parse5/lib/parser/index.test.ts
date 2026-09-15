@@ -1,5 +1,5 @@
 import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest';
-import { parseFragment, parse, serialize } from 'parse5';
+import { parseFragment, parse } from 'parse5';
 import type { Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
@@ -91,11 +91,21 @@ describe('parser', () => {
     });
 
     it('Regression - numeric character reference for CR treated as whitespace (GH-1828)', () => {
-        const space = serialize(parse('&#32;A'));
+        const bodyText = (html: string): string => {
+            const document = parse(html);
+            const htmlEl = document.childNodes.find((node) => node.nodeName === 'html') as Element;
+            const body = htmlEl.childNodes.find((node) => node.nodeName === 'body') as Element;
+            return body.childNodes
+                .filter((node): node is TextNode => node.nodeName === '#text')
+                .map((node) => node.value)
+                .join('');
+        };
 
-        assert.strictEqual(serialize(parse('&#13;A')), space);
-        assert.strictEqual(serialize(parse('&#x0D;A')), space);
-        assert.ok(!serialize(parse('&#13;A')).includes('\r'));
+        // &#32; is whitespace and does not insert a text node before body content.
+        assert.strictEqual(bodyText('&#13;A'), bodyText('&#32;A'));
+        assert.strictEqual(bodyText('&#x0D;A'), bodyText('&#32;A'));
+        assert.ok(!bodyText('&#13;A').includes('\r'));
+        assert.strictEqual(bodyText('&#13;A'), 'A');
     });
 
     describe('Tree adapters', () => {
