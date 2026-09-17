@@ -48,6 +48,29 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     }
 
     /**
+     * Synchronously delivers buffered character tokens to the tree builder without ending the input stream.
+     * Incomplete tags and character references are retained for subsequent writes. This does not resume a
+     * suspended script or process queued writes, and must not be called from a parser callback.
+     *
+     * Flushing splits character-token runs. Their source locations do not extend through subsequently
+     * ignored input, such as CDATA delimiters or the leading newline in a `pre` element, so text-node
+     * source ranges can differ from parsing without flushing.
+     *
+     * @example
+     *
+     * ```js
+     * const stream = new ParserStream();
+     * stream.write('<p>hello');
+     * stream.flushCharacters();
+     * // The paragraph's text is now available in `stream.document`.
+     * stream.end(' world</p>');
+     * ```
+     */
+    public flushCharacters(): void {
+        this.parser.tokenizer.flushCharacters();
+    }
+
+    /**
      * @param options Parsing options.
      */
     constructor(
