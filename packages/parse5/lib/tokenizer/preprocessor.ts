@@ -37,8 +37,9 @@ export class Preprocessor {
         return this.pos - this.lineStartPos + Number(this.lastGapPos !== this.pos);
     }
 
+    /** The offset of the current code point, before the second unit of a surrogate pair. */
     public get offset(): number {
-        return this.droppedBufferSize + this.pos;
+        return this.droppedBufferSize + this.pos - Number(this.lastGapPos === this.pos);
     }
 
     public getError(code: ERR, cpOffset: number): ParserError {
@@ -105,12 +106,15 @@ export class Preprocessor {
 
     public dropParsedChunk(): void {
         if (this.willDropParsedChunk()) {
-            this.html = this.html.substring(this.pos);
-            this.lineStartPos -= this.pos;
-            this.droppedBufferSize += this.pos;
-            this.pos = 0;
+            // Retain the entire current code point, including both units of a surrogate pair.
+            const droppedSize = this.offset - this.droppedBufferSize;
+            this.html = this.html.substring(droppedSize);
+            this.lineStartPos -= droppedSize;
+            this.droppedBufferSize += droppedSize;
+            this.pos -= droppedSize;
             this.lastGapPos = -2;
             this.gapStack.length = 0;
+            if (this.pos > 0) this._addGap();
         }
     }
 
