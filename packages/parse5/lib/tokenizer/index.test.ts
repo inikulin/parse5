@@ -14,6 +14,31 @@ function noop(): void {
 }
 
 describe('Tokenizer methods', () => {
+    it('should keep long attribute values and character runs exact', () => {
+        const long = 'x'.repeat(40_000);
+        const values: string[] = [];
+        let chars = '';
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onStartTag(t): void {
+                values.push(...t.attrs.map(({ value }) => value));
+            },
+            onCharacter(t): void {
+                chars += t.chars;
+            },
+            onComment: noop,
+            onDoctype: noop,
+            onEndTag: noop,
+            onEof: noop,
+            onNullCharacter: noop,
+            onWhitespaceCharacter: noop,
+        });
+
+        tokenizer.write(`<p title="${long}&amp;${long}" id=${long}>${long}&lt;${long}</p>`, true);
+
+        assert.deepStrictEqual(values, [`${long}&${long}`, long]);
+        assert.strictEqual(chars, `${long}<${long}`);
+    });
+
     it('should pause and resume', () => {
         let count = 0;
         const tokenizer = new Tokenizer(tokenizerOpts, {

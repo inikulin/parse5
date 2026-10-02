@@ -183,6 +183,39 @@ export interface TokenHandler {
 }
 
 //Tokenizer
+/**
+ * Attribute values and character tokens are built by appending a code point at a time. In V8
+ * each `+=` leaves a rope node behind until the string is read, so a long run (an inline
+ * `data:` image, a large inline script) held tens of bytes per character. Short runs stay native
+ * strings; a run past this length moves into flat pieces and stays its own size.
+ */
+const SPILL_LENGTH = 1024;
+
+class SpilledString {
+    private pieces: string[] = [];
+    private runs: string[] = [];
+
+    public get holding(): boolean {
+        return this.pieces.length > 0 || this.runs.length > 0;
+    }
+
+    public spill(run: string): void {
+        this.runs.push(run);
+        if (this.runs.length === 32) {
+            this.pieces.push(this.runs.join(''));
+            this.runs.length = 0;
+        }
+    }
+
+    /** The spilled string followed by `tail`, leaving nothing spilled. */
+    public take(tail: string): string {
+        const text = this.pieces.join('') + this.runs.join('') + tail;
+        this.pieces.length = 0;
+        this.runs.length = 0;
+        return text;
+    }
+}
+
 export class Tokenizer {
     public preprocessor: Preprocessor;
 
@@ -223,6 +256,8 @@ export class Tokenizer {
     protected currentCharacterToken: CharacterToken | null = null;
     protected currentToken: Token | null = null;
     protected currentAttr: Attribute = { name: '', value: '' };
+    private spilledAttrValue = new SpilledString();
+    private spilledCharacters = new SpilledString();
 
     constructor(
         protected options: TokenizerOptions,
@@ -425,6 +460,7 @@ export class Tokenizer {
 
     //Tag attributes
     protected _createAttr(attrNameFirstCh: string): void {
+        this._settleAttrValue();
         this.currentAttr = {
             name: attrNameFirstCh,
             value: '',
@@ -447,6 +483,20 @@ export class Tokenizer {
             }
         } else {
             this._err(ERR.duplicateAttribute);
+        }
+    }
+
+    private _appendToAttrValue(text: string): void {
+        this.currentAttr.value += text;
+        if (this.currentAttr.value.length >= SPILL_LENGTH) {
+            this.spilledAttrValue.spill(this.currentAttr.value);
+            this.currentAttr.value = '';
+        }
+    }
+
+    private _settleAttrValue(): void {
+        if (this.spilledAttrValue.holding) {
+            this.currentAttr.value = this.spilledAttrValue.take(this.currentAttr.value);
         }
     }
 
@@ -473,6 +523,7 @@ export class Tokenizer {
     }
 
     protected emitCurrentTagToken(): void {
+        this._settleAttrValue();
         const ct = this.currentToken as TagToken;
 
         this.prepareToken(ct);
@@ -513,6 +564,9 @@ export class Tokenizer {
 
     protected _emitCurrentCharacterToken(nextLocation: Location | null): void {
         if (this.currentCharacterToken) {
+            if (this.spilledCharacters.holding) {
+                this.currentCharacterToken.chars = this.spilledCharacters.take(this.currentCharacterToken.chars);
+            }
             //NOTE: if we have a pending character token, make it's end location equal to the
             //current token's start location.
             if (nextLocation && this.currentCharacterToken.location) {
@@ -568,6 +622,10 @@ export class Tokenizer {
         if (this.currentCharacterToken) {
             if (this.currentCharacterToken.type === type) {
                 this.currentCharacterToken.chars += ch;
+                if (this.currentCharacterToken.chars.length >= SPILL_LENGTH) {
+                    this.spilledCharacters.spill(this.currentCharacterToken.chars);
+                    this.currentCharacterToken.chars = '';
+                }
                 return;
             } else {
                 this.currentLocation = this.getCurrentLocation(0);
@@ -620,7 +678,7 @@ export class Tokenizer {
 
     protected _flushCodePointConsumedAsCharacterReference(cp: number): void {
         if (this._isCharacterReferenceInAttribute()) {
-            this.currentAttr.value += String.fromCodePoint(cp);
+            this._appendToAttrValue(String.fromCodePoint(cp));
         } else {
             this._emitCodePoint(cp);
         }
@@ -1765,7 +1823,7 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                this.currentAttr.value += REPLACEMENT_CHARACTER;
+                this._appendToAttrValue(REPLACEMENT_CHARACTER);
                 break;
             }
             case $.EOF: {
@@ -1774,7 +1832,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._appendToAttrValue(String.fromCodePoint(cp));
             }
         }
     }
@@ -1793,7 +1851,7 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                this.currentAttr.value += REPLACEMENT_CHARACTER;
+                this._appendToAttrValue(REPLACEMENT_CHARACTER);
                 break;
             }
             case $.EOF: {
@@ -1802,7 +1860,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._appendToAttrValue(String.fromCodePoint(cp));
             }
         }
     }
@@ -1831,7 +1889,7 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                this.currentAttr.value += REPLACEMENT_CHARACTER;
+                this._appendToAttrValue(REPLACEMENT_CHARACTER);
                 break;
             }
             case $.QUOTATION_MARK:
@@ -1840,7 +1898,7 @@ export class Tokenizer {
             case $.EQUALS_SIGN:
             case $.GRAVE_ACCENT: {
                 this._err(ERR.unexpectedCharacterInUnquotedAttributeValue);
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._appendToAttrValue(String.fromCodePoint(cp));
                 break;
             }
             case $.EOF: {
@@ -1849,7 +1907,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._appendToAttrValue(String.fromCodePoint(cp));
             }
         }
     }
