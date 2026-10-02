@@ -1,0 +1,21 @@
+packages/parse5/lib/tokenizer/index.test.ts
+  s_6bbbbbc7cea8e7::t_1f7dc4776e68b8 2,61-91
+packages/parse5/lib/tokenizer/index.ts
+  s_6bbbbbc7cea8e7::t_e88d5ccfa39735 26-30,231,443-444,446,449-454
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e5e8bc7a8677c506dcc83cd95c25955b7cbefe0f",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
