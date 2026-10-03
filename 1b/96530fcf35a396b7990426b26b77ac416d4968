@@ -1,0 +1,21 @@
+packages/parse5/lib/tree-adapters/attributes.test.ts
+  s_98abc3499f7493::t_33587f1f42eb9a 1-21
+packages/parse5/lib/tree-adapters/default.ts
+  s_98abc3499f7493::t_00b5e1c577cd13 230-231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1b96530fcf35a396b7990426b26b77ac416d4968",
+  "prompts": {},
+  "sessions": {
+    "s_98abc3499f7493": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-669a-74b3-b59e-3acc3bc180fe",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
