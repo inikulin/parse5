@@ -1,0 +1,19 @@
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_d1240ea9997571::t_3155cd2ae89af5 124-125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "03a8086f9e46c70eb7786fd2bc32206c3448665a",
+  "prompts": {},
+  "sessions": {
+    "s_d1240ea9997571": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-56e9-7a92-9307-b45ce9d7ed51",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
