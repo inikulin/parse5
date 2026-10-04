@@ -1,0 +1,21 @@
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_bc044c42699d04::t_e8832ab6399077 432,442
+packages/parse5/lib/tokenizer/index.ts
+  s_bc044c42699d04::t_4d35feb2277b8c 377
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6b9ecb02acc86ddb8d260c4ef2abf85568d016cc",
+  "prompts": {},
+  "sessions": {
+    "s_bc044c42699d04": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a106d2-a81e-7683-aeae-25df6bf0f05b",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
