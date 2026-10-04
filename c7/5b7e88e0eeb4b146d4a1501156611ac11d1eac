@@ -1,0 +1,29 @@
+packages/parse5/lib/common/html.ts
+  s_bc044c42699d04::t_a4b57e3189a966 530
+packages/parse5/lib/parser/index.test.ts
+  s_bc044c42699d04::t_728d3a32a38c7f 59-124,159-185,193-203,235-242
+packages/parse5/lib/parser/index.ts
+  s_bc044c42699d04::t_f0227a5f8a1899 367,589-591,594-598,603,751-755,828-829,912,986,1364,1499,1636-1647,2665,2735-2739,3328,3816-3819,3829-3836
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_bc044c42699d04::t_eafca1444c9a78 64-96
+packages/parse5/lib/parser/open-element-stack.ts
+  s_bc044c42699d04::t_fb6c84f847c16a 273,281,299-301
+packages/parse5/lib/parser/parser-location-info.test.ts
+  s_bc044c42699d04::t_803efb19a520ee 235-266
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c75b7e88e0eeb4b146d4a1501156611ac11d1eac",
+  "prompts": {},
+  "sessions": {
+    "s_bc044c42699d04": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a106d2-a81e-7683-aeae-25df6bf0f05b",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
