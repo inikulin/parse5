@@ -1,0 +1,22 @@
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_6bbbbbc7cea8e7::t_b3ab3e55b9ed65 117-120,201
+  s_6bbbbbc7cea8e7::t_1687287fe7c442 116
+packages/parse5/lib/tree-adapters/default.ts
+  s_6bbbbbc7cea8e7::t_b3ab3e55b9ed65 105-115,167,231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3c767e43a7ffe256c3702be18c289f49b67fcdc4",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
