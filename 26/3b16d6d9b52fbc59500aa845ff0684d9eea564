@@ -1,0 +1,21 @@
+packages/parse5/lib/tokenizer/index.test.ts
+  s_5de6cfc9324149::t_537bd8d2803b65 2,61-91
+packages/parse5/lib/tokenizer/index.ts
+  s_5de6cfc9324149::t_2d0f1e439e093c 26-30,231,444-448,463-475
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "263b16d6d9b52fbc59500aa845ff0684d9eea564",
+  "prompts": {},
+  "sessions": {
+    "s_5de6cfc9324149": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1063e-14c8-7111-85d3-b8c18c1c9ab6",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
