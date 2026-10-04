@@ -1,0 +1,25 @@
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_6bbbbbc7cea8e7::t_b3ab3e55b9ed65 117,199
+  s_6bbbbbc7cea8e7::t_1687287fe7c442 116
+  s_6bbbbbc7cea8e7::t_e7ea7cce2d2da0 118
+packages/parse5/lib/tree-adapters/default.ts
+  s_6bbbbbc7cea8e7::t_b3ab3e55b9ed65 105-115,167,231
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_6bbbbbc7cea8e7::t_e7ea7cce2d2da0 29-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e3b3ef933972d78cf0d74de4436bee0af9047df9",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
