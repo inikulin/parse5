@@ -6,13 +6,13 @@ import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
 import { parseDatFile, type DatFile } from './parse-dat-file.js';
 
-export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile<T> {
+interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile<T> {
     idx: number;
     setName: string;
     dirName: string;
 }
 
-export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
+function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
     dataDir: URL,
     treeAdapter: TreeAdapter<T>,
 ): TreeConstructionTestData<T>[] {
