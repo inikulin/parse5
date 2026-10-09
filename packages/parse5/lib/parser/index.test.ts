@@ -2,6 +2,7 @@ import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest'
 import {
     parseFragment,
     parse,
+    InsertionMode,
     type ElementCreationContext,
     type TreeAdapter,
     type DefaultTreeAdapterMap,
@@ -215,5 +216,14 @@ describe('parser', () => {
             expect(b.childNodes[0].nodeName).toBe('#text');
             expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
         });
+    });
+});
+
+describe('InsertionMode', () => {
+    it('should be exported and have stable numeric values', () => {
+        assert.strictEqual(InsertionMode.INITIAL, 0);
+        assert.strictEqual(InsertionMode.BEFORE_HTML, 1);
+        assert.strictEqual(InsertionMode.IN_BODY, 6);
+        assert.strictEqual(InsertionMode.AFTER_AFTER_FRAMESET, 22);
     });
 });
