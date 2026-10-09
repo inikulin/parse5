@@ -188,9 +188,17 @@ export function causesExit(startTagToken: TagToken): boolean {
 }
 
 //Token adjustments
+function adjustTokenAttrLocation(token: TagToken, oldName: string, newName: string): void {
+    if (token.location?.attrs) {
+        token.location.attrs[newName] = token.location.attrs[oldName];
+        delete token.location.attrs[oldName];
+    }
+}
+
 export function adjustTokenMathMLAttrs(token: TagToken): void {
     for (let i = 0; i < token.attrs.length; i++) {
         if (token.attrs[i].name === DEFINITION_URL_ATTR) {
+            adjustTokenAttrLocation(token, DEFINITION_URL_ATTR, ADJUSTED_DEFINITION_URL_ATTR);
             token.attrs[i].name = ADJUSTED_DEFINITION_URL_ATTR;
             break;
         }
@@ -202,6 +210,7 @@ export function adjustTokenSVGAttrs(token: TagToken): void {
         const adjustedAttrName = SVG_ATTRS_ADJUSTMENT_MAP.get(token.attrs[i].name);
 
         if (adjustedAttrName != null) {
+            adjustTokenAttrLocation(token, token.attrs[i].name, adjustedAttrName);
             token.attrs[i].name = adjustedAttrName;
         }
     }
@@ -212,6 +221,7 @@ export function adjustTokenXMLAttrs(token: TagToken): void {
         const adjustedAttrEntry = XML_ATTRS_ADJUSTMENT_MAP.get(token.attrs[i].name);
 
         if (adjustedAttrEntry) {
+            adjustTokenAttrLocation(token, token.attrs[i].name, adjustedAttrEntry.name);
             token.attrs[i].prefix = adjustedAttrEntry.prefix;
             token.attrs[i].name = adjustedAttrEntry.name;
             token.attrs[i].namespace = adjustedAttrEntry.namespace;
