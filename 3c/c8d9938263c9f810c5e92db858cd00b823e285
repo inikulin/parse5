@@ -1,0 +1,22 @@
+packages/parse5/lib/parser/index.test.ts
+  s_6bbbbbc7cea8e7::t_e080623efce0cf 109-116
+packages/parse5/lib/parser/index.ts
+  s_6bbbbbc7cea8e7::t_394373f280e45b 3757-3764
+  s_6bbbbbc7cea8e7::t_754e7f9a30b7b4 351
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3cc8d9938263c9f810c5e92db858cd00b823e285",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
