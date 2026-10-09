@@ -12,7 +12,7 @@ interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile
     dirName: string;
 }
 
-function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
+export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
     dataDir: URL,
     treeAdapter: TreeAdapter<T>,
 ): TreeConstructionTestData<T>[] {
