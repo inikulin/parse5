@@ -112,10 +112,9 @@ describe('parser', () => {
         assert.strictEqual(bodyText('&#13;A'), 'A');
     });
 
-    it('Regression - foreign end tag must not close an HTML element with a colliding tag id', () => {
-        // `<svg desc>` is a foreign element whose lowercase name collides with the HTML
-        // `desc` tag id. The "any other end tag" rule in body requires an HTML element,
-        // so `</desc>` must be ignored and the open `<b>` must stay open and collect "y".
+    // TODO: upstream to html5lib-tests
+    it('end tag in body must not match a foreign element with the same tag ID', () => {
+        // `<svg desc>` is foreign, so `</desc>` must not close the open `<b>`.
         const document = parse('<svg><desc><b>x</desc>y');
 
         const html = document.childNodes[0] as Element;
