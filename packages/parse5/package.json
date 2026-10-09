@@ -49,5 +49,9 @@
     "files": [
         "dist/**/*.js",
         "dist/**/*.d.ts"
-    ]
+    ],
+    "devDependencies": {
+        "parse5-htmlparser2-tree-adapter": "^8.0.0",
+        "parse5-test-utils": "1.0.0"
+    }
 }
