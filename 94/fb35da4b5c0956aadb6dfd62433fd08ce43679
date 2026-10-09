@@ -1,0 +1,31 @@
+package-lock.json
+  s_28f3947d856a75::t_f9f29808042035 3450-3453,3466-3468,3490-3492,3504-3506,3517-3519,5137-5139,5155-5156,5169-5170,5177-5178,5184-5185
+packages/parse5-html-rewriting-stream/package.json
+  s_28f3947d856a75::t_5c279123b05db0 45-48
+packages/parse5-parser-stream/package.json
+  s_28f3947d856a75::t_ab5062ab80af9e 41-44
+packages/parse5-plain-text-conversion-stream/package.json
+  s_28f3947d856a75::t_de48c50807753b 44-47
+packages/parse5-sax-parser/package.json
+  s_28f3947d856a75::t_895532c0fe3bc8 41-44
+packages/parse5/package.json
+  s_28f3947d856a75::t_03f24ad9209e08 52-56
+test/utils/generate-parsing-tests.ts
+  s_28f3947d856a75::t_8a15c95a3d3099 9,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "94fb35da4b5c0956aadb6dfd62433fd08ce43679",
+  "prompts": {},
+  "sessions": {
+    "s_28f3947d856a75": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fff2019e-fcb5-4514-8643-0c980b1d99d0",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
