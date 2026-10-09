@@ -18,11 +18,12 @@ jobs:
     lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   submodules: recursive
+                  persist-credentials: false
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v6.3.0
+              uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
               with:
                   node-version: lts/*
                   cache: npm
@@ -46,27 +47,31 @@ jobs:
                     - lts/*
 
         steps:
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   submodules: recursive
+                  persist-credentials: false
             - name: Use Node.js ${{ matrix.node }}
-              uses: actions/setup-node@v6.3.0
+              uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
               with:
                   node-version: ${{ matrix.node }}
                   cache: npm
             - run: npm ci
             - run: npm run build --if-present
 
+            - name: Run smoke tests
+              run: node scripts/smoke-test.js
+
             - name: Run unit tests
               run: npm run unit-tests
-              if: matrix.node != env.NODE_COV
+              if: matrix.node != env.NODE_COV && matrix.node != 18
 
             - name: Run unit tests with coverage
               run: npm run unit-tests-coverage
               if: matrix.node == env.NODE_COV
 
             - name: Run Coveralls
-              uses: coverallsapp/github-action@v2.3.7
+              uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
               if: matrix.node == env.NODE_COV
               continue-on-error: true
               with:

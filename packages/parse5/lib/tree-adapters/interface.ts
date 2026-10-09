@@ -25,6 +25,18 @@ export interface TreeAdapterTypeMap<
     documentType: DocumentType;
 }
 
+/** Parser state needed to establish a form-associated element's parser-established form owner. */
+export interface ElementCreationContext<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> {
+    /** The target parent from the appropriate place for inserting a node. */
+    intendedParent: T['parentNode'];
+
+    /** The element referenced by the parser's form element pointer, if any. */
+    formElement: T['element'] | null;
+
+    /** Whether the stack of open elements contains an HTML `template` element. */
+    isInTemplate: boolean;
+}
+
 /**
  * Tree adapter is a set of utility functions that provides minimal required abstraction layer beetween parser and a specific AST format.
  * Note that `TreeAdapter` is not designed to be a general purpose AST manipulation library. You can build such library
@@ -286,6 +298,15 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * @param contentElement -  Content element.
      */
     setTemplateContent(templateElement: T['template'], contentElement: T['documentFragment']): void;
+
+    /**
+     * Optional callback invoked after an element is created from a token and before it is inserted. This exposes the
+     * parser state needed to establish a form-associated element's parser-established form owner.
+     *
+     * @param element The created element.
+     * @param context Relevant parser state at the time of creation.
+     */
+    onElementCreated?: (element: T['element'], context: ElementCreationContext<T>) => void;
 
     /**
      * Optional callback for elements being pushed to the stack of open elements.

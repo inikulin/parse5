@@ -140,7 +140,9 @@ function toAsciiLower(cp: number): number {
 }
 
 function isWhitespace(cp: number): boolean {
-    return cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED;
+    return (
+        cp === $.SPACE || cp === $.LINE_FEED || cp === $.TABULATION || cp === $.FORM_FEED || cp === $.CARRIAGE_RETURN
+    );
 }
 
 function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {

@@ -2,6 +2,7 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "rootDir": "utils",
+        "types": ["node"],
         "outDir": "dist"
     },
     "include": ["**/*.ts"],
