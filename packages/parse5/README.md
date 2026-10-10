@@ -19,6 +19,20 @@
   📖 <a href="https://parse5.js.org/modules/parse5.html"><b>Documentation</b></a> 📖
 </p>
 
+## Usage
+
+Parse HTML into a document tree and serialize it back to HTML.
+
+Save the following as an `.mjs` file and run it with Node.js.
+
+```js
+import { parse, serialize } from 'parse5';
+
+const document = parse('<p>Hello, world!</p>');
+console.log(serialize(document));
+// <html><head></head><body><p>Hello, world!</p></body></html>
+```
+
 ---
 
 <p align="center">
