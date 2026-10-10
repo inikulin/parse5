@@ -23,8 +23,6 @@
 
 Parse HTML into a document tree and serialize it back to HTML.
 
-Save the following as an `.mjs` file and run it with Node.js.
-
 ```js
 import { parse, serialize } from 'parse5';
 
