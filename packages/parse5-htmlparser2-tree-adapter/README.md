@@ -19,6 +19,21 @@
   📖 <a href="https://parse5.js.org/modules/parse5-htmlparser2-tree-adapter.html"><b>Documentation</b></a> 📖
 </p>
 
+## Usage
+
+Parse an HTML fragment into [htmlparser2](https://github.com/fb55/htmlparser2)-compatible
+nodes using `parse5` (`npm install parse5`).
+
+Save the following as an `.mjs` file and run it with Node.js.
+
+```js
+import { parseFragment } from 'parse5';
+import { adapter } from 'parse5-htmlparser2-tree-adapter';
+
+const fragment = parseFragment('<p>Hello, world!</p>', { treeAdapter: adapter });
+console.log(fragment.children[0].name); // p
+```
+
 ---
 
 <p align="center">
