@@ -1,5 +1,5 @@
 import { it, assert, describe } from 'vitest';
-import { Tokenizer } from 'parse5';
+import { Tokenizer, type Token } from 'parse5';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 
 const dataPath = new URL('../../../../test/data/html5lib-tests/tokenizer', import.meta.url);
@@ -14,6 +14,42 @@ function noop(): void {
 }
 
 describe('Tokenizer methods', () => {
+    it('keeps flushed CDATA character ranges ordered across a character-group boundary', () => {
+        const tokens: Token.CharacterToken[] = [];
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onCharacter: (token): void => {
+                tokens.push(token);
+            },
+            onWhitespaceCharacter: (token): void => {
+                tokens.push(token);
+            },
+            onNullCharacter: noop,
+            onComment: noop,
+            onDoctype: noop,
+            onStartTag: noop,
+            onEndTag: noop,
+            onEof: noop,
+        });
+        tokenizer.inForeignNode = true;
+        tokenizer.preprocessor.bufferWaterline = 8;
+        tokenizer.write('<![CDATA[ ]]]', false);
+        tokenizer.flushCharacters();
+        assert.deepEqual(
+            tokens.map(({ chars, location }) => ({ chars, location })),
+            [
+                {
+                    chars: ' ',
+                    location: { startLine: 1, startCol: 1, startOffset: 0, endLine: 1, endCol: 11, endOffset: 10 },
+                },
+                {
+                    chars: ']',
+                    location: { startLine: 1, startCol: 11, startOffset: 10, endLine: 1, endCol: 12, endOffset: 11 },
+                },
+            ],
+        );
+        tokenizer.write('>', true);
+    });
+
     it('should pause and resume', () => {
         let count = 0;
         const tokenizer = new Tokenizer(tokenizerOpts, {
