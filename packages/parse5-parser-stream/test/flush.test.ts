@@ -113,13 +113,14 @@ generateTestsForEachTreeAdapter('flushCharacters', (treeAdapter) => {
 });
 
 describe('flushCharacters', () => {
-    for (const [trailingText, unfinished, remainder, endLine, endCol] of [
+    it.each([
         ['𝄞', '', '', 1, 65_546],
         ['𝄞abc', '', '', 1, 65_549],
         ['\n𝄞', '<b title="\n&am', 'p;">next</b>', 2, 3],
         ['\r\n𝄞', '&am', 'p;', 2, 3],
-    ] as const) {
-        it(`preserves flushed locations after buffer compaction: ${JSON.stringify(trailingText + unfinished)}`, () => {
+    ] as const)(
+        'preserves flushed locations after buffer compaction: %j, %j',
+        (trailingText, unfinished, remainder, endLine, endCol) => {
             const stream = new ParserStream({ sourceCodeLocationInfo: true });
             // Exceed the default buffer waterline before the surrogate pair.
             const sourceText = ' '.repeat(65_537) + trailingText;
@@ -140,52 +141,46 @@ describe('flushCharacters', () => {
             });
             stream.end(remainder);
             assert.deepEqual(stream.document, parse(input + remainder, { sourceCodeLocationInfo: true }));
-        });
-    }
+        },
+    );
 
-    it('excludes unfinished markup from flushed text locations', () => {
-        for (const suffix of [
-            '<',
-            '</',
-            '<!',
-            '<!--comment',
-            '<?comment',
-            '<!DOCTYPE',
-            '<!DOCTYPE \n',
-            '<!DOCTYPE html PUBLIC "identifier',
-            '<b',
-            '<b ',
-            '<b attr',
-            '<b attr=',
-            '<b attr="value',
-            '<b attr="value" /',
-            '<b\nattr="\n&am',
-            '&am',
-        ]) {
-            const stream = new ParserStream({ sourceCodeLocationInfo: true });
-            stream.write(`<body>hello${suffix}`);
-            stream.flushCharacters();
-            const html = stream.document.childNodes[0] as DefaultTreeAdapterMap['element'];
-            const body = html.childNodes[1] as DefaultTreeAdapterMap['element'];
-            const text = body.childNodes[0] as DefaultTreeAdapterMap['textNode'];
-            assert.equal(text.value, 'hello', suffix);
-            assert.deepEqual(
-                text.sourceCodeLocation,
-                {
-                    startLine: 1,
-                    startCol: 7,
-                    startOffset: 6,
-                    endLine: 1,
-                    endCol: 12,
-                    endOffset: 11,
-                },
-                suffix,
-            );
-            stream.end();
-        }
+    it.each([
+        '<',
+        '</',
+        '<!',
+        '<!--comment',
+        '<?comment',
+        '<!DOCTYPE',
+        '<!DOCTYPE \n',
+        '<!DOCTYPE html PUBLIC "identifier',
+        '<b',
+        '<b ',
+        '<b attr',
+        '<b attr=',
+        '<b attr="value',
+        '<b attr="value" /',
+        '<b\nattr="\n&am',
+        '&am',
+    ])('excludes unfinished markup from flushed text locations: %j', (suffix) => {
+        const stream = new ParserStream({ sourceCodeLocationInfo: true });
+        stream.write(`<body>hello${suffix}`);
+        stream.flushCharacters();
+        const html = stream.document.childNodes[0] as DefaultTreeAdapterMap['element'];
+        const body = html.childNodes[1] as DefaultTreeAdapterMap['element'];
+        const text = body.childNodes[0] as DefaultTreeAdapterMap['textNode'];
+        assert.equal(text.value, 'hello');
+        assert.deepEqual(text.sourceCodeLocation, {
+            startLine: 1,
+            startCol: 7,
+            startOffset: 6,
+            endLine: 1,
+            endCol: 12,
+            endOffset: 11,
+        });
+        stream.end();
     });
 
-    for (const [input, text, endOffset, endLine, endCol] of [
+    it.each([
         ['<body>hello', 'hello', 11, 1, 12],
         ['<body>hello<b title="', 'hello', 11, 1, 12],
         ['<body>hello&not', 'hello', 11, 1, 12],
@@ -197,8 +192,9 @@ describe('flushCharacters', () => {
         ['<body><svg><![CDATA[ ]]]', ' ]', 22, 1, 23],
         ['<body><svg><![CDATA[\n]]]', '\n]', 22, 2, 2],
         ['<body><script><!--a<<', '<!--a<', 20, 1, 21],
-    ] as const) {
-        it(`reports the location of flushed text before the remaining input: ${JSON.stringify(input)}`, () => {
+    ] as const)(
+        'reports the location of flushed text before the remaining input: %j',
+        (input, text, endOffset, endLine, endCol) => {
             const stream = new ParserStream({ sourceCodeLocationInfo: true });
             stream.write(input);
             stream.flushCharacters();
@@ -211,8 +207,8 @@ describe('flushCharacters', () => {
             assert.equal(textNode.sourceCodeLocation!.endLine, endLine);
             assert.equal(textNode.sourceCodeLocation!.endCol, endCol);
             stream.end();
-        });
-    }
+        },
+    );
 
     it('does not extend flushed text through subsequently ignored CDATA delimiters', () => {
         const stream = new ParserStream({ sourceCodeLocationInfo: true });
@@ -250,7 +246,30 @@ describe('flushCharacters', () => {
         stream.end('</pre>');
     });
 
-    for (const input of [
+    it.each(['pre', 'textarea', 'listing'])('excludes an ignored split CRLF from text in <%s>', (tagName) => {
+        const stream = new ParserStream({ sourceCodeLocationInfo: true });
+        const prefix = `<${tagName}>\r`;
+        stream.write(prefix);
+        stream.flushCharacters();
+        stream.write('\nA');
+        stream.flushCharacters();
+        const html = stream.document.childNodes[0] as DefaultTreeAdapterMap['element'];
+        const body = html.childNodes[1] as DefaultTreeAdapterMap['element'];
+        const element = body.childNodes[0] as DefaultTreeAdapterMap['element'];
+        const text = element.childNodes[0] as DefaultTreeAdapterMap['textNode'];
+        assert.equal(text.value, 'A');
+        assert.deepEqual(text.sourceCodeLocation, {
+            startLine: 2,
+            startCol: 1,
+            startOffset: prefix.length + 1,
+            endLine: 2,
+            endCol: 2,
+            endOffset: prefix.length + 2,
+        });
+        stream.end(`</${tagName}>`);
+    });
+
+    it.each([
         '<body>hello world',
         '<body>a<b title="value">b</b>c',
         '<body>hello<b title="a&notin;\nx" id=b>world',
@@ -258,6 +277,9 @@ describe('flushCharacters', () => {
         '<body>a&notin;b&#13;c',
         '<body>a\u0000b',
         '<body>a\r\nb\nc\rd',
+        '<pre>\r\nA</pre>',
+        '<textarea>\r\nA</textarea>',
+        '<listing>\r\nA</listing>',
         '<body>𝄞x𝄞',
         '<body> <𝄞x𝄞',
         '<textarea>a&lt;b</textarea>c',
@@ -266,15 +288,13 @@ describe('flushCharacters', () => {
         '<body><plaintext>a<b&notin;',
         '<body><svg><![CDATA[a]]]]>b</svg>c',
         '<body>a<1b</>c',
-    ]) {
-        it(`preserves the tree and locations across single-code-unit writes: ${JSON.stringify(input)}`, () => {
-            const stream = new ParserStream({ sourceCodeLocationInfo: true });
-            for (let i = 0; i < input.length; i++) {
-                stream.write(input[i]);
-                stream.flushCharacters();
-            }
-            stream.end();
-            assert.deepEqual(stream.document, parse(input, { sourceCodeLocationInfo: true }));
-        });
-    }
+    ])('preserves the tree and locations across single-code-unit writes: %j', (input) => {
+        const stream = new ParserStream({ sourceCodeLocationInfo: true });
+        for (let i = 0; i < input.length; i++) {
+            stream.write(input[i]);
+            stream.flushCharacters();
+        }
+        stream.end();
+        assert.deepEqual(stream.document, parse(input, { sourceCodeLocationInfo: true }));
+    });
 });

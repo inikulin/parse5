@@ -311,9 +311,7 @@ export class Tokenizer {
         if (location) {
             const start = location.startOffset - this.preprocessor.droppedBufferSize;
             const end = this.getCharacterTokenEndOffset() - this.preprocessor.droppedBufferSize;
-            // A CR at the end of the previous flush already advanced the line; its following LF is ignored.
-            const skipLF = this.preprocessor.html[start] === '\n' && this.preprocessor.html[start - 1] === '\r';
-            const lines = this.preprocessor.html.slice(start + Number(skipLF), end).split(/\r\n|[\r\n]/);
+            const lines = this.preprocessor.html.slice(start, end).split(/\r\n|[\r\n]/);
             nextLocation = {
                 startLine: location.startLine + lines.length - 1,
                 startCol: lines.length === 1 ? location.startCol + lines[0].length : lines[lines.length - 1].length + 1,
@@ -499,6 +497,13 @@ export class Tokenizer {
     }
 
     protected _createCharacterToken(type: CharacterToken['type'], chars: string): void {
+        if (this.currentLocation) {
+            const start = this.currentLocation.startOffset - this.preprocessor.droppedBufferSize;
+            // A flushed CR already advanced the line; exclude its ignored LF from the next token's range.
+            if (this.preprocessor.html[start] === '\n' && this.preprocessor.html[start - 1] === '\r') {
+                this.currentLocation.startOffset++;
+            }
+        }
         this.currentCharacterToken = {
             type,
             chars,
