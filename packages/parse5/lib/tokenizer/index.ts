@@ -309,17 +309,7 @@ export class Tokenizer {
         const location = this.currentCharacterToken?.location;
         let nextLocation: Location | null = null;
         if (location) {
-            const start = location.startOffset - this.preprocessor.droppedBufferSize;
-            const end = this.getCharacterTokenEndOffset() - this.preprocessor.droppedBufferSize;
-            const lines = this.preprocessor.html.slice(start, end).split(/\r\n|[\r\n]/);
-            nextLocation = {
-                startLine: location.startLine + lines.length - 1,
-                startCol: lines.length === 1 ? location.startCol + lines[0].length : lines[lines.length - 1].length + 1,
-                startOffset: this.preprocessor.droppedBufferSize + end,
-                endLine: -1,
-                endCol: -1,
-                endOffset: -1,
-            };
+            nextLocation = this.getCharacterTokenEndLocation(location);
             this.currentLocation = nextLocation;
         }
         this.inLoop = true;
@@ -329,6 +319,35 @@ export class Tokenizer {
             this.inLoop = false;
         }
         this._runParsingLoop();
+    }
+
+    private getCharacterTokenEndLocation(location: Location): Location {
+        const endOffset = this.getCharacterTokenEndOffset();
+        const html = this.preprocessor.html.slice(
+            location.startOffset - this.preprocessor.droppedBufferSize,
+            endOffset - this.preprocessor.droppedBufferSize,
+        );
+        let line = location.startLine;
+        let lastLineBreak = -1;
+        for (let i = html.indexOf('\n'); i !== -1; i = html.indexOf('\n', i + 1)) {
+            line++;
+            lastLineBreak = i;
+        }
+        for (let i = html.indexOf('\r'); i !== -1; i = html.indexOf('\r', i + 1)) {
+            // Count CRLF as one line break by counting its LF only.
+            if (html.charCodeAt(i + 1) !== $.LINE_FEED) {
+                line++;
+                lastLineBreak = Math.max(lastLineBreak, i);
+            }
+        }
+        return {
+            startLine: line,
+            startCol: lastLineBreak === -1 ? location.startCol + html.length : html.length - lastLineBreak,
+            startOffset: endOffset,
+            endLine: -1,
+            endCol: -1,
+            endOffset: -1,
+        };
     }
 
     // Return the input boundary before any unfinished token or buffered delimiter.

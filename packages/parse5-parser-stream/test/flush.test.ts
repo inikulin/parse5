@@ -188,6 +188,8 @@ describe('flushCharacters', () => {
         ['<body> 𝄞', ' 𝄞', 9, 1, 10],
         ['<body> <𝄞', ' <𝄞', 10, 1, 11],
         ['<body>hello\r\n', 'hello\n', 13, 2, 1],
+        ['<body> \n \r \r\n ', ' \n \n \n ', 14, 4, 2],
+        ['<body> \r \n \r ', ' \n \n \n ', 13, 4, 2],
         ['<body><svg><![CDATA[a]]]', 'a]', 22, 1, 23],
         ['<body><svg><![CDATA[ ]]]', ' ]', 22, 1, 23],
         ['<body><svg><![CDATA[\n]]]', '\n]', 22, 2, 2],
