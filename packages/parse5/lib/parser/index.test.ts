@@ -2,6 +2,7 @@ import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest'
 import {
     parseFragment,
     parse,
+    InsertionMode,
     type ElementCreationContext,
     type TreeAdapter,
     type DefaultTreeAdapterMap,
@@ -112,6 +113,23 @@ describe('parser', () => {
         assert.strictEqual(bodyText('&#13;A'), 'A');
     });
 
+    // TODO: upstream to html5lib-tests
+    it('end tag in body must not match a foreign element with the same tag ID', () => {
+        // `<svg desc>` is foreign, so `</desc>` must not close the open `<b>`.
+        const document = parse('<svg><desc><b>x</desc>y');
+
+        const html = document.childNodes[0] as Element;
+        const body = html.childNodes[1] as Element;
+        const svg = body.childNodes[0] as Element;
+        const desc = svg.childNodes[0] as Element;
+        const b = desc.childNodes[0] as Element;
+
+        expect(b.nodeName).toBe('b');
+        expect(b.childNodes).toHaveLength(1);
+        expect(b.childNodes[0].nodeName).toBe('#text');
+        expect((b.childNodes[0] as TextNode).value).toBe('xy');
+    });
+
     describe('Tree adapters', () => {
         it('should provide element creation context', () => {
             const contexts = new Map<string, ElementCreationContext<DefaultTreeAdapterMap>>();
@@ -215,5 +233,14 @@ describe('parser', () => {
             expect(b.childNodes[0].nodeName).toBe('#text');
             expect((b.childNodes[0] as TextNode).value).toBe('should be outside');
         });
+    });
+});
+
+describe('InsertionMode', () => {
+    it('should be exported and have stable numeric values', () => {
+        assert.strictEqual(InsertionMode.INITIAL, 0);
+        assert.strictEqual(InsertionMode.BEFORE_HTML, 1);
+        assert.strictEqual(InsertionMode.IN_BODY, 6);
+        assert.strictEqual(InsertionMode.AFTER_AFTER_FRAMESET, 22);
     });
 });

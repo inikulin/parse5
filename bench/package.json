@@ -8,7 +8,10 @@
     "license": "MIT",
     "dependencies": {
         "benchmark": "^2.1.4",
-        "human-format": "^1.2.1",
+        "human-format": "^1.4.0",
         "parse5": "npm:parse5"
+    },
+    "devDependencies": {
+        "parse5-test-utils": "1.0.0"
     }
 }

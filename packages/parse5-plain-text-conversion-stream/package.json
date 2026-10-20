@@ -41,5 +41,8 @@
     "files": [
         "dist/**/*.js",
         "dist/**/*.d.ts"
-    ]
+    ],
+    "devDependencies": {
+        "parse5-test-utils": "1.0.0"
+    }
 }
