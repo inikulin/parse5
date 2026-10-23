@@ -587,13 +587,19 @@ export class Tokenizer {
         }
     }
 
-    /** Append the pending run and `text` to the attribute value or character token being built. */
+    /**
+     * Append the pending run and `text` to the attribute value or character token being built. The run is a
+     * string of its own: V8 copies a slice of fewer than 13 characters but lets a longer one share the input's
+     * buffer, which would keep that buffer alive for as long as any attribute value or text cut from it is; a
+     * concatenation is flattened into a buffer of its own when it is sliced.
+     */
     protected _flushRun(text: string): void {
         if (this.runEnd === this.runStart && text.length === 0) {
             return;
         }
 
-        const run = this.preprocessor.html.slice(this.runStart, this.runEnd) + text;
+        const slice = this.preprocessor.html.slice(this.runStart, this.runEnd);
+        const run = (slice.length < 13 ? slice : ` ${slice}`.slice(1)) + text;
         const token = this.currentToken;
 
         this.runStart = this.runEnd;

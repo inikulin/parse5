@@ -129,6 +129,41 @@ describe('Tokenizer methods', () => {
         assert.deepStrictEqual(comments, ['ghi']);
     });
 
+    it('should keep lookahead text before a surrogate pair in the same run', () => {
+        // Lookahead text followed by a surrogate pair must not split the run of either token.
+        class CountingTokenizer extends Tokenizer {
+            public runs = 0;
+
+            protected override _flushRun(text: string): void {
+                if (this.runEnd > this.runStart) {
+                    this.runs++;
+                }
+                super._flushRun(text);
+            }
+        }
+        const pair = '\uD83D\uDE00';
+        let chars = '';
+        const tokenizer = new CountingTokenizer(tokenizerOpts, {
+            onStartTag(t): void {
+                if (t.tagName === 'textarea') tokenizer.state = TokenizerMode.RCDATA;
+            },
+            onCharacter(t): void {
+                chars += t.chars;
+            },
+            onComment: noop,
+            onDoctype: noop,
+            onEndTag: noop,
+            onEof: noop,
+            onNullCharacter: noop,
+            onWhitespaceCharacter: noop,
+        });
+
+        tokenizer.write(`<textarea>${`<${pair}`.repeat(1000)}</textarea>`, true);
+
+        assert.strictEqual(chars, `<${pair}`.repeat(1000));
+        assert.strictEqual(tokenizer.runs, 1);
+    });
+
     // TODO: upstream the whole-input expectations to html5lib-tests
     it('should tokenize transformed input the same in any chunking', () => {
         // Every way the emitted text differs from the input, and the text emitted after looking ahead.
