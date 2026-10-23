@@ -225,7 +225,7 @@ export class Tokenizer {
     protected currentAttr: Attribute = { name: '', value: '' };
     private currentAttrLocation: Location | null = null;
     /**
-     * `[start, end)` of `preprocessor.html` still to be appended to the attribute value or character
+     * `[start, end)` of `preprocessor.html` still to be appended to the attribute value, comment data or character
      * token being built (`_flushRun`): input that is used as is is appended as one slice, not a code point at a time.
      */
     protected runStart = 0;
@@ -588,10 +588,10 @@ export class Tokenizer {
     }
 
     /**
-     * Append the pending run and `text` to the attribute value or character token being built. The run is a
-     * string of its own: V8 copies a slice of fewer than 13 characters but lets a longer one share the input's
-     * buffer, which would keep that buffer alive for as long as any attribute value or text cut from it is; a
-     * concatenation is flattened into a buffer of its own when it is sliced.
+     * Append the pending run and `text` to the attribute value, comment data or character token being built.
+     * The run is a string of its own: V8 copies a slice of fewer than 13 characters but lets a longer one share
+     * the input's buffer, which would keep that buffer alive for as long as any attribute value or text cut from
+     * it is; a concatenation is flattened into a buffer of its own when it is sliced.
      */
     protected _flushRun(text: string): void {
         if (this.runEnd === this.runStart && text.length === 0) {
@@ -606,6 +606,8 @@ export class Tokenizer {
 
         if (token === null) {
             (this.currentCharacterToken as CharacterToken).chars += run;
+        } else if (token.type === TokenType.COMMENT) {
+            token.data += run;
         } else {
             this.currentAttr.value += run;
         }
@@ -2146,11 +2148,11 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                token.data += REPLACEMENT_CHARACTER;
+                this._extendRunWith(REPLACEMENT_CHARACTER, 0);
                 break;
             }
             default: {
-                token.data += String.fromCodePoint(cp);
+                this._extendRun(cp);
             }
         }
     }
@@ -2230,7 +2232,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '-';
+                this._extendRunWith('-', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2248,13 +2250,13 @@ export class Tokenizer {
                 break;
             }
             case $.LESS_THAN_SIGN: {
-                token.data += '<';
+                this._extendRunWith('<', 0);
                 this.state = State.COMMENT_LESS_THAN_SIGN;
                 break;
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                token.data += REPLACEMENT_CHARACTER;
+                this._extendRunWith(REPLACEMENT_CHARACTER, 0);
                 break;
             }
             case $.EOF: {
@@ -2264,7 +2266,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += String.fromCodePoint(cp);
+                this._extendRun(cp);
             }
         }
     }
@@ -2272,16 +2274,14 @@ export class Tokenizer {
     // Comment less-than sign state
     //------------------------------------------------------------------
     protected _stateCommentLessThanSign(cp: number): void {
-        const token = this.currentToken as CommentToken;
-
         switch (cp) {
             case $.EXCLAMATION_MARK: {
-                token.data += '!';
+                this._extendRunWith('!', 0);
                 this.state = State.COMMENT_LESS_THAN_SIGN_BANG;
                 break;
             }
             case $.LESS_THAN_SIGN: {
-                token.data += '<';
+                this._extendRunWith('<', 0);
                 break;
             }
             default: {
@@ -2340,7 +2340,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '-';
+                this._extendRunWith('-', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2363,7 +2363,7 @@ export class Tokenizer {
                 break;
             }
             case $.HYPHEN_MINUS: {
-                token.data += '-';
+                this._extendRunWith('-', -2);
                 break;
             }
             case $.EOF: {
@@ -2373,7 +2373,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '--';
+                this._extendRunWith('--', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2387,7 +2387,7 @@ export class Tokenizer {
 
         switch (cp) {
             case $.HYPHEN_MINUS: {
-                token.data += '--!';
+                this._extendRunWith('--!', -1);
                 this.state = State.COMMENT_END_DASH;
                 break;
             }
@@ -2404,7 +2404,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '--!';
+                this._extendRunWith('--!', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }

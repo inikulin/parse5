@@ -56,9 +56,10 @@ function chunked(input: string, size: number): string[] {
 
 describe('Tokenizer methods', () => {
     // TODO: upstream to html5lib-tests
-    it('should keep long attribute values and character runs exact', () => {
+    it('should keep long attribute values, character runs and comments exact', () => {
         const long = 'x'.repeat(40_000);
         const values: string[] = [];
+        const comments: string[] = [];
         let chars = '';
         const tokenizer = new Tokenizer(tokenizerOpts, {
             onStartTag(t): void {
@@ -67,7 +68,9 @@ describe('Tokenizer methods', () => {
             onCharacter(t): void {
                 chars += t.chars;
             },
-            onComment: noop,
+            onComment(t): void {
+                comments.push(t.data);
+            },
             onDoctype: noop,
             onEndTag: noop,
             onEof: noop,
@@ -77,10 +80,12 @@ describe('Tokenizer methods', () => {
 
         tokenizer.write(`<p title="${long}&am`, false);
         tokenizer.write(`p;${long}" id=${long} id=${long}discarded end=ok>${long}&l`, false);
-        tokenizer.write(`t;${long}</p>`, true);
+        tokenizer.write(`t;${long}</p><!--${long}-`, false);
+        tokenizer.write(`-${long}--><?${long}>`, true);
 
         assert.deepStrictEqual(values, [`${long}&${long}`, long, 'ok']);
         assert.strictEqual(chars, `${long}<${long}`);
+        assert.deepStrictEqual(comments, [`${long}--${long}`, `?${long}`]);
     });
 
     // TODO: upstream to html5lib-tests
@@ -142,6 +147,7 @@ describe('Tokenizer methods', () => {
             }
         }
         const pair = '\uD83D\uDE00';
+        const comments: string[] = [];
         let chars = '';
         const tokenizer = new CountingTokenizer(tokenizerOpts, {
             onStartTag(t): void {
@@ -150,7 +156,9 @@ describe('Tokenizer methods', () => {
             onCharacter(t): void {
                 chars += t.chars;
             },
-            onComment: noop,
+            onComment(t): void {
+                comments.push(t.data);
+            },
             onDoctype: noop,
             onEndTag: noop,
             onEof: noop,
@@ -158,10 +166,11 @@ describe('Tokenizer methods', () => {
             onWhitespaceCharacter: noop,
         });
 
-        tokenizer.write(`<textarea>${`<${pair}`.repeat(1000)}</textarea>`, true);
+        tokenizer.write(`<!--${`-${pair}`.repeat(1000)}--><textarea>${`<${pair}`.repeat(1000)}</textarea>`, true);
 
+        assert.deepStrictEqual(comments, [`-${pair}`.repeat(1000)]);
         assert.strictEqual(chars, `<${pair}`.repeat(1000));
-        assert.strictEqual(tokenizer.runs, 1);
+        assert.strictEqual(tokenizer.runs, 2);
     });
 
     // TODO: upstream the whole-input expectations to html5lib-tests
@@ -172,7 +181,9 @@ describe('Tokenizer methods', () => {
             '<p title="a\r\nb\rc\u0000d&amp;e&bogus;f&#x3b;g\uD83D\uDE00h&#x1F600;" x=a&b\r\nc\u0000d>',
             '<textarea>a<b</c>d</textarea><script>a<!--b<!x</scr>c-d--e-->f</script><!--c\u0000d-->',
             '<![CDATA[a]b]]c]]]]>d',
-            '<textarea>a<\uD83D\uDE00</\uD83D\uDE00b</textarea><script>c<!--d-\uD83D\uDE00--\uD83D\uDE00</\uD83D\uDE00-->e</script>',
+            '<!--a-b--c---d<!e<<!--f--!-g--!h\r\ni\u0000j-->k<?l\r\nm\u0000n>o<!--p--!>q<!-->r<!--->s',
+            '<!--t-\uD83D\uDE00--\uD83D\uDE00<!\uD83D\uDE00--!\uD83D\uDE00-->u<textarea>a<\uD83D\uDE00</\uD83D\uDE00b</textarea>',
+            '<script>c<!--d-\uD83D\uDE00--\uD83D\uDE00</\uD83D\uDE00-->e</script><!--eof',
         ].join('');
         const whole = tokenize([input], true);
 
@@ -197,12 +208,25 @@ describe('Tokenizer methods', () => {
             '</script>',
             '#c\uFFFDd',
             'c:a]b]]c]]d',
+            '#a-b--c---d<!e<<!--f--!-g--!h\ni\uFFFDj',
+            'c:k',
+            '#?l\nm\uFFFDn',
+            'c:o',
+            '#p',
+            'c:q',
+            '#',
+            'c:r',
+            '#',
+            'c:s',
+            '#t-\uD83D\uDE00--\uD83D\uDE00<!\uD83D\uDE00--!\uD83D\uDE00',
+            'c:u',
             '<textarea >',
             'c:a<\uD83D\uDE00</\uD83D\uDE00b',
             '</textarea>',
             '<script >',
             'c:c<!--d-\uD83D\uDE00--\uD83D\uDE00</\uD83D\uDE00-->e',
             '</script>',
+            '#eof',
         ]);
         for (const size of [1, 2, 3, 5, 7, 11, 64]) {
             assert.deepStrictEqual(tokenize(chunked(input, size), true), whole, `chunk size ${size}`);
