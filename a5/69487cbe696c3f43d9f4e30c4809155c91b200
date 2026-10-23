@@ -1,0 +1,55 @@
+packages/parse5/lib/parser/index.ts
+  s_6bbbbbc7cea8e7::t_2fb0d1ca390da9 3801-3804
+  s_6bbbbbc7cea8e7::t_72d040dc54f854 1480,1617-1628
+  s_6bbbbbc7cea8e7::t_eafb532a0c72e1 2646
+  s_6bbbbbc7cea8e7::t_e0c0edfa9c44c4 910,984,1345
+  s_6bbbbbc7cea8e7::t_754e7f9a30b7b4 365
+  s_6bbbbbc7cea8e7::t_b92e14990702c0 587-589,592-596,601
+  s_6bbbbbc7cea8e7::t_8e421dba65680d 3310
+  s_6bbbbbc7cea8e7::t_c7bd0fa9b8c001 749-753,826-827
+  s_6bbbbbc7cea8e7::t_394373f280e45b 3814-3821
+packages/parse5/lib/parser/open-element-stack.ts
+  s_6bbbbbc7cea8e7::t_70cee802d24889 273,281,299-301
+packages/parse5/lib/parser/index.test.ts
+  s_6bbbbbc7cea8e7::t_5bdade5c309c17 92
+  s_173ca9ea90a33e::t_5b392152173ee2 178-179,181-182,185
+  s_6bbbbbc7cea8e7::t_1dbe887244e768 86-91
+  s_6bbbbbc7cea8e7::t_ddcd821fd20387 102-110,112-117
+  s_6bbbbbc7cea8e7::t_3cf5cd02a823c2 60-84
+  s_6bbbbbc7cea8e7::t_1a0d2dbd5a3dc9 111
+  s_6bbbbbc7cea8e7::t_e080623efce0cf 119-125
+  s_6bbbbbc7cea8e7::t_548328348b6448 180,183-184,186-188
+  s_6bbbbbc7cea8e7::t_bcefcd8332a22a 196-206
+  s_6bbbbbc7cea8e7::t_5d65471f176baa 94-101
+  s_6bbbbbc7cea8e7::t_6d7aef2151d78f 161-177
+  s_6bbbbbc7cea8e7::t_197220d53f90f1 255-262
+  s_173ca9ea90a33e::t_a54a773eaee130 85,93,118,126
+packages/parse5/lib/common/html.ts
+  s_173ca9ea90a33e::t_33ccd7968aa6a6 530
+packages/parse5/lib/parser/parser-location-info.test.ts
+  s_173ca9ea90a33e::t_17c82cedb7ceb5 235-266
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a569487cbe696c3f43d9f4e30c4809155c91b200",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    },
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
