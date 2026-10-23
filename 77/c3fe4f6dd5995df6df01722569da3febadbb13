@@ -1,0 +1,27 @@
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_173ca9ea90a33e::t_31e1b81487ca5e 40-44,47
+packages/parse5/lib/tokenizer/index.test.ts
+  s_173ca9ea90a33e::t_e92cf39b2c948f 16-21,25-56,58-96,119-123
+  s_173ca9ea90a33e::t_cd82b7947d2330 2,22-24,97-118
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_43ff8a7f73a6e2 227-238,584,599-606,611-613,674-676,747,776
+  s_173ca9ea90a33e::t_22269886e403b9 253,582,586-596,598,615,745,748-752,754,760,762-771,775,813,816-817,841,844,850,852-853
+  s_173ca9ea90a33e::t_31e1b81487ca5e 530,543,548,583,585,597,607-610,632-633,677-678,730-731,734,736-739,742,753,777-778,780-783,790
+  s_173ca9ea90a33e::t_308d50cef40f0c 614,616,772-774,791,801,803-812,814-815,818-819,851,854-858,1998,2007,2026,2035,2064,2073,2082
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "77c3fe4f6dd5995df6df01722569da3febadbb13",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
