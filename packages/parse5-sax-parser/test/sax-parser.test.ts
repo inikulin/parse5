@@ -155,3 +155,84 @@ describe('SAX parser', () => {
         assert.strictEqual(foundText, true);
     });
 });
+
+it.each([
+    ['data', '', 'a'.repeat(16_384)],
+    ['style', '<style>', 'a'.repeat(16_384)],
+    ['script', '<script>', 'a'.repeat(16_384)],
+    ['textarea', '<textarea>', 'a'.repeat(16_384)],
+    ['plaintext', '<plaintext>', 'a'.repeat(16_384)],
+    ['chunks ending in a surrogate pair', '', `${'a'.repeat(16_382)}\u{1F600}`],
+])('flushes uninterrupted text before EOF: %s', async (_label, prefix, chunk) => {
+    const parser = new SAXParser({ sourceCodeLocationInfo: true });
+    const input = prefix + chunk.repeat(16);
+    let text = '';
+    let end = prefix.length;
+    parser.on('text', (token) => {
+        assert.equal(token.sourceCodeLocation!.startOffset, end);
+        end = token.sourceCodeLocation!.endOffset;
+        assert.equal(token.sourceCodeLocation!.endCol, end + 1);
+        text += token.text;
+    });
+    parser.write(prefix);
+    for (let i = 0; i < 16; i++) parser.write(chunk);
+    assert.isAtLeast(text.length, chunk.length * 12);
+    parser.end();
+    await finished(parser);
+    assert.equal(text, chunk.repeat(16));
+    assert.equal(end, input.length);
+});
+
+it.each([
+    ['a CDATA end delimiter', '<svg><![CDATA[', `${'a'.repeat(16_382)}]]`],
+    ['a character reference', '', `${'a'.repeat(16_380)}&not`],
+    ['a less-than sign in escaped script data', '<script><!--', `${'a'.repeat(16_383)}<`],
+    ['an ambiguous ampersand', '&q', 'a'.repeat(16_384)],
+])('flushes text before EOF when every chunk ends in %s', async (_label, prefix, chunk) => {
+    const parser = new SAXParser({ sourceCodeLocationInfo: true });
+    const input = prefix + chunk.repeat(16);
+    let length = 0;
+    let end = -1;
+    parser.on('text', ({ text, sourceCodeLocation }) => {
+        const { startOffset, endOffset, endCol } = sourceCodeLocation!;
+        if (end !== -1) assert.equal(startOffset, end);
+        // Each event covers exactly the source of its text, without the delimiter or reference that follows.
+        assert.equal(text, input.slice(startOffset, endOffset).replace('<![CDATA[', '').replaceAll('&not', '¬'));
+        assert.equal(endCol, endOffset + 1);
+        end = endOffset;
+        length += text.length;
+    });
+    parser.write(prefix);
+    for (let i = 0; i < 16; i++) parser.write(chunk);
+    assert.isAtLeast(length, chunk.length * 12);
+    parser.end();
+    await finished(parser);
+    assert.equal(end, input.length);
+});
+
+it('adds no replacement character after flushed null characters in foreign content', async () => {
+    const parser = new SAXParser();
+    let actual = '';
+    parser.on('text', (token) => {
+        actual += token.text;
+    });
+    parser.write(`<svg>${'\0'.repeat(70_000)}`);
+    parser.end('x');
+    await finished(parser);
+    // The null-character token becomes one replacement character; the empty token that follows the flush adds none.
+    assert.equal(actual, '\uFFFDx');
+});
+
+it('only skips the first newline after pre, even when whitespace is flushed', async () => {
+    const parser = new SAXParser();
+    let text = '';
+    parser.on('text', (token) => {
+        text += token.text;
+    });
+    parser.write(`<pre>${' '.repeat(70_000)}`);
+    // The whitespace is flushed before the newline arrives.
+    assert.equal(text.length, 70_000);
+    parser.end('\ntext');
+    await finished(parser);
+    assert.equal(text, `${' '.repeat(70_000)}\ntext`);
+});
