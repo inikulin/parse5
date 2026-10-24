@@ -1,6 +1,7 @@
 packages/parse5/lib/parser/index.test.ts
   s_173ca9ea90a33e::t_2a07764115d820 60-61,92,96,104,160,164-165,189,231
   s_173ca9ea90a33e::t_072495e38f0022 87,146,181,226
+  s_173ca9ea90a33e::t_b628c8a31c813d 97
 ---
 {
   "schema_version": "authorship/3.0.0",
