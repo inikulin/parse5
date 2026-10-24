@@ -233,7 +233,7 @@ function isMathMLTextIntegrationPoint(tn: $, ns: NS): boolean {
     return ns === NS.MATHML && (tn === $.MI || tn === $.MO || tn === $.MN || tn === $.MS || tn === $.MTEXT);
 }
 
-function isHtmlIntegrationPoint(tn: $, ns: NS, attrs: Attribute[]): boolean {
+function isHtmlIntegrationPoint(tn: $, ns: NS, attrs: readonly Attribute[]): boolean {
     if (ns === NS.MATHML && tn === $.ANNOTATION_XML) {
         for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].name === ATTRS.ENCODING) {
@@ -247,7 +247,7 @@ function isHtmlIntegrationPoint(tn: $, ns: NS, attrs: Attribute[]): boolean {
     return ns === NS.SVG && (tn === $.FOREIGN_OBJECT || tn === $.DESC || tn === $.TITLE);
 }
 
-export function isIntegrationPoint(tn: $, ns: NS, attrs: Attribute[], foreignNS?: NS): boolean {
+export function isIntegrationPoint(tn: $, ns: NS, attrs: readonly Attribute[], foreignNS?: NS): boolean {
     return (
         ((!foreignNS || foreignNS === NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs)) ||
         ((!foreignNS || foreignNS === NS.MATHML) && isMathMLTextIntegrationPoint(tn, ns))

@@ -34,6 +34,9 @@ import {
 //Misc constants
 const HIDDEN_INPUT_TYPE = 'hidden';
 
+// For the integration-point check of elements whose attributes do not matter; never attached to a node.
+const EMPTY_ATTRS: readonly Attribute[] = [];
+
 //Adoption agency loops iteration count
 const AA_OUTER_LOOP_ITER = 8;
 const AA_INNER_LOOP_ITER = 3;
@@ -292,6 +295,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
 
         this.treeAdapter.onItemPop?.(node, this.openElements.current);
+        this.annotationXmlIntegrationPoints?.delete(node);
 
         if (isTop) {
             let current;
@@ -667,12 +671,29 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     //Integration points
 
+    /**
+     * Whether each open MathML `annotation-xml` element, or the fragment context, is an HTML integration point. The
+     * standard decides this by the element's start tag, so its attributes are read once; `onItemPop` drops the entry.
+     */
+    private annotationXmlIntegrationPoints: Map<T['element'], boolean> | undefined;
+
     /** @protected */
     _isIntegrationPoint(tid: $, element: T['element'], foreignNS?: NS): boolean {
         const ns = this.treeAdapter.getNamespaceURI(element);
-        const attrs = this.treeAdapter.getAttrList(element);
 
-        return foreignContent.isIntegrationPoint(tid, ns, attrs, foreignNS);
+        if (tid === $.ANNOTATION_XML && ns === NS.MATHML && foreignNS !== NS.MATHML) {
+            const verdicts = (this.annotationXmlIntegrationPoints ??= new Map());
+            let isIntegrationPoint = verdicts.get(element);
+
+            if (isIntegrationPoint === undefined) {
+                isIntegrationPoint = foreignContent.isIntegrationPoint(tid, ns, this.treeAdapter.getAttrList(element));
+                verdicts.set(element, isIntegrationPoint);
+            }
+
+            return isIntegrationPoint;
+        }
+
+        return foreignContent.isIntegrationPoint(tid, ns, EMPTY_ATTRS, foreignNS);
     }
 
     //Active formatting elements reconstruction
