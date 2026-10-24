@@ -1,7 +1,9 @@
 packages/parse5/lib/parser/index.test.ts
   s_173ca9ea90a33e::t_d2f430ed71f136 164-174
+  s_6bbbbbc7cea8e7::t_548328348b6448 166,169-170,172-174
 packages/parse5/lib/parser/index.ts
   s_173ca9ea90a33e::t_ed8f94a9c70e07 2636
+  s_6bbbbbc7cea8e7::t_eafb532a0c72e1 2636
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -14,6 +16,14 @@ packages/parse5/lib/parser/index.ts
         "tool": "claude",
         "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
         "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     }
