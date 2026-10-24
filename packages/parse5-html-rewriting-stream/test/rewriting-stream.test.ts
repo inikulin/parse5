@@ -320,6 +320,17 @@ describe('RewritingStream', () => {
         }),
     );
 
+    it(
+        'Should escape < and > in attributes',
+        createRewriterTest({
+            src: `<p title='"</noscript><img src=x onerror=alert(1)>'>`,
+            expected: '<p title="&quot;&lt;/noscript&gt;&lt;img src=x onerror=alert(1)&gt;">',
+            assignTokenHandlers: (rewriter) => {
+                rewriter.on('startTag', (token) => rewriter.emitStartTag(token));
+            },
+        }),
+    );
+
     it('Last text chunk must be flushed (GH-271)', async () => {
         const parser = new RewritingStream();
         let foundText = false;
