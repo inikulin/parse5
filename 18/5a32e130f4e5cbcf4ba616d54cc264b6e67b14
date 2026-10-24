@@ -1,7 +1,11 @@
 packages/parse5/lib/tokenizer/index.ts
   s_9822029f13e609::t_9971d40bfa0cb4 635-637,639-640
+  s_6bbbbbc7cea8e7::t_98f31143b88997 635-637,639-640
+  s_6bbbbbc7cea8e7::t_0cf1d68ba9f491 635-637,639-640
 packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
   s_9822029f13e609::t_5d378d1b921f65 228-258
+  s_6bbbbbc7cea8e7::t_31d305cdab255f 228-258
+  s_6bbbbbc7cea8e7::t_1386726351ac39 228-229,230-258
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -9,6 +13,14 @@ packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
   "base_commit_sha": "185a32e130f4e5cbcf4ba616d54cc264b6e67b14",
   "prompts": {},
   "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
     "s_9822029f13e609": {
       "agent_id": {
         "tool": "claude",
