@@ -370,4 +370,31 @@ describe('Tokenizer methods', () => {
             ],
         );
     });
+
+    // TODO: upstream to html5lib-tests
+    it('should not skip input after a character reference that decodes to two code points', () => {
+        const tagNames: string[] = [];
+        let chars = '';
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onComment: noop,
+            onDoctype: noop,
+            onStartTag(t): void {
+                tagNames.push(t.tagName);
+            },
+            onEndTag: noop,
+            onEof: noop,
+            onCharacter(t): void {
+                chars += t.chars;
+            },
+            onNullCharacter: noop,
+            onWhitespaceCharacter: noop,
+        });
+
+        // Set a small waterline, so the chunk is dropped when the whitespace is emitted
+        tokenizer.preprocessor.bufferWaterline = 8;
+        tokenizer.write(`${' '.repeat(10)}&nvlt;text<a>`, true);
+
+        assert.strictEqual(chars, '<\u20D2text');
+        assert.deepStrictEqual(tagNames, ['a']);
+    });
 });
