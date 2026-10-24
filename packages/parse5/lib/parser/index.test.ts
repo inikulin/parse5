@@ -93,6 +93,14 @@ describe('parser', () => {
         expect(serialize(parseFragment(input))).toBe(expected);
     });
 
+    // TODO: upstream to html5lib-tests
+    it('an unmatched foreign end tag at the root of a fragment is handed to the HTML rules', () => {
+        const div = parseFragment('<div>').childNodes[0] as Element;
+        const fragment = parseFragment(div, '<div><form></div><svg></form></svg><form>x');
+
+        expect(serialize(fragment)).toBe('<div><form></form></div><svg></svg><form>x</form>');
+    });
+
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
             // @ts-expect-error Adding unknown prototype method
