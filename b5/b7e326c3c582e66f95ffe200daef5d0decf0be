@@ -1,0 +1,21 @@
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_173ca9ea90a33e::t_845023502cf63e 1,63-65,88-96,101-104,155
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_173ca9ea90a33e::t_a803b5f9268534 379-393
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b5b7e326c3c582e66f95ffe200daef5d0decf0be",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
