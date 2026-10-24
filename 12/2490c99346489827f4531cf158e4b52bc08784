@@ -1,0 +1,21 @@
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_1cdd27ddad6aeb::t_77dc1c1710c409 1,63-65,88-96,101-104,155
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_1cdd27ddad6aeb::t_cb606571c0b0ae 379-393
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "122490c99346489827f4531cf158e4b52bc08784",
+  "prompts": {},
+  "sessions": {
+    "s_1cdd27ddad6aeb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e4f-24a5-7700-92be-e5f89af62c03",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
