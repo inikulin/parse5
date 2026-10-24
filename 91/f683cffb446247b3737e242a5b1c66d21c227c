@@ -1,0 +1,45 @@
+packages/parse5-parser-stream/test/flush.test.ts
+  s_173ca9ea90a33e::t_28a9ffbec42020 116-136
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_173ca9ea90a33e::t_6809dd41c4d000 16-25,33,53,113-190,229,242-258,270-271,338-345
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_173ca9ea90a33e::t_a1736b4e637b0c 75-76,78-87
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_173ca9ea90a33e::t_078033c9ebfc84 14-24
+packages/parse5/lib/common/html.ts
+  s_173ca9ea90a33e::t_294518d0cceb4c 530
+packages/parse5/lib/parser/index.test.ts
+  s_173ca9ea90a33e::t_60b2168c9818c0 164-174,182-193,234-252
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_bbaeb41b0c52c9 587-589,592-596,601,910,984,1345,2646,3310
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_173ca9ea90a33e::t_36fecac336e7f7 467-469,491-492
+packages/parse5/lib/parser/open-element-stack.ts
+  s_173ca9ea90a33e::t_eeb25557b97e0a 351,383
+packages/parse5/lib/parser/parser-location-info.test.ts
+  s_173ca9ea90a33e::t_cbb5ba7fe39a39 235-266
+packages/parse5/lib/tokenizer/index.test.ts
+  s_173ca9ea90a33e::t_973f2026111ad6 2,16-56,58-202
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_76a8bc8c5a0285 231-241,257-271,336,342-357,360,369,373-374,616-619,667-725,732-734,736-737,744-748,776-780,796-800,854-855,858,860-863,866-867,870,877,879-897,904-905,915-931,933-934,958,2105,2114,2133,2142,2171,2180,2189,2272,2276-2290,2370,2388,2394,2404-2418,2428,2433,2492,2515,2525,2539,2556,3251-3255
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_173ca9ea90a33e::t_62d571e3da7232 40-44,47
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_173ca9ea90a33e::t_cb11841b9f05ce 157-162,228-258
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "91f683cffb446247b3737e242a5b1c66d21c227c",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
