@@ -2,6 +2,7 @@ packages/parse5/lib/tokenizer/index.test.ts
   s_35b22ebadafa4f::t_5b9cf0df07ca8f 53-74,113,171-212
 packages/parse5/lib/tokenizer/index.ts
   s_173ca9ea90a33e::t_b904a79bfedb6e 26-29,231,552-565,567-569,607-608
+  s_173ca9ea90a33e::t_44e8e9135925b8 26-27
 ---
 {
   "schema_version": "authorship/3.0.0",
