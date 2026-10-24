@@ -1,5 +1,6 @@
 packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
   s_173ca9ea90a33e::t_cf43d9b2d98f1b 406-441
+  s_173ca9ea90a33e::t_418657f997ebb1 407-425
 packages/parse5-sax-parser/lib/index.ts
   s_173ca9ea90a33e::t_96b30c9654d0f0 126,133
 packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
