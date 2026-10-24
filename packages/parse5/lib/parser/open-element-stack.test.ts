@@ -18,6 +18,26 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
         return treeAdapter.createElement(tagName, namespaceURI, []);
     }
 
+    it('checks element identity and scope boundaries', () => {
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
+        stack.push(createElement(TN.HTML), $.HTML);
+        const outer = createElement(TN.FORM);
+        stack.push(outer, $.FORM);
+        stack.push(createElement(TN.TABLE), $.TABLE);
+        stack.push(createElement(TN.DIV), $.DIV);
+        const inner = createElement(TN.FORM);
+        stack.push(inner, $.FORM);
+        assert.ok(stack.hasInScope($.FORM));
+        assert.ok(stack.hasInScope($.FORM, inner));
+        assert.ok(!stack.hasInScope($.FORM, outer));
+        assert.ok(!stack.hasInScope($.FORM, createElement(TN.FORM)));
+        stack.remove(inner);
+        assert.ok(!stack.hasInScope($.FORM));
+        stack.remove(outer);
+        assert.ok(!stack.hasInScope($.FORM, outer));
+        assert.ok(!stack.hasInScope($.FORM));
+    });
+
     it('Push element', () => {
         const document = treeAdapter.createDocument();
         const element1 = createElement('#element1', NS.XLINK);

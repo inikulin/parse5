@@ -1491,7 +1491,7 @@ function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(
         if (!p.openElements.contains(formattingElementEntry.element)) {
             p.activeFormattingElements.removeEntry(formattingElementEntry);
             formattingElementEntry = null;
-        } else if (!p.openElements.hasInScope(token.tagID)) {
+        } else if (!p.openElements.hasInScope(token.tagID, formattingElementEntry.element)) {
             formattingElementEntry = null;
         }
     } else {
@@ -1628,6 +1628,18 @@ function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
 
 //Algorithm entry point
 function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
+    const { current, currentTagId } = p.openElements;
+
+    //Step 2 of the algorithm
+    if (
+        currentTagId === token.tagID &&
+        p.treeAdapter.getNamespaceURI(current) === NS.HTML &&
+        !p.activeFormattingElements.getElementEntry(current)
+    ) {
+        p.openElements.pop();
+        return;
+    }
+
     for (let i = 0; i < AA_OUTER_LOOP_ITER; i++) {
         const formattingElementEntry = aaObtainFormattingElementEntry(p, token);
 

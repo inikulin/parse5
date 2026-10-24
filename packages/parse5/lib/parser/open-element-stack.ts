@@ -244,13 +244,13 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Element in scope
-    private hasInDynamicScope(tagName: $, htmlScope: Set<$>): boolean {
+    private hasInDynamicScope(tagName: $, htmlScope: Set<$>, element?: T['element'] | null): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.tagIDs[i];
 
             switch (this.treeAdapter.getNamespaceURI(this.items[i])) {
                 case NS.HTML: {
-                    if (tn === tagName) return true;
+                    if (tn === tagName && (!element || this.items[i] === element)) return true;
                     if (htmlScope.has(tn)) return false;
                     break;
                 }
@@ -268,8 +268,9 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInScope(tagName: $): boolean {
-        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML);
+    /** If `element` is passed, only that element (which has to be a `tagName` element) is looked for. */
+    hasInScope(tagName: $, element?: T['element'] | null): boolean {
+        return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML, element);
     }
 
     hasInListItemScope(tagName: $): boolean {

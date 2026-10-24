@@ -118,6 +118,24 @@ describe('parser', () => {
         expect(doctype).toHaveProperty('systemId', '');
     });
 
+    // TODO: upstream to html5lib-tests
+    it.each([
+        // The last `<b>` removes the second one from the list of active formatting elements (Noah's Ark clause).
+        // When that `b` is the current node, `</b>` only pops it: `<b id=1>` stays open.
+        ['<b id=1><b><b><b><b></b></b></b></b>x', '<b id="1"><b><b><b><b></b></b></b></b>x</b>'],
+        [
+            '<b id=1><svg><desc><b><b><b><b></b></b></b></b>x',
+            '<b id="1"><svg><desc><b><b><b><b></b></b></b></b>x</desc></svg></b>',
+        ],
+        // `<b id=1>` itself is not in scope, although another `b` is.
+        [
+            '<b id=1><svg><desc><b><b><b><b></b></b></b><i></b>x',
+            '<b id="1"><svg><desc><b><b><b><b></b></b></b><i>x</i></b></desc></svg></b>',
+        ],
+    ])('adoption agency picks the right formatting element - %s', (input, expected) => {
+        expect(serialize(parseFragment(input))).toBe(expected);
+    });
+
     it('Regression - CRLF inside </noscript> (GH-710)', () => {
         const onParseError = vi.fn();
         parse('<!doctype html><noscript>foo</noscript\r\n>', { onParseError });
