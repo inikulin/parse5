@@ -1,0 +1,23 @@
+packages/parse5/lib/parser/index.test.ts
+  s_173ca9ea90a33e::t_0dfc853ce14fdc 211-220
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_173ca9ea90a33e::t_13c98c94043df9 466-469,490-492
+packages/parse5/lib/parser/open-element-stack.ts
+  s_173ca9ea90a33e::t_0e9796772a3e37 360,392
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "982a26667850aa7fe7671a6fbafee147918bb196",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
