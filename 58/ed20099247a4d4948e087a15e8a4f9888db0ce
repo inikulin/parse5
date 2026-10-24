@@ -1,7 +1,9 @@
 packages/parse5-parser-stream/test/flush.test.ts
   s_173ca9ea90a33e::t_f8bdb3d6d626b6 116-136
+  s_173ca9ea90a33e::t_8b939043f107be 116-136
 packages/parse5/lib/tokenizer/index.ts
   s_173ca9ea90a33e::t_d8c1df909565e6 311,317-332,335,344,348-349
+  s_173ca9ea90a33e::t_8b939043f107be 311,317-332,335,344,348-349
 ---
 {
   "schema_version": "authorship/3.0.0",
