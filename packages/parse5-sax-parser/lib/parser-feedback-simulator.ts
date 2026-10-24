@@ -86,14 +86,14 @@ export class ParserFeedbackSimulator implements TokenHandler {
 
     //Namespace stack mutations
     private _enterNamespace(namespace: html.NS): void {
-        this.namespaceStack.unshift(namespace);
+        this.namespaceStack.push(namespace);
         this.inForeignContent = namespace !== html.NS.HTML;
         this.tokenizer.inForeignNode = this.inForeignContent;
     }
 
     private _leaveCurrentNamespace(): void {
-        this.namespaceStack.shift();
-        this.inForeignContent = this.namespaceStack[0] !== html.NS.HTML;
+        this.namespaceStack.pop();
+        this.inForeignContent = this.namespaceStack[this.namespaceStack.length - 1] !== html.NS.HTML;
         this.tokenizer.inForeignNode = this.inForeignContent;
     }
 
@@ -148,7 +148,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
             if (foreignContent.causesExit(token)) {
                 this._leaveCurrentNamespace();
             } else {
-                const currentNs = this.namespaceStack[0];
+                const currentNs = this.namespaceStack[this.namespaceStack.length - 1];
 
                 if (currentNs === html.NS.MATHML) {
                     foreignContent.adjustTokenMathMLAttrs(token);
@@ -193,7 +193,8 @@ export class ParserFeedbackSimulator implements TokenHandler {
         let tn = token.tagID;
 
         if (!this.inForeignContent) {
-            const previousNs = this.namespaceStack[1];
+            const previousNs =
+                this.namespaceStack.length > 1 ? this.namespaceStack[this.namespaceStack.length - 2] : undefined;
 
             if (previousNs === html.NS.SVG) {
                 const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
@@ -204,18 +205,18 @@ export class ParserFeedbackSimulator implements TokenHandler {
             }
 
             //NOTE: check for exit from integration point
-            if (foreignContent.isIntegrationPoint(tn, previousNs, token.attrs)) {
+            if (previousNs !== undefined && foreignContent.isIntegrationPoint(tn, previousNs, token.attrs)) {
                 this._leaveCurrentNamespace();
             }
         } else if (
-            (tn === $.SVG && this.namespaceStack[0] === html.NS.SVG) ||
-            (tn === $.MATH && this.namespaceStack[0] === html.NS.MATHML)
+            (tn === $.SVG && this.namespaceStack[this.namespaceStack.length - 1] === html.NS.SVG) ||
+            (tn === $.MATH && this.namespaceStack[this.namespaceStack.length - 1] === html.NS.MATHML)
         ) {
             this._leaveCurrentNamespace();
         }
 
         // NOTE: adjust end tag name as well for consistency
-        if (this.namespaceStack[0] === html.NS.SVG) {
+        if (this.namespaceStack[this.namespaceStack.length - 1] === html.NS.SVG) {
             foreignContent.adjustTokenSVGTagName(token);
         }
 
