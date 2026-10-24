@@ -195,7 +195,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         const parser = new this(opts, documentMock, fragmentContext);
 
         if (parser.fragmentContextID === $.TEMPLATE) {
-            parser.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
+            parser.tmplInsertionModeStack.push(InsertionMode.IN_TEMPLATE);
         }
 
         parser._initTokenizerForFragmentParsing();
@@ -239,8 +239,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     protected currentNotInHTML = false;
 
     /**
-     * The template insertion mode stack is maintained from the left.
-     * Ie. the topmost element will always have index 0.
+     * The topmost template insertion mode is the last element.
      *
      * @internal
      */
@@ -755,7 +754,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                     return;
                 }
                 case $.TEMPLATE: {
-                    this.insertionMode = this.tmplInsertionModeStack[0];
+                    this.insertionMode = this.tmplInsertionModeStack[this.tmplInsertionModeStack.length - 1];
                     return;
                 }
                 case $.HTML: {
@@ -1771,7 +1770,7 @@ function startTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             p.activeFormattingElements.insertMarker();
             p.framesetOk = false;
             p.insertionMode = InsertionMode.IN_TEMPLATE;
-            p.tmplInsertionModeStack.unshift(InsertionMode.IN_TEMPLATE);
+            p.tmplInsertionModeStack.push(InsertionMode.IN_TEMPLATE);
             break;
         }
         case $.HEAD: {
@@ -1817,7 +1816,7 @@ function templateEndTagInHead<T extends TreeAdapterTypeMap>(p: Parser<T>, token:
 
         p.openElements.popUntilTagNamePopped($.TEMPLATE);
         p.activeFormattingElements.clearToLastMarker();
-        p.tmplInsertionModeStack.shift();
+        p.tmplInsertionModeStack.pop();
         p._resetInsertionMode();
     } else {
         p._err(token, ERR.endTagWithoutMatchingOpenElement);
@@ -3498,32 +3497,32 @@ function startTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
         case $.TBODY:
         case $.TFOOT:
         case $.THEAD: {
-            p.tmplInsertionModeStack[0] = InsertionMode.IN_TABLE;
+            p.tmplInsertionModeStack[p.tmplInsertionModeStack.length - 1] = InsertionMode.IN_TABLE;
             p.insertionMode = InsertionMode.IN_TABLE;
             startTagInTable(p, token);
             break;
         }
         case $.COL: {
-            p.tmplInsertionModeStack[0] = InsertionMode.IN_COLUMN_GROUP;
+            p.tmplInsertionModeStack[p.tmplInsertionModeStack.length - 1] = InsertionMode.IN_COLUMN_GROUP;
             p.insertionMode = InsertionMode.IN_COLUMN_GROUP;
             startTagInColumnGroup(p, token);
             break;
         }
         case $.TR: {
-            p.tmplInsertionModeStack[0] = InsertionMode.IN_TABLE_BODY;
+            p.tmplInsertionModeStack[p.tmplInsertionModeStack.length - 1] = InsertionMode.IN_TABLE_BODY;
             p.insertionMode = InsertionMode.IN_TABLE_BODY;
             startTagInTableBody(p, token);
             break;
         }
         case $.TD:
         case $.TH: {
-            p.tmplInsertionModeStack[0] = InsertionMode.IN_ROW;
+            p.tmplInsertionModeStack[p.tmplInsertionModeStack.length - 1] = InsertionMode.IN_ROW;
             p.insertionMode = InsertionMode.IN_ROW;
             startTagInRow(p, token);
             break;
         }
         default: {
-            p.tmplInsertionModeStack[0] = InsertionMode.IN_BODY;
+            p.tmplInsertionModeStack[p.tmplInsertionModeStack.length - 1] = InsertionMode.IN_BODY;
             p.insertionMode = InsertionMode.IN_BODY;
             startTagInBody(p, token);
         }
@@ -3538,9 +3537,12 @@ function endTagInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tag
 
 function eofInTemplate<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken): void {
     if (p.openElements.tmplCount > 0) {
-        p.openElements.popUntilTagNamePopped($.TEMPLATE);
-        p.activeFormattingElements.clearToLastMarker();
-        p.tmplInsertionModeStack.shift();
+        // EOF closes every open template.
+        do {
+            p.openElements.popUntilTagNamePopped($.TEMPLATE);
+            p.activeFormattingElements.clearToLastMarker();
+            p.tmplInsertionModeStack.pop();
+        } while (p.openElements.tmplCount > 0);
         p._resetInsertionMode();
         p.onEof(token);
     } else {
