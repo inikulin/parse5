@@ -3804,7 +3804,10 @@ function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
 
         return;
     }
-    for (let i = p.openElements.stackTop; i > 0; i--) {
+    // The current node is the root element (fragment case): ignore the token.
+    if (p.openElements.stackTop === 0) return;
+
+    for (let i = p.openElements.stackTop; i >= 0; i--) {
         const element = p.openElements.items[i];
 
         if (p.treeAdapter.getNamespaceURI(element) === NS.HTML) {
