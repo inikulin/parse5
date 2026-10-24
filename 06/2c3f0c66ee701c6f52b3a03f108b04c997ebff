@@ -1,7 +1,9 @@
 packages/parse5/lib/tokenizer/index.test.ts
   s_1cdd27ddad6aeb::t_7523e594504d1c 122-148
+  s_6bbbbbc7cea8e7::t_4c50c9d34ae6b8 122,124-148
 packages/parse5/lib/tokenizer/index.ts
   s_1cdd27ddad6aeb::t_7de2ac8d9dd156 242-244
+  s_6bbbbbc7cea8e7::t_0c0e51ac3695b8 242-244
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -14,6 +16,14 @@ packages/parse5/lib/tokenizer/index.ts
         "tool": "codex",
         "id": "01a16e4f-24a5-7700-92be-e5f89af62c03",
         "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     }
