@@ -1,0 +1,21 @@
+packages/parse5/lib/tokenizer/index.test.ts
+  s_1cdd27ddad6aeb::t_d1ae5f42119b59 59,62,71-73,83-84,88,150,159-161,169,171,173,184-186,211-222,229
+packages/parse5/lib/tokenizer/index.ts
+  s_1cdd27ddad6aeb::t_1d54990c818191 228,717-718,2177,2181,2261,2279,2285,2295,2307,2312,2371,2394,2404,2418,2435
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9a594e813357c1a79089b1ba9593a0a14e03d5f6",
+  "prompts": {},
+  "sessions": {
+    "s_1cdd27ddad6aeb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e4f-24a5-7700-92be-e5f89af62c03",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
