@@ -2,6 +2,7 @@ packages/parse5/lib/parser/index.ts
   s_173ca9ea90a33e::t_f9a7800feb973c 37-39,676-677
 packages/parse5/lib/parser/integration-point.test.ts
   s_173ca9ea90a33e::t_29d67bdeb8c025 1-26
+  s_98abc3499f7493::t_87051f626b341d 1-4,8-24
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -14,6 +15,14 @@ packages/parse5/lib/parser/integration-point.test.ts
         "tool": "claude",
         "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
         "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_98abc3499f7493": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-669a-74b3-b59e-3acc3bc180fe",
+        "model": "gpt-6-astra"
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     }
