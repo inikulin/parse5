@@ -2,6 +2,7 @@ packages/parse5-html-rewriting-stream/lib/index.ts
   s_173ca9ea90a33e::t_0ab0ee457409b0 1,63-65,88-96,101-104,155
 packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
   s_173ca9ea90a33e::t_80629b8bf80438 379-393
+  s_173ca9ea90a33e::t_690ce411d3ba9d 380-393
 ---
 {
   "schema_version": "authorship/3.0.0",
