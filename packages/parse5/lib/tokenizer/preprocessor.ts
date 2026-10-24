@@ -82,7 +82,7 @@ export class Preprocessor {
         if (this.pos !== this.html.length - 1) {
             const nextCp = this.html.charCodeAt(this.pos + 1);
 
-            if (isSurrogatePair(nextCp)) {
+            if (!isSurrogatePair(cp) && isSurrogatePair(nextCp)) {
                 //NOTE: we have a surrogate pair. Peek pair character and recalculate code point.
                 this.pos++;
 
