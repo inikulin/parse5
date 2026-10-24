@@ -1,0 +1,21 @@
+packages/parse5/lib/tokenizer/index.test.ts
+  s_173ca9ea90a33e::t_c71c60a8f97501 104-144
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_c71c60a8f97501 228-229,231-232,248-249,251,260,496,509,522,531,559-560,607-627,629,633-634,638-640,644,646,649-653,656,658-661,664-665,667-670,688-689,717,734,816,840,863,1454-1455,2010,2019,2038,2047,2076,2085,2094,2177,2181,2261,2279,2285,2295,2303-2304,2307,2312,2371,2394,2404,2418,2435
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "81d808ca37266a1b8a0f3fa74f8d0c7c2c17bfa2",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
