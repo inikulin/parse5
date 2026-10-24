@@ -1,11 +1,15 @@
 packages/parse5/lib/parser/index.ts
   s_173ca9ea90a33e::t_bf5d48011c0ac2 35-49,734-741,809-812,2103-2109,2680-2681
+  s_6bbbbbc7cea8e7::t_8698b2860e4301 35-49,734-741,809-812,2103-2109,2680-2681
 packages/parse5/lib/parser/open-element-stack.test.ts
   s_173ca9ea90a33e::t_e7b976201440b2 21-63
+  s_8f7be89ec2eb36::t_7cb15beb6f5ffb 21-63
 packages/parse5/lib/parser/open-element-stack.ts
   s_173ca9ea90a33e::t_b0201586c45a9d 37,51-52,83-97,100,117,131-132,143,170,241,272,274-275,312-313,338-339,360-368,391-392
+  s_8f7be89ec2eb36::t_e66173ba648db0 37,51-52,83-97,100,117,131-132,143,170,241,274-275,312-313,338-339,360-368,391-392
 packages/parse5/lib/parser/stack-complexity.test.ts
   s_173ca9ea90a33e::t_7124e2cb982d9f 1-26
+  s_8f7be89ec2eb36::t_12b4029bbf0ac2 1-4,6-12
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -18,6 +22,22 @@ packages/parse5/lib/parser/stack-complexity.test.ts
         "tool": "claude",
         "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
         "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_8f7be89ec2eb36": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a105fe-104a-7480-b522-f56cdf67e475",
+        "model": "gpt-6-astra"
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     }
