@@ -102,6 +102,9 @@ export type DefaultTreeAdapterMap = TreeAdapterTypeMap<
     DocumentType
 >;
 
+/** The position of each name in the attribute lists `adoptAttributes` merged into, kept for the next merge into that list. */
+const attrListIndexes = new WeakMap<Attribute[], Map<string, number>>();
+
 export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     //Node construction
     createDocument(): Document {
@@ -236,13 +239,48 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         }
     },
 
+    /**
+     * Keeps the recipient's names between merges as a map from name to position. The map is rebuilt when the list changed
+     * length or has a repeated name, or when a merged name it holds no longer names the entry at that position. A name that
+     * other code gives an existing entry between two merges is missed otherwise, and merging it appends it a second time.
+     */
     adoptAttributes(recipient: Element, attrs: Attribute[]): void {
-        const recipientAttrsMap = new Set(recipient.attrs.map((attr) => attr.name));
+        // Merging a list into itself adds nothing: every name is already present.
+        if (attrs.length === 0 || attrs === recipient.attrs) return;
+
+        const cached = attrListIndexes.get(recipient.attrs);
+        const isIndexed =
+            cached?.size === recipient.attrs.length &&
+            attrs.every(({ name }) => {
+                const index = cached.get(name);
+                return index === undefined || recipient.attrs[index]?.name === name;
+            });
+        const recipientAttrsMap = isIndexed ? cached : new Map<string, number>();
+
+        if (!isIndexed) {
+            for (let i = 0; i < recipient.attrs.length; i++) {
+                const attr = recipient.attrs[i];
+                // A sparse list is indexed again on every merge, as its size never matches its length.
+                if (attr !== undefined) recipientAttrsMap.set(attr.name, i);
+            }
+            attrListIndexes.set(recipient.attrs, recipientAttrsMap);
+        }
+
+        const adoptedFrom = recipient.attrs.length;
 
         for (let j = 0; j < attrs.length; j++) {
             if (!recipientAttrsMap.has(attrs[j].name)) {
                 recipient.attrs.push(attrs[j]);
             }
+        }
+
+        for (let j = adoptedFrom; j < recipient.attrs.length; j++) {
+            recipientAttrsMap.set(recipient.attrs[j].name, j);
+        }
+
+        // A list with a repeated name is indexed again on the next merge.
+        if (recipientAttrsMap.size !== recipient.attrs.length) {
+            attrListIndexes.delete(recipient.attrs);
         }
     },
 
