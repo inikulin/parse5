@@ -2,6 +2,7 @@ packages/parse5/lib/serializer/index.test.ts
   s_173ca9ea90a33e::t_6753358953891c 4,66-78
 packages/parse5/lib/serializer/index.ts
   s_173ca9ea90a33e::t_bc322bd6639983 91-100,127,130-134,136,138-140,142-143,145,147-174
+  s_173ca9ea90a33e::t_ccfb4b74840eaf 91-100
 ---
 {
   "schema_version": "authorship/3.0.0",
