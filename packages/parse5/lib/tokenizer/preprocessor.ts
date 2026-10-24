@@ -109,17 +109,21 @@ export class Preprocessor {
         return this.pos > this.bufferWaterline;
     }
 
-    public dropParsedChunk(): void {
+    /**
+     * Drop the parsed input, except for the current code point and the `keep` code units before it. The gap history is
+     * reset, so the kept units must contain no preprocessing gap.
+     */
+    public dropParsedChunk(keep = 0): void {
         if (this.willDropParsedChunk()) {
             // Retain the entire current code point, including both units of a surrogate pair.
-            const droppedSize = this.offset - this.droppedBufferSize;
+            const droppedSize = this.offset - this.droppedBufferSize - keep;
             this.html = this.html.substring(droppedSize);
             this.lineStartPos -= droppedSize;
             this.droppedBufferSize += droppedSize;
             this.pos -= droppedSize;
             this.lastGapPos = -2;
             this.gapStack.length = 0;
-            if (this.pos > 0) this._addGap();
+            if (this.pos > keep) this._addGap();
         }
     }
 

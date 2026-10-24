@@ -269,6 +269,32 @@ describe('Tokenizer methods', () => {
         tokenizer.write('>', true);
     });
 
+    it.each([
+        ['a CDATA end delimiter', '<![CDATA[', 'aaaaaa]]'],
+        ['a character reference', '', 'aaaa&not'],
+    ])('drops the flushed input when every chunk ends in %s', (_label, prefix, chunk) => {
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onCharacter: noop,
+            onWhitespaceCharacter: noop,
+            onNullCharacter: noop,
+            onComment: noop,
+            onDoctype: noop,
+            onStartTag: noop,
+            onEndTag: noop,
+            onEof: noop,
+        });
+        tokenizer.inForeignNode = true;
+        tokenizer.preprocessor.bufferWaterline = 8;
+        tokenizer.write(prefix, false);
+        for (let i = 0; i < 1000; i++) {
+            tokenizer.write(chunk, false);
+            tokenizer.flushCurrentCharacterToken();
+            assert.isBelow(tokenizer.preprocessor.html.length, 3 * chunk.length);
+            // The current code point keeps its offset after the drop.
+            assert.equal(tokenizer.preprocessor.offset, prefix.length + (i + 1) * chunk.length - 1);
+        }
+    });
+
     it('should pause and resume', () => {
         let count = 0;
         const tokenizer = new Tokenizer(tokenizerOpts, {

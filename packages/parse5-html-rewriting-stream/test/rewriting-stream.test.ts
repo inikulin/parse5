@@ -403,3 +403,39 @@ describe('RewritingStream', () => {
         })(),
     );
 });
+
+it.each([
+    ['plain text', 'a'.repeat(16_384)],
+    ['a split unknown character reference', `${'a'.repeat(16_381)}&no`],
+])('flushes long text while retaining exact raw source and locations: %s', async (_label, chunk) => {
+    const rewriter = new RewritingStream();
+    let raw = '';
+    let end = 0;
+    rewriter.on('text', (token, source) => {
+        assert.equal(token.sourceCodeLocation!.startOffset, end);
+        end = token.sourceCodeLocation!.endOffset;
+        raw += source;
+        rewriter.emitRaw(source);
+    });
+    for (let i = 0; i < 16; i++) rewriter.write(chunk);
+    assert.isAbove(raw.length, chunk.length * 12);
+    rewriter.end();
+    await finished(rewriter);
+    assert.equal(raw, chunk.repeat(16));
+    assert.equal(end, raw.length);
+});
+
+it('excludes a discarded EOF tag from raw text after a flush', async () => {
+    const rewriter = new RewritingStream();
+    let raw = '';
+    rewriter.on('text', (_token, source) => {
+        raw += source;
+    });
+    const text = 'a'.repeat(70_000);
+    rewriter.write(text);
+    // The text is flushed before the end of the input.
+    assert.equal(raw, text);
+    rewriter.end('<unfinished');
+    await finished(rewriter);
+    assert.equal(raw, text);
+});

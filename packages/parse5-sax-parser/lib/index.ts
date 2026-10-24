@@ -123,12 +123,17 @@ export class SAXParser extends Transform implements TokenHandler {
     protected _transformChunk(chunk: string): string {
         if (!this.stopped) {
             this.tokenizer.write(chunk, this.lastChunkWritten);
+            this.tokenizer.flushCurrentCharacterToken();
         }
         return chunk;
     }
 
     /** @internal */
     onCharacter({ chars, location }: Token.CharacterToken): void {
+        // After a chunk-boundary flush the tokenizer continues with an empty text token, which arrives here without
+        // characters. It is dropped unless its source range covers something (CDATA delimiters, a tag dropped at
+        // EOF), which the rewriting stream still has to forward.
+        if (chars.length === 0 && (!location || location.startOffset === location.endOffset)) return;
         if (this.pendingText === null) {
             this.pendingText = { text: chars, sourceCodeLocation: location };
         } else {

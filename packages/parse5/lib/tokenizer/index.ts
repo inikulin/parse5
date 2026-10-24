@@ -455,6 +455,38 @@ export class Tokenizer {
         this._runParsingLoop();
     }
 
+    /** @internal Flush completed streaming text without splitting an unfinished token. */
+    public flushCurrentCharacterToken(): void {
+        // Only completed text is flushed: an unfinished token stays intact, including a doctype that has no token yet.
+        if (
+            this.paused ||
+            this.active ||
+            !this.currentCharacterToken ||
+            this.currentToken ||
+            this.state === State.DOCTYPE ||
+            this.state === State.BEFORE_DOCTYPE_NAME ||
+            !this.preprocessor.willDropParsedChunk()
+        ) {
+            return;
+        }
+
+        // The last `pending` code units, a delimiter or character reference, are not text yet and stay buffered. They
+        // are ASCII, so they hold no preprocessing gap and no line break that the dropped gap history would have to keep.
+        const pending =
+            this.preprocessor.droppedBufferSize + this.preprocessor.pos + 1 - this.getCharacterTokenEndOffset();
+        // Hibernation left us before the next code point (possibly an incomplete surrogate).
+        this.preprocessor.advance();
+        this.currentLocation = this.getCurrentLocation(pending);
+        this.preprocessor.retreat(1);
+        this._emitCurrentCharacterToken(this.currentLocation);
+        // Keep a source range for CDATA delimiters or a later tag discarded at EOF. An empty null-character token
+        // would become a replacement character in foreign content.
+        this._createCharacterToken(TokenType.CHARACTER);
+        this.preprocessor.dropParsedChunk(Math.max(pending - 1, 0));
+        // Keep `entityStartPos` valid for a pending character reference.
+        this.entityStartPos = this.preprocessor.pos + 1 - pending;
+    }
+
     //Hibernation
     protected _ensureHibernation(): boolean {
         if (this.preprocessor.endOfChunkHit) {

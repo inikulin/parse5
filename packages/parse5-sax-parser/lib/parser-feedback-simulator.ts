@@ -47,9 +47,9 @@ export class ParserFeedbackSimulator implements TokenHandler {
 
     /** @internal */
     onWhitespaceCharacter(token: Token.CharacterToken): void {
-        if (this.skipNextNewLine && token.chars.charCodeAt(0) === LINE_FEED_CODE_POINT) {
-            this.skipNextNewLine = false;
-
+        const { skipNextNewLine } = this;
+        this.skipNextNewLine = false;
+        if (skipNextNewLine && token.chars.charCodeAt(0) === LINE_FEED_CODE_POINT) {
             if (token.chars.length === 1) {
                 return;
             }
