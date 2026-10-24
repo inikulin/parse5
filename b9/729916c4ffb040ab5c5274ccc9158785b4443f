@@ -1,0 +1,21 @@
+packages/parse5/lib/serializer/index.test.ts
+  s_de9a15d1ad606f::t_e4bab2b7707e8b 4,66-78
+packages/parse5/lib/serializer/index.ts
+  s_de9a15d1ad606f::t_10ed1d5f271ccd 91-100,127,130-134,136,138-140,142-143,145,147-174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b9729916c4ffb040ab5c5274ccc9158785b4443f",
+  "prompts": {},
+  "sessions": {
+    "s_de9a15d1ad606f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e81-bf99-74c1-975b-d076a7321d72",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
