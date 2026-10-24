@@ -260,6 +260,9 @@ export class Tokenizer {
                 }
 
                 this._extendRunWith(String.fromCodePoint(cp), 0);
+                // This callback runs twice for references that decode to two
+                // code points; keep `entityStartPos` valid if the chunk was dropped.
+                this.entityStartPos = this.preprocessor.pos - consumed + 1;
             },
             handler.onParseError
                 ? {
