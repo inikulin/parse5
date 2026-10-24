@@ -1,0 +1,21 @@
+packages/parse5-parser-stream/test/flush.test.ts
+  s_173ca9ea90a33e::t_f8bdb3d6d626b6 116-136
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_d8c1df909565e6 311,317-332,335,344,348-349
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "58ed20099247a4d4948e087a15e8a4f9888db0ce",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
