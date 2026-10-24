@@ -84,6 +84,15 @@ describe('parser', () => {
         });
     });
 
+    // TODO: upstream to html5lib-tests
+    it.each([
+        // U+212A KELVIN SIGN is not an ASCII upper alpha: `toLowerCase` turns it into "k".
+        ['<svg><a\u212A><desc></a\u212A>x', '<svg><a\u212A><desc></desc></a\u212A>x</svg>'],
+        ['<svg><a\u212A><desc></ak>x', '<svg><a\u212A><desc>x</desc></a\u212A></svg>'],
+    ])('foreign end tags are matched ASCII case-insensitively - %s', (input, expected) => {
+        expect(serialize(parseFragment(input))).toBe(expected);
+    });
+
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
             // @ts-expect-error Adding unknown prototype method

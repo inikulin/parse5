@@ -3814,7 +3814,9 @@ function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
 
         const tagName = p.treeAdapter.getTagName(element);
 
-        if (tagName.toLowerCase() === token.tagName) {
+        // The tokenizer lowercases foreign start-tag names and tree construction adds ASCII uppercase only through
+        // the SVG adjustment map, so these two comparisons are the ASCII case-insensitive match for every name created.
+        if (tagName === token.tagName || tagName === foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName)) {
             //NOTE: update the token tag name for `_setEndLocation`.
             token.tagName = tagName;
             p.openElements.shortenToLength(i);
