@@ -1,4 +1,4 @@
-import { html, type Token } from 'parse5';
+import { TokenizerMode, type Token } from 'parse5';
 import {
     SAXParser,
     type EndTag,
@@ -60,6 +60,9 @@ import { escapeText, escapeAttribute } from 'entities/escape';
  * ```
  */
 export class RewritingStream extends SAXParser {
+    /** Whether text is currently tokenized without decoding character references. */
+    private inRawText = false;
+
     /** Note: `sourceCodeLocationInfo` is always enabled. */
     constructor() {
         super({ sourceCodeLocationInfo: true });
@@ -82,8 +85,21 @@ export class RewritingStream extends SAXParser {
 
     // Events
     protected override emitIfListenerExists(eventName: string, token: SaxToken): boolean {
+        if (eventName === 'startTag') {
+            // The tokenizer has already been switched to the state for this element's content.
+            const { state } = this.tokenizer;
+            this.inRawText =
+                state === TokenizerMode.RAWTEXT ||
+                state === TokenizerMode.SCRIPT_DATA ||
+                state === TokenizerMode.PLAINTEXT;
+        }
+
         if (!super.emitIfListenerExists(eventName, token)) {
             this.emitRaw(this._getRawHtml(token.sourceCodeLocation!));
+        }
+
+        if (eventName === 'endTag') {
+            this.inRawText = false;
         }
 
         // NOTE: don't skip new lines after `<pre>` and other tags,
@@ -136,12 +152,7 @@ export class RewritingStream extends SAXParser {
 
     /** Emits a serialized text token into the output stream. */
     public emitText({ text }: Text): void {
-        this.push(
-            !this.parserFeedbackSimulator.inForeignContent &&
-                html.hasUnescapedText(this.tokenizer.lastStartTagName, true)
-                ? text
-                : escapeText(text),
-        );
+        this.push(this.inRawText ? text : escapeText(text));
     }
 
     /** Emits a serialized comment token into the output stream. */

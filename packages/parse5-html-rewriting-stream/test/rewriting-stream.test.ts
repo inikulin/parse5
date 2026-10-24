@@ -387,4 +387,19 @@ describe('RewritingStream', () => {
             },
         }),
     );
+
+    it.each([
+        '<div><script>a<b&&c</script>&lt;img src=x onerror=alert(1)&gt;</div>',
+        '<style></style>&lt;img src=x onerror=alert(1)&gt;',
+        '<p>&lt;img src=x onerror=alert(1)&gt;<script src="/app.js"></script></p>',
+        '<svg><style>&lt;img src=x onerror=alert(1)&gt;</svg>',
+    ])('emits only the text of raw text elements without escaping: %s', (src) =>
+        createRewriterTest({
+            src,
+            expected: src,
+            assignTokenHandlers: (rewriter) => {
+                rewriter.on('text', (token) => rewriter.emitText(token));
+            },
+        })(),
+    );
 });
