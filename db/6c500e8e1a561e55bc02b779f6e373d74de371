@@ -1,0 +1,23 @@
+packages/parse5/lib/parser/integration-point.test.ts
+  s_173ca9ea90a33e::t_e2d96522b06003 5-7,25-26
+packages/parse5/lib/parser/template-modes.test.ts
+  s_173ca9ea90a33e::t_6d249c85fcb440 4-14,16-19
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_173ca9ea90a33e::t_dede07836af8fb 1,5-19,21-28,30-31,51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "db6c500e8e1a561e55bc02b779f6e373d74de371",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
