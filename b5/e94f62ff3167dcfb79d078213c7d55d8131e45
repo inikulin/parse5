@@ -2,6 +2,7 @@ packages/parse5/lib/parser/index.ts
   s_173ca9ea90a33e::t_d3d5568eb46aa3 198,242,757,1773,1819,3500,3506,3512,3519,3525,3540-3545
 packages/parse5/lib/parser/template-eof.test.ts
   s_173ca9ea90a33e::t_27074e26fa2561 1-18
+  s_173ca9ea90a33e::t_2a1c3bdd512362 5-16,18
 packages/parse5/lib/parser/template-modes.test.ts
   s_173ca9ea90a33e::t_6b0ae51ece39fe 1-19
 ---
