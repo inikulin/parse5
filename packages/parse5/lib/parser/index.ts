@@ -32,6 +32,27 @@ import {
 } from '../common/token.js';
 
 //Misc constants
+// Elements that can select an insertion mode when it is reset, as a table by tag ID (`XMP` is the last tag ID).
+const INSERTION_MODE_TAGS = new Uint8Array($.XMP + 1);
+for (const tn of [
+    $.TR,
+    $.TBODY,
+    $.THEAD,
+    $.TFOOT,
+    $.CAPTION,
+    $.COLGROUP,
+    $.TABLE,
+    $.FRAMESET,
+    $.SELECT,
+    $.TEMPLATE,
+    $.TD,
+    $.TH,
+    $.HEAD,
+    $.BODY,
+    $.HTML,
+]) {
+    INSERTION_MODE_TAGS[tn] = 1;
+}
 const HIDDEN_INPUT_TYPE = 'hidden';
 
 // For the integration-point check of elements whose attributes do not matter; never attached to a node.
@@ -738,8 +759,18 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     /** @protected */
     _resetInsertionMode(): void {
         for (let i = this.openElements.stackTop; i >= 0; i--) {
+            const tn = i === 0 && this.fragmentContext ? this.fragmentContextID : this.openElements.tagIDs[i];
+
+            // The tag first: most open elements select no mode, and their namespace costs more to read.
+            if (!INSERTION_MODE_TAGS[tn]) continue;
+
+            const node = i === 0 && this.fragmentContext ? this.fragmentContext : this.openElements.items[i];
+
+            // Only HTML elements select an insertion mode.
+            if (this.treeAdapter.getNamespaceURI(node) !== NS.HTML) continue;
+
             //Insertion mode reset map
-            switch (i === 0 && this.fragmentContext ? this.fragmentContextID : this.openElements.tagIDs[i]) {
+            switch (tn) {
                 case $.TR: {
                     this.insertionMode = InsertionMode.IN_ROW;
                     return;
@@ -809,9 +840,13 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             for (let i = selectIdx - 1; i > 0; i--) {
                 const tn = this.openElements.tagIDs[i];
 
+                if (tn !== $.TEMPLATE && tn !== $.TABLE) continue;
+                if (this.treeAdapter.getNamespaceURI(this.openElements.items[i]) !== NS.HTML) continue;
+
                 if (tn === $.TEMPLATE) {
                     break;
-                } else if (tn === $.TABLE) {
+                } else {
+                    // Only `table` reaches this branch.
                     this.insertionMode = InsertionMode.IN_SELECT_IN_TABLE;
                     return;
                 }
