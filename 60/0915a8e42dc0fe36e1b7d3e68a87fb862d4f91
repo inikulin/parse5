@@ -1,0 +1,21 @@
+packages/parse5/lib/tokenizer/index.test.ts
+  s_173ca9ea90a33e::t_69b8991d13c5e1 59,70,80,140
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_0d3a7b70a0ac5b 228-229,248-249,257-258,493,506,519,528,539,549,556,590-594,596-597,601-604,608-609,614,620,629-630,632,638,642,703,705,757-758,761,769,779,782,785,801,803,806,829,1976,1985,2004,2013,2042,2051,2060,2143,2147,2227,2245,2251,2261,2273,2278,2337,2360,2370,2384,2401
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "600915a8e42dc0fe36e1b7d3e68a87fb862d4f91",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
