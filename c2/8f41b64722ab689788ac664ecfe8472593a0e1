@@ -1,0 +1,21 @@
+packages/parse5/lib/parser/index.test.ts
+  s_173ca9ea90a33e::t_6afe5c46039984 6,59-85
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_ca643396966d52 752-756,829-830
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c28f41b64722ab689788ac664ecfe8472593a0e1",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
