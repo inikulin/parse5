@@ -153,9 +153,14 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     },
 
     insertBefore(parentNode: ParentNode, newNode: ChildNode, referenceNode: ChildNode): void {
-        const insertionIdx = parentNode.childNodes.indexOf(referenceNode);
+        const { childNodes } = parentNode;
+        // The reference is usually the last child (fostered content precedes the table), so check that first.
+        const insertionIdx =
+            childNodes[childNodes.length - 1] === referenceNode
+                ? childNodes.length - 1
+                : childNodes.indexOf(referenceNode);
 
-        parentNode.childNodes.splice(insertionIdx, 0, newNode);
+        childNodes.splice(insertionIdx, 0, newNode);
         newNode.parentNode = parentNode;
     },
 
@@ -217,7 +222,12 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     },
 
     insertTextBefore(parentNode: ParentNode, text: string, referenceNode: ChildNode): void {
-        const prevNode = parentNode.childNodes[parentNode.childNodes.indexOf(referenceNode) - 1];
+        const { childNodes } = parentNode;
+        const referenceIdx =
+            childNodes[childNodes.length - 1] === referenceNode
+                ? childNodes.length - 1
+                : childNodes.indexOf(referenceNode);
+        const prevNode = childNodes[referenceIdx - 1];
 
         if (prevNode && defaultTreeAdapter.isTextNode(prevNode)) {
             prevNode.value += text;

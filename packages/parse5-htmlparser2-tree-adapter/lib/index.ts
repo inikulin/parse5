@@ -113,7 +113,9 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     insertBefore(parentNode: ParentNode, newNode: ChildNode, referenceNode: ChildNode): void {
-        const insertionIdx = parentNode.children.indexOf(referenceNode);
+        const { children } = parentNode;
+        const insertionIdx =
+            children[children.length - 1] === referenceNode ? children.length - 1 : children.indexOf(referenceNode);
         const { prev } = referenceNode;
 
         if (prev) {
@@ -194,7 +196,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     insertTextBefore(parentNode: ParentNode, text: string, referenceNode: ChildNode): void {
-        const prevNode = parentNode.children[parentNode.children.indexOf(referenceNode) - 1];
+        const prevNode = referenceNode.prev;
 
         if (prevNode && isText(prevNode)) {
             prevNode.data += text;
