@@ -749,7 +749,9 @@ export class Tokenizer {
             location.endOffset = location.startOffset;
         }
 
-        this._emitCurrentCharacterToken(location);
+        // A token that is still open at EOF (eof-in-tag) is dropped. Pending
+        // characters end where that token started, rather than at EOF.
+        this._emitCurrentCharacterToken(this.currentToken?.location ?? location);
         this.handler.onEof({ type: TokenType.EOF, location });
         this.active = false;
     }
