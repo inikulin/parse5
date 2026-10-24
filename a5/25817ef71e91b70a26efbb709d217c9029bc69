@@ -1,0 +1,23 @@
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_1cdd27ddad6aeb::t_ee6f3b18231fc1 116-118,199
+packages/parse5/lib/tree-adapters/default.ts
+  s_1cdd27ddad6aeb::t_0ef02715169638 156-163,225-230
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_1cdd27ddad6aeb::t_5c62e47d9f6015 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a525817ef71e91b70a26efbb709d217c9029bc69",
+  "prompts": {},
+  "sessions": {
+    "s_1cdd27ddad6aeb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e4f-24a5-7700-92be-e5f89af62c03",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
