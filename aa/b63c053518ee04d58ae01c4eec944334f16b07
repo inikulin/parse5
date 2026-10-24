@@ -1,11 +1,15 @@
 packages/parse5/lib/parser/open-element-stack.test.ts
   s_9822029f13e609::t_084382d9fc32ce 21-63
+  s_8f7be89ec2eb36::t_7cb15beb6f5ffb 21-63
 packages/parse5/lib/parser/open-element-stack.ts
   s_9822029f13e609::t_ad3237c6cef9fd 50-51,82-96,99,116,130-131,142,169,240,271,273-274,311-322,347-348,369-377,400-401
+  s_8f7be89ec2eb36::t_e66173ba648db0 50-51,82-96,99,116,130-131,142,169,240,273-274,322,347-348,369-377,400-401
 packages/parse5/lib/parser/stack-complexity.test.ts
   s_9822029f13e609::t_6e1355332c1726 1-26
+  s_8f7be89ec2eb36::t_12b4029bbf0ac2 1-4,6-12
 packages/parse5/lib/parser/index.ts
   s_9822029f13e609::t_63da1348c93968 35-49,738-751,819-822,2113-2119,2690-2691
+  s_6bbbbbc7cea8e7::t_8698b2860e4301 35-49,751,819-822,2113-2119,2690-2691
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -13,6 +17,22 @@ packages/parse5/lib/parser/index.ts
   "base_commit_sha": "aab63c053518ee04d58ae01c4eec944334f16b07",
   "prompts": {},
   "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_8f7be89ec2eb36": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a105fe-104a-7480-b522-f56cdf67e475",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
     "s_9822029f13e609": {
       "agent_id": {
         "tool": "claude",
