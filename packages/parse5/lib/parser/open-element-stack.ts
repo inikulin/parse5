@@ -372,13 +372,21 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
 
     //Implied end tags
     generateImpliedEndTags(): void {
-        while (this.currentTagId !== undefined && IMPLICIT_END_TAG_REQUIRED.has(this.currentTagId)) {
+        while (
+            this.currentTagId !== undefined &&
+            IMPLICIT_END_TAG_REQUIRED.has(this.currentTagId) &&
+            this.treeAdapter.getNamespaceURI(this.current) === NS.HTML
+        ) {
             this.pop();
         }
     }
 
     generateImpliedEndTagsThoroughly(): void {
-        while (this.currentTagId !== undefined && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)) {
+        while (
+            this.currentTagId !== undefined &&
+            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId) &&
+            this.treeAdapter.getNamespaceURI(this.current) === NS.HTML
+        ) {
             this.pop();
         }
     }
@@ -387,7 +395,8 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         while (
             this.currentTagId !== undefined &&
             this.currentTagId !== exclusionId &&
-            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)
+            IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId) &&
+            this.treeAdapter.getNamespaceURI(this.current) === NS.HTML
         ) {
             this.pop();
         }

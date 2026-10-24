@@ -176,6 +176,13 @@ describe('parser', () => {
         expect((b.childNodes[0] as TextNode).value).toBe('xy');
     });
 
+    // TODO: upstream to html5lib-tests
+    it('implied end tags are not generated for foreign elements', () => {
+        const fragment = parseFragment('<form><svg><option></form><g>');
+
+        assert.strictEqual(serialize(fragment), '<form><svg><option><g></g></option></svg></form>');
+    });
+
     describe('Tree adapters', () => {
         it('should provide element creation context', () => {
             const contexts = new Map<string, ElementCreationContext<DefaultTreeAdapterMap>>();
