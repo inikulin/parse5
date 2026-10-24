@@ -1,7 +1,10 @@
 packages/parse5-html-rewriting-stream/lib/index.ts
   s_173ca9ea90a33e::t_fb0eba178d5ffb 1,63-65,88-96,101-104,155
+  s_6bbbbbc7cea8e7::t_40c75eebe4f070 1,63-65,88-96,101-104,155
 packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
   s_173ca9ea90a33e::t_df56ddb64f6195 379-393
+  s_6bbbbbc7cea8e7::t_2bb7bd803710ea 379
+  s_173ca9ea90a33e::t_690ce411d3ba9d 380-393
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -14,6 +17,14 @@ packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
         "tool": "claude",
         "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
         "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     }
