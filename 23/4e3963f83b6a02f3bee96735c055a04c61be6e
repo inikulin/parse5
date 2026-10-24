@@ -1,0 +1,67 @@
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_173ca9ea90a33e::t_e55829010dc9d0 1,11,63-65,88-96,101-104,140-141,156
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_173ca9ea90a33e::t_fa34d5f20ffdbd 323-333,390-445
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_173ca9ea90a33e::t_e8aca8b65a2f49 116-118,199
+packages/parse5-sax-parser/lib/index.ts
+  s_173ca9ea90a33e::t_866e64c9bf4926 126,133
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_173ca9ea90a33e::t_bc559fa4e2410f 21-22,52-54,91,97-98,136-165,183,225-230,234-235,246,250-251,257
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_173ca9ea90a33e::t_b62a78c3dd2fa6 1-2,13-93
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_173ca9ea90a33e::t_b407637500cf11 158-198
+packages/parse5/lib/parser/index.test.ts
+  s_173ca9ea90a33e::t_9a229b59e03345 6,60-111,146-163,204-210
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_954ea92f034845 35-49,213,257,365,688,734-746,784,814-817,819-820,1470,1607-1618,1817,1863,2122-2128,2699-2700,3552,3558,3564,3571,3577,3592-3597,3791-3794,3804-3806
+packages/parse5/lib/parser/integration-point.test.ts
+  s_173ca9ea90a33e::t_7ef5094dd805a4 1-26
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_173ca9ea90a33e::t_dadcc23b916d39 21-96,466,487,539-552
+packages/parse5/lib/parser/open-element-stack.ts
+  s_173ca9ea90a33e::t_9337303dd6886c 37,51-52,83-97,100,117,131-132,143,170,241,272-275,281,299-301,313-314,339-340,361-369,392-393,418-422,428-432,441-442
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_173ca9ea90a33e::t_c1a6b6420134bb 1-26
+packages/parse5/lib/parser/template-eof.test.ts
+  s_173ca9ea90a33e::t_6af4e41f6789b6 1-18
+packages/parse5/lib/parser/template-modes.test.ts
+  s_173ca9ea90a33e::t_6b9b0fd1f8bbc4 1-19
+packages/parse5/lib/serializer/index.test.ts
+  s_173ca9ea90a33e::t_e3d746ccfa4a66 4,66-78
+packages/parse5/lib/serializer/index.ts
+  s_173ca9ea90a33e::t_319ca91d237160 2,28-50,111-120,147,150-154,156,158-160,162-167,169-185,187-194
+packages/parse5/lib/tokenizer/index.test.ts
+  s_173ca9ea90a33e::t_b3cbcf176b472d 53-74,113-138,144-211
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_5e3b4b09c4f09f 26-29,231,247-249,447-485,591-604,606-608,646-647,722-724,1399-1400
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_173ca9ea90a33e::t_b5a91f650ecc10 80
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_173ca9ea90a33e::t_f97686eeff1487 184-221
+packages/parse5/lib/tree-adapters/attributes.test.ts
+  s_173ca9ea90a33e::t_bea667fe035fa4 1-21
+packages/parse5/lib/tree-adapters/default.ts
+  s_173ca9ea90a33e::t_25fb01a833bdf5 156-163,225-230,240-241
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_173ca9ea90a33e::t_545a401e625d3a 1-51
+test/data/serialization/tests.json
+  s_173ca9ea90a33e::t_e07129ca8f66bf 45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "234e3963f83b6a02f3bee96735c055a04c61be6e",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
