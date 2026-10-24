@@ -1,4 +1,5 @@
-import { it } from 'vitest';
+import { it, assert } from 'vitest';
+import { serialize, type DefaultTreeAdapterTypes } from 'parse5';
 import { ParserStream } from '../lib/index.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { makeChunks, generateTestsForEachTreeAdapter, finished } from 'parse5-test-utils/utils/common.js';
@@ -78,4 +79,22 @@ generateTestsForEachTreeAdapter('ParserStream', (treeAdapter) => {
 
         return finished(parser);
     });
+});
+
+it('decides an annotation-xml integration point from its start tag', async () => {
+    const parser = new ParserStream();
+
+    parser.on('script', (scriptElement, _documentWrite, resume) => {
+        (scriptElement.parentNode as DefaultTreeAdapterTypes.Element).attrs[0].value = 'application/xml';
+        resume();
+    });
+
+    parser.end('<math><annotation-xml encoding=text/html><script></script><x-a/>TAIL<![CDATA[x]]>');
+    await finished(parser);
+
+    // The script edits `encoding` after the start tag, so the element stays an HTML integration point.
+    assert.strictEqual(
+        serialize(parser.document),
+        '<html><head></head><body><math><annotation-xml encoding="application/xml"><script></script><x-a>TAIL<!--[CDATA[x]]--></x-a></annotation-xml></math></body></html>',
+    );
 });
