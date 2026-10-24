@@ -85,7 +85,16 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
         return '';
     }
 
-    return serializeChildNodes(node, opts);
+    const { treeAdapter } = opts;
+    // A template's children are those of its content fragment.
+    const container =
+        treeAdapter.isElementNode(node) &&
+        treeAdapter.getTagName(node) === $.TEMPLATE &&
+        treeAdapter.getNamespaceURI(node) === NS.HTML
+            ? treeAdapter.getTemplateContent(node)
+            : node;
+
+    return serializeNodes(treeAdapter.getChildNodes(container) ?? [], opts);
 }
 
 /**
@@ -112,55 +121,54 @@ export function serializeOuter<T extends TreeAdapterTypeMap = DefaultTreeAdapter
     options?: SerializerOptions<T>,
 ): string {
     const opts = { ...defaultOpts, ...options } as InternalOptions<T>;
-    return serializeNode(node, opts);
+    return serializeNodes([node], opts);
 }
 
-function serializeChildNodes<T extends TreeAdapterTypeMap>(
-    parentNode: T['parentNode'],
-    options: InternalOptions<T>,
-): string {
+function serializeNodes<T extends TreeAdapterTypeMap>(nodes: T['node'][], options: InternalOptions<T>): string {
+    const { treeAdapter } = options;
+    // The depth of the tree is not bounded, so the open elements (their
+    // remaining siblings and end tags) are kept on explicit stacks.
+    const stack: { nodes: T['node'][]; index: number; endTag: string }[] = [];
     let html = '';
-    // Get container of the child nodes
-    const container =
-        options.treeAdapter.isElementNode(parentNode) &&
-        options.treeAdapter.getTagName(parentNode) === $.TEMPLATE &&
-        options.treeAdapter.getNamespaceURI(parentNode) === NS.HTML
-            ? options.treeAdapter.getTemplateContent(parentNode)
-            : parentNode;
-    const childNodes = options.treeAdapter.getChildNodes(container);
+    let index = 0;
 
-    if (childNodes) {
-        for (const currentNode of childNodes) {
-            html += serializeNode(currentNode, options);
+    for (;;) {
+        if (index < nodes.length) {
+            const node = nodes[index++];
+
+            if (treeAdapter.isElementNode(node)) {
+                const tn = treeAdapter.getTagName(node);
+
+                html += `<${tn}${serializeAttributes(node, options)}>`;
+
+                const isHtml = treeAdapter.getNamespaceURI(node) === NS.HTML;
+
+                if (!(isHtml && VOID_ELEMENTS.has(tn))) {
+                    stack.push({ nodes, index, endTag: `</${tn}>` });
+                    nodes =
+                        treeAdapter.getChildNodes(
+                            isHtml && tn === $.TEMPLATE ? treeAdapter.getTemplateContent(node) : node,
+                        ) ?? [];
+                    index = 0;
+                }
+            } else if (treeAdapter.isTextNode(node)) {
+                html += serializeTextNode(node, options);
+            } else if (treeAdapter.isCommentNode(node)) {
+                html += serializeCommentNode(node, options);
+            } else if (treeAdapter.isDocumentTypeNode(node)) {
+                html += serializeDocumentTypeNode(node, options);
+            }
+        } else {
+            const parent = stack.pop();
+
+            if (!parent) {
+                return html;
+            }
+
+            html += parent.endTag;
+            ({ nodes, index } = parent);
         }
     }
-
-    return html;
-}
-
-function serializeNode<T extends TreeAdapterTypeMap>(node: T['node'], options: InternalOptions<T>): string {
-    if (options.treeAdapter.isElementNode(node)) {
-        return serializeElement(node, options);
-    }
-    if (options.treeAdapter.isTextNode(node)) {
-        return serializeTextNode(node, options);
-    }
-    if (options.treeAdapter.isCommentNode(node)) {
-        return serializeCommentNode(node, options);
-    }
-    if (options.treeAdapter.isDocumentTypeNode(node)) {
-        return serializeDocumentTypeNode(node, options);
-    }
-    // Return an empty string for unknown nodes
-    return '';
-}
-
-function serializeElement<T extends TreeAdapterTypeMap>(node: T['element'], options: InternalOptions<T>): string {
-    const tn = options.treeAdapter.getTagName(node);
-
-    return `<${tn}${serializeAttributes(node, options)}>${
-        isVoidElement(node, options) ? '' : `${serializeChildNodes(node, options)}</${tn}>`
-    }`;
 }
 
 function serializeAttributes<T extends TreeAdapterTypeMap>(
