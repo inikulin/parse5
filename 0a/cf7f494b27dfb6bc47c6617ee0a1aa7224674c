@@ -1,0 +1,16 @@
+packages/parse5/lib/tokenizer/index.test.ts
+  h_c09f8bd1046292 142-143,146
+packages/parse5/lib/tokenizer/index.ts
+  h_c09f8bd1046292 231-232,591-594,601-602
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0acf7f494b27dfb6bc47c6617ee0a1aa7224674c",
+  "prompts": {},
+  "humans": {
+    "h_c09f8bd1046292": {
+      "author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
