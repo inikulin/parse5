@@ -3,6 +3,7 @@ import {
     parseFragment,
     parse,
     InsertionMode,
+    serialize,
     type ElementCreationContext,
     type TreeAdapter,
     type DefaultTreeAdapterMap,
@@ -54,6 +55,33 @@ describe('parser', () => {
             (document.childNodes[0] as Htmlparser2TreeAdapterMap['documentType']).data,
             '!DOCTYPE html SYSTEM "about:legacy-compat"',
         );
+    });
+
+    // TODO: upstream to html5lib-tests
+    describe('foreign elements do not select an insertion mode', () => {
+        it.each([
+            [
+                '<table><td><svg><select><desc><table></table><td>x',
+                '<table><tbody><tr><td><svg><select><desc><table></table></desc></select></svg></td><td>x</td></tr></tbody></table>',
+            ],
+            [
+                '<svg><template><desc><table></table>x<p>y',
+                '<svg><template><desc><table></table>x<p>y</p></desc></template></svg>',
+            ],
+            [
+                '<table><svg><template><desc><select><template></template><td>x',
+                '<svg><template><desc><select><template></template></select></desc></template></svg><table><tbody><tr><td>x</td></tr></tbody></table>',
+            ],
+        ])('%s', (input, expected) => {
+            expect(serialize(parse(input))).toBe(`<html><head></head><body>${expected}</body></html>`);
+        });
+
+        it('foreign fragment context', () => {
+            const svg = parseFragment('<svg><select>').childNodes[0] as Element;
+            const fragment = parseFragment(svg.childNodes[0] as Element, '<p><table></table><div>x');
+
+            expect(serialize(fragment)).toBe('<p></p><table></table><div>x</div>');
+        });
     });
 
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
