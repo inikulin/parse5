@@ -307,6 +307,32 @@ describe('Tokenizer methods', () => {
         assert.strictEqual(count, 4);
     });
 
+    // TODO: upstream to html5lib-tests
+    it('should not pair a low surrogate with a following low surrogate', () => {
+        const errors: string[] = [];
+        let tagName = '';
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onComment: noop,
+            onDoctype: noop,
+            onStartTag(t): void {
+                ({ tagName } = t);
+            },
+            onEndTag: noop,
+            onEof: noop,
+            onCharacter: noop,
+            onNullCharacter: noop,
+            onWhitespaceCharacter: noop,
+            onParseError(err): void {
+                errors.push(err.code);
+            },
+        });
+
+        tokenizer.write('<a\uDC00\uDC00\uD83D\uDE00\uDFFF>', true);
+
+        assert.strictEqual(tagName, 'a\uDC00\uDC00\uD83D\uDE00\uDFFF');
+        assert.deepStrictEqual(errors, Array.from({ length: 3 }).fill('surrogate-in-input-stream'));
+    });
+
     it('should throw if setting the state to an unknown value', () => {
         const tokenizer = new Tokenizer(tokenizerOpts, {} as never);
         tokenizer.state = -1 as never;
