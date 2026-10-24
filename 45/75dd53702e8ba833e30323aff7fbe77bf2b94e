@@ -1,0 +1,21 @@
+packages/parse5/lib/tree-adapters/attributes.test.ts
+  s_173ca9ea90a33e::t_e85c65b53e9095 1-21
+packages/parse5/lib/tree-adapters/default.ts
+  s_173ca9ea90a33e::t_0768f09fc670c5 240-241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4575dd53702e8ba833e30323aff7fbe77bf2b94e",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
