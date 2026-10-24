@@ -1,7 +1,7 @@
 import { it, assert, describe } from 'vitest';
 import { html, parse, parseFragment, serialize, serializeOuter, type DefaultTreeAdapterMap } from 'parse5';
 import { generateSerializerTests } from 'parse5-test-utils/utils/generate-serializer-tests.js';
-import { treeAdapters } from 'parse5-test-utils/utils/common.js';
+import { treeAdapters, generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
 
 generateSerializerTests('serializer', 'Serializer', serialize);
 
@@ -61,5 +61,18 @@ describe('serializer', () => {
         const unknown = {} as never;
         assert.strictEqual(serialize(unknown), '');
         assert.strictEqual(serializeOuter(unknown), '');
+    });
+});
+
+generateTestsForEachTreeAdapter('deep serialization', (treeAdapter) => {
+    it.each(['serialize', 'serializeOuter'])('%s does not recurse', (method) => {
+        const opening = '<x>'.repeat(20_000);
+        const fragment = parseFragment(`${opening}text`, { treeAdapter });
+        const expected = `${opening}text${'</x>'.repeat(20_000)}`;
+        const actual =
+            method === 'serialize'
+                ? serialize(fragment, { treeAdapter })
+                : serializeOuter(treeAdapter.getChildNodes(fragment)[0], { treeAdapter });
+        assert.equal(actual, expected);
     });
 });
