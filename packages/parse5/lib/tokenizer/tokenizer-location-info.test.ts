@@ -181,3 +181,41 @@ it('Location Info (Tokenizer)', () => {
         assert.ok(!tokenizer.active);
     }
 });
+
+function noop(): void {
+    // Noop
+}
+
+it('Location Info (Tokenizer) - text before a tag that is dropped at EOF', () => {
+    const testCases = [
+        { initialMode: TokenizerMode.DATA, lastStartTagName: '', html: 'text<a href="foo', textEnd: 4 },
+        { initialMode: TokenizerMode.RCDATA, lastStartTagName: 'title', html: 'text</title foo', textEnd: 4 },
+        // Not an end tag, as it doesn't match the last start tag.
+        { initialMode: TokenizerMode.RCDATA, lastStartTagName: 'title', html: 'text</titles', textEnd: 12 },
+    ];
+
+    for (const { initialMode, lastStartTagName, html, textEnd } of testCases) {
+        const endOffsets: (number | undefined)[] = [];
+        const tokenizer = new Tokenizer(
+            { sourceCodeLocationInfo: true },
+            {
+                onComment: noop,
+                onDoctype: noop,
+                onStartTag: noop,
+                onEndTag: noop,
+                onEof: noop,
+                onCharacter({ location }): void {
+                    endOffsets.push(location?.endOffset);
+                },
+                onNullCharacter: noop,
+                onWhitespaceCharacter: noop,
+            },
+        );
+
+        tokenizer.state = initialMode;
+        tokenizer.lastStartTagName = lastStartTagName;
+        tokenizer.write(html, true);
+
+        assert.deepStrictEqual(endOffsets, [textEnd]);
+    }
+});
