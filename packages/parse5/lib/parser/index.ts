@@ -372,7 +372,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         let node = this.fragmentContext;
 
         while (node) {
-            if (this.treeAdapter.getTagName(node) === TN.FORM) {
+            if (this.treeAdapter.getTagName(node) === TN.FORM && this.treeAdapter.getNamespaceURI(node) === NS.HTML) {
                 this.formElement = node;
                 break;
             }

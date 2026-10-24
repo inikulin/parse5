@@ -101,6 +101,14 @@ describe('parser', () => {
         expect(serialize(fragment)).toBe('<div><form></form></div><svg></svg><form>x</form>');
     });
 
+    it('a foreign `form` ancestor of the fragment context is not the form element pointer', () => {
+        const svg = parseFragment('<svg><form><desc>').childNodes[0] as Element;
+        const form = svg.childNodes[0] as Element;
+        const fragment = parseFragment(form.childNodes[0] as Element, '<form>x');
+
+        expect(serialize(fragment)).toBe('<form>x</form>');
+    });
+
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
             // @ts-expect-error Adding unknown prototype method
