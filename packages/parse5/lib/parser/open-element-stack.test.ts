@@ -478,6 +478,20 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
         assert.strictEqual(stack.currentTagId, $.LI);
     });
 
+    it('Generate implied end tags - foreign elements', () => {
+        const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
+
+        stack.push(createElement(TN.HTML), $.HTML);
+        stack.push(createElement(TN.OPTION, NS.SVG), $.OPTION);
+
+        stack.generateImpliedEndTags();
+        stack.generateImpliedEndTagsThoroughly();
+        stack.generateImpliedEndTagsWithExclusion($.P);
+
+        assert.strictEqual(stack.stackTop, 1);
+        assert.strictEqual(stack.currentTagId, $.OPTION);
+    });
+
     it('Template count', () => {
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
 
