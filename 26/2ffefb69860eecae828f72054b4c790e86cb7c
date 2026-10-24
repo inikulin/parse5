@@ -1,0 +1,40 @@
+packages/parse5-parser-stream/test/flush.test.ts
+  h_c09f8bd1046292 116-136
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  h_c09f8bd1046292 16-25,31-33,53,113-190,225-274,334-347
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  h_c09f8bd1046292 2,14-37,68-105
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  h_c09f8bd1046292 14-24
+packages/parse5/lib/common/html.ts
+  h_c09f8bd1046292 530
+packages/parse5/lib/parser/index.test.ts
+  h_c09f8bd1046292 164-174,182-193,234-252
+packages/parse5/lib/parser/index.ts
+  h_c09f8bd1046292 590-592,595-599,604,920,994,1355,2656,3320
+packages/parse5/lib/parser/open-element-stack.test.ts
+  h_c09f8bd1046292 466-469,490-492
+packages/parse5/lib/parser/open-element-stack.ts
+  h_c09f8bd1046292 360,392
+packages/parse5/lib/parser/parser-location-info.test.ts
+  h_c09f8bd1046292 235-266
+packages/parse5/lib/tokenizer/index.test.ts
+  h_c09f8bd1046292 2,16-56,58-202
+packages/parse5/lib/tokenizer/index.ts
+  h_c09f8bd1046292 231-241,257-271,336,342-357,360,369,373-374,616-619,667-725,732-734,736-737,744-748,776-780,796-800,854-855,858,860-863,866-867,870,877,879-897,904-905,915-931,933-934,958,2105,2114,2133,2142,2171,2180,2189,2272,2276-2290,2370,2388,2394,2404-2418,2428,2433,2492,2515,2525,2539,2556,3251-3255
+packages/parse5/lib/tokenizer/preprocessor.ts
+  h_c09f8bd1046292 40-44,47
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  h_c09f8bd1046292 157-162,228-258
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "262ffefb69860eecae828f72054b4c790e86cb7c",
+  "prompts": {},
+  "humans": {
+    "h_c09f8bd1046292": {
+      "author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
