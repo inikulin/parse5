@@ -1,0 +1,33 @@
+packages/parse5/lib/tokenizer/index.ts
+  s_6fb21e37865293::t_81394124d0dac7 635-637,639-640
+  s_6bbbbbc7cea8e7::t_98f31143b88997 635-637,639-640
+  s_6bbbbbc7cea8e7::t_0cf1d68ba9f491 635-637,639-640
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_6fb21e37865293::t_837ac14a4cd681 222-252
+  s_6bbbbbc7cea8e7::t_31d305cdab255f 222-252
+  s_6bbbbbc7cea8e7::t_1386726351ac39 222-223,224-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fb6060fa35eb390146241dfed37441509ca459fe",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6fb21e37865293": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e97-2dbf-7a10-abbd-d842326d8f0c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
