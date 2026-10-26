@@ -37,9 +37,14 @@ export class Preprocessor {
         return this.pos - this.lineStartPos + Number(this.lastGapPos !== this.pos);
     }
 
+    /** The index in `html` at which the current code point starts (the high surrogate of a pair). */
+    public get codePointStart(): number {
+        return this.pos - Number(this.lastGapPos === this.pos);
+    }
+
     /** The offset of the current code point, before the second unit of a surrogate pair. */
     public get offset(): number {
-        return this.droppedBufferSize + this.pos - Number(this.lastGapPos === this.pos);
+        return this.droppedBufferSize + this.codePointStart;
     }
 
     public getError(code: ERR, cpOffset: number): ParserError {

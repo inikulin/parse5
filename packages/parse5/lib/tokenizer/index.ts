@@ -224,6 +224,12 @@ export class Tokenizer {
     protected currentToken: Token | null = null;
     protected currentAttr: Attribute = { name: '', value: '' };
     private currentAttrLocation: Location | null = null;
+    /**
+     * `[start, end)` of `preprocessor.html` still to be appended to the attribute value, comment data or character
+     * token being built (`_flushRun`): input that is used as is is appended as one slice, not a code point at a time.
+     */
+    protected runStart = 0;
+    protected runEnd = 0;
 
     constructor(
         protected options: TokenizerOptions,
@@ -238,7 +244,18 @@ export class Tokenizer {
                 // Note: Set `pos` _before_ flushing, as flushing might drop
                 // the current chunk and invalidate `entityStartPos`.
                 this.preprocessor.pos = this.entityStartPos + consumed - 1;
-                this._flushCodePointConsumedAsCharacterReference(cp);
+
+                if (!this._isCharacterReferenceInAttribute()) {
+                    this._ensureCharacterToken(
+                        isWhitespace(cp)
+                            ? TokenType.WHITESPACE_CHARACTER
+                            : cp === $.NULL
+                              ? TokenType.NULL_CHARACTER
+                              : TokenType.CHARACTER,
+                    );
+                }
+
+                this._extendRunWith(String.fromCodePoint(cp), 0);
             },
             handler.onParseError
                 ? {
@@ -473,6 +490,7 @@ export class Tokenizer {
 
     //Token creation
     protected _createStartTagToken(): void {
+        this._flushRun('');
         this.currentToken = {
             type: TokenType.START_TAG,
             tagName: '',
@@ -485,6 +503,7 @@ export class Tokenizer {
     }
 
     protected _createEndTagToken(): void {
+        this._flushRun('');
         this.currentToken = {
             type: TokenType.END_TAG,
             tagName: '',
@@ -497,6 +516,7 @@ export class Tokenizer {
     }
 
     protected _createCommentToken(offset: number): void {
+        this._flushRun('');
         this.currentToken = {
             type: TokenType.COMMENT,
             data: '',
@@ -505,6 +525,7 @@ export class Tokenizer {
     }
 
     protected _createDoctypeToken(initialName: string | null): void {
+        this._flushRun('');
         this.currentToken = {
             type: TokenType.DOCTYPE,
             name: initialName,
@@ -515,7 +536,7 @@ export class Tokenizer {
         };
     }
 
-    protected _createCharacterToken(type: CharacterToken['type'], chars: string): void {
+    protected _createCharacterToken(type: CharacterToken['type']): void {
         if (this.currentLocation) {
             const start = this.currentLocation.startOffset - this.preprocessor.droppedBufferSize;
             // A flushed CR already advanced the line; exclude its ignored LF from the next token's range.
@@ -525,13 +546,14 @@ export class Tokenizer {
         }
         this.currentCharacterToken = {
             type,
-            chars,
+            chars: '',
             location: this.currentLocation,
         };
     }
 
     //Tag attributes
     protected _createAttr(attrNameFirstCh: string): void {
+        this._flushRun('');
         this.currentAttr = {
             name: attrNameFirstCh,
             value: '',
@@ -563,6 +585,73 @@ export class Tokenizer {
             this.currentAttrLocation.endCol = this.preprocessor.col;
             this.currentAttrLocation.endOffset = this.preprocessor.offset;
         }
+    }
+
+    /**
+     * Append the pending run and `text` to the attribute value, comment data or character token being built.
+     * The run is a string of its own: V8 copies a slice of fewer than 13 characters but lets a longer one share
+     * the input's buffer, which would keep that buffer alive for as long as any attribute value or text cut from
+     * it is; a concatenation is flattened into a buffer of its own when it is sliced.
+     */
+    protected _flushRun(text: string): void {
+        if (this.runEnd === this.runStart && text.length === 0) {
+            return;
+        }
+
+        const slice = this.preprocessor.html.slice(this.runStart, this.runEnd);
+        const run = (slice.length < 13 ? slice : ` ${slice}`.slice(1)) + text;
+        const token = this.currentToken;
+
+        this.runStart = this.runEnd;
+
+        if (token === null) {
+            (this.currentCharacterToken as CharacterToken).chars += run;
+        } else if (token.type === TokenType.COMMENT) {
+            token.data += run;
+        } else {
+            this.currentAttr.value += run;
+        }
+    }
+
+    /** Extend the pending run by the current input code point, read as `cp`, or flush it and start a new one. */
+    protected _extendRun(cp: number): void {
+        const { preprocessor } = this;
+
+        //NOTE: a CR is read as LF, which is then not in the input.
+        if (cp === $.LINE_FEED && preprocessor.html.charCodeAt(preprocessor.pos) !== $.LINE_FEED) {
+            this._flushRun('\n');
+            this.runStart = preprocessor.pos + 1;
+        } else {
+            const start = preprocessor.pos - Number(cp > 0xff_ff);
+
+            if (start !== this.runEnd) {
+                this._flushRun('');
+                this.runStart = start;
+            }
+        }
+
+        this.runEnd = preprocessor.pos + 1;
+    }
+
+    /**
+     * Extend the pending run by `text`, the input that ends `cpOffset` code points after the current one, or flush
+     * the run and append `text` where the input differs (a NUL replacement, a decoded reference, a dropped chunk).
+     */
+    protected _extendRunWith(text: string, cpOffset: number): void {
+        const { preprocessor } = this;
+        const start = preprocessor.codePointStart + 1 + cpOffset - text.length;
+
+        if (start >= 0 && preprocessor.html.startsWith(text, start)) {
+            if (start !== this.runEnd) {
+                this._flushRun('');
+                this.runStart = start;
+            }
+        } else {
+            this._flushRun(text);
+            this.runStart = start + text.length;
+        }
+
+        this.runEnd = start + text.length;
     }
 
     //Token emission
@@ -619,6 +708,8 @@ export class Tokenizer {
     }
 
     protected _emitCurrentCharacterToken(nextLocation: Location | null): void {
+        this._flushRun('');
+
         if (this.currentCharacterToken) {
             //NOTE: if we have a pending character token, make it's end location equal to the
             //current token's start location.
@@ -671,34 +762,35 @@ export class Tokenizer {
     //1)TokenType.NULL_CHARACTER - \u0000-character sequences (e.g. '\u0000\u0000\u0000')
     //2)TokenType.WHITESPACE_CHARACTER - any whitespace/new-line character sequences (e.g. '\n  \r\t   \f')
     //3)TokenType.CHARACTER - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#$%^')
-    protected _appendCharToCurrentCharacterToken(type: CharacterToken['type'], ch: string): void {
+    /** Make the current character token one of `type`, emitting the current one if it has another type. */
+    protected _ensureCharacterToken(type: CharacterToken['type']): void {
         if (this.currentCharacterToken) {
             if (this.currentCharacterToken.type === type) {
-                this.currentCharacterToken.chars += ch;
                 return;
-            } else {
-                this.currentLocation = this.getCurrentLocation(0);
-                this._emitCurrentCharacterToken(this.currentLocation);
-                this.preprocessor.dropParsedChunk();
             }
+
+            this.currentLocation = this.getCurrentLocation(0);
+            this._emitCurrentCharacterToken(this.currentLocation);
+            this.preprocessor.dropParsedChunk();
         }
 
-        this._createCharacterToken(type, ch);
+        this._createCharacterToken(type);
     }
 
+    /** Emit the current input code point, read as `cp`. */
     protected _emitCodePoint(cp: number): void {
         const type = isWhitespace(cp)
             ? TokenType.WHITESPACE_CHARACTER
             : cp === $.NULL
               ? TokenType.NULL_CHARACTER
               : TokenType.CHARACTER;
+        const token = this.currentCharacterToken;
 
-        // OPTIMIZATION: Use String.fromCharCode for BMP characters (< 0x10000) which is faster
-        // than String.fromCodePoint. Characters outside BMP are rare in HTML.
-        this._appendCharToCurrentCharacterToken(
-            type,
-            cp < 0x1_00_00 ? String.fromCharCode(cp) : String.fromCodePoint(cp),
-        );
+        if (token === null || token.type !== type) {
+            this._ensureCharacterToken(type);
+        }
+
+        this._extendRun(cp);
     }
 
     //NOTE: used when we emit characters explicitly.
@@ -714,10 +806,12 @@ export class Tokenizer {
             this.currentLocation = this.getCurrentLocation(ch.length - 1 - cpOffset);
             this._emitCurrentCharacterToken(this.currentLocation);
             // Keep source characters that precede the lookahead available for a subsequent flush.
-            this._createCharacterToken(TokenType.CHARACTER, ch);
+            this._createCharacterToken(TokenType.CHARACTER);
         } else {
-            this._appendCharToCurrentCharacterToken(TokenType.CHARACTER, ch);
+            this._ensureCharacterToken(TokenType.CHARACTER);
         }
+
+        this._extendRunWith(ch, cpOffset);
     }
 
     // Character reference helpers
@@ -740,7 +834,7 @@ export class Tokenizer {
 
     protected _flushCodePointConsumedAsCharacterReference(cp: number): void {
         if (this._isCharacterReferenceInAttribute()) {
-            this.currentAttr.value += String.fromCodePoint(cp);
+            this._extendRun(cp);
         } else {
             this._emitCodePoint(cp);
         }
@@ -1331,6 +1425,8 @@ export class Tokenizer {
                 return false;
             }
             default: {
+                //NOTE: the end tag is text after all, so no token is being built.
+                this.currentToken = null;
                 return !this._ensureHibernation();
             }
         }
@@ -1885,7 +1981,7 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                this.currentAttr.value += REPLACEMENT_CHARACTER;
+                this._extendRunWith(REPLACEMENT_CHARACTER, 0);
                 break;
             }
             case $.EOF: {
@@ -1894,7 +1990,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._extendRun(cp);
             }
         }
     }
@@ -1913,7 +2009,7 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                this.currentAttr.value += REPLACEMENT_CHARACTER;
+                this._extendRunWith(REPLACEMENT_CHARACTER, 0);
                 break;
             }
             case $.EOF: {
@@ -1922,7 +2018,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._extendRun(cp);
             }
         }
     }
@@ -1951,7 +2047,7 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                this.currentAttr.value += REPLACEMENT_CHARACTER;
+                this._extendRunWith(REPLACEMENT_CHARACTER, 0);
                 break;
             }
             case $.QUOTATION_MARK:
@@ -1960,7 +2056,7 @@ export class Tokenizer {
             case $.EQUALS_SIGN:
             case $.GRAVE_ACCENT: {
                 this._err(ERR.unexpectedCharacterInUnquotedAttributeValue);
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._extendRun(cp);
                 break;
             }
             case $.EOF: {
@@ -1969,7 +2065,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.value += String.fromCodePoint(cp);
+                this._extendRun(cp);
             }
         }
     }
@@ -2052,11 +2148,11 @@ export class Tokenizer {
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                token.data += REPLACEMENT_CHARACTER;
+                this._extendRunWith(REPLACEMENT_CHARACTER, 0);
                 break;
             }
             default: {
-                token.data += String.fromCodePoint(cp);
+                this._extendRun(cp);
             }
         }
     }
@@ -2136,7 +2232,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '-';
+                this._extendRunWith('-', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2154,13 +2250,13 @@ export class Tokenizer {
                 break;
             }
             case $.LESS_THAN_SIGN: {
-                token.data += '<';
+                this._extendRunWith('<', 0);
                 this.state = State.COMMENT_LESS_THAN_SIGN;
                 break;
             }
             case $.NULL: {
                 this._err(ERR.unexpectedNullCharacter);
-                token.data += REPLACEMENT_CHARACTER;
+                this._extendRunWith(REPLACEMENT_CHARACTER, 0);
                 break;
             }
             case $.EOF: {
@@ -2170,7 +2266,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += String.fromCodePoint(cp);
+                this._extendRun(cp);
             }
         }
     }
@@ -2178,16 +2274,14 @@ export class Tokenizer {
     // Comment less-than sign state
     //------------------------------------------------------------------
     protected _stateCommentLessThanSign(cp: number): void {
-        const token = this.currentToken as CommentToken;
-
         switch (cp) {
             case $.EXCLAMATION_MARK: {
-                token.data += '!';
+                this._extendRunWith('!', 0);
                 this.state = State.COMMENT_LESS_THAN_SIGN_BANG;
                 break;
             }
             case $.LESS_THAN_SIGN: {
-                token.data += '<';
+                this._extendRunWith('<', 0);
                 break;
             }
             default: {
@@ -2246,7 +2340,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '-';
+                this._extendRunWith('-', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2269,7 +2363,7 @@ export class Tokenizer {
                 break;
             }
             case $.HYPHEN_MINUS: {
-                token.data += '-';
+                this._extendRunWith('-', -2);
                 break;
             }
             case $.EOF: {
@@ -2279,7 +2373,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '--';
+                this._extendRunWith('--', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
@@ -2293,7 +2387,7 @@ export class Tokenizer {
 
         switch (cp) {
             case $.HYPHEN_MINUS: {
-                token.data += '--!';
+                this._extendRunWith('--!', -1);
                 this.state = State.COMMENT_END_DASH;
                 break;
             }
@@ -2310,7 +2404,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.data += '--!';
+                this._extendRunWith('--!', -1);
                 this.state = State.COMMENT;
                 this._stateComment(cp);
             }
