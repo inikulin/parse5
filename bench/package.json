@@ -7,9 +7,9 @@
     "author": "Ivan Nikulin <ifaaan@gmail.com>",
     "license": "MIT",
     "dependencies": {
-        "benchmark": "^2.1.4",
         "human-format": "^1.4.0",
-        "parse5": "npm:parse5"
+        "parse5": "npm:parse5",
+        "tinybench": "^6.2.2"
     },
     "devDependencies": {
         "parse5-test-utils": "1.0.0"
