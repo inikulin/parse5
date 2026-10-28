@@ -1,0 +1,81 @@
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_173ca9ea90a33e::t_cf43d9b2d98f1b 395-430
+  s_173ca9ea90a33e::t_418657f997ebb1 396-414
+packages/parse5/lib/serializer/index.test.ts
+  s_173ca9ea90a33e::t_6753358953891c 4,66-78
+packages/parse5/lib/serializer/index.ts
+  s_173ca9ea90a33e::t_bc322bd6639983 88-97,124,127-131,133,135-137,139-140,142,144-171
+  s_173ca9ea90a33e::t_ccfb4b74840eaf 88-97
+packages/parse5-sax-parser/lib/index.ts
+  s_173ca9ea90a33e::t_96b30c9654d0f0 126,133
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_173ca9ea90a33e::t_d89dc83a9caf59 50-52
+  s_173ca9ea90a33e::t_b9a13b443569a8 89,95-96,151,196-197,208,212-213,219
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_173ca9ea90a33e::t_1b3d28921ee2fa 158-198
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_ae49ecd70318cc 447-485
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_173ca9ea90a33e::t_1a6214c96d0f60 1,12-42
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_d3d5568eb46aa3 216,260,792,1810,1856,3544,3550,3556,3563,3569,3584-3589
+  s_173ca9ea90a33e::t_f9a7800feb973c 52-54,691-692
+  s_173ca9ea90a33e::t_c2fb5af7208dad 35-49,738,739-740,742,745,749,2116,2120,2692
+  s_173ca9ea90a33e::t_34ddb7450c7113 750-754,824-825
+packages/parse5/lib/parser/template-eof.test.ts
+  s_173ca9ea90a33e::t_27074e26fa2561 1-18
+  s_173ca9ea90a33e::t_2a1c3bdd512362 5-16,18
+packages/parse5/lib/parser/template-modes.test.ts
+  s_173ca9ea90a33e::t_6b0ae51ece39fe 1-19
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_173ca9ea90a33e::t_2e18d3c9da77d4 116-118,199
+packages/parse5/lib/tree-adapters/default.ts
+  s_173ca9ea90a33e::t_9b11f5a7eb0503 156-163,225-230
+  s_173ca9ea90a33e::t_0768f09fc670c5 240-241
+  s_98abc3499f7493::t_00b5e1c577cd13 240-241
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_173ca9ea90a33e::t_3f6b03b891adef 1-51
+packages/parse5/lib/parser/integration-point.test.ts
+  s_173ca9ea90a33e::t_29d67bdeb8c025 1-26
+  s_98abc3499f7493::t_87051f626b341d 1-4,8-24
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_1cdd27ddad6aeb::t_66bb624f4e1af5 21-63
+packages/parse5/lib/parser/open-element-stack.ts
+  s_1cdd27ddad6aeb::t_3c45a7575ba3ed 54,59,90-104,107,124,138-139,150,177,248,297,334-345,371,393-395,419
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_173ca9ea90a33e::t_f52057a6704c18 1-26
+packages/parse5/lib/parser/index.test.ts
+  s_173ca9ea90a33e::t_e408d2c77fd14b 6,59-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "90003398f4d04caf089ab0afa154a717ff8ae112",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_1cdd27ddad6aeb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e4f-24a5-7700-92be-e5f89af62c03",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_98abc3499f7493": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-669a-74b3-b59e-3acc3bc180fe",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
