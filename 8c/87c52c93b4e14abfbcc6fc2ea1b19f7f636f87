@@ -10,11 +10,14 @@ packages/parse5-sax-parser/test/sax-parser.test.ts
   s_d9f80b63f8c1de::t_654e252ef758e7 186,192-193,195,204-206,208-222,224-225
   s_d9f80b63f8c1de::t_05ca63e2a5a6a0 187-191,194,196-203,207
   s_d9f80b63f8c1de::t_28356b8427e187 223
+  s_173ca9ea90a33e::t_0c4a1f8eb34598 227-269
 packages/parse5/lib/tokenizer/index.test.ts
   s_d9f80b63f8c1de::t_846c3c9db58f02 56,73
   s_d9f80b63f8c1de::t_28356b8427e187 74
   s_d9f80b63f8c1de::t_e25e19f64fb15e 53-55,57-72,76-78
   s_d9f80b63f8c1de::t_69fa3993c62c9c 75
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_173ca9ea90a33e::t_0c4a1f8eb34598 21-22,32,90,92,99,140,144,169,192-196,216-217
 ---
 {
   "schema_version": "authorship/3.0.0",
