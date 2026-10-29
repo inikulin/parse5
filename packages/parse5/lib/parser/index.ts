@@ -1,6 +1,6 @@
 import { Tokenizer, TokenizerMode, type TokenHandler } from '../tokenizer/index.js';
 import { OpenElementStack, type StackHandler } from './open-element-stack.js';
-import { FormattingElementList, EntryType, type ElementEntry } from './formatting-element-list.js';
+import { FormattingElementList, EntryType, type ElementEntry, type Entry } from './formatting-element-list.js';
 import { defaultTreeAdapter, type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
 import * as doctype from '../common/doctype.js';
 import * as foreignContent from '../common/foreign-content.js';
@@ -181,7 +181,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         this.document = document ?? this.treeAdapter.createDocument();
 
         this.tokenizer = new Tokenizer(this.options, this);
-        this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
+        this.activeFormattingElements = new FormattingElementList<T>();
 
         this.fragmentContextID = fragmentContext ? getTagID(this.treeAdapter.getTagName(fragmentContext)) : $.UNKNOWN;
         this._setContextModes(fragmentContext ?? this.document, this.fragmentContextID);
@@ -721,20 +721,23 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _reconstructActiveFormattingElements(): void {
-        const listLength = this.activeFormattingElements.entries.length;
+        let oldest: Entry<T> | null = null;
 
-        if (listLength) {
-            const endIndex = this.activeFormattingElements.entries.findIndex(
-                (entry) => entry.type === EntryType.Marker || this.openElements.contains(entry.element),
-            );
+        for (
+            let entry = this.activeFormattingElements.newest;
+            entry !== null && entry.type === EntryType.Element && !this.openElements.contains(entry.element);
+            entry = entry.older
+        ) {
+            oldest = entry;
+        }
 
-            const unopenIdx = endIndex === -1 ? listLength - 1 : endIndex - 1;
-
-            for (let i = unopenIdx; i >= 0; i--) {
-                const entry = this.activeFormattingElements.entries[i] as ElementEntry<T>;
-                this._insertElement(entry.token, this.treeAdapter.getNamespaceURI(entry.element));
-                entry.element = this.openElements.current;
-            }
+        for (
+            let entry: Entry<T> | null = oldest;
+            entry !== null && entry.type === EntryType.Element;
+            entry = entry.newer
+        ) {
+            this._insertElement(entry.token, this.treeAdapter.getNamespaceURI(entry.element));
+            this.activeFormattingElements.replaceElement(entry, this.openElements.current);
         }
     }
 
@@ -1579,7 +1582,7 @@ function aaRecreateElementFromEntry<T extends TreeAdapterTypeMap>(
     const newElement = p._createElement(elementEntry.token.tagName, ns, elementEntry.token.attrs, intendedParent);
 
     p.openElements.replace(elementEntry.element, newElement);
-    elementEntry.element = newElement;
+    p.activeFormattingElements.replaceElement(elementEntry, newElement);
 
     return newElement;
 }
