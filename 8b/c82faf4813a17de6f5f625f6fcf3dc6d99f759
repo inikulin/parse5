@@ -1,0 +1,27 @@
+packages/parse5/lib/tree-adapters/default.ts
+  s_173ca9ea90a33e::t_9da0c3280defd7 207-209,211
+packages/parse5/lib/tree-adapters/adopt-nodes.test.ts
+  s_173ca9ea90a33e::t_3c2bd42744680b 83
+  s_173ca9ea90a33e::t_9da0c3280defd7 1-7,10-11,13-14,20,22-38,41,44-47,49-51,53-54,56,58-61,63-67,69-80,82
+  s_173ca9ea90a33e::t_068ef453a616ea 8-9,12,15-19,21,39-40,42-43,48,52,55,57,62,68,81
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_9da0c3280defd7 583-590
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_173ca9ea90a33e::t_9da0c3280defd7 169-171,185
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8bc82faf4813a17de6f5f625f6fcf3dc6d99f759",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    }
+  }
+}
