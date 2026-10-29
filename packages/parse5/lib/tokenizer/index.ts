@@ -223,6 +223,7 @@ export class Tokenizer {
     protected currentToken: Token | null = null;
     protected currentAttr: Attribute = { name: '', value: '' };
     private currentAttrLocation: Location | null = null;
+    private readonly currentAttrNames = new Set<string>();
     /**
      * `[start, end)` of `preprocessor.html` still to be appended to the attribute value, comment data or character
      * token being built (`_flushRun`): input that is used as is is appended as one slice, not a code point at a time.
@@ -251,9 +252,6 @@ export class Tokenizer {
                               ? TokenType.NULL_CHARACTER
                               : TokenType.CHARACTER,
                     );
-                    
-    private readonly currentAttrNames = new Set<string>();
-
                 }
 
                 this._extendRunWith(String.fromCodePoint(cp), 0);
