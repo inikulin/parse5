@@ -1,0 +1,33 @@
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_61da6d0f0a73b9::t_b8e7ba1e8449b0 273,294-301,303-304,308,321,324-325,327,332-335,337,341
+  s_61da6d0f0a73b9::t_3a76bac1272935 55-57,63,130-131,135,146-151,157,219-272,274-293,302,305-307,309-320,322-323,326,328-331,336,338-340,342-396,443,447,452-453,455,457-459,673,676
+packages/parse5/lib/parser/open-element-stack.ts
+  s_61da6d0f0a73b9::t_44dc522ef589f3 299,301,434-435,444-449,452-454,462,474-476
+  s_61da6d0f0a73b9::t_d9f7e3248918f7 1,32-42,85-86,100-101,118-126,140,145,150-153,210-212,231,238,255,271-272,280-281,285-293,295-298,300,302-319,321,326,345,416,428-429,432-433,436-443,450-451,455-461,463-473,478-482,501-503,594,596-603
+  s_61da6d0f0a73b9::t_5dbbb76882d9ea 88,165-177,282-284,421,430-431,477
+  s_61da6d0f0a73b9::t_d972781425916f 89,164
+  s_61da6d0f0a73b9::t_b8e7ba1e8449b0 205
+  s_61da6d0f0a73b9::t_958d2d714135ff 154
+packages/parse5/lib/parser/index.test.ts
+  s_61da6d0f0a73b9::t_3a76bac1272935 164-175
+packages/parse5/lib/parser/index.ts
+  s_61da6d0f0a73b9::t_44dc522ef589f3 690-691,1456,1470,1473-1474,1476-1478,1482-1483,1485,1491,1494,1497-1498,1500-1501,1511,1525-1526,1583,1607,1609,1613,1616
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_61da6d0f0a73b9::t_3a76bac1272935 28-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1734edb9af8da68f5b4d489ea52c3eb349a890fa",
+  "prompts": {},
+  "sessions": {
+    "s_61da6d0f0a73b9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d70b9ef-5cee-4c72-b196-d2ee31478ae6",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
