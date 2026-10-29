@@ -1,0 +1,29 @@
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_173ca9ea90a33e::t_dabc892507f62a 323-333
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_fd8c59997fb43d 22,207,209,218,241
+packages/parse5-html-rewriting-stream/package.json
+  s_173ca9ea90a33e::t_8ca6babdce1117 34
+test/data/serialization/tests.json
+  s_173ca9ea90a33e::t_195679e30ddcc2 45
+packages/parse5/package.json
+  s_173ca9ea90a33e::t_8ca6babdce1117 16
+package-lock.json
+  s_173ca9ea90a33e::t_ffa1daa30579d9 1552-1554,3434,3448,4441-4443,5109,5126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0cf044838c5ab05dcc38d069882a99b86c636d86",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    }
+  }
+}
