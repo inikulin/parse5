@@ -1,0 +1,23 @@
+packages/parse5/lib/parser/integration-point.test.ts
+  s_3bc4422023f23d::t_cb8f008eaf4e8a 2-4,28-89,91
+  s_3bc4422023f23d::t_40248aa77c5027 90,92-116
+packages/parse5/lib/parser/index.ts
+  s_3bc4422023f23d::t_e999688fce5c1d 151,693-704
+  s_3bc4422023f23d::t_a49bdd71870b9b 705-707
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "91f65f33774d06eef6c179a67083f08d9253828b",
+  "prompts": {},
+  "sessions": {
+    "s_3bc4422023f23d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1854c-6b09-7b33-87dc-a6907dea0500",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
