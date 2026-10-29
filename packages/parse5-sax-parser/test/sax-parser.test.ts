@@ -223,6 +223,60 @@ it('adds no replacement character after flushed null characters in foreign conte
     assert.equal(actual, '\uFFFDx');
 });
 
+it.each([
+    ['svg', '<svg/>'],
+    ['math', '<math/>'],
+    ['repeated svg', '<svg/><svg/><svg/>'],
+    ['svg inside math', '<math><svg/></math>'],
+])('leaves the namespace of a self-closing %s root', async (_name, prefix) => {
+    const parser = new SAXParser();
+    const events: string[] = [];
+    parser.on('comment', ({ text }) => events.push(`comment:${text}`));
+    parser.on('text', ({ text }) => events.push(`text:${text}`));
+    parser.end(`${prefix}<![CDATA[x]]>`);
+    await finished(parser);
+    // Back in HTML content, a CDATA section is a bogus comment rather than text.
+    assert.deepEqual(events, ['comment:[CDATA[x]]']);
+});
+
+it.each([
+    [
+        'after the end tag of an annotation-xml integration point',
+        '<math><annotation-xml encoding="text/html"></annotation-xml>',
+    ],
+    ['in desc inside svg inside math', '<math><svg><desc>'],
+    ['in mglyph inside mi', '<math><mi><mglyph>'],
+])('tokenizes MathML content %s', async (_name, prefix) => {
+    const parser = new SAXParser();
+    const events: string[] = [];
+    parser.on('comment', ({ text }) => events.push(`comment:${text}`));
+    parser.on('text', ({ text }) => events.push(`text:${text}`));
+    parser.end(`${prefix}<![CDATA[x]]>`);
+    await finished(parser);
+    // In MathML content, a CDATA section is text, as tree construction sees it.
+    assert.deepEqual(events, ['text:x']);
+});
+
+it.each([
+    ['mo end tag inside mi', '<math><mi></mo>'],
+    ['mi end tag inside annotation-xml', '<math><annotation-xml encoding="text/html"></mi>'],
+    [
+        'end tag of a nested HTML annotation-xml',
+        '<math><annotation-xml encoding="text/html"><annotation-xml></annotation-xml>',
+    ],
+    ['p end tag in svg inside mi', '<math><mi><svg></p>'],
+])("keeps an HTML integration-point frame open for another element's end tag: %s", async (_name, prefix) => {
+    const parser = new SAXParser();
+    const events: string[] = [];
+    parser.on('comment', ({ text }) => events.push(`comment:${text}`));
+    parser.on('text', ({ text }) => events.push(`text:${text}`));
+    parser.end(`${prefix}<![CDATA[x]]>`);
+    await finished(parser);
+    // Tree construction ignores a stray end tag or closes the nested element with it, so the CDATA section is still a
+    // bogus comment in HTML content.
+    assert.deepEqual(events, ['comment:[CDATA[x]]']);
+});
+
 it('only skips the first newline after pre, even when whitespace is flushed', async () => {
     const parser = new SAXParser();
     let text = '';

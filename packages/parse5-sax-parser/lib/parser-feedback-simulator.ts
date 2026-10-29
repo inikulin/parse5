@@ -18,6 +18,13 @@ const LINE_FEED_CODE_POINT = 0x0a;
  */
 export class ParserFeedbackSimulator implements TokenHandler {
     private namespaceStack: html.NS[] = [];
+    /** The name of the tag that opened each namespace frame, lowercase as in end tags; its end tag closes the frame. */
+    private frameTags: string[] = [];
+    /**
+     * Above 0 while the current node is the element that opened the last frame; each further count is a frame below
+     * whose element is the parent of the next frame's, so the current node stays known as the frames close.
+     */
+    private directFrames = 0;
     public inForeignContent = false;
     public skipNextNewLine = false;
     public tokenizer: Tokenizer;
@@ -27,7 +34,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
         private handler: TokenHandler,
     ) {
         this.tokenizer = new Tokenizer(options, this);
-        this._enterNamespace(html.NS.HTML);
+        this._enterNamespace(html.NS.HTML, '');
     }
 
     /** @internal */
@@ -85,14 +92,18 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     //Namespace stack mutations
-    private _enterNamespace(namespace: html.NS): void {
+    private _enterNamespace(namespace: html.NS, tagName: string): void {
         this.namespaceStack.push(namespace);
+        this.frameTags.push(tagName);
+        this.directFrames++;
         this.inForeignContent = namespace !== html.NS.HTML;
         this.tokenizer.inForeignNode = this.inForeignContent;
     }
 
     private _leaveCurrentNamespace(): void {
         this.namespaceStack.pop();
+        this.frameTags.pop();
+        if (this.directFrames > 0) this.directFrames--;
         this.inForeignContent = this.namespaceStack[this.namespaceStack.length - 1] !== html.NS.HTML;
         this.tokenizer.inForeignNode = this.inForeignContent;
     }
@@ -130,14 +141,39 @@ export class ParserFeedbackSimulator implements TokenHandler {
     /** @internal */
     onStartTag(token: Token.TagToken): void {
         let tn = token.tagID;
+        const frames = this.namespaceStack.length;
+        const ns = this.namespaceStack[frames - 1];
 
         switch (tn) {
-            case $.SVG: {
-                this._enterNamespace(html.NS.SVG);
+            case $.SVG:
+            case $.MATH: {
+                const target = tn === $.SVG ? html.NS.SVG : html.NS.MATHML;
+
+                // Foreign content keeps these in its namespace, except svg in annotation-xml. Unless the current node is
+                // the frame's element, it may be annotation-xml or outside the frame: switch, as a guess nothing builds on.
+                if (ns === html.NS.HTML || ns === target) {
+                    this._enterNamespace(target, token.tagName);
+                } else if (this.directFrames === 0) {
+                    this._enterNamespace(target, token.tagName);
+                    this.directFrames = 0;
+                }
                 break;
             }
-            case $.MATH: {
-                this._enterNamespace(html.NS.MATHML);
+            case $.MGLYPH:
+            case $.MALIGNMARK: {
+                // A MathML text integration point keeps these children in MathML.
+                if (
+                    this.directFrames > 0 &&
+                    this.namespaceStack[frames - 2] === html.NS.MATHML &&
+                    foreignContent.isIntegrationPoint(
+                        html.getTagID(this.frameTags[frames - 1]),
+                        html.NS.MATHML,
+                        [],
+                        html.NS.MATHML,
+                    )
+                ) {
+                    this._enterNamespace(html.NS.MATHML, token.tagName);
+                }
                 break;
             }
             default:
@@ -146,8 +182,11 @@ export class ParserFeedbackSimulator implements TokenHandler {
 
         if (this.inForeignContent) {
             if (foreignContent.causesExit(token)) {
-                this._leaveCurrentNamespace();
+                // Tree construction pops foreign elements up to an HTML element or integration point.
+                while (this.inForeignContent) this._leaveCurrentNamespace();
+                this.directFrames = 0;
             } else {
+                const { tagName } = token;
                 const currentNs = this.namespaceStack[this.namespaceStack.length - 1];
 
                 if (currentNs === html.NS.MATHML) {
@@ -161,11 +200,23 @@ export class ParserFeedbackSimulator implements TokenHandler {
 
                 tn = token.tagID;
 
-                if (!token.selfClosing && foreignContent.isIntegrationPoint(tn, currentNs, token.attrs)) {
-                    this._enterNamespace(html.NS.HTML);
+                // Unless the switch above opened a frame for it, the element is an integration point or a new current node.
+                if (!token.selfClosing && this.namespaceStack.length === frames) {
+                    if (foreignContent.isIntegrationPoint(tn, currentNs, token.attrs)) {
+                        this._enterNamespace(html.NS.HTML, tagName);
+                    } else {
+                        this.directFrames = 0;
+                    }
                 }
             }
         } else {
+            // An HTML element named like the integration point closes before it does, so it gets a frame of its own.
+            if (token.tagName === this.frameTags[frames - 1]) {
+                this._enterNamespace(html.NS.HTML, token.tagName);
+            } else {
+                this.directFrames = 0;
+            }
+
             switch (tn) {
                 case $.PRE:
                 case $.TEXTAREA:
@@ -185,34 +236,43 @@ export class ParserFeedbackSimulator implements TokenHandler {
             this._ensureTokenizerMode(tn);
         }
 
+        // Tree construction pops a self-closing foreign element at once, so a frame it opened ends with the tag.
+        if (token.selfClosing && this.inForeignContent && this.namespaceStack.length > frames) {
+            this._leaveCurrentNamespace();
+        }
+
         this.handler.onStartTag(token);
     }
 
     /** @internal */
     onEndTag(token: Token.TagToken): void {
-        let tn = token.tagID;
+        const tn = token.tagID;
+        const frames = this.frameTags.length;
 
         if (!this.inForeignContent) {
-            const previousNs =
-                this.namespaceStack.length > 1 ? this.namespaceStack[this.namespaceStack.length - 2] : undefined;
-
-            if (previousNs === html.NS.SVG) {
-                const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName);
-
-                if (adjustedTagName) {
-                    tn = html.getTagID(adjustedTagName);
-                }
-            }
-
-            //NOTE: check for exit from integration point
-            if (previousNs !== undefined && foreignContent.isIntegrationPoint(tn, previousNs, token.attrs)) {
+            // Leaving an integration point: only the end tag of the element that opened the HTML frame closes it.
+            if (token.tagName === this.frameTags[frames - 1]) {
                 this._leaveCurrentNamespace();
+            } else {
+                this.directFrames = 0;
             }
-        } else if (
-            (tn === $.SVG && this.namespaceStack[this.namespaceStack.length - 1] === html.NS.SVG) ||
-            (tn === $.MATH && this.namespaceStack[this.namespaceStack.length - 1] === html.NS.MATHML)
-        ) {
-            this._leaveCurrentNamespace();
+        } else if (tn === $.P || tn === $.BR) {
+            // These end tags leave foreign content, as the start tags of `causesExit` do.
+            while (this.inForeignContent) this._leaveCurrentNamespace();
+        } else {
+            // The frame's own end tag closes it; an mglyph or malignmark frame sits directly in its text integration
+            // point, a MathML element, so the end tags of that element and of the next frame's below close it too.
+            const tag = this.frameTags[frames - 1];
+            const last = tag === html.TAG_NAMES.MGLYPH || tag === html.TAG_NAMES.MALIGNMARK ? frames - 3 : frames - 1;
+            let i = frames - 1;
+
+            while (i >= last && token.tagName !== this.frameTags[i]) i--;
+
+            if (i >= last) {
+                while (this.frameTags.length > i) this._leaveCurrentNamespace();
+            } else {
+                this.directFrames = 0;
+            }
         }
 
         // NOTE: adjust end tag name as well for consistency
