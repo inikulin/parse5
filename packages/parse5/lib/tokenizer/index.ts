@@ -9,7 +9,6 @@ import {
 } from '../common/unicode.js';
 import {
     TokenType,
-    getTokenAttr,
     type Token,
     type CharacterToken,
     type DoctypeToken,
@@ -252,6 +251,9 @@ export class Tokenizer {
                               ? TokenType.NULL_CHARACTER
                               : TokenType.CHARACTER,
                     );
+                    
+    private readonly currentAttrNames = new Set<string>();
+
                 }
 
                 this._extendRunWith(String.fromCodePoint(cp), 0);
@@ -490,6 +492,7 @@ export class Tokenizer {
     //Token creation
     protected _createStartTagToken(): void {
         this._flushRun('');
+        this.currentAttrNames.clear();
         this.currentToken = {
             type: TokenType.START_TAG,
             tagName: '',
@@ -503,6 +506,7 @@ export class Tokenizer {
 
     protected _createEndTagToken(): void {
         this._flushRun('');
+        this.currentAttrNames.clear();
         this.currentToken = {
             type: TokenType.END_TAG,
             tagName: '',
@@ -563,7 +567,10 @@ export class Tokenizer {
     protected _leaveAttrName(): void {
         const token = this.currentToken as TagToken;
 
-        if (getTokenAttr(token, this.currentAttr.name) === null) {
+        if (this.currentAttrNames.has(this.currentAttr.name)) {
+            this._err(ERR.duplicateAttribute);
+        } else {
+            this.currentAttrNames.add(this.currentAttr.name);
             token.attrs.push(this.currentAttr);
 
             if (token.location && this.currentAttrLocation) {
@@ -573,8 +580,6 @@ export class Tokenizer {
                 // Set end location
                 this._leaveAttrValue();
             }
-        } else {
-            this._err(ERR.duplicateAttribute);
         }
     }
 
