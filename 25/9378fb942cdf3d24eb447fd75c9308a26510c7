@@ -1,0 +1,31 @@
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_0e05e102c01a96::t_26ebf3b31963b7 5,216-323
+packages/parse5/lib/parser/formatting-element-list.ts
+  s_863dec60a1f1fe::t_896e09b6f7e6dc 12-17,19,22,26,29,33,35,39-43,45-65,70-78,81-84,89-90,94,98-125,129-130,134-140,144-149,151-154,164-170,172,177-180,184-187
+packages/parse5/lib/parser/index.ts
+  s_0e05e102c01a96::t_a1936c39d3bd27 701-702,704-706,708-710
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "259378fb942cdf3d24eb447fd75c9308a26510c7",
+  "prompts": {},
+  "sessions": {
+    "s_0e05e102c01a96": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1852a-5a43-7761-b4c5-b0ecc6fa62c7",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_863dec60a1f1fe": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18525-db0e-7eb3-a716-0751248658a3",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
