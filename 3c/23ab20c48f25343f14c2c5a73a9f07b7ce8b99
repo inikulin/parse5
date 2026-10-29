@@ -1,0 +1,35 @@
+packages/parse5/lib/parser/index.ts
+  s_9336ef22bd6bbc::t_9a4fd4711a9723 701,707-708,711,713-715
+  s_9336ef22bd6bbc::t_05d3567ae86e90 702,704-705,712
+  s_9336ef22bd6bbc::t_0960aae64be60b 716
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_9336ef22bd6bbc::t_712618209c4a74 3,6,9,16,21-25,54-56,75,80,83-84,87,89-101,103-105,107-110,112-133,184,202,208,230-234,239-248
+  s_9336ef22bd6bbc::t_74c94e07e9aaa5 249
+  s_9336ef22bd6bbc::t_0a5aaf76de8638 88
+  s_9336ef22bd6bbc::t_c103b47d486b8b 235-238
+  s_9336ef22bd6bbc::t_225a8eb00ad9b5 250
+packages/parse5/lib/parser/formatting-element-list.ts
+  s_9336ef22bd6bbc::t_9a4fd4711a9723 1,30,35,64,93,97,105,109,137-147,149,153-161
+  s_9336ef22bd6bbc::t_a4eca7ba124dab 20,101
+  s_9336ef22bd6bbc::t_f6dd8f908fe57d 21,33-34,36,40-41,49,53,56-57,66-67,69-70,72-74,76-77,79-80,85-86,88-91,98-100,102-103,114,126,128-129,132
+  s_9336ef22bd6bbc::t_0a5aaf76de8638 43-48
+  s_9336ef22bd6bbc::t_0c5b48c53c6bf2 50-52,59,65,113,115-116,131
+  s_9336ef22bd6bbc::t_05d3567ae86e90 42
+  s_9336ef22bd6bbc::t_8a0bfef80afcaa 60,62-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3c23ab20c48f25343f14c2c5a73a9f07b7ce8b99",
+  "prompts": {},
+  "sessions": {
+    "s_9336ef22bd6bbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5adde5d0-cffe-4d28-908a-8671454e8d03",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
