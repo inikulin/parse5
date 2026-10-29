@@ -166,7 +166,9 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
 
     detachNode(node: ChildNode): void {
         if (node.parent) {
-            const idx = node.parent.children.indexOf(node);
+            const { children } = node.parent;
+            // The parser detaches from the end when it moves children, so check the last child first.
+            const idx = children[children.length - 1] === node ? children.length - 1 : children.indexOf(node);
             const { prev, next } = node;
 
             node.prev = null;
@@ -180,7 +182,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
                 next.prev = prev;
             }
 
-            node.parent.children.splice(idx, 1);
+            children.splice(idx, 1);
             node.parent = null;
         }
     },
