@@ -1,0 +1,25 @@
+packages/parse5/lib/index.ts
+  s_2929a7dcd42f7d::t_28c8d94f6afde0 3-4,103-106
+packages/parse5/lib/parser/index.ts
+  s_2929a7dcd42f7d::t_8156001d5bcbbe 4,188-191
+packages/parse5/lib/tree-adapters/adopt-attributes.test.ts
+  s_2929a7dcd42f7d::t_6e0d847eb1b988 1-96
+packages/parse5/lib/tree-adapters/default.ts
+  s_2929a7dcd42f7d::t_86c6401bdfaa53 240,319-350
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7a0140fe9247d9af39b6dcc4cebff372f5e18669",
+  "prompts": {},
+  "sessions": {
+    "s_2929a7dcd42f7d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1854c-2afc-72a2-a6cc-7872cdf38352",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
