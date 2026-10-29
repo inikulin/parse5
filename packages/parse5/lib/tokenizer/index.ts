@@ -19,7 +19,7 @@ import {
     type Attribute,
     type Location,
 } from '../common/token.js';
-import { htmlDecodeTree, EntityDecoder, DecodingMode } from 'entities/decode';
+import { HtmlEntityDecoder, DecodingMode } from 'entities/decode';
 import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
 import { TAG_ID, getTagID } from '../common/html.js';
 
@@ -204,9 +204,9 @@ export class Tokenizer {
     protected returnState = State.DATA;
 
     /**
-     * We use `entities`' `EntityDecoder` to parse character references.
+     * We use `entities`' `HtmlEntityDecoder` to parse character references.
      *
-     * All of the following states are handled by the `EntityDecoder`:
+     * All of the following states are handled by the `HtmlEntityDecoder`:
      *
      * - Named character reference state
      * - Numeric character reference state
@@ -215,7 +215,7 @@ export class Tokenizer {
      * - Decimal character reference state
      * - Numeric character reference end state
      */
-    protected entityDecoder: EntityDecoder;
+    protected entityDecoder: HtmlEntityDecoder;
     protected entityStartPos = 0;
     protected consumedAfterSnapshot = -1;
 
@@ -238,8 +238,7 @@ export class Tokenizer {
         this.preprocessor = new Preprocessor(handler);
         this.currentLocation = this.getCurrentLocation(-1);
 
-        this.entityDecoder = new EntityDecoder(
-            htmlDecodeTree,
+        this.entityDecoder = new HtmlEntityDecoder(
             (cp: number, consumed: number) => {
                 // Note: Set `pos` _before_ flushing, as flushing might drop
                 // the current chunk and invalidate `entityStartPos`.
