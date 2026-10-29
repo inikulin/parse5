@@ -204,9 +204,11 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
 
     detachNode(node: ChildNode): void {
         if (node.parentNode) {
-            const idx = node.parentNode.childNodes.indexOf(node);
+            const { childNodes } = node.parentNode;
+            // The parser detaches from the end when it moves children, so check the last child first.
+            const idx = childNodes[childNodes.length - 1] === node ? childNodes.length - 1 : childNodes.indexOf(node);
 
-            node.parentNode.childNodes.splice(idx, 1);
+            childNodes.splice(idx, 1);
             node.parentNode = null;
         }
     },

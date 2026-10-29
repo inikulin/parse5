@@ -586,8 +586,14 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _adoptNodes(donor: T['parentNode'], recipient: T['parentNode']): void {
-        for (let child = this.treeAdapter.getFirstChild(donor); child; child = this.treeAdapter.getFirstChild(donor)) {
-            this.treeAdapter.detachNode(child);
+        // Detaching from the end keeps an array-backed child list from shifting once per child.
+        const children = [...this.treeAdapter.getChildNodes(donor)];
+
+        for (let i = children.length - 1; i >= 0; i--) {
+            this.treeAdapter.detachNode(children[i]);
+        }
+
+        for (const child of children) {
             this.treeAdapter.appendChild(recipient, child);
         }
     }
