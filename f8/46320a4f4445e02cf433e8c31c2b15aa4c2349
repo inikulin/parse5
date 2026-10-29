@@ -1,0 +1,27 @@
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_173ca9ea90a33e::t_55578e695a59e4 192-196
+  s_173ca9ea90a33e::t_9ca6d76fdaf7ee 22,32,90
+  s_173ca9ea90a33e::t_e29c5d3631a635 216-217
+  s_173ca9ea90a33e::t_69dcccc0bb59b1 21,92,99,140,144,169
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_173ca9ea90a33e::t_55578e695a59e4 186-198,200-201
+  s_173ca9ea90a33e::t_3c7b528946d062 199,228
+  s_173ca9ea90a33e::t_e29c5d3631a635 202-216,221-226,229
+  s_173ca9ea90a33e::t_8c8cb2bfbfab24 217-220,227,230
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f846320a4f4445e02cf433e8c31c2b15aa4c2349",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    }
+  }
+}
