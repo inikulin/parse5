@@ -1,0 +1,39 @@
+packages/parse5/lib/tree-adapters/default.ts
+  s_e570c52edd9fb7::t_de5e3ea3381425 107,264-266,273-274,281
+  s_e8aec61e2afdf6::t_44d9186a6b115a 243-245
+  s_e8aec61e2afdf6::t_d46553ef238fbd 105-106,242,246,250-263,275-280
+packages/parse5-parser-stream/test/parser-stream.test.ts
+  s_e8aec61e2afdf6::t_fd8740d6674b99 6-8,45-62
+  s_e8aec61e2afdf6::t_d6328d80e45a96 63
+packages/parse5/lib/tree-adapters/adopt-attributes.test.ts
+  s_e570c52edd9fb7::t_e743a2fd14e069 35,42-43,55-56,61,63,65
+  s_e570c52edd9fb7::t_fdaf262423a20d 36-38,41
+  s_e8aec61e2afdf6::t_fe1664a9039f74 2-9,16
+  s_e570c52edd9fb7::t_f5cb187d0d6766 44,46-47
+  s_e8aec61e2afdf6::t_fd8740d6674b99 45,49,52-53,57-60
+  s_e570c52edd9fb7::t_54d6a1b467ad19 1,10-15,17-34,39-40,48,50-51,54,62,64,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5d2f961d51c0adc7151b0816cb3ff76a281a2afb",
+  "prompts": {},
+  "sessions": {
+    "s_e570c52edd9fb7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "240616ab-8a94-4922-ba02-c2cce0cf246f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_e8aec61e2afdf6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "aca9c33f-9c78-4f21-b3e1-3fbf1321c26d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
