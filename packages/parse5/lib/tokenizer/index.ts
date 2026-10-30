@@ -9,7 +9,6 @@ import {
 } from '../common/unicode.js';
 import {
     TokenType,
-    getTokenAttr,
     type Token,
     type CharacterToken,
     type DoctypeToken,
@@ -224,6 +223,7 @@ export class Tokenizer {
     protected currentToken: Token | null = null;
     protected currentAttr: Attribute = { name: '', value: '' };
     private currentAttrLocation: Location | null = null;
+    private readonly currentAttrNames = new Set<string>();
     /**
      * `[start, end)` of `preprocessor.html` still to be appended to the attribute value, comment data or character
      * token being built (`_flushRun`): input that is used as is is appended as one slice, not a code point at a time.
@@ -490,6 +490,7 @@ export class Tokenizer {
     //Token creation
     protected _createStartTagToken(): void {
         this._flushRun('');
+        this.currentAttrNames.clear();
         this.currentToken = {
             type: TokenType.START_TAG,
             tagName: '',
@@ -503,6 +504,7 @@ export class Tokenizer {
 
     protected _createEndTagToken(): void {
         this._flushRun('');
+        this.currentAttrNames.clear();
         this.currentToken = {
             type: TokenType.END_TAG,
             tagName: '',
@@ -563,7 +565,10 @@ export class Tokenizer {
     protected _leaveAttrName(): void {
         const token = this.currentToken as TagToken;
 
-        if (getTokenAttr(token, this.currentAttr.name) === null) {
+        if (this.currentAttrNames.has(this.currentAttr.name)) {
+            this._err(ERR.duplicateAttribute);
+        } else {
+            this.currentAttrNames.add(this.currentAttr.name);
             token.attrs.push(this.currentAttr);
 
             if (token.location && this.currentAttrLocation) {
@@ -573,8 +578,6 @@ export class Tokenizer {
                 // Set end location
                 this._leaveAttrValue();
             }
-        } else {
-            this._err(ERR.duplicateAttribute);
         }
     }
 
