@@ -312,4 +312,36 @@ describe('Tokenizer methods', () => {
         tokenizer.state = -1 as never;
         assert.throws(() => tokenizer.write('foo', true), 'Unknown state');
     });
+
+    it('should end the attribute location when whitespace between attributes is missing', () => {
+        const html = `<a b="1"c='2'd=3>`;
+        let token: Token.TagToken | null = null;
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onStartTag(t): void {
+                token = t;
+            },
+            onEndTag: noop,
+            onCharacter: noop,
+            onNullCharacter: noop,
+            onWhitespaceCharacter: noop,
+            onComment: noop,
+            onDoctype: noop,
+            onEof: noop,
+        });
+
+        tokenizer.write(html, true);
+
+        const attrs = token!.location!.attrs!;
+        assert.deepStrictEqual(
+            Object.entries(attrs).map(([name, { startOffset, endOffset }]) => [
+                name,
+                html.slice(startOffset, endOffset),
+            ]),
+            [
+                ['b', 'b="1"'],
+                ['c', "c='2'"],
+                ['d', 'd=3'],
+            ],
+        );
+    });
 });
