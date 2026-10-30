@@ -2099,6 +2099,7 @@ export class Tokenizer {
             }
             default: {
                 this._err(ERR.missingWhitespaceBetweenAttributes);
+                this._leaveAttrValue();
                 this.state = State.BEFORE_ATTRIBUTE_NAME;
                 this._stateBeforeAttributeName(cp);
             }
