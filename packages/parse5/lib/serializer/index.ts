@@ -59,7 +59,7 @@ const defaultOpts: InternalOptions<DefaultTreeAdapterMap> = { treeAdapter: defau
  * @example
  *
  * ```js
- * const parse5 = require('parse5');
+ * import * as parse5 from 'parse5';
  *
  * const document = parse5.parse('<!DOCTYPE html><html><head></head><body>Hi there!</body></html>');
  *
@@ -67,9 +67,11 @@ const defaultOpts: InternalOptions<DefaultTreeAdapterMap> = { treeAdapter: defau
  * const html = parse5.serialize(document);
  *
  * // Serializes the <html> element content.
- * const str = parse5.serialize(document.childNodes[1]);
- *
- * console.log(str); //> '<head></head><body>Hi there!</body>'
+ * const htmlElement = document.childNodes.find(parse5.defaultTreeAdapter.isElementNode);
+ * if (htmlElement) {
+ *     const str = parse5.serialize(htmlElement);
+ *     console.log(str); //> '<head></head><body>Hi there!</body>'
+ * }
  * ```
  *
  * @param node Node to serialize.
@@ -94,14 +96,16 @@ export function serialize<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
  * @example
  *
  * ```js
- * const parse5 = require('parse5');
+ * import * as parse5 from 'parse5';
  *
  * const document = parse5.parseFragment('<div>Hello, <b>world</b>!</div>');
  *
  * // Serializes the <div> element.
- * const str = parse5.serializeOuter(document.childNodes[0]);
- *
- * console.log(str); //> '<div>Hello, <b>world</b>!</div>'
+ * const div = document.childNodes.find(parse5.defaultTreeAdapter.isElementNode);
+ * if (div) {
+ *     const str = parse5.serializeOuter(div);
+ *     console.log(str); //> '<div>Hello, <b>world</b>!</div>'
+ * }
  * ```
  *
  * @param node Node to serialize.
