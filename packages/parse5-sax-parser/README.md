@@ -19,6 +19,24 @@
   📖 <a href="https://parse5.js.org/modules/parse5-sax-parser.html"><b>Documentation</b></a> 📖
 </p>
 
+## Usage
+
+Handle HTML tokens as they arrive, without building a document tree.
+
+Save the following as an `.mjs` file and run it with Node.js.
+
+```js
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { SAXParser } from 'parse5-sax-parser';
+
+const parser = new SAXParser();
+const text = [];
+parser.on('text', (token) => text.push(token.text));
+await pipeline(Readable.from(['<p>Hello, <b>world!</b></p>']), parser);
+console.log(text.join('')); // Hello, world!
+```
+
 ---
 
 <p align="center">
