@@ -1,4 +1,4 @@
-import { type ParserOptions, type TreeAdapterTypeMap, html } from 'parse5';
+import { type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAdapterMap, html } from 'parse5';
 import { ParserStream } from 'parse5-parser-stream';
 
 const { TAG_ID: $, TAG_NAMES: TN } = html;
@@ -24,7 +24,7 @@ const { TAG_ID: $, TAG_NAMES: TN } = html;
  * file.pipe(converter);
  * ```
  */
-export class PlainTextConversionStream<T extends TreeAdapterTypeMap> extends ParserStream<T> {
+export class PlainTextConversionStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> extends ParserStream<T> {
     constructor(options?: ParserOptions<T>) {
         super(options);
 
