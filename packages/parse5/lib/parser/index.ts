@@ -311,10 +311,11 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     protected _setContextModes(current: T['parentNode'] | undefined, tid: number | undefined): void {
         const isHTML = current === this.document || (current && this.treeAdapter.getNamespaceURI(current) === NS.HTML);
+        const isIntegrationPoint = current !== undefined && tid !== undefined && this._isIntegrationPoint(tid, current);
 
         this.currentNotInHTML = !isHTML;
-        this.tokenizer.inForeignNode =
-            !isHTML && current !== undefined && tid !== undefined && !this._isIntegrationPoint(tid, current);
+        this.tokenizer.atIntegrationPoint = !isHTML && isIntegrationPoint;
+        this.tokenizer.inForeignNode = !isHTML && current !== undefined && tid !== undefined && !isIntegrationPoint;
     }
 
     /** @protected */
