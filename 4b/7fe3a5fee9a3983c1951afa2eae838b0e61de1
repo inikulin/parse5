@@ -1,0 +1,29 @@
+packages/parse5/lib/serializer/index.test.ts
+  s_3131dc3185905e::t_cb67aa1a9e2743 2-10,77-89
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_3131dc3185905e::t_59947b24e44549 325-326
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_3131dc3185905e::t_1b50e8489c96b1 31,50
+  s_3131dc3185905e::t_0f8416a1b88c86 4-30,32-44,51
+  s_3131dc3185905e::t_6128653c288f79 1-3,45-49
+packages/parse5/lib/parser/index.ts
+  s_3131dc3185905e::t_de73bdde2af503 35-52,55-61,500-501,508-528,531-532,542-543,553-554,1095,1706,3353,3358-3362
+packages/parse5/lib/parser/open-element-limit.test.ts
+  s_3131dc3185905e::t_01050a03bcadd8 1-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4b7fe3a5fee9a3983c1951afa2eae838b0e61de1",
+  "prompts": {},
+  "sessions": {
+    "s_3131dc3185905e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0c40802e-c101-4a78-9d59-db77663c8f90",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
