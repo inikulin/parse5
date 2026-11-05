@@ -1,0 +1,19 @@
+packages/parse5/lib/parser/integration-point.test.ts
+  s_d93819bc4f5d44::t_82fbf5998a447a 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d2e89cb4d1014dd729288b2c9adf218a9b2ecb82",
+  "prompts": {},
+  "sessions": {
+    "s_d93819bc4f5d44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1deb7c24-d4ea-42db-a5bb-eb6db499b96f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
