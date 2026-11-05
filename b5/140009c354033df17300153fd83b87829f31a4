@@ -1,0 +1,36 @@
+packages/parse5/lib/serializer/index.test.ts
+  s_173ca9ea90a33e::t_6bac970a3b11cc 2-10,77-89
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_73dda15abb365d 55,59-61,508,513-515,518,527-528,531,542,553
+  s_173ca9ea90a33e::t_edeab42a5363f3 1706
+  s_173ca9ea90a33e::t_9a119531de5361 51-52,510-512,520,524-525,1095,3353,3358-3361
+  s_173ca9ea90a33e::t_1296d3f54ee4c2 56-58,500-501,509,516-517,519,521-523,532,543,554
+  s_173ca9ea90a33e::t_3e8eecd8928826 3362
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_173ca9ea90a33e::t_1296d3f54ee4c2 21-38
+  s_173ca9ea90a33e::t_6bac970a3b11cc 4-20
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_173ca9ea90a33e::t_6bac970a3b11cc 325-326
+packages/parse5/lib/parser/open-element-limit.test.ts
+  s_173ca9ea90a33e::t_9a119531de5361 78-103
+  s_173ca9ea90a33e::t_73dda15abb365d 1-17,21,30-46,49,52,55-56,113-114,116-125,127-128
+  s_173ca9ea90a33e::t_1296d3f54ee4c2 18-20,25-26,29,57-77,104-112
+  s_173ca9ea90a33e::t_c521d3e1a18dad 22-24,27-28,47-48,50-51,53-54,115,126
+  s_173ca9ea90a33e::t_7c030164629cda 129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b5140009c354033df17300153fd83b87829f31a4",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    }
+  }
+}
