@@ -1,6 +1,6 @@
 # Based on https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/automating-dependabot-with-github-actions#enable-auto-merge-on-a-pull-request
 name: Dependabot auto-merge
-on: pull_request_target
+on: pull_request
 
 permissions:
     pull-requests: write
@@ -9,7 +9,8 @@ permissions:
 jobs:
     dependabot:
         runs-on: ubuntu-latest
-        if: ${{ github.actor == 'dependabot[bot]' }}
+
+        if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'inikulin/parse5'
         steps:
             - name: Dependabot metadata
               id: metadata
@@ -18,10 +19,7 @@ jobs:
                   github-token: '${{ secrets.GITHUB_TOKEN }}'
             - name: Enable auto-merge for Dependabot PRs
               # Automatically merge semver-patch and semver-minor PRs
-              if: "${{ steps.metadata.outputs.update-type ==
-                  'version-update:semver-minor' ||
-                  steps.metadata.outputs.update-type ==
-                  'version-update:semver-patch' }}"
+              if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
               run: gh pr merge --auto --squash "$PR_URL"
               env:
                   PR_URL: ${{github.event.pull_request.html_url}}

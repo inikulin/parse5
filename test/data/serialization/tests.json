@@ -42,7 +42,7 @@
     {
         "name": "Attribute value escaping - < and >",
         "input": "<div data-foo=\"<span>\"></div>",
-        "expected": "<html><head></head><body><div data-foo=\"<span>\"></div></body></html>"
+        "expected": "<html><head></head><body><div data-foo=\"&lt;span&gt;\"></div></body></html>"
     },
     {
         "name": "Attributes value escaping - other entities",
