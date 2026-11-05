@@ -6,9 +6,12 @@ packages/parse5/lib/parser/index.ts
   s_173ca9ea90a33e::t_9a119531de5361 51-52,510-512,520,524-525,1095,3353,3358-3361
   s_173ca9ea90a33e::t_1296d3f54ee4c2 56-58,500-501,509,516-517,519,521-523,532,543,554
   s_173ca9ea90a33e::t_3e8eecd8928826 3362
+  s_272c7d60cdd77c::t_6eb6b9f65b2705 35-36,50,526
+  s_272c7d60cdd77c::t_94fa698a88ef80 37-49
 packages/parse5/lib/parser/stack-complexity.test.ts
   s_173ca9ea90a33e::t_1296d3f54ee4c2 21-38
   s_173ca9ea90a33e::t_6bac970a3b11cc 4-20
+  s_272c7d60cdd77c::t_94fa698a88ef80 1-3
 packages/parse5/lib/parser/formatting-element-list.test.ts
   s_173ca9ea90a33e::t_6bac970a3b11cc 325-326
 packages/parse5/lib/parser/open-element-limit.test.ts
@@ -31,6 +34,14 @@ packages/parse5/lib/parser/open-element-limit.test.ts
         "model": "claude-fable-5-1"
       },
       "human_author": null
+    },
+    "s_272c7d60cdd77c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1becc564-77a1-49da-96ba-5f700f70c232",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     }
   }
 }
