@@ -1,0 +1,87 @@
+SECURITY.md
+  s_66354c76e4c6f5::t_f0b928fba4ab39 11-13
+bench/package.json
+  s_66354c76e4c6f5::t_6b8424c579b896 12
+package-lock.json
+  s_66354c76e4c6f5::t_b88f8137f64b31 19,38,1980-1982,2974-2976,4729-4731,5121,5337-5339
+package.json
+  s_66354c76e4c6f5::t_4e29f8ad434b1e 16
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_66354c76e4c6f5::t_894a35caa8c477 1,63-65,88-96,101-104,155
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_66354c76e4c6f5::t_2c7516e9f9f97d 390-441
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_66354c76e4c6f5::t_65a2e517425272 116-118,169-171,185,201
+packages/parse5-parser-stream/test/parser-stream.test.ts
+  s_66354c76e4c6f5::t_dc0e4efaa17a12 6-8,45-63
+packages/parse5-parser-stream/test/scripting.test.ts
+  s_66354c76e4c6f5::t_b11fd8f886d177 1-2,83-100
+packages/parse5-sax-parser/lib/index.ts
+  s_66354c76e4c6f5::t_c386de140ffe4a 126,133-136
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_66354c76e4c6f5::t_fc6a02f40dd248 21-22,32,52-54,90-92,98-100,140,144,155,169,192-196,205-206,216-217,221-222,228
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_66354c76e4c6f5::t_f4c607590a3c82 1,12-42
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_66354c76e4c6f5::t_ec08953d5a117a 158-283
+packages/parse5/lib/common/foreign-content.ts
+  s_66354c76e4c6f5::t_af3577825907bf 236,250
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_66354c76e4c6f5::t_0e9b94aaa21b09 3,5-7,10,17,22-44,46-59,61,64-65,68-69,73,80-83,86-89,93,100,107-108,112-113,116-117,120-134,136-138,140-143,145-148,150-152,154,156-193,197,219,223,227,244,246,248-249,254,262,268,272,289-359
+packages/parse5/lib/parser/formatting-element-list.ts
+  s_66354c76e4c6f5::t_e6476359caff55 1-2,12,14-17,20-25,29-34,37,39-43,47,49-76,78-80,82-83,85-100,102-104,106,108-111,113-114,116-117,120-122,125-138,140-142,144-146,148-151,153-156,158-159,161-166,171,173-175,179-181,183-184,187-216,218-220,222-223,232,234-242,248-256,258,262-270
+packages/parse5/lib/parser/index.test.ts
+  s_66354c76e4c6f5::t_628b55138d010d 6,60-111,146-163,205-211
+packages/parse5/lib/parser/index.ts
+  s_66354c76e4c6f5::t_a6f7cc83b06090 3,35-52,55-64,188,226,270,323,380,501-502,509-529,532-533,543-544,554-555,623-630,735-740,745-757,764,766-772,774-780,805-809,847,879-880,1096,1531,1619,1668-1679,1707,1879,1925,3354,3359-3363,3611,3617,3623,3630,3636,3651-3656,3850-3853,3863-3865
+packages/parse5/lib/parser/integration-point.test.ts
+  s_66354c76e4c6f5::t_38f3f8d450b01c 1-116
+packages/parse5/lib/parser/open-element-limit.test.ts
+  s_66354c76e4c6f5::t_1a01368235ffc2 1-129
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_66354c76e4c6f5::t_ac1defeac2dd58 21-40,481-494
+packages/parse5/lib/parser/open-element-stack.ts
+  s_66354c76e4c6f5::t_7b2aa67dd84338 247,253,271-273,375-379,385-389,398-399
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_66354c76e4c6f5::t_44b64f6aa51c1a 1-51
+packages/parse5/lib/parser/template-eof.test.ts
+  s_66354c76e4c6f5::t_5f11513dc9f227 1-18
+packages/parse5/lib/parser/template-modes.test.ts
+  s_66354c76e4c6f5::t_54382247d8b661 1-19
+packages/parse5/lib/serializer/index.test.ts
+  s_66354c76e4c6f5::t_85f977c2124f67 2-10,12,74-96
+packages/parse5/lib/serializer/index.ts
+  s_66354c76e4c6f5::t_134c79d1cb58ad 88-97,124,127-131,133,135-137,139-162,164-166,168-171
+packages/parse5/lib/tokenizer/index.test.ts
+  s_66354c76e4c6f5::t_0040046fa383d4 272-297,336-361,399-425
+packages/parse5/lib/tokenizer/index.ts
+  s_66354c76e4c6f5::t_dc288c182b6faa 268-270,468-499,794-796
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_66354c76e4c6f5::t_66031cef06a3eb 85,112-116,119,126
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_66354c76e4c6f5::t_ebd9ec01699c6e 184-221
+packages/parse5/lib/tree-adapters/adopt-attributes.test.ts
+  s_66354c76e4c6f5::t_bd13ac6c8ee582 1-88
+packages/parse5/lib/tree-adapters/adopt-nodes.test.ts
+  s_66354c76e4c6f5::t_d7cbdcaeb51e7d 1-83
+packages/parse5/lib/tree-adapters/default.ts
+  s_66354c76e4c6f5::t_0f31b746035f0c 105-107,159-166,207-209,211,230-235,244-248,250-271,278-286
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_66354c76e4c6f5::t_191589de0dc521 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f282f35afdf0188d9f73df503c47c4c4ba91babd",
+  "prompts": {},
+  "sessions": {
+    "s_66354c76e4c6f5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cb3c0d13-12d8-49bf-8f9e-efcb2d54d8e1",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
