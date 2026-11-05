@@ -1,0 +1,42 @@
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_173ca9ea90a33e::t_96a930fa9c9e7f 30
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_f9179c673fa9b7 26-27,597-598,722-723,1399
+packages/parse5/lib/tree-adapters/default.ts
+  s_173ca9ea90a33e::t_2baf46284c0537 157
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_0777679d0d719c 726,3563,3762
+  s_6fb21e37865293::t_6cd1cb49167f66 3775-3776
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_173ca9ea90a33e::t_d3516818ac36d7 193
+packages/parse5/lib/tokenizer/index.test.ts
+  s_173ca9ea90a33e::t_72e8d6c65f6284 164,207
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_173ca9ea90a33e::t_e3ff0b4cf5aa48 89
+packages/parse5/lib/serializer/index.ts
+  s_173ca9ea90a33e::t_bbfa1b0581b69c 89,129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9b01de04efad89ca090153073b40decab8bad881",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6fb21e37865293": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e97-2dbf-7a10-abbd-d842326d8f0c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
