@@ -24,8 +24,6 @@
 Parse an HTML fragment into [htmlparser2](https://github.com/fb55/htmlparser2)-compatible
 nodes using `parse5` (`npm install parse5`).
 
-Save the following as an `.mjs` file and run it with Node.js.
-
 ```js
 import { parseFragment } from 'parse5';
 import { adapter } from 'parse5-htmlparser2-tree-adapter';

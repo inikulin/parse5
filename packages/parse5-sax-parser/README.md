@@ -23,8 +23,6 @@
 
 Handle HTML tokens as they arrive, without building a document tree.
 
-Save the following as an `.mjs` file and run it with Node.js.
-
 ```js
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
