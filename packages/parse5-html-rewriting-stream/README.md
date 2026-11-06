@@ -24,8 +24,6 @@
 Modify HTML tokens while streaming the result. Tokens without a handler are
 passed through unchanged; handlers must emit the replacement tokens.
 
-Save the following as an `.mjs` file and run it with Node.js.
-
 ```js
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
