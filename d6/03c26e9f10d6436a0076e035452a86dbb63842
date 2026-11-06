@@ -1,6 +1,6 @@
 packages/parse5/lib/parser/formatting-element-list.test.ts
-  s_2645df099099aa::t_1431ef07fb50ff 693-694
-  s_173ca9ea90a33e::t_8cfce81d2d0298 693-694
+  s_2645df099099aa::t_1431ef07fb50ff 325-326,693-694
+  s_173ca9ea90a33e::t_8cfce81d2d0298 325-326,693-694
 packages/parse5/lib/parser/index.ts
   s_2645df099099aa::t_a899ed40a3f60f 56-57,60-66,508,515,552-554,573,575,579,581-583,587,598,610,1160,1781
   s_4a47ea71070103::t_f51feba4a7bba9 573,575,579,581-583,587,598
