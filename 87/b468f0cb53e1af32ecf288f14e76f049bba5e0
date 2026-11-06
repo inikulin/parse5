@@ -14,9 +14,12 @@ packages/parse5/lib/parser/index.ts
   s_2645df099099aa::t_04bcbc7f6c2535 895
   s_173ca9ea90a33e::t_12ab00ef0dcb15 3368
   s_6bbbbbc7cea8e7::t_8e421dba65680d 3368
+  s_ee0b775d18f373::t_7cc08a73f955b5 527,529
+  s_ee0b775d18f373::t_dae8f86e5a631f 809
 packages/parse5/lib/parser/open-element-limit.test.ts
   s_2645df099099aa::t_30a1578a1ea2be 1-129
   s_173ca9ea90a33e::t_13adf27788fe45 1-129
+  s_8ed07babe8eae3::t_9b84a6f360efbe 65
 packages/parse5/lib/parser/stack-complexity.test.ts
   s_2645df099099aa::t_69de8f4c5e5094 20-38,47-60
   s_4a47ea71070103::t_7c1b13e1d7f86a 34
@@ -114,6 +117,14 @@ packages/parse5/lib/tokenizer/index.ts
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     },
+    "s_8ed07babe8eae3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b6a575b-f5f4-4c12-83e1-7856169a423f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
     "s_d1240ea9997571": {
       "agent_id": {
         "tool": "codex",
@@ -126,6 +137,14 @@ packages/parse5/lib/tokenizer/index.ts
       "agent_id": {
         "tool": "claude",
         "id": "1deb7c24-d4ea-42db-a5bb-eb6db499b96f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_ee0b775d18f373": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6886b21e-826e-411d-88a5-a681d43a067e",
         "model": "claude-opus-5-5"
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
