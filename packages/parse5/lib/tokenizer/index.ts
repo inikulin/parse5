@@ -197,6 +197,16 @@ export class Tokenizer {
      * @see {@link https://html.spec.whatwg.org/multipage/parsing.html#tree-construction}
      */
     public inForeignNode = false;
+
+    /**
+     * Indicates that the current adjusted node is an integration point for either MathML or HTML.
+     *
+     * The tree builder applies the HTML rules there, so {@link inForeignNode} is not set, but the
+     * namespace of the adjusted current node still decides whether a CDATA section is entered.
+     *
+     * @see {@link https://html.spec.whatwg.org/multipage/parsing.html#markup-declaration-open-state}
+     */
+    public atIntegrationPoint = false;
     public lastStartTagName = '';
     public active = false;
 
@@ -2168,7 +2178,9 @@ export class Tokenizer {
             this.currentLocation = this.getCurrentLocation($$.DOCTYPE.length + 1);
             this.state = State.DOCTYPE;
         } else if (this._consumeSequenceIfMatch($$.CDATA_START, true)) {
-            if (this.inForeignNode) {
+            // NOTE: a CDATA section is entered whenever the adjusted current node is not an element
+            // in the HTML namespace, which holds inside an integration point as well.
+            if (this.inForeignNode || this.atIntegrationPoint) {
                 this.state = State.CDATA_SECTION;
             } else {
                 this._err(ERR.cdataInHtmlContent);
