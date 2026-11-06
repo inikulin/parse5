@@ -47,13 +47,13 @@ export function makeChunks(str: string, minSize?: number, maxSize?: number): str
 }
 
 export class WritableStreamStub extends Writable {
-    writtenData = '';
+    public writtenData = '';
 
-    constructor() {
+    public constructor() {
         super({ decodeStrings: false });
     }
 
-    override _write(chunk: string, _encoding: string, callback: () => void): void {
+    public override _write(chunk: string, _encoding: string, callback: () => void): void {
         assert.strictEqual(typeof chunk, 'string', 'Expected output to be a string stream');
         this.writtenData += chunk;
         callback();

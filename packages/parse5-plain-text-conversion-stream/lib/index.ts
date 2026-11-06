@@ -25,7 +25,7 @@ const { TAG_ID: $, TAG_NAMES: TN } = html;
  * ```
  */
 export class PlainTextConversionStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> extends ParserStream<T> {
-    constructor(options?: ParserOptions<T>) {
+    public constructor(options?: ParserOptions<T>) {
         super(options);
 
         // NOTE: see https://html.spec.whatwg.org/#read-text

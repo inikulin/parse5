@@ -25,10 +25,10 @@ const MARKER: MarkerEntry = { type: EntryType.Marker };
 
 //List of formatting elements
 export class FormattingElementList<T extends TreeAdapterTypeMap> {
-    entries: Entry<T>[] = [];
-    bookmark: Entry<T> | null = null;
+    public entries: Entry<T>[] = [];
+    public bookmark: Entry<T> | null = null;
 
-    constructor(private treeAdapter: TreeAdapter<T>) {}
+    public constructor(private treeAdapter: TreeAdapter<T>) {}
 
     //Noah Ark's condition
     //OPTIMIZATION: at first we try to find possible candidates for exclusion using
@@ -95,11 +95,11 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     }
 
     //Mutations
-    insertMarker(): void {
+    public insertMarker(): void {
         this.entries.unshift(MARKER);
     }
 
-    pushElement(element: T['element'], token: TagToken): void {
+    public pushElement(element: T['element'], token: TagToken): void {
         this._ensureNoahArkCondition(element);
 
         this.entries.unshift({
@@ -109,7 +109,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         });
     }
 
-    insertElementAfterBookmark(element: T['element'], token: TagToken): void {
+    public insertElementAfterBookmark(element: T['element'], token: TagToken): void {
         const bookmarkIdx = this.entries.indexOf(this.bookmark!);
 
         this.entries.splice(bookmarkIdx, 0, {
@@ -119,7 +119,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         });
     }
 
-    removeEntry(entry: Entry<T>): void {
+    public removeEntry(entry: Entry<T>): void {
         const entryIndex = this.entries.indexOf(entry);
 
         if (entryIndex !== -1) {
@@ -132,7 +132,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
      *
      * @see https://html.spec.whatwg.org/multipage/parsing.html#clear-the-list-of-active-formatting-elements-up-to-the-last-marker
      */
-    clearToLastMarker(): void {
+    public clearToLastMarker(): void {
         const markerIdx = this.entries.indexOf(MARKER);
 
         if (markerIdx === -1) {
@@ -143,7 +143,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
     }
 
     //Search
-    getElementEntryInScopeWithTagName(tagName: string): ElementEntry<T> | null {
+    public getElementEntryInScopeWithTagName(tagName: string): ElementEntry<T> | null {
         const entry = this.entries.find(
             (entry) => entry.type === EntryType.Marker || this.treeAdapter.getTagName(entry.element) === tagName,
         );
@@ -151,7 +151,7 @@ export class FormattingElementList<T extends TreeAdapterTypeMap> {
         return entry && entry.type === EntryType.Element ? entry : null;
     }
 
-    getElementEntry(element: T['element']): ElementEntry<T> | undefined {
+    public getElementEntry(element: T['element']): ElementEntry<T> | undefined {
         return this.entries.find(
             (entry): entry is ElementEntry<T> => entry.type === EntryType.Element && entry.element === element,
         );

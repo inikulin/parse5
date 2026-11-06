@@ -22,7 +22,7 @@ type TokenSourceCreator = (data: TokenizeHandler) => Tokenizer;
 
 /** Receives events and immediately compares them against the expected values. We check the entire output again at the end. */
 class TokenizeHandler implements TokenSourceData, TokenHandler {
-    constructor(private testData: LoadedTest) {}
+    public constructor(private testData: LoadedTest) {}
 
     private addToken(token: HtmlLibToken): void {
         assert.deepStrictEqual(token, this.testData.expected[this.tokens.length]);
@@ -30,13 +30,13 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
         this.tokens.push(token);
     }
 
-    onComment(token: Token.CommentToken): void {
+    public onComment(token: Token.CommentToken): void {
         this.addToken(['Comment', token.data]);
     }
-    onDoctype(token: Token.DoctypeToken): void {
+    public onDoctype(token: Token.DoctypeToken): void {
         this.addToken(['DOCTYPE', token.name, token.publicId, token.systemId, !token.forceQuirks]);
     }
-    onStartTag(token: Token.TagToken): void {
+    public onStartTag(token: Token.TagToken): void {
         const reformatedAttrs = Object.fromEntries(token.attrs.map(({ name, value }) => [name, value]));
         const startTagEntry: HtmlLibToken = ['StartTag', token.tagName, reformatedAttrs];
 
@@ -46,15 +46,15 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
 
         this.addToken(startTagEntry);
     }
-    onEndTag(token: Token.TagToken): void {
+    public onEndTag(token: Token.TagToken): void {
         // NOTE: parser feedback simulator can produce adjusted SVG
         // tag names for end tag tokens so we need to lower case it
         this.addToken(['EndTag', token.tagName.toLowerCase()]);
     }
-    onEof(): void {
+    public onEof(): void {
         this.sawEof = true;
     }
-    onCharacter(token: Token.CharacterToken): void {
+    public onCharacter(token: Token.CharacterToken): void {
         const lastEntry = this.tokens[this.tokens.length - 1];
 
         if (lastEntry && lastEntry[0] === 'Character' && lastEntry[1] != null) {
@@ -69,13 +69,13 @@ class TokenizeHandler implements TokenSourceData, TokenHandler {
         assert.ok(typeof actual[1] === 'string');
         assert.ok(expected[1]?.startsWith(actual[1] as string));
     }
-    onNullCharacter(token: Token.CharacterToken): void {
+    public onNullCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
-    onWhitespaceCharacter(token: Token.CharacterToken): void {
+    public onWhitespaceCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
-    onParseError(err: ParserError): void {
+    public onParseError(err: ParserError): void {
         assert.ok(
             this.testData.expectedErrors.some(
                 ({ code, line, col }) => code === err.code && line === err.startLine && col === err.startCol,

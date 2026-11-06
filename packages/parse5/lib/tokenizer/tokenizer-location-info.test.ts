@@ -13,7 +13,7 @@ class LocationInfoHandler implements TokenHandler {
     /** All of the lines in the input. */
     private lines: string[];
 
-    constructor(private htmlChunks: string[]) {
+    public constructor(private htmlChunks: string[]) {
         this.html = htmlChunks.join('');
         this.lines = this.html.split(/\r?\n/g);
     }
@@ -36,28 +36,28 @@ class LocationInfoHandler implements TokenHandler {
         this.idx += 1;
     }
 
-    onComment({ location }: CommentToken): void {
+    public onComment({ location }: CommentToken): void {
         this.validateLocation(location);
     }
-    onDoctype({ location }: DoctypeToken): void {
+    public onDoctype({ location }: DoctypeToken): void {
         this.validateLocation(location);
     }
-    onStartTag({ location }: TagToken): void {
+    public onStartTag({ location }: TagToken): void {
         this.validateLocation(location);
     }
-    onEndTag({ location }: TagToken): void {
+    public onEndTag({ location }: TagToken): void {
         this.validateLocation(location);
     }
-    onCharacter({ location }: CharacterToken): void {
+    public onCharacter({ location }: CharacterToken): void {
         this.validateLocation(location);
     }
-    onNullCharacter({ location }: CharacterToken): void {
+    public onNullCharacter({ location }: CharacterToken): void {
         this.validateLocation(location);
     }
-    onWhitespaceCharacter({ location }: CharacterToken): void {
+    public onWhitespaceCharacter({ location }: CharacterToken): void {
         this.validateLocation(location);
     }
-    onEof({ location }: EOFToken): void {
+    public onEof({ location }: EOFToken): void {
         assert.ok(location);
         assert.strictEqual(location!.endOffset, location!.startOffset);
         assert.strictEqual(location!.endOffset, this.html.length);
