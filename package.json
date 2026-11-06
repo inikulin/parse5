@@ -22,7 +22,7 @@
         "typedoc": "^0.28.20",
         "typescript": "^6.0.3",
         "typescript-eslint": "^8.72.1",
-        "vitest": "^5.0.5"
+        "vitest": "^5.1.0"
     },
     "scripts": {
         "build": "tsc --build packages/* test",
