@@ -1,0 +1,249 @@
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_2645df099099aa::t_cc660a03ea98d7 1-19,39-46
+  s_2645df099099aa::t_69de8f4c5e5094 20-38,47-60
+  s_4a47ea71070103::t_7c1b13e1d7f86a 34
+  s_4a47ea71070103::t_dc488793f7eb24 1-33,35-39,48-60
+  s_4a47ea71070103::t_9e55e4469f2fd5 40-45
+  s_4a47ea71070103::t_b9025163434fcb 46-47
+  s_3131dc3185905e::t_1b50e8489c96b1 31,59
+  s_3131dc3185905e::t_0f8416a1b88c86 4-30,32-33,35-39,48-53,60
+  s_3131dc3185905e::t_6128653c288f79 1-3,54-58
+  s_173ca9ea90a33e::t_f52057a6704c18 1-3,5-14,60
+packages/parse5/lib/parser/index.ts
+  s_2645df099099aa::t_10a65bb1745a4e 812-814,816-821,823,893-894
+  s_2645df099099aa::t_cc660a03ea98d7 37-55
+  s_2645df099099aa::t_04bcbc7f6c2535 895
+  s_2645df099099aa::t_a899ed40a3f60f 56-57,60-66,505-506,513-531,533-536,539-540,550-551,561-562,1110,1721,3368,3373-3377
+  s_4a47ea71070103::t_2bda305918f835 518
+  s_4a47ea71070103::t_f51feba4a7bba9 517,522-531,533-536,539-540,550-551,561
+  s_4a47ea71070103::t_abcb10a4671e32 38-50,56-57,60-66,505-506,513-516,519-521,562,1110,1721,3368,3373-3377
+  s_4a47ea71070103::t_b9025163434fcb 814
+  s_4a47ea71070103::t_095d473fdf794d 37,51-55,812-813,816,823
+  s_4a47ea71070103::t_9e55e4469f2fd5 893-894
+  s_4a47ea71070103::t_6025884d8233ed 895
+  s_3131dc3185905e::t_66f6ce8ecbe73f 819,3665,3864,3877-3878
+  s_3131dc3185905e::t_de73bdde2af503 38-50,56-57,60-66,505-506,513-516,519-521,523-531,535-536,540,551,562,1110,1721,3368,3373-3377
+  s_173ca9ea90a33e::t_d3d5568eb46aa3 231,275,859,1893,1939,3625,3631,3637,3644,3650,3666-3670
+  s_173ca9ea90a33e::t_f9a7800feb973c 69
+  s_173ca9ea90a33e::t_c2fb5af7208dad 38-50,818,821
+  s_173ca9ea90a33e::t_34ddb7450c7113 817-818,820-821
+  s_6fb21e37865293::t_198f46bfc73862 1545,1682-1693
+  s_6fb21e37865293::t_6cd1cb49167f66 3879
+  s_6bbbbbc7cea8e7::t_800f274c85fb80 2775-2776,2779
+  s_6fb21e37865293::t_735abff2d7fd16 3865-3867
+  s_6fb21e37865293::t_58f9d380c52e6a 384
+packages/parse5/lib/parser/index.test.ts
+  s_2645df099099aa::t_6019e79fd671ed 6,59-85
+  s_173ca9ea90a33e::t_e408d2c77fd14b 6,59-85
+  s_6fb21e37865293::t_07e49f52ad5ed2 146-163
+  s_6fb21e37865293::t_eece4766dd9794 204-210
+  s_6fb21e37865293::t_92ace9884c42c7 87-95
+  s_6bbbbbc7cea8e7::t_1dbe887244e768 88-91,93-95
+  s_6bbbbbc7cea8e7::t_5bdade5c309c17 94-95
+  s_6fb21e37865293::t_d566ece8dca31b 96-103
+  s_6fb21e37865293::t_efc4f9daf70d2f 104-111
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_2645df099099aa::t_1431ef07fb50ff 325-326
+  s_173ca9ea90a33e::t_8cfce81d2d0298 325-326
+  s_3131dc3185905e::t_59947b24e44549 325-326
+packages/parse5/lib/parser/open-element-limit.test.ts
+  s_2645df099099aa::t_30a1578a1ea2be 1-129
+  s_173ca9ea90a33e::t_13adf27788fe45 1-129
+  s_3131dc3185905e::t_01050a03bcadd8 1-129
+packages/parse5/lib/serializer/index.test.ts
+  s_2645df099099aa::t_9fe82529d1daf1 2-10,77-89
+  s_173ca9ea90a33e::t_93970732a5bafd 2-10,77-89
+  s_3131dc3185905e::t_cb67aa1a9e2743 2-10,77-89
+  s_173ca9ea90a33e::t_6753358953891c 12,74-76,90-96
+packages/parse5/lib/parser/integration-point.test.ts
+  s_d93819bc4f5d44::t_82fbf5998a447a 2
+  s_173ca9ea90a33e::t_29d67bdeb8c025 1,3-19,23-24,27-29
+  s_98abc3499f7493::t_87051f626b341d 1,3-4,8-19,23-24,27
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_d93819bc4f5d44::t_82fbf5998a447a 242,247
+  s_707cd1c5860ad7::t_e54ba0f25e92ed 158-185,267-279
+  s_3131dc3185905e::t_73e89b2b3c0bc0 186-225
+  s_173ca9ea90a33e::t_1b3d28921ee2fa 158-185,267-279
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_707cd1c5860ad7::t_33804295a198a5 406,411-441
+  s_3131dc3185905e::t_73e89b2b3c0bc0 409
+  s_173ca9ea90a33e::t_80629b8bf80438 390-404
+  s_173ca9ea90a33e::t_690ce411d3ba9d 391-404
+  s_173ca9ea90a33e::t_dabc892507f62a 323-333
+  s_173ca9ea90a33e::t_cf43d9b2d98f1b 406-408,410-441
+  s_173ca9ea90a33e::t_418657f997ebb1 407-408,410-425
+packages/parse5-sax-parser/lib/index.ts
+  s_3131dc3185905e::t_4e6a4cbc89a557 126,133-136
+  s_173ca9ea90a33e::t_96b30c9654d0f0 126,136
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_707cd1c5860ad7::t_2f0356355e2b95 52-54
+  s_173ca9ea90a33e::t_d89dc83a9caf59 52-54
+  s_173ca9ea90a33e::t_b9a13b443569a8 91,98,100,155,205-206,221-222,228
+packages/parse5/lib/tokenizer/index.ts
+  s_707cd1c5860ad7::t_dc8503eb9c742e 458-459,470-472,488-489
+  s_3131dc3185905e::t_66f6ce8ecbe73f 784-785
+  s_3131dc3185905e::t_73e89b2b3c0bc0 460-469,473-487
+  s_1cdd27ddad6aeb::t_7de2ac8d9dd156 258-260
+  s_6bbbbbc7cea8e7::t_0c0e51ac3695b8 258-260
+  s_1cdd27ddad6aeb::t_0f8c24a1e17a7b 786,1465
+  s_6bbbbbc7cea8e7::t_65a57db15d9adb 786,1465
+  s_6bbbbbc7cea8e7::t_399237032fe717 786,1465
+  s_173ca9ea90a33e::t_ae49ecd70318cc 458-459,470-472,488-489
+  s_6fb21e37865293::t_b787cbdb348161 3139-3143
+packages/parse5/lib/serializer/index.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 89,129
+  s_173ca9ea90a33e::t_bc322bd6639983 88,90-97,124,127-128,130-131,133,135-137,139-140,142,144-171
+  s_173ca9ea90a33e::t_ccfb4b74840eaf 88,90-97
+packages/parse5/lib/tree-adapters/default.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 160
+  s_173ca9ea90a33e::t_9b11f5a7eb0503 159,161-166,230-235
+  s_173ca9ea90a33e::t_0768f09fc670c5 270
+  s_98abc3499f7493::t_00b5e1c577cd13 270
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 30
+  s_173ca9ea90a33e::t_3f6b03b891adef 1-29,31-51
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 199
+  s_1cdd27ddad6aeb::t_a92b1cee43fa83 190-198,200-227
+  s_6bbbbbc7cea8e7::t_87157297e8dbe2 190-198,200-227
+  s_6bbbbbc7cea8e7::t_6d8b2927bb7e6e 190,195,196-198,200-227
+  s_6fb21e37865293::t_fa3044dcfc8ce0 157-162
+packages/parse5/lib/tokenizer/index.test.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 419
+  s_3131dc3185905e::t_73e89b2b3c0bc0 272-297
+  s_1cdd27ddad6aeb::t_0b9785e132b6e5 336-338,340-342,346-347,349-355,357,359-361
+  s_5de6cfc9324149::t_3c4757f35c692e 337-338,340-342,346-347,349-355,357,359-361
+  s_d1240ea9997571::t_95085d90598184 337-338,340-342,346-347,349-355,357,359-361
+  s_1cdd27ddad6aeb::t_7523e594504d1c 367,400-418,420-425
+  s_6bbbbbc7cea8e7::t_4c50c9d34ae6b8 367,401-418,420-425
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 89
+  s_173ca9ea90a33e::t_0ab0ee457409b0 1,63-65,88,90-96,101-104,155
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_3131dc3185905e::t_73e89b2b3c0bc0 112-116,119,126
+  s_173ca9ea90a33e::t_f7c4face9891ea 85
+  s_5de6cfc9324149::t_c5d73582915fb2 85
+  s_d1240ea9997571::t_18551f392cb94c 85
+test/data/serialization/tests.json
+  s_173ca9ea90a33e::t_195679e30ddcc2 45
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_173ca9ea90a33e::t_1a6214c96d0f60 1,12-42
+packages/parse5/lib/parser/template-eof.test.ts
+  s_173ca9ea90a33e::t_27074e26fa2561 1-18
+  s_173ca9ea90a33e::t_2a1c3bdd512362 5-16,18
+packages/parse5/lib/parser/template-modes.test.ts
+  s_173ca9ea90a33e::t_6b0ae51ece39fe 1-19
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_173ca9ea90a33e::t_2e18d3c9da77d4 116-118,201
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_1cdd27ddad6aeb::t_66bb624f4e1af5 39-40
+  s_1cdd27ddad6aeb::t_47b2c3f56f0001 23-26,28-36,37-38,39-40
+  s_1cdd27ddad6aeb::t_a9759ec5bab3c9 481-494
+packages/parse5/lib/parser/open-element-stack.ts
+  s_1cdd27ddad6aeb::t_ab78d79d606902 247,253,271-273
+  s_1cdd27ddad6aeb::t_a624da3c9b49b4 375-379,385-389,398-399
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d2dad62470beb9ea79f7e737421092faad6f599b",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_1cdd27ddad6aeb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e4f-24a5-7700-92be-e5f89af62c03",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_2645df099099aa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c7f323b6-9af1-4f60-b9d9-9b60f1598ab7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_3131dc3185905e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0c40802e-c101-4a78-9d59-db77663c8f90",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_4a47ea71070103": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0b060fd-5f04-4f26-8006-06a03021a51e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    },
+    "s_5de6cfc9324149": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1063e-14c8-7111-85d3-b8c18c1c9ab6",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6fb21e37865293": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e97-2dbf-7a10-abbd-d842326d8f0c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_707cd1c5860ad7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f9c130ad-8144-4eca-ae9f-1b1916f35e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_98abc3499f7493": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-669a-74b3-b59e-3acc3bc180fe",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_d1240ea9997571": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-56e9-7a92-9307-b45ce9d7ed51",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_d93819bc4f5d44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1deb7c24-d4ea-42db-a5bb-eb6db499b96f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
