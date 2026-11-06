@@ -1,0 +1,19 @@
+packages/parse5/lib/tokenizer/index.ts
+  s_66354c76e4c6f5::t_d2126cdf7212f8 2218
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "18371819bf02e26b0e15b4499566311d295f50fb",
+  "prompts": {},
+  "sessions": {
+    "s_66354c76e4c6f5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cb3c0d13-12d8-49bf-8f9e-efcb2d54d8e1",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
