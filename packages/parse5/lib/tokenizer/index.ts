@@ -236,7 +236,7 @@ export class Tokenizer {
     protected runStart = 0;
     protected runEnd = 0;
 
-    constructor(
+    public constructor(
         protected options: TokenizerOptions,
         protected handler: TokenHandler,
     ) {

@@ -61,6 +61,7 @@ export default [
             '@typescript-eslint/no-unsafe-declaration-merging': 'off',
             '@typescript-eslint/no-non-null-assertion': 'warn',
             '@typescript-eslint/explicit-function-return-type': 'error',
+            '@typescript-eslint/explicit-member-accessibility': 'error',
             '@typescript-eslint/consistent-type-imports': 'error',
 
             '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],

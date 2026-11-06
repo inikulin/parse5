@@ -51,7 +51,7 @@ export class SAXParser extends Transform implements TokenHandler {
     /**
      * @param options Parsing options.
      */
-    constructor(options: SAXParserOptions = {}) {
+    public constructor(options: SAXParserOptions = {}) {
         super({ encoding: 'utf8', decodeStrings: false });
 
         this.options = {
@@ -69,7 +69,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     //`Transform` implementation
-    override _transform(
+    public override _transform(
         chunk: string,
         _encoding: string,
         callback: (error?: Error | null, data?: string) => void,
@@ -81,7 +81,7 @@ export class SAXParser extends Transform implements TokenHandler {
         callback(null, this._transformChunk(chunk));
     }
 
-    override _final(callback: (error?: Error | null, data?: string) => void): void {
+    public override _final(callback: (error?: Error | null, data?: string) => void): void {
         this.lastChunkWritten = true;
         callback(null, this._transformChunk(''));
     }
@@ -128,7 +128,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onCharacter({ chars, location }: Token.CharacterToken): void {
+    public onCharacter({ chars, location }: Token.CharacterToken): void {
         if (this.pendingText === null) {
             this.pendingText = { text: chars, sourceCodeLocation: location };
         } else {
@@ -151,23 +151,23 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacter(token: Token.CharacterToken): void {
+    public onWhitespaceCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
 
     /** @internal */
-    onNullCharacter(token: Token.CharacterToken): void {
+    public onNullCharacter(token: Token.CharacterToken): void {
         this.onCharacter(token);
     }
 
     /** @internal */
-    onEof(): void {
+    public onEof(): void {
         this._emitPendingText();
         this.stopped = true;
     }
 
     /** @internal */
-    onStartTag(token: Token.TagToken): void {
+    public onStartTag(token: Token.TagToken): void {
         this._emitPendingText();
 
         const startTag: StartTag = {
@@ -180,7 +180,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onEndTag(token: Token.TagToken): void {
+    public onEndTag(token: Token.TagToken): void {
         this._emitPendingText();
 
         const endTag: EndTag = {
@@ -191,7 +191,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onDoctype(token: Token.DoctypeToken): void {
+    public onDoctype(token: Token.DoctypeToken): void {
         this._emitPendingText();
 
         const doctype: Doctype = {
@@ -204,7 +204,7 @@ export class SAXParser extends Transform implements TokenHandler {
     }
 
     /** @internal */
-    onComment(token: Token.CommentToken): void {
+    public onComment(token: Token.CommentToken): void {
         this._emitPendingText();
 
         const comment: Comment = {

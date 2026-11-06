@@ -22,7 +22,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     public skipNextNewLine = false;
     public tokenizer: Tokenizer;
 
-    constructor(
+    public constructor(
         options: TokenizerOptions,
         private handler: TokenHandler,
     ) {
@@ -31,7 +31,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onNullCharacter(token: Token.CharacterToken): void {
+    public onNullCharacter(token: Token.CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.inForeignContent) {
@@ -46,7 +46,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onWhitespaceCharacter(token: Token.CharacterToken): void {
+    public onWhitespaceCharacter(token: Token.CharacterToken): void {
         if (this.skipNextNewLine && token.chars.charCodeAt(0) === LINE_FEED_CODE_POINT) {
             this.skipNextNewLine = false;
 
@@ -61,25 +61,25 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onCharacter(token: Token.CharacterToken): void {
+    public onCharacter(token: Token.CharacterToken): void {
         this.skipNextNewLine = false;
         this.handler.onCharacter(token);
     }
 
     /** @internal */
-    onComment(token: Token.CommentToken): void {
+    public onComment(token: Token.CommentToken): void {
         this.skipNextNewLine = false;
         this.handler.onComment(token);
     }
 
     /** @internal */
-    onDoctype(token: Token.DoctypeToken): void {
+    public onDoctype(token: Token.DoctypeToken): void {
         this.skipNextNewLine = false;
         this.handler.onDoctype(token);
     }
 
     /** @internal */
-    onEof(token: Token.EOFToken): void {
+    public onEof(token: Token.EOFToken): void {
         this.skipNextNewLine = false;
         this.handler.onEof(token);
     }
@@ -128,7 +128,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onStartTag(token: Token.TagToken): void {
+    public onStartTag(token: Token.TagToken): void {
         let tn = token.tagID;
 
         switch (tn) {
@@ -189,7 +189,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
     }
 
     /** @internal */
-    onEndTag(token: Token.TagToken): void {
+    public onEndTag(token: Token.TagToken): void {
         let tn = token.tagID;
 
         if (!this.inForeignContent) {

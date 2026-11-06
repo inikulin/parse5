@@ -26,7 +26,7 @@ import { Parser, type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAd
  *
  */
 export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> extends Writable {
-    static getFragmentStream<T extends TreeAdapterTypeMap>(
+    public static getFragmentStream<T extends TreeAdapterTypeMap>(
         fragmentContext?: T['parentNode'] | null,
         options?: ParserOptions<T>,
     ): ParserStream<T> {
@@ -73,7 +73,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     /**
      * @param options Parsing options.
      */
-    constructor(
+    public constructor(
         options?: ParserOptions<T>,
         public parser: Parser<T> = new Parser(options),
     ) {
@@ -107,7 +107,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     }
 
     //WritableStream implementation
-    override _write(chunk: string, _encoding: string, callback: () => void): void {
+    public override _write(chunk: string, _encoding: string, callback: () => void): void {
         if (typeof chunk !== 'string') {
             throw new TypeError('Parser can work only with string streams.');
         }
@@ -119,7 +119,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     // TODO [engine:node@>=16]: Due to issues with Node < 16, we are overriding `end` instead of `_final`.
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    override end(chunk?: any, encoding?: any, callback?: any): any {
+    public override end(chunk?: any, encoding?: any, callback?: any): any {
         this.lastChunkWritten = true;
         super.end(chunk || '', encoding, callback);
     }

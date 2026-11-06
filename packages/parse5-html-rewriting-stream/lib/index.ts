@@ -61,11 +61,11 @@ import { escapeText, escapeAttribute } from 'entities/escape';
  */
 export class RewritingStream extends SAXParser {
     /** Note: `sourceCodeLocationInfo` is always enabled. */
-    constructor() {
+    public constructor() {
         super({ sourceCodeLocationInfo: true });
     }
 
-    override _transformChunk(chunk: string): string {
+    public override _transformChunk(chunk: string): string {
         // NOTE: ignore upstream return values as we want to push to
         // the `Writable` part of the `Transform` stream ourselves.
         super._transformChunk(chunk);

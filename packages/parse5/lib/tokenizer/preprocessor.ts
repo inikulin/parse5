@@ -30,7 +30,7 @@ export class Preprocessor {
     public droppedBufferSize = 0;
     public line = 1;
 
-    constructor(private handler: { onParseError?: ParserErrorHandler | null }) {}
+    public constructor(private handler: { onParseError?: ParserErrorHandler | null }) {}
 
     /** The column on the current line. If we just saw a gap (eg. a surrogate pair), return the index before. */
     public get col(): number {

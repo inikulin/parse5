@@ -42,19 +42,19 @@ export interface StackHandler<T extends TreeAdapterTypeMap> {
 
 //Stack of open elements
 export class OpenElementStack<T extends TreeAdapterTypeMap> {
-    items: T['parentNode'][] = [];
-    tagIDs: $[] = [];
-    current: T['parentNode'] | undefined;
-    stackTop = -1;
-    tmplCount = 0;
+    public items: T['parentNode'][] = [];
+    public tagIDs: $[] = [];
+    public current: T['parentNode'] | undefined;
+    public stackTop = -1;
+    public tmplCount = 0;
 
-    currentTagId: number | undefined = $.UNKNOWN;
+    public currentTagId: number | undefined = $.UNKNOWN;
 
-    get currentTmplContentOrNode(): T['parentNode'] {
+    public get currentTmplContentOrNode(): T['parentNode'] {
         return this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : this.current;
     }
 
-    constructor(
+    public constructor(
         document: T['document'],
         private treeAdapter: TreeAdapter<T>,
         private handler: StackHandler<T>,
@@ -78,7 +78,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Mutations
-    push(element: T['element'], tagID: $): void {
+    public push(element: T['element'], tagID: $): void {
         this.stackTop++;
 
         this.items[this.stackTop] = element;
@@ -93,7 +93,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.handler.onItemPush(element, tagID, true);
     }
 
-    pop(): void {
+    public pop(): void {
         const popped = this.current;
         if (this.tmplCount > 0 && this._isInTemplate()) {
             this.tmplCount--;
@@ -105,7 +105,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.handler.onItemPop(popped, true);
     }
 
-    replace(oldElement: T['element'], newElement: T['element']): void {
+    public replace(oldElement: T['element'], newElement: T['element']): void {
         const idx = this._indexOf(oldElement);
 
         this.items[idx] = newElement;
@@ -115,7 +115,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         }
     }
 
-    insertAfter(referenceElement: T['element'], newElement: T['element'], newElementID: $): void {
+    public insertAfter(referenceElement: T['element'], newElement: T['element'], newElementID: $): void {
         const insertionIdx = this._indexOf(referenceElement) + 1;
 
         this.items.splice(insertionIdx, 0, newElement);
@@ -131,7 +131,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         }
     }
 
-    popUntilTagNamePopped(tagName: $): void {
+    public popUntilTagNamePopped(tagName: $): void {
         let targetIdx = this.stackTop + 1;
 
         do {
@@ -141,7 +141,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(Math.max(targetIdx, 0));
     }
 
-    shortenToLength(idx: number): void {
+    public shortenToLength(idx: number): void {
         while (this.stackTop >= idx) {
             const popped = this.current;
 
@@ -156,7 +156,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         }
     }
 
-    popUntilElementPopped(element: T['element']): void {
+    public popUntilElementPopped(element: T['element']): void {
         const idx = this._indexOf(element);
         this.shortenToLength(Math.max(idx, 0));
     }
@@ -166,15 +166,15 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(Math.max(idx, 0));
     }
 
-    popUntilNumberedHeaderPopped(): void {
+    public popUntilNumberedHeaderPopped(): void {
         this.popUntilPopped(NUMBERED_HEADERS, NS.HTML);
     }
 
-    popUntilTableCellPopped(): void {
+    public popUntilTableCellPopped(): void {
         this.popUntilPopped(TABLE_CELLS, NS.HTML);
     }
 
-    popAllUpToHtmlElement(): void {
+    public popAllUpToHtmlElement(): void {
         //NOTE: here we assume that the root <html> element is always first in the open element stack, so
         //we perform this fast stack clean up.
         this.tmplCount = 0;
@@ -195,19 +195,19 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         this.shortenToLength(idx + 1);
     }
 
-    clearBackToTableContext(): void {
+    public clearBackToTableContext(): void {
         this.clearBackTo(TABLE_CONTEXT, NS.HTML);
     }
 
-    clearBackToTableBodyContext(): void {
+    public clearBackToTableBodyContext(): void {
         this.clearBackTo(TABLE_BODY_CONTEXT, NS.HTML);
     }
 
-    clearBackToTableRowContext(): void {
+    public clearBackToTableRowContext(): void {
         this.clearBackTo(TABLE_ROW_CONTEXT, NS.HTML);
     }
 
-    remove(element: T['element']): void {
+    public remove(element: T['element']): void {
         const idx = this._indexOf(element);
 
         if (idx >= 0) {
@@ -224,22 +224,22 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Search
-    tryPeekProperlyNestedBodyElement(): T['element'] | null {
+    public tryPeekProperlyNestedBodyElement(): T['element'] | null {
         //Properly nested <body> element (should be second element in stack).
         return this.stackTop >= 1 && this.tagIDs[1] === $.BODY ? this.items[1] : null;
     }
 
-    contains(element: T['element']): boolean {
+    public contains(element: T['element']): boolean {
         return this._indexOf(element) > -1;
     }
 
-    getCommonAncestor(element: T['element']): T['element'] | null {
+    public getCommonAncestor(element: T['element']): T['element'] | null {
         const elementIdx = this._indexOf(element) - 1;
 
         return elementIdx >= 0 ? this.items[elementIdx] : null;
     }
 
-    isRootHtmlElementCurrent(): boolean {
+    public isRootHtmlElementCurrent(): boolean {
         return this.stackTop === 0 && this.tagIDs[0] === $.HTML;
     }
 
@@ -268,19 +268,19 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInScope(tagName: $): boolean {
+    public hasInScope(tagName: $): boolean {
         return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML);
     }
 
-    hasInListItemScope(tagName: $): boolean {
+    public hasInListItemScope(tagName: $): boolean {
         return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_LIST);
     }
 
-    hasInButtonScope(tagName: $): boolean {
+    public hasInButtonScope(tagName: $): boolean {
         return this.hasInDynamicScope(tagName, SCOPING_ELEMENTS_HTML_BUTTON);
     }
 
-    hasNumberedHeaderInScope(): boolean {
+    public hasNumberedHeaderInScope(): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             const tn = this.tagIDs[i];
 
@@ -304,7 +304,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInTableScope(tagName: $): boolean {
+    public hasInTableScope(tagName: $): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             if (this.treeAdapter.getNamespaceURI(this.items[i]) !== NS.HTML) {
                 continue;
@@ -324,7 +324,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasTableBodyContextInTableScope(): boolean {
+    public hasTableBodyContextInTableScope(): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             if (this.treeAdapter.getNamespaceURI(this.items[i]) !== NS.HTML) {
                 continue;
@@ -346,7 +346,7 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         return true;
     }
 
-    hasInSelectScope(tagName: $): boolean {
+    public hasInSelectScope(tagName: $): boolean {
         for (let i = this.stackTop; i >= 0; i--) {
             if (this.treeAdapter.getNamespaceURI(this.items[i]) !== NS.HTML) {
                 continue;
@@ -370,19 +370,19 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
     }
 
     //Implied end tags
-    generateImpliedEndTags(): void {
+    public generateImpliedEndTags(): void {
         while (this.currentTagId !== undefined && IMPLICIT_END_TAG_REQUIRED.has(this.currentTagId)) {
             this.pop();
         }
     }
 
-    generateImpliedEndTagsThoroughly(): void {
+    public generateImpliedEndTagsThoroughly(): void {
         while (this.currentTagId !== undefined && IMPLICIT_END_TAG_REQUIRED_THOROUGHLY.has(this.currentTagId)) {
             this.pop();
         }
     }
 
-    generateImpliedEndTagsWithExclusion(exclusionId: $): void {
+    public generateImpliedEndTagsWithExclusion(exclusionId: $): void {
         while (
             this.currentTagId !== undefined &&
             this.currentTagId !== exclusionId &&

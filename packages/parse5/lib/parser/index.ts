@@ -126,9 +126,9 @@ const defaultParserOptions: Required<ParserOptions<DefaultTreeAdapterMap>> = {
 
 //Parser
 export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, StackHandler<T> {
-    treeAdapter: TreeAdapter<T>;
+    public treeAdapter: TreeAdapter<T>;
     /** @internal */
-    onParseError: ParserErrorHandler | null;
+    public onParseError: ParserErrorHandler | null;
     protected currentToken: Token | null = null;
     public options: Required<ParserOptions<T>>;
     public document: T['document'];
@@ -215,26 +215,26 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         return fragment;
     }
 
-    tokenizer: Tokenizer;
+    public tokenizer: Tokenizer;
 
     public stopped = false;
     /** @internal */
-    insertionMode = InsertionMode.INITIAL;
+    public insertionMode = InsertionMode.INITIAL;
     /** @internal */
-    originalInsertionMode = InsertionMode.INITIAL;
+    public originalInsertionMode = InsertionMode.INITIAL;
 
     /** @internal */
-    fragmentContextID: $;
+    public fragmentContextID: $;
 
     /** @internal */
-    headElement: null | T['element'] = null;
+    public headElement: null | T['element'] = null;
     /** @internal */
-    formElement: null | T['element'] = null;
+    public formElement: null | T['element'] = null;
 
     /** @internal */
-    openElements: OpenElementStack<T>;
+    public openElements: OpenElementStack<T>;
     /** @internal */
-    activeFormattingElements: FormattingElementList<T>;
+    public activeFormattingElements: FormattingElementList<T>;
     /** Indicates that the current node is not an element in the HTML namespace */
     protected currentNotInHTML = false;
 
@@ -244,24 +244,24 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
      *
      * @internal
      */
-    tmplInsertionModeStack: InsertionMode[] = [];
+    public tmplInsertionModeStack: InsertionMode[] = [];
 
     /** @internal */
-    pendingCharacterTokens: CharacterToken[] = [];
+    public pendingCharacterTokens: CharacterToken[] = [];
     /** @internal */
-    hasNonWhitespacePendingCharacterToken = false;
+    public hasNonWhitespacePendingCharacterToken = false;
 
     /** @internal */
-    framesetOk = true;
+    public framesetOk = true;
     /** @internal */
-    skipNextNewLine = false;
+    public skipNextNewLine = false;
     /** @internal */
-    fosterParentingEnabled = false;
+    public fosterParentingEnabled = false;
 
     //Errors
 
     /** @internal */
-    _err(token: Token, code: ERR, beforeToken?: boolean): void {
+    public _err(token: Token, code: ERR, beforeToken?: boolean): void {
         if (!this.onParseError) return;
 
         const loc = token.location ?? BASE_LOC;
@@ -281,13 +281,13 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Stack events
 
     /** @internal */
-    onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
+    public onItemPush(node: T['parentNode'], tid: number, isTop: boolean): void {
         this.treeAdapter.onItemPush?.(node);
         if (isTop && this.openElements.stackTop > 0) this._setContextModes(node, tid);
     }
 
     /** @internal */
-    onItemPop(node: T['parentNode'], isTop: boolean): void {
+    public onItemPop(node: T['parentNode'], isTop: boolean): void {
         if (this.options.sourceCodeLocationInfo) {
             this._setEndLocation(node, this.currentToken!);
         }
@@ -318,7 +318,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _switchToTextParsing(
+    public _switchToTextParsing(
         currentToken: TagToken,
         nextTokenizerState: (typeof TokenizerMode)[keyof typeof TokenizerMode],
     ): void {
@@ -328,7 +328,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         this.insertionMode = InsertionMode.TEXT;
     }
 
-    switchToPlaintextParsing(): void {
+    public switchToPlaintextParsing(): void {
         this.insertionMode = InsertionMode.TEXT;
         this.originalInsertionMode = InsertionMode.IN_BODY;
         this.tokenizer.state = TokenizerMode.PLAINTEXT;
@@ -337,14 +337,14 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Fragment parsing
 
     /** @protected */
-    _getAdjustedCurrentElement(): T['element'] {
+    public _getAdjustedCurrentElement(): T['element'] {
         return this.openElements.stackTop === 0 && this.fragmentContext
             ? this.fragmentContext
             : this.openElements.current;
     }
 
     /** @protected */
-    _findFormInFragmentContext(): void {
+    public _findFormInFragmentContext(): void {
         let node = this.fragmentContext;
 
         while (node) {
@@ -393,7 +393,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Tree mutation
 
     /** @protected */
-    _setDocumentType(token: DoctypeToken): void {
+    public _setDocumentType(token: DoctypeToken): void {
         const name = token.name || '';
         const publicId = token.publicId || '';
         const systemId = token.systemId || '';
@@ -411,7 +411,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _attachElementToTree(
+    public _attachElementToTree(
         element: T['element'],
         location: LocationWithAttributes | null,
         insertionLocation: InsertionLocation<T>,
@@ -433,7 +433,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _getInsertionLocation(): InsertionLocation<T> {
+    public _getInsertionLocation(): InsertionLocation<T> {
         if (this._shouldFosterParentOnInsertion()) {
             return this._findFosterParentingLocation();
         }
@@ -445,7 +445,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _createElement(
+    public _createElement(
         tagName: string,
         namespaceURI: NS,
         attrs: Attribute[],
@@ -468,7 +468,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
      */
 
     /** @protected */
-    _appendElement(token: TagToken, namespaceURI: NS): void {
+    public _appendElement(token: TagToken, namespaceURI: NS): void {
         const insertionLocation = this._getInsertionLocation();
         const element = this._createElement(token.tagName, namespaceURI, token.attrs, insertionLocation.parent);
 
@@ -476,7 +476,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _insertElement(token: TagToken, namespaceURI: NS): void {
+    public _insertElement(token: TagToken, namespaceURI: NS): void {
         const insertionLocation = this._getInsertionLocation();
         const element = this._createElement(token.tagName, namespaceURI, token.attrs, insertionLocation.parent);
 
@@ -485,7 +485,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _insertFakeElement(tagName: string, tagID: $): void {
+    public _insertFakeElement(tagName: string, tagID: $): void {
         const insertionLocation = this._getInsertionLocation();
         const element = this._createElement(tagName, NS.HTML, [], insertionLocation.parent);
 
@@ -494,7 +494,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _insertTemplate(token: TagToken): void {
+    public _insertTemplate(token: TagToken): void {
         const insertionLocation = this._getInsertionLocation();
         const tmpl = this._createElement(token.tagName, NS.HTML, token.attrs, insertionLocation.parent);
         const content = this.treeAdapter.createDocumentFragment();
@@ -506,7 +506,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _insertFakeRootElement(): void {
+    public _insertFakeRootElement(): void {
         const element = this._createElement(TN.HTML, NS.HTML, [], this.document);
         if (this.options.sourceCodeLocationInfo) this.treeAdapter.setNodeSourceCodeLocation(element, null);
 
@@ -515,7 +515,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _appendCommentNode(token: CommentToken, parent: T['parentNode']): void {
+    public _appendCommentNode(token: CommentToken, parent: T['parentNode']): void {
         const commentNode = this.treeAdapter.createCommentNode(token.data);
 
         this.treeAdapter.appendChild(parent, commentNode);
@@ -525,7 +525,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _insertCharacters(token: CharacterToken): void {
+    public _insertCharacters(token: CharacterToken): void {
         let parent;
         let beforeElement;
 
@@ -561,7 +561,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _adoptNodes(donor: T['parentNode'], recipient: T['parentNode']): void {
+    public _adoptNodes(donor: T['parentNode'], recipient: T['parentNode']): void {
         for (let child = this.treeAdapter.getFirstChild(donor); child; child = this.treeAdapter.getFirstChild(donor)) {
             this.treeAdapter.detachNode(child);
             this.treeAdapter.appendChild(recipient, child);
@@ -569,7 +569,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _setEndLocation(element: T['element'], closingToken: Token): void {
+    public _setEndLocation(element: T['element'], closingToken: Token): void {
         if (this.treeAdapter.getNodeSourceCodeLocation(element) && closingToken.location) {
             const ctLoc = closingToken.location;
             const tn = this.treeAdapter.getTagName(element);
@@ -629,7 +629,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _processToken(token: Token): void {
+    public _processToken(token: Token): void {
         switch (token.type) {
             case TokenType.CHARACTER: {
                 this.onCharacter(token);
@@ -669,7 +669,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Integration points
 
     /** @protected */
-    _isIntegrationPoint(tid: $, element: T['element'], foreignNS?: NS): boolean {
+    public _isIntegrationPoint(tid: $, element: T['element'], foreignNS?: NS): boolean {
         const ns = this.treeAdapter.getNamespaceURI(element);
         const attrs = this.treeAdapter.getAttrList(element);
 
@@ -679,7 +679,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Active formatting elements reconstruction
 
     /** @protected */
-    _reconstructActiveFormattingElements(): void {
+    public _reconstructActiveFormattingElements(): void {
         const listLength = this.activeFormattingElements.entries.length;
 
         if (listLength) {
@@ -700,7 +700,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Close elements
 
     /** @protected */
-    _closeTableCell(): void {
+    public _closeTableCell(): void {
         this.openElements.generateImpliedEndTags();
         this.openElements.popUntilTableCellPopped();
         this.activeFormattingElements.clearToLastMarker();
@@ -708,7 +708,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _closePElement(): void {
+    public _closePElement(): void {
         this.openElements.generateImpliedEndTagsWithExclusion($.P);
         this.openElements.popUntilTagNamePopped($.P);
     }
@@ -716,7 +716,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Insertion modes
 
     /** @protected */
-    _resetInsertionMode(): void {
+    public _resetInsertionMode(): void {
         for (let i = this.openElements.stackTop; i >= 0; i--) {
             //Insertion mode reset map
             switch (i === 0 && this.fragmentContext ? this.fragmentContextID : this.openElements.tagIDs[i]) {
@@ -784,7 +784,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _resetInsertionModeForSelect(selectIdx: number): void {
+    public _resetInsertionModeForSelect(selectIdx: number): void {
         if (selectIdx > 0) {
             for (let i = selectIdx - 1; i > 0; i--) {
                 const tn = this.openElements.tagIDs[i];
@@ -804,12 +804,12 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Foster parenting
 
     /** @protected */
-    _isElementCausesFosterParenting(tn: $): boolean {
+    public _isElementCausesFosterParenting(tn: $): boolean {
         return TABLE_STRUCTURE_TAGS.has(tn);
     }
 
     /** @protected */
-    _shouldFosterParentOnInsertion(): boolean {
+    public _shouldFosterParentOnInsertion(): boolean {
         return (
             this.fosterParentingEnabled &&
             this.openElements.currentTagId !== undefined &&
@@ -818,7 +818,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _findFosterParentingLocation(): InsertionLocation<T> {
+    public _findFosterParentingLocation(): InsertionLocation<T> {
         for (let i = this.openElements.stackTop; i >= 0; i--) {
             const openElement = this.openElements.items[i];
 
@@ -847,7 +847,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
 
     /** @protected */
-    _fosterParentElement(element: T['element']): void {
+    public _fosterParentElement(element: T['element']): void {
         const location = this._findFosterParentingLocation();
 
         if (location.beforeElement) {
@@ -860,14 +860,14 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     //Special elements
 
     /** @protected */
-    _isSpecialElement(element: T['element'], id: $): boolean {
+    public _isSpecialElement(element: T['element'], id: $): boolean {
         const ns = this.treeAdapter.getNamespaceURI(element);
 
         return SPECIAL_ELEMENTS[ns].has(id);
     }
 
     /** @internal */
-    onCharacter(token: CharacterToken): void {
+    public onCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.tokenizer.inForeignNode) {
@@ -940,7 +940,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @internal */
-    onNullCharacter(token: CharacterToken): void {
+    public onNullCharacter(token: CharacterToken): void {
         this.skipNextNewLine = false;
 
         if (this.tokenizer.inForeignNode) {
@@ -1000,7 +1000,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @internal */
-    onComment(token: CommentToken): void {
+    public onComment(token: CommentToken): void {
         this.skipNextNewLine = false;
 
         if (this.currentNotInHTML) {
@@ -1048,7 +1048,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @internal */
-    onDoctype(token: DoctypeToken): void {
+    public onDoctype(token: DoctypeToken): void {
         this.skipNextNewLine = false;
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
@@ -1071,7 +1071,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @internal */
-    onStartTag(token: TagToken): void {
+    public onStartTag(token: TagToken): void {
         this.skipNextNewLine = false;
         this.currentToken = token;
 
@@ -1092,7 +1092,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
      * @param token The token to process.
      * @protected
      */
-    _processStartTag(token: TagToken): void {
+    public _processStartTag(token: TagToken): void {
         if (this.shouldProcessStartTagTokenInForeignContent(token)) {
             startTagInForeignContent(this, token);
         } else {
@@ -1100,7 +1100,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @protected */
-    _startTagOutsideForeignContent(token: TagToken): void {
+    public _startTagOutsideForeignContent(token: TagToken): void {
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
                 tokenInInitialMode(this, token);
@@ -1195,7 +1195,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @internal */
-    onEndTag(token: TagToken): void {
+    public onEndTag(token: TagToken): void {
         this.skipNextNewLine = false;
         this.currentToken = token;
 
@@ -1206,7 +1206,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @protected */
-    _endTagOutsideForeignContent(token: TagToken): void {
+    public _endTagOutsideForeignContent(token: TagToken): void {
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
                 tokenInInitialMode(this, token);
@@ -1301,7 +1301,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @internal */
-    onEof(token: EOFToken): void {
+    public onEof(token: EOFToken): void {
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
                 tokenInInitialMode(this, token);
@@ -1364,7 +1364,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         }
     }
     /** @internal */
-    onWhitespaceCharacter(token: CharacterToken): void {
+    public onWhitespaceCharacter(token: CharacterToken): void {
         if (this.skipNextNewLine) {
             this.skipNextNewLine = false;
 
