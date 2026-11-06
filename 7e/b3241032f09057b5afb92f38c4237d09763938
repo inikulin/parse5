@@ -1,0 +1,22 @@
+packages/parse5/lib/parser/formatting-element-list.ts
+  s_ee0b775d18f373::t_e2ef2b7329c8dd 39,100,208,211-212
+  s_ee0b775d18f373::t_72f4c1d067a03e 31-32,40-44,47,61,87,104,175-176,209-210
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_ee0b775d18f373::t_d8076e3df4c840 361-368
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7eb3241032f09057b5afb92f38c4237d09763938",
+  "prompts": {},
+  "sessions": {
+    "s_ee0b775d18f373": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6886b21e-826e-411d-88a5-a681d43a067e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
