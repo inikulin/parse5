@@ -1,6 +1,7 @@
 packages/parse5-sax-parser/test/sax-parser.test.ts
   s_66354c76e4c6f5::t_9a5cedf0a24942 265,272-280
   s_66354c76e4c6f5::t_aae4da2afdccae 281-282
+  s_2d7759437df752::t_fbeae41956a623 267-268
 packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
   s_66354c76e4c6f5::t_0e57529fa3fb01 137,212
   s_66354c76e4c6f5::t_8f072a60d9f9f3 172
@@ -12,6 +13,14 @@ packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
   "base_commit_sha": "1b2041ace35ace2d97a90bd542100fb7d99490a0",
   "prompts": {},
   "sessions": {
+    "s_2d7759437df752": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "12e9c97f-4131-4af3-901a-233bbe70a84d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
     "s_66354c76e4c6f5": {
       "agent_id": {
         "tool": "claude",
