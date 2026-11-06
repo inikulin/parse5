@@ -23,6 +23,10 @@ import { HtmlEntityDecoder, DecodingMode } from 'entities/decode';
 import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
 import { TAG_ID, getTagID } from '../common/html.js';
 
+// The few attributes a tag usually has are scanned for a duplicate name; from this many on, the names are
+// collected in a Set instead, so that the check doesn't get quadratic in the number of attributes.
+const ATTR_NAME_SET_THRESHOLD = 64;
+
 //States
 const enum State {
     DATA,
@@ -224,6 +228,7 @@ export class Tokenizer {
     protected currentToken: Token | null = null;
     protected currentAttr: Attribute = { name: '', value: '' };
     private currentAttrLocation: Location | null = null;
+    private currentAttrNames: Set<string> | null = null;
     /**
      * `[start, end)` of `preprocessor.html` still to be appended to the attribute value, comment data or character
      * token being built (`_flushRun`): input that is used as is is appended as one slice, not a code point at a time.
@@ -562,8 +567,25 @@ export class Tokenizer {
 
     protected _leaveAttrName(): void {
         const token = this.currentToken as TagToken;
+        const { name } = this.currentAttr;
+        const names = this.currentAttrNames;
+        let duplicate: boolean;
 
-        if (getTokenAttr(token, this.currentAttr.name) === null) {
+        if (names === null) {
+            duplicate = getTokenAttr(token, name) !== null;
+            // Build the name set only once a new (65th) name is accepted, so a tag with 64 names and many
+            // duplicates does not build it.
+            if (!duplicate && token.attrs.length === ATTR_NAME_SET_THRESHOLD) {
+                this.currentAttrNames = new Set(token.attrs.map((attr) => attr.name)).add(name);
+            }
+        } else {
+            duplicate = names.has(name);
+            if (!duplicate) names.add(name);
+        }
+
+        if (duplicate) {
+            this._err(ERR.duplicateAttribute);
+        } else {
             token.attrs.push(this.currentAttr);
 
             if (token.location && this.currentAttrLocation) {
@@ -573,8 +595,6 @@ export class Tokenizer {
                 // Set end location
                 this._leaveAttrValue();
             }
-        } else {
-            this._err(ERR.duplicateAttribute);
         }
     }
 
@@ -669,6 +689,8 @@ export class Tokenizer {
 
     protected emitCurrentTagToken(): void {
         const ct = this.currentToken as TagToken;
+
+        this.currentAttrNames = null;
 
         this.prepareToken(ct);
 

@@ -345,3 +345,47 @@ describe('Tokenizer methods', () => {
         );
     });
 });
+
+describe('Tokenizer attributes', () => {
+    it('should detect duplicates in a tag with many attributes without scanning them', () => {
+        const names = Array.from({ length: 2000 }, (_, i) => `a${i}`);
+        const duplicates = [...names.slice(0, 100), ...names.slice(-100)];
+        const tags: Token.TagToken[] = [];
+        let duplicateCount = 0;
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onComment: noop,
+            onDoctype: noop,
+            onStartTag(t): void {
+                tags.push(t);
+            },
+            onEndTag: noop,
+            onEof: noop,
+            onCharacter: noop,
+            onNullCharacter: noop,
+            onWhitespaceCharacter: noop,
+            onParseError(err): void {
+                duplicateCount += Number(err.code === 'duplicate-attribute');
+            },
+        });
+
+        // Count the reads of earlier attributes while the rest of the tag is tokenized.
+        let reads = 0;
+        tokenizer.write('<div ', false);
+        const token = Reflect.get(tokenizer, 'currentToken') as Token.TagToken;
+        token.attrs = new Proxy(token.attrs, {
+            get(target, key, receiver): unknown {
+                if (typeof key === 'string' && /^\d+$/.test(key)) reads++;
+                return Reflect.get(target, key, receiver);
+            },
+        });
+        tokenizer.write(`${names.join('=1 ')}=1 ${duplicates.join('=2 ')}=2><p a0=3>`, true);
+
+        // A scan per attribute would read about `names.length ** 2 / 2` entries.
+        assert.isBelow(reads, names.length * 10);
+        assert.strictEqual(tags[0].attrs.length, names.length);
+        assert.ok(tags[0].attrs.every((attr, i) => attr.name === names[i] && attr.value === '1'));
+        assert.strictEqual(duplicateCount, duplicates.length);
+        // The next tag does not see the names of the wide one.
+        assert.deepStrictEqual(tags[1].attrs, [{ name: 'a0', value: '3' }]);
+    });
+});
