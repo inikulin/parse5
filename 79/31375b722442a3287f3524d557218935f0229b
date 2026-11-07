@@ -1,0 +1,23 @@
+packages/parse5/lib/parser/open-element-limit.test.ts
+  s_16b6747ad765f4::t_72ec343ce64587 1-65
+packages/parse5/lib/parser/index.ts
+  s_16b6747ad765f4::t_e48d519097cade 55-57,459-464,470-473,478-490,516,532-536,1693-1696,1700-1703,2727-2728
+packages/parse5/lib/serializer/index.test.ts
+  s_16b6747ad765f4::t_3d59d2445b9f45 2-10,77-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7931375b722442a3287f3524d557218935f0229b",
+  "prompts": {},
+  "sessions": {
+    "s_16b6747ad765f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ec448077-bcbb-4d71-82f9-f75a0356c564",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
