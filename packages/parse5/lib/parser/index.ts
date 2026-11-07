@@ -32,9 +32,8 @@ import {
 } from '../common/token.js';
 
 //Misc constants
-// Elements that can select an insertion mode when it is reset, as a table by tag ID (`XMP` is the last tag ID).
-const INSERTION_MODE_TAGS = new Uint8Array($.XMP + 1);
-for (const tn of [
+// Elements that can select an insertion mode when it is reset.
+const INSERTION_MODE_TAGS = [
     $.TR,
     $.TBODY,
     $.THEAD,
@@ -50,9 +49,7 @@ for (const tn of [
     $.HEAD,
     $.BODY,
     $.HTML,
-]) {
-    INSERTION_MODE_TAGS[tn] = 1;
-}
+];
 const HIDDEN_INPUT_TYPE = 'hidden';
 
 // For the integration-point check of elements whose attributes do not matter; never attached to a node.
@@ -767,17 +764,13 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _resetInsertionMode(): void {
-        for (let i = this.openElements.stackTop; i >= 0; i--) {
-            const tn = i === 0 && this.fragmentContext ? this.fragmentContextID : this.openElements.tagIDs[i];
+        // The topmost open HTML element that selects a mode; the fragment context stands in for the root.
+        const i = this.openElements.indexOfTopmostOf(INSERTION_MODE_TAGS);
+        const tn = i === 0 && this.fragmentContext ? this.fragmentContextID : this.openElements.tagIDs[i];
+        const node = i === 0 && this.fragmentContext ? this.fragmentContext : this.openElements.items[i];
 
-            // The tag first: most open elements select no mode, and their namespace costs more to read.
-            if (!INSERTION_MODE_TAGS[tn]) continue;
-
-            const node = i === 0 && this.fragmentContext ? this.fragmentContext : this.openElements.items[i];
-
-            // Only HTML elements select an insertion mode.
-            if (this.treeAdapter.getNamespaceURI(node) !== NS.HTML) continue;
-
+        // Only HTML elements select an insertion mode.
+        if (node !== undefined && this.treeAdapter.getNamespaceURI(node) === NS.HTML) {
             //Insertion mode reset map
             switch (tn) {
                 case $.TR: {
@@ -845,20 +838,13 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _resetInsertionModeForSelect(selectIdx: number): void {
+        // The select is the topmost element that selects a mode, so open tables and templates are below it.
         if (selectIdx > 0) {
-            for (let i = selectIdx - 1; i > 0; i--) {
-                const tn = this.openElements.tagIDs[i];
+            const tableIdx = this.openElements.indexOfTopmost($.TABLE);
 
-                if (tn !== $.TEMPLATE && tn !== $.TABLE) continue;
-                if (this.treeAdapter.getNamespaceURI(this.openElements.items[i]) !== NS.HTML) continue;
-
-                if (tn === $.TEMPLATE) {
-                    break;
-                } else {
-                    // Only `table` reaches this branch.
-                    this.insertionMode = InsertionMode.IN_SELECT_IN_TABLE;
-                    return;
-                }
+            if (tableIdx > 0 && tableIdx > this.openElements.indexOfTopmost($.TEMPLATE)) {
+                this.insertionMode = InsertionMode.IN_SELECT_IN_TABLE;
+                return;
             }
         }
 
@@ -883,31 +869,29 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _findFosterParentingLocation(): InsertionLocation<T> {
-        for (let i = this.openElements.stackTop; i >= 0; i--) {
-            const openElement = this.openElements.items[i];
+        const { openElements } = this;
+        const tableIdx = openElements.indexOfTopmost($.TABLE);
+        const templateIdx = openElements.indexOfTopmost($.TEMPLATE);
 
-            switch (this.openElements.tagIDs[i]) {
-                case $.TEMPLATE: {
-                    if (this.treeAdapter.getNamespaceURI(openElement) === NS.HTML) {
-                        return { parent: this.treeAdapter.getTemplateContent(openElement), beforeElement: null };
-                    }
-                    break;
-                }
-                case $.TABLE: {
-                    const parent = this.treeAdapter.getParentNode(openElement);
-
-                    if (parent) {
-                        return { parent, beforeElement: openElement };
-                    }
-
-                    return { parent: this.openElements.items[i - 1], beforeElement: null };
-                }
-                default:
-                // Do nothing
-            }
+        if (templateIdx > tableIdx) {
+            return {
+                parent: this.treeAdapter.getTemplateContent(openElements.items[templateIdx]),
+                beforeElement: null,
+            };
         }
 
-        return { parent: this.openElements.items[0], beforeElement: null };
+        if (tableIdx !== -1) {
+            const table = openElements.items[tableIdx];
+            const parent = this.treeAdapter.getParentNode(table);
+
+            if (parent) {
+                return { parent, beforeElement: table };
+            }
+
+            return { parent: openElements.items[openElements.slotBelow(tableIdx)], beforeElement: null };
+        }
+
+        return { parent: openElements.items[0], beforeElement: null };
     }
 
     /** @protected */
@@ -1514,43 +1498,38 @@ function aaObtainFormattingElementEntry<T extends TreeAdapterTypeMap>(
 function aaObtainFurthestBlock<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
     formattingElementEntry: ElementEntry<T>,
-): T['parentNode'] | null {
-    let furthestBlock = null;
-    let idx = p.openElements.stackTop;
+): number {
+    const { openElements } = p;
+    const formattingIdx = openElements._indexOf(formattingElementEntry.element);
 
-    for (; idx >= 0; idx--) {
-        const element = p.openElements.items[idx];
-
-        if (element === formattingElementEntry.element) {
-            break;
-        }
-
-        if (p._isSpecialElement(element, p.openElements.tagIDs[idx])) {
-            furthestBlock = element;
+    // The furthest block is the lowest special element above the formatting element.
+    for (let idx = openElements.slotAbove(formattingIdx); idx !== -1; idx = openElements.slotAbove(idx)) {
+        if (p._isSpecialElement(openElements.items[idx], openElements.tagIDs[idx])) {
+            return idx;
         }
     }
 
-    if (!furthestBlock) {
-        p.openElements.shortenToLength(Math.max(idx, 0));
-        p.activeFormattingElements.removeEntry(formattingElementEntry);
-    }
+    openElements.shortenToLength(formattingIdx);
+    p.activeFormattingElements.removeEntry(formattingElementEntry);
 
-    return furthestBlock;
+    return -1;
 }
 
 //Step 13 of the algorithm
 function aaInnerLoop<T extends TreeAdapterTypeMap>(
     p: Parser<T>,
-    furthestBlock: T['element'],
+    furthestBlockIdx: number,
     formattingElement: T['element'],
 ): T['element'] {
+    const furthestBlock = p.openElements.items[furthestBlockIdx];
     let lastElement = furthestBlock;
-    let nextElement = p.openElements.getCommonAncestor(furthestBlock) as T['element'];
+    let nextIdx = p.openElements.slotBelow(furthestBlockIdx);
     const intendedParent = p.openElements.getCommonAncestor(formattingElement) as T['parentNode'];
 
-    for (let i = 0, element = nextElement; element !== formattingElement; i++, element = nextElement) {
-        //NOTE: store the next element for the next loop iteration (it may be deleted from the stack by step 9.5)
-        nextElement = p.openElements.getCommonAncestor(element) as T['element'];
+    for (let i = 0, idx = nextIdx; p.openElements.items[idx] !== formattingElement; i++, idx = nextIdx) {
+        let element = p.openElements.items[idx];
+        // Store the next element for the next loop iteration (this one may be removed from the stack by step 9.5).
+        nextIdx = p.openElements.slotBelow(idx);
 
         const elementEntry = p.activeFormattingElements.getElementEntry(element);
         const counterOverflow = elementEntry && i >= AA_INNER_LOOP_ITER;
@@ -1561,7 +1540,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
                 p.activeFormattingElements.removeEntry(elementEntry);
             }
 
-            p.openElements.remove(element);
+            p.openElements.removeAt(idx);
         } else {
             element = aaRecreateElementFromEntry(p, elementEntry, intendedParent);
 
@@ -1631,8 +1610,15 @@ function aaReplaceFormattingElement<T extends TreeAdapterTypeMap>(
     p.activeFormattingElements.insertElementAfterBookmark(newElement, token);
     p.activeFormattingElements.removeEntry(formattingElementEntry);
 
-    p.openElements.remove(formattingElementEntry.element);
-    p.openElements.insertAfter(furthestBlock, newElement, token.tagID);
+    // Only the elements the inner loop kept are open between the formatting element and the furthest block.
+    const formattingIdx = p.openElements._indexOf(formattingElementEntry.element);
+    let furthestBlockIdx = p.openElements.slotAbove(formattingIdx);
+
+    while (p.openElements.items[furthestBlockIdx] !== furthestBlock) {
+        furthestBlockIdx = p.openElements.slotAbove(furthestBlockIdx);
+    }
+
+    p.openElements.replaceFormattingElement(formattingIdx, furthestBlockIdx, newElement, token.tagID);
 }
 
 //Algorithm entry point
@@ -1656,15 +1642,17 @@ function callAdoptionAgency<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
             break;
         }
 
-        const furthestBlock = aaObtainFurthestBlock(p, formattingElementEntry);
+        const furthestBlockIdx = aaObtainFurthestBlock(p, formattingElementEntry);
 
-        if (!furthestBlock) {
+        if (furthestBlockIdx === -1) {
             break;
         }
 
+        const furthestBlock = p.openElements.items[furthestBlockIdx];
+
         p.activeFormattingElements.bookmark = formattingElementEntry;
 
-        const lastElement = aaInnerLoop(p, furthestBlock, formattingElementEntry.element);
+        const lastElement = aaInnerLoop(p, furthestBlockIdx, formattingElementEntry.element);
         const commonAncestor = p.openElements.getCommonAncestor(formattingElementEntry.element);
 
         p.treeAdapter.detachNode(lastElement);
@@ -1695,7 +1683,7 @@ function stopParsing<T extends TreeAdapterTypeMap>(p: Parser<T>, token: EOFToken
         // NOTE: If we are not in a fragment, `html` and `body` will stay on the stack.
         // This is a problem, as we might overwrite their end position here.
         const target = p.fragmentContext ? 0 : 2;
-        for (let i = p.openElements.stackTop; i >= target; i--) {
+        for (let i = p.openElements.stackTop; i >= target; i = p.openElements.slotBelow(i)) {
             p._setEndLocation(p.openElements.items[i], token);
         }
 
@@ -2150,28 +2138,18 @@ function formStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: T
 function listItemStartTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
     p.framesetOk = false;
 
-    const tn = token.tagID;
+    // The topmost open item of the token's kind closes, unless a special element other than address, div and p is
+    // above it.
+    const idx =
+        token.tagID === $.LI
+            ? p.openElements.indexOfTopmost($.LI)
+            : Math.max(p.openElements.indexOfTopmost($.DD), p.openElements.indexOfTopmost($.DT));
 
-    for (let i = p.openElements.stackTop; i >= 0; i--) {
-        const elementId = p.openElements.tagIDs[i];
+    if (idx !== -1 && !p.openElements.hasListItemBoundaryAbove(idx)) {
+        const elementId = p.openElements.tagIDs[idx];
 
-        if (
-            (tn === $.LI && elementId === $.LI) ||
-            ((tn === $.DD || tn === $.DT) && (elementId === $.DD || elementId === $.DT))
-        ) {
-            p.openElements.generateImpliedEndTagsWithExclusion(elementId);
-            p.openElements.popUntilTagNamePopped(elementId);
-            break;
-        }
-
-        if (
-            elementId !== $.ADDRESS &&
-            elementId !== $.DIV &&
-            elementId !== $.P &&
-            p._isSpecialElement(p.openElements.items[i], elementId)
-        ) {
-            break;
-        }
+        p.openElements.generateImpliedEndTagsWithExclusion(elementId);
+        p.openElements.popUntilTagNamePopped(elementId);
     }
 
     if (p.openElements.hasInButtonScope($.P)) {
@@ -2720,28 +2698,17 @@ function brEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>): void {
 }
 
 function genericEndTagInBody<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagToken): void {
-    const tn = token.tagName;
     const tid = token.tagID;
+    // The topmost open HTML element with the token's name closes, unless a special element is above it. A tag without
+    // an ID is matched by name.
+    const i =
+        tid === $.UNKNOWN
+            ? p.openElements.indexOfTopmostByName(NS.HTML, token.tagName)
+            : p.openElements.indexOfTopmost(tid);
 
-    for (let i = p.openElements.stackTop; i > 0; i--) {
-        const element = p.openElements.items[i];
-        const elementId = p.openElements.tagIDs[i];
-
-        // Compare the tag name here, as the tag might not be a known tag with an ID.
-        // Only HTML elements match; a foreign element falls through to the special-element check.
-        if (
-            tid === elementId &&
-            p.treeAdapter.getNamespaceURI(element) === NS.HTML &&
-            (tid !== $.UNKNOWN || p.treeAdapter.getTagName(element) === tn)
-        ) {
-            p.openElements.generateImpliedEndTagsWithExclusion(tid);
-            if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
-            break;
-        }
-
-        if (p._isSpecialElement(element, elementId)) {
-            break;
-        }
+    if (i > 0 && !p.openElements.hasSpecialElementAbove(i)) {
+        p.openElements.generateImpliedEndTagsWithExclusion(tid);
+        if (p.openElements.stackTop >= i) p.openElements.shortenToLength(i);
     }
 }
 
@@ -3471,7 +3438,7 @@ function endTagInSelect<T extends TreeAdapterTypeMap>(p: Parser<T>, token: TagTo
             if (
                 p.openElements.stackTop > 0 &&
                 p.openElements.currentTagId === $.OPTION &&
-                p.openElements.tagIDs[p.openElements.stackTop - 1] === $.OPTGROUP
+                p.openElements.tagIDs[p.openElements.slotBelow(p.openElements.stackTop)] === $.OPTGROUP
             ) {
                 p.openElements.pop();
             }
@@ -3816,23 +3783,26 @@ function endTagInForeignContent<T extends TreeAdapterTypeMap>(p: Parser<T>, toke
     // The current node is the root element (fragment case): ignore the token.
     if (p.openElements.stackTop === 0) return;
 
-    for (let i = p.openElements.stackTop; i >= 0; i--) {
-        const element = p.openElements.items[i];
+    // The topmost foreign element with the token's name closes, unless an HTML element is above it. Foreign names are
+    // the lowercased start-tag name or its SVG adjustment, so these two are the ASCII case-insensitive match.
+    const { tagName } = token;
+    const adjustedTagName = foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(tagName);
+    // Elements outside HTML, SVG and MathML only come from a fragment context in their namespace.
+    const contextNs = p.fragmentContext ? p.treeAdapter.getNamespaceURI(p.fragmentContext) : NS.HTML;
+    const i = Math.max(
+        p.openElements.indexOfTopmostByName(NS.SVG, tagName),
+        p.openElements.indexOfTopmostByName(NS.MATHML, tagName),
+        adjustedTagName === undefined ? -1 : p.openElements.indexOfTopmostByName(NS.SVG, adjustedTagName),
+        contextNs === NS.HTML || contextNs === NS.SVG || contextNs === NS.MATHML
+            ? -1
+            : p.openElements.indexOfTopmostByName(contextNs, tagName),
+    );
 
-        if (p.treeAdapter.getNamespaceURI(element) === NS.HTML) {
-            p._endTagOutsideForeignContent(token);
-            break;
-        }
-
-        const tagName = p.treeAdapter.getTagName(element);
-
-        // The tokenizer lowercases foreign start-tag names and tree construction adds ASCII uppercase only through
-        // the SVG adjustment map, so these two comparisons are the ASCII case-insensitive match for every name created.
-        if (tagName === token.tagName || tagName === foreignContent.SVG_TAG_NAMES_ADJUSTMENT_MAP.get(token.tagName)) {
-            //NOTE: update the token tag name for `_setEndLocation`.
-            token.tagName = tagName;
-            p.openElements.shortenToLength(i);
-            break;
-        }
+    if (i > p.openElements.indexOfTopmostHtmlElement()) {
+        //NOTE: update the token tag name for `_setEndLocation`.
+        token.tagName = p.treeAdapter.getTagName(p.openElements.items[i]);
+        p.openElements.shortenToLength(i);
+    } else {
+        p._endTagOutsideForeignContent(token);
     }
 }

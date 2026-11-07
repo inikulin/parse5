@@ -4,6 +4,8 @@ import {
     parse,
     InsertionMode,
     serialize,
+    defaultTreeAdapter,
+    html,
     type ElementCreationContext,
     type TreeAdapter,
     type DefaultTreeAdapterMap,
@@ -321,4 +323,36 @@ describe('InsertionMode', () => {
         assert.strictEqual(InsertionMode.IN_BODY, 6);
         assert.strictEqual(InsertionMode.AFTER_AFTER_FRAMESET, 22);
     });
+});
+
+// Behind 64 open elements, the stack of open elements is indexed, and the adoption agency leaves free slots.
+const deepOpen = '<x-p>'.repeat(64);
+const deepClose = '</x-p>'.repeat(64);
+
+it.each([
+    '<a><b><big><em><strong><div>X</a>Y</div>Z',
+    '<b><em><foo><foo><foo><aside></b></em>Y</aside>Z',
+    '<u><i><bar><b><center></i></u>x</b>y',
+    '<cite><b><cite><i><cite><i><cite><i><div>X</b>TEST',
+    '<a href=a>aa<marquee>aa<a href=b>bb</marquee>aa',
+    '<a><p><a>x',
+    '<li><div><li>x',
+    '<dd><div><dt>x',
+    '<ul><li><ol></li>x',
+    '<p><button></p>x',
+    '<h1><div><h2>x</h1>y',
+    '<x-a><span></x-a>x',
+    '<table><b><tr><td>aaa</td></tr>bbb</table>ccc',
+    '<table><tr><td><select><td>x',
+    '<svg><g><foo></g>x',
+    '<x-a><form><span></form></x-a>x',
+])('parses %s behind a deep stack as behind a shallow one', (input) => {
+    expect(serialize(parseFragment(deepOpen + input))).toBe(deepOpen + serialize(parseFragment(input)) + deepClose);
+});
+
+it.each([0, 64])('closes elements in a fragment context outside HTML, SVG and MathML behind %i elements', (depth) => {
+    const context = defaultTreeAdapter.createElement('c', html.NS.XML, []);
+    const open = '<y>'.repeat(depth);
+
+    expect(serialize(parseFragment(context, `${open}<x></x>after`))).toBe(`${open}<x></x>after${'</y>'.repeat(depth)}`);
 });

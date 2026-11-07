@@ -84,21 +84,79 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
         assert.strictEqual(stack.stackTop, 1);
     });
 
-    it('Insert element after element', () => {
-        const element1 = createElement('#element1', NS.XLINK);
-        const element2 = createElement('#element2', NS.SVG);
-        const element3 = createElement('#element3', NS.XML);
+    // A stack 64 elements deep indexes its elements; the stack edits and searches below behave alike on both.
+    function openStack(depth: number): OpenElementStack<TreeAdapterTypeMap> {
         const stack = new OpenElementStack(treeAdapter.createDocument(), treeAdapter, stackHandler);
 
-        stack.push(element1, $.UNKNOWN);
-        stack.push(element2, $.UNKNOWN);
-        stack.insertAfter(element1, element3, $.UNKNOWN);
-        assert.strictEqual(stack.stackTop, 2);
-        assert.strictEqual(stack.items[1], element3);
+        stack.push(createElement(TN.HTML), $.HTML);
+        for (let i = 0; i < depth; i++) stack.push(createElement('x-y'), $.UNKNOWN);
 
-        stack.insertAfter(element2, element1, $.UNKNOWN);
-        assert.strictEqual(stack.stackTop, 3);
-        assert.strictEqual(stack.current, element1);
+        return stack;
+    }
+
+    function openElements(stack: OpenElementStack<TreeAdapterTypeMap>): unknown[] {
+        const elements = [];
+
+        for (let i = stack.stackTop; i !== -1; i = stack.slotBelow(i)) elements.unshift(stack.items[i]);
+
+        return elements;
+    }
+
+    it.each([0, 64])('Replaces a formatting element above the furthest block (%i elements below)', (depth) => {
+        const stack = openStack(depth);
+        const formatting = createElement(TN.B);
+        const kept = createElement(TN.I);
+        const removed = createElement(TN.SPAN);
+        const furthestBlock = createElement(TN.DIV);
+        const replacement = createElement(TN.B);
+        const above = createElement(TN.P);
+        const upper = createElement(TN.B);
+
+        stack.push(formatting, $.B);
+        stack.push(kept, $.I);
+        stack.push(removed, $.SPAN);
+        stack.push(furthestBlock, $.DIV);
+        stack.push(above, $.P);
+        stack.push(upper, $.B);
+        stack.removeAt(stack._indexOf(removed));
+        stack.replaceFormattingElement(stack._indexOf(formatting), stack._indexOf(furthestBlock), replacement, $.B);
+
+        assert.deepStrictEqual(openElements(stack).slice(-5), [kept, furthestBlock, replacement, above, upper]);
+        assert.strictEqual(stack.depth, depth + 6);
+        assert.strictEqual(stack.getCommonAncestor(replacement), furthestBlock);
+        assert.strictEqual(stack.items[stack.indexOfTopmost($.B)], upper);
+        assert.strictEqual(stack.items[stack.indexOfTopmost($.DIV)], furthestBlock);
+        assert.ok(!stack.contains(formatting));
+        assert.ok(stack.hasSpecialElementAbove(stack._indexOf(replacement)));
+        assert.ok(stack.hasInScope($.B, replacement));
+
+        stack.pop();
+        assert.strictEqual(stack.items[stack.indexOfTopmost($.B)], replacement);
+
+        stack.pop();
+        stack.pop();
+        assert.strictEqual(stack.current, furthestBlock);
+        assert.ok(!stack.hasSpecialElementAbove(stack.stackTop));
+        assert.strictEqual(stack.indexOfTopmost($.B), -1);
+    });
+
+    it.each([0, 64])('Replaces a formatting element above the current element (%i elements below)', (depth) => {
+        const stack = openStack(depth);
+        const formatting = createElement(TN.B);
+        const kept = createElement(TN.I);
+        const furthestBlock = createElement(TN.DIV);
+        const replacement = createElement(TN.B);
+
+        stack.push(formatting, $.B);
+        stack.push(kept, $.I);
+        stack.push(furthestBlock, $.DIV);
+        stack.replaceFormattingElement(stack._indexOf(formatting), stack.stackTop, replacement, $.B);
+
+        assert.strictEqual(stack.current, replacement);
+        assert.strictEqual(stack.currentTagId, $.B);
+        assert.strictEqual(stack.getCommonAncestor(replacement), furthestBlock);
+        assert.strictEqual(stack.getCommonAncestor(furthestBlock), kept);
+        assert.strictEqual(stack.items[stack._indexOf(kept)], kept);
     });
 
     it('Pop elements until popped with given tagName', () => {
@@ -255,11 +313,41 @@ generateTestsForEachTreeAdapter('open-element-stack', (treeAdapter) => {
 
         stack.remove(element);
 
-        assert.strictEqual(stack.stackTop, 1);
+        assert.strictEqual(stack.depth, 2);
 
         for (let i = stack.stackTop; i >= 0; i--) {
             assert.notStrictEqual(stack.items[i], element);
         }
+    });
+
+    it.each([0, 64])('Answers searches across removals from the middle (%i elements below)', (depth) => {
+        const stack = openStack(depth);
+        const li = createElement(TN.LI);
+        const table = createElement(TN.TABLE);
+        const div = createElement(TN.DIV);
+        const svg = createElement(TN.SVG, NS.SVG);
+        const g = createElement('g', NS.SVG);
+
+        stack.push(li, $.LI);
+        stack.push(table, $.TABLE);
+        stack.push(div, $.DIV);
+        stack.push(svg, $.SVG);
+        stack.push(g, $.UNKNOWN);
+        const liIdx = stack._indexOf(li);
+        assert.ok(stack.hasListItemBoundaryAbove(liIdx));
+        assert.ok(!stack.hasInListItemScope($.LI));
+        assert.strictEqual(stack.items[stack.indexOfTopmostHtmlElement()], div);
+
+        stack.remove(table);
+        assert.ok(!stack.hasListItemBoundaryAbove(stack._indexOf(li)));
+        assert.ok(stack.hasSpecialElementAbove(stack._indexOf(li)));
+        assert.ok(stack.hasInListItemScope($.LI));
+
+        stack.remove(div);
+        assert.ok(!stack.hasSpecialElementAbove(stack._indexOf(li)));
+        assert.strictEqual(stack.items[stack.indexOfTopmostHtmlElement()], li);
+        assert.strictEqual(stack.items[stack.indexOfTopmostByName(NS.SVG, 'g')], g);
+        assert.strictEqual(stack.getCommonAncestor(svg), li);
     });
 
     it('Try peek properly nested <body> element', () => {

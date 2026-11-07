@@ -83,8 +83,6 @@ it.each(Object.entries(treeAdapters) as [string, TreeAdapter][])(
         expect(parser.tokenizer.inForeignNode).toBe(true);
         stack.pop();
         expect(parser.tokenizer.inForeignNode).toBe(false);
-        stack.insertAfter(root, plain, html.TAG_ID.ANNOTATION_XML);
-        stack.remove(plain);
         stack.replace(encoded, plain);
         expect(parser._isIntegrationPoint(html.TAG_ID.ANNOTATION_XML, stack.current)).toBe(false);
         stack.push(encoded, html.TAG_ID.ANNOTATION_XML);
