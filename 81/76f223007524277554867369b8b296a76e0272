@@ -1,0 +1,21 @@
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_6bbbbbc7cea8e7::t_128eb752d80504 440-441
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_6bbbbbc7cea8e7::t_ed3a82810fccc0 199-200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e598948a6c6244102aec3857dde6d251227d606d",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

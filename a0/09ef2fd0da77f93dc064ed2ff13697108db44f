@@ -1,0 +1,41 @@
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_773b633fde210c::t_211e3b7926a082 380-398
+packages/parse5-sax-parser/lib/index.ts
+  s_00d32ce91e753c::t_209a05ce0b70f9 126
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_773b633fde210c::t_d96850934070f7 158-179
+packages/parse5/lib/tokenizer/index.ts
+  s_d1240ea9997571::t_89b9c372bc115b 339-377
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2e823cd5d2e888fdeae23d5fd32bc1ac4db9b10f",
+  "prompts": {},
+  "sessions": {
+    "s_00d32ce91e753c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-107f-7910-8983-a0cf2ff5e075",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_773b633fde210c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-5ec0-7e10-af1d-b59838e33098",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_d1240ea9997571": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-56e9-7a92-9307-b45ce9d7ed51",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

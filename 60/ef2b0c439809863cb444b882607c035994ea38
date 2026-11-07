@@ -1,0 +1,19 @@
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_173ca9ea90a33e::t_418657f997ebb1 412-430
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ecbf2c2b044630ad39c2b9e4e6496a62a668de7c",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

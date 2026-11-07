@@ -1,0 +1,36 @@
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_173ca9ea90a33e::t_31e1b81487ca5e 40-44,47
+packages/parse5/lib/tokenizer/index.test.ts
+  s_173ca9ea90a33e::t_34ead2747b9de4 58,86-98,107,132-137
+  s_173ca9ea90a33e::t_e92cf39b2c948f 16-21,25-56,59-85,99-106,108-110,139-143
+  s_173ca9ea90a33e::t_cd82b7947d2330 2,22-24,111-131,138
+packages/parse5/lib/tokenizer/index.ts
+  s_173ca9ea90a33e::t_983fae923d684f 595,599-610,616,750-751,767-770,799-800,805-808,810,812,817,1987,2015,2053
+  s_173ca9ea90a33e::t_31e1b81487ca5e 558-560,596,611,638-641,685-686,738-739,742,744-747
+  s_173ca9ea90a33e::t_308d50cef40f0c 561,621,781,801-804,809,813-815,818,842
+  s_173ca9ea90a33e::t_54c1031eb14874 637
+  s_173ca9ea90a33e::t_f3c29c733588f6 771-780
+  s_173ca9ea90a33e::t_22269886e403b9 612,620,761,763-766,811
+  s_173ca9ea90a33e::t_a331f30240a402 613-615
+  s_173ca9ea90a33e::t_b65874361ec0a4 788-789,1996,2024,2062,2071
+  s_173ca9ea90a33e::t_073b86462adb45 249-264,754
+  s_173ca9ea90a33e::t_43ff8a7f73a6e2 227-234,597,682-684
+  s_173ca9ea90a33e::t_d586075b3dffdc 598
+  s_173ca9ea90a33e::t_f6d08cb00197bf 617-619
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9a032600b9905afb83884e9ffdad26e485e2a516",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

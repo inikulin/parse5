@@ -1,0 +1,21 @@
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_773b633fde210c::t_0dc1b64d817d97 28-29,153-182,238-243
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_773b633fde210c::t_cb2936ea79d985 97-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "94523d38d56c750d52f85af19ad5dedbada8bef2",
+  "prompts": {},
+  "sessions": {
+    "s_773b633fde210c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-5ec0-7e10-af1d-b59838e33098",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

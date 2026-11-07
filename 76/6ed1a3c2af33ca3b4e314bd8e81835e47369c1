@@ -1,0 +1,28 @@
+packages/parse5/lib/parser/index.ts
+  s_173ca9ea90a33e::t_73dda15abb365d 52-57,502-522,526-528,538-540,550-552
+packages/parse5/lib/serializer/index.test.ts
+  s_173ca9ea90a33e::t_6bac970a3b11cc 2-10,77-89
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_173ca9ea90a33e::t_6bac970a3b11cc 34-51
+packages/parse5/lib/parser/open-element-limit.test.ts
+  s_173ca9ea90a33e::t_c521d3e1a18dad 19-23,41-42,44-45,47-48,53,64
+  s_173ca9ea90a33e::t_73dda15abb365d 1-18,24-40,43,46,49-52,54-63,65-66
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_173ca9ea90a33e::t_6bac970a3b11cc 325-326
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8c055aaef0904d069e1ccc48087b4df1ca537c4d",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

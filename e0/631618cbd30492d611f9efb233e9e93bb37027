@@ -1,0 +1,19 @@
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_6bbbbbc7cea8e7::t_96b3bf754e1cbd 196-197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "096a81a02e834771d065d442711622fc14a0ab67",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

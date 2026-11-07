@@ -1,0 +1,25 @@
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_6bbbbbc7cea8e7::t_ffc2ed2a38c5dd 11,124
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_6bbbbbc7cea8e7::t_0b86c109877dc0 323-333
+packages/parse5/lib/serializer/index.ts
+  s_6bbbbbc7cea8e7::t_a795678ca2d572 2,28-52
+test/data/serialization/tests.json
+  s_6bbbbbc7cea8e7::t_33110db35e2090 45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "848031b788cbce7ce501acb1769cf6c937b6a2f7",
+  "prompts": {},
+  "sessions": {
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}

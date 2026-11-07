@@ -1,0 +1,31 @@
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_c1074bb56123cf::t_81925f107c2908 431-457
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_9336ef22bd6bbc::t_6f54c0e70d2f53 199-240
+packages/parse5/lib/tokenizer/index.ts
+  s_c1074bb56123cf::t_437b877e82892c 453,455-484,500,504-528
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c7cd3cb70a002ede5b6c64dfe97bd728fce111a8",
+  "prompts": {},
+  "sessions": {
+    "s_9336ef22bd6bbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5adde5d0-cffe-4d28-908a-8671454e8d03",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_c1074bb56123cf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1854c-b565-7451-9c44-c50b24a10b19",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
