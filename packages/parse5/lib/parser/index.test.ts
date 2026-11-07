@@ -210,6 +210,18 @@ describe('parser', () => {
         assert.strictEqual(serialize(fragment), '<form><svg><option><g></g></option></svg></form>');
     });
 
+    it.each([
+        // Adoption agency: `<search>` becomes the furthest block.
+        ['<a><search>x</a>y', '<a></a><search><a>x</a>y</search>'],
+        // `<li>`, `<dd>` and `<dt>` start tags stop at a special element.
+        ['<li>a<search><li>b', '<li>a<search><li>b</li></search></li>'],
+        ['<dd>a<search><dt>b', '<dd>a<search><dt>b</dt></search></dd>'],
+        // "Any other end tag" does not close past a special element.
+        ['<x><search></x>y', '<x><search>y</search></x>'],
+    ])('treats <search> as a special element (GH-1924): %s', (input, expectedBody) => {
+        expect(serialize(parse(input))).toBe(`<html><head></head><body>${expectedBody}</body></html>`);
+    });
+
     describe('Tree adapters', () => {
         it('should provide element creation context', () => {
             const contexts = new Map<string, ElementCreationContext<DefaultTreeAdapterMap>>();
