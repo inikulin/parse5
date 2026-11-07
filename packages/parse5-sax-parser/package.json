@@ -2,7 +2,7 @@
     "name": "parse5-sax-parser",
     "type": "module",
     "description": "Streaming SAX-style HTML parser.",
-    "version": "8.0.0",
+    "version": "8.0.1",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": [
         "James Garbutt (https://github.com/43081j)",
@@ -29,7 +29,7 @@
         }
     },
     "dependencies": {
-        "parse5": "^8.0.0"
+        "parse5": "^8.1.1"
     },
     "repository": {
         "type": "git",

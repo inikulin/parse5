@@ -2,7 +2,7 @@
     "name": "parse5-plain-text-conversion-stream",
     "type": "module",
     "description": "Stream that converts plain text files into HTML document.",
-    "version": "8.0.0",
+    "version": "8.0.1",
     "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
     "contributors": [
         "James Garbutt (https://github.com/43081j)",
@@ -31,8 +31,8 @@
         }
     },
     "dependencies": {
-        "parse5": "^8.0.0",
-        "parse5-parser-stream": "^8.0.0"
+        "parse5": "^8.1.1",
+        "parse5-parser-stream": "^8.1.1"
     },
     "repository": {
         "type": "git",
