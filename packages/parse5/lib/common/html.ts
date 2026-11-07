@@ -527,6 +527,7 @@ export const SPECIAL_ELEMENTS: Record<NS, Set<TAG_ID>> = {
         $.PLAINTEXT,
         $.PRE,
         $.SCRIPT,
+        $.SEARCH,
         $.SECTION,
         $.SELECT,
         $.SOURCE,
