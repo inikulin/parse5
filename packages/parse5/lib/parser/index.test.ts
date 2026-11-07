@@ -12,37 +12,9 @@ import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-t
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import type { Htmlparser2TreeAdapterMap } from 'parse5-htmlparser2-tree-adapter';
 
-generateParsingTests(
-    'parser',
-    'Parser',
-    {
-        expectErrors: [
-            //TODO(GH-448): Foreign content behaviour was updated in the HTML spec.
-            //The old test suite still tests the old behaviour.
-            '0.foreign-fragment',
-            '1.foreign-fragment',
-            '38.foreign-fragment',
-            '40.foreign-fragment',
-            '47.foreign-fragment',
-            '48.foreign-fragment',
-        ],
-    },
-    (test, opts) => ({
-        node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
-    }),
-);
-
-generateParsingTests(
-    'parser upstream',
-    'Parser',
-    {
-        withoutErrors: true,
-        suitePath: new URL('../../../../test/data/html5lib-tests/tree-construction', import.meta.url),
-    },
-    (test, opts) => ({
-        node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
-    }),
-);
+generateParsingTests('parser', 'Parser', {}, (test, opts) => ({
+    node: test.fragmentContext ? parseFragment(test.fragmentContext, test.input, opts) : parse(test.input, opts),
+}));
 
 describe('parser', () => {
     it('Regression - HTML5 Legacy Doctype Misparsed with htmlparser2 tree adapter (GH-45)', () => {

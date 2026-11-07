@@ -4,23 +4,7 @@ import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-t
 import { parseChunked } from './utils/parse-chunked.js';
 import { finished } from 'parse5-test-utils/utils/common.js';
 
-generateParsingTests(
-    'ParserStream',
-    'ParserStream',
-    {
-        expectErrors: [
-            //TODO(GH-448): Foreign content behaviour was updated in the HTML spec.
-            //The old test suite still tests the old behaviour.
-            '0.foreign-fragment',
-            '1.foreign-fragment',
-            '38.foreign-fragment',
-            '40.foreign-fragment',
-            '47.foreign-fragment',
-            '48.foreign-fragment',
-        ],
-    },
-    (test, opts) => parseChunked(test, opts),
-);
+generateParsingTests('ParserStream', 'ParserStream', {}, (test, opts) => parseChunked(test, opts));
 
 describe('ParserStream', () => {
     it('Fix empty stream parsing with ParserStream (GH-196)', async () => {

@@ -6,7 +6,7 @@ import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
 import { parseDatFile, type DatFile } from './parse-dat-file.js';
 
-interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile<T> {
+export interface TreeConstructionTestData<T extends TreeAdapterTypeMap> extends DatFile<T> {
     idx: number;
     setName: string;
     dirName: string;
@@ -126,8 +126,76 @@ function createParsingTest<T extends TreeAdapterTypeMap>(
     };
 }
 
-// TODO: Stop using the fork here.
-const treePath = new URL('../data/html5lib-tests-fork/tree-construction', import.meta.url);
+const treePath = new URL('../data/html5lib-tests/tree-construction', import.meta.url);
+const regressionPath = new URL('../data/tree-construction-regressions', import.meta.url);
+const errorExpectationsPath = new URL('../data/parser-errors/expectations.json', import.meta.url);
+
+export interface ParserErrorExpectation {
+    test: [string, [string, string] | null, boolean, boolean];
+    errors: string[];
+    sources: string[];
+}
+
+function getTestIdentity<T extends TreeAdapterTypeMap>(test: DatFile<T>, treeAdapter: TreeAdapter<T>): string {
+    const context =
+        test.fragmentContext === null
+            ? null
+            : [treeAdapter.getNamespaceURI(test.fragmentContext), treeAdapter.getTagName(test.fragmentContext)];
+
+    return JSON.stringify([test.input, context, test.scriptingEnabled, test.disableEntitiesDecoding]);
+}
+
+export function addParserErrorExpectations<T extends TreeAdapterTypeMap>(
+    tests: TreeConstructionTestData<T>[],
+    treeAdapter: TreeAdapter<T>,
+    { sourceCaseCount, cases }: { sourceCaseCount: number; cases: ParserErrorExpectation[] },
+): Set<TreeConstructionTestData<T>> {
+    const expectations = new Map<string, ParserErrorExpectation>();
+    const sources = new Set<string>();
+
+    for (const entry of cases) {
+        const key = JSON.stringify(entry.test);
+
+        if (expectations.has(key)) {
+            throw new Error(`Duplicate parser error expectations: ${entry.sources.join(', ')}`);
+        }
+
+        for (const source of entry.sources) {
+            if (sources.has(source)) {
+                throw new Error(`Duplicate parser error source: ${source}`);
+            }
+
+            sources.add(source);
+        }
+
+        expectations.set(key, entry);
+    }
+
+    if (sources.size !== sourceCaseCount) {
+        throw new Error(`Expected ${sourceCaseCount} parser error sources, found ${sources.size}`);
+    }
+
+    const coveredTests = new Set<TreeConstructionTestData<T>>();
+    const unused = new Set(expectations.keys());
+
+    for (const test of tests) {
+        const key = getTestIdentity(test, treeAdapter);
+        const entry = expectations.get(key);
+
+        if (entry) {
+            test.expectedErrors = entry.errors;
+            coveredTests.add(test);
+            unused.delete(key);
+        }
+    }
+
+    if (unused.size > 0) {
+        const sources = [...unused].flatMap((key) => expectations.get(key)!.sources);
+        throw new Error(`Unmatched parser error expectations: ${sources.join(', ')}`);
+    }
+
+    return coveredTests;
+}
 
 export function generateParsingTests(
     name: string,
@@ -142,13 +210,26 @@ export function generateParsingTests(
     generateTestsForEachTreeAdapter(name, (treeAdapter) => {
         const errorsToExpect = new Set(expectError);
 
-        for (const test of loadTreeConstructionTestData(suitePath, treeAdapter)) {
+        const tests = loadTreeConstructionTestData(suitePath, treeAdapter);
+        const isDefaultSuite = suitePath.href === treePath.href;
+
+        if (isDefaultSuite) {
+            tests.push(...loadTreeConstructionTestData(regressionPath, treeAdapter));
+        }
+
+        // The upstream corpus has additional cases without a parse5 error oracle.
+        // An explicit empty error list is still asserted, unlike a missing record.
+        const errorTests = isDefaultSuite
+            ? addParserErrorExpectations(tests, treeAdapter, JSON.parse(fs.readFileSync(errorExpectationsPath, 'utf8')))
+            : new Set(tests);
+
+        for (const test of tests) {
             const expectError = errorsToExpect.delete(`${test.idx}.${test.setName}`);
 
             it(
                 `${prefix}(${test.dirName}) - ${test.idx}.${test.setName} - \`${test.input}\` (line ${test.lineNum})`,
                 createParsingTest<TreeAdapterTypeMap>(test, treeAdapter, parse, {
-                    withoutErrors,
+                    withoutErrors: withoutErrors || !errorTests.has(test),
                     expectError,
                 }),
             );
