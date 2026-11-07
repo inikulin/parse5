@@ -2,6 +2,7 @@ import { it, assert, describe, beforeEach, afterEach, vi, expect } from 'vitest'
 import {
     parseFragment,
     parse,
+    serialize,
     InsertionMode,
     type ElementCreationContext,
     type TreeAdapter,
@@ -128,6 +129,18 @@ describe('parser', () => {
         expect(b.childNodes).toHaveLength(1);
         expect(b.childNodes[0].nodeName).toBe('#text');
         expect((b.childNodes[0] as TextNode).value).toBe('xy');
+    });
+
+    it.each([
+        // Adoption agency: `<search>` becomes the furthest block.
+        ['<a><search>x</a>y', '<a></a><search><a>x</a>y</search>'],
+        // `<li>`, `<dd>` and `<dt>` start tags stop at a special element.
+        ['<li>a<search><li>b', '<li>a<search><li>b</li></search></li>'],
+        ['<dd>a<search><dt>b', '<dd>a<search><dt>b</dt></search></dd>'],
+        // "Any other end tag" does not close past a special element.
+        ['<x><search></x>y', '<x><search>y</search></x>'],
+    ])('treats <search> as a special element (GH-1924): %s', (input, expectedBody) => {
+        expect(serialize(parse(input))).toBe(`<html><head></head><body>${expectedBody}</body></html>`);
     });
 
     describe('Tree adapters', () => {
