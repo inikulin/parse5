@@ -117,6 +117,14 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.equal(scriptLocation?.endTag?.startLine, 4);
     });
 
+    it('Regression - location line incorrect after an ampersand followed by a newline', () => {
+        const fragment = parseFragment('a &\n<b></b>', { treeAdapter, sourceCodeLocationInfo: true });
+        const bEl = treeAdapter.getChildNodes(fragment)[1];
+
+        assert.strictEqual(treeAdapter.getTagName(bEl), 'b');
+        assert.equal(treeAdapter.getNodeSourceCodeLocation(bEl)?.startLine, 2);
+    });
+
     it('Regression - location.startTag should be available if end tag is missing (GH-181)', () => {
         const html = '<p>test';
 

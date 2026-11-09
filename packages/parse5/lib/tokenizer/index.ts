@@ -247,7 +247,7 @@ export class Tokenizer {
             (cp: number, consumed: number) => {
                 // Note: Set `pos` _before_ flushing, as flushing might drop
                 // the current chunk and invalidate `entityStartPos`.
-                this.preprocessor.pos = this.entityStartPos + consumed - 1;
+                this.preprocessor.seek(this.entityStartPos + consumed - 1);
 
                 if (!this._isCharacterReferenceInAttribute()) {
                     this._ensureCharacterToken(
@@ -3177,7 +3177,7 @@ export class Tokenizer {
         if (length === 0) {
             // This was not a valid entity. Go back to the beginning, and
             // figure out what to do.
-            this.preprocessor.pos = this.entityStartPos;
+            this.preprocessor.seek(this.entityStartPos);
             this._flushCodePointConsumedAsCharacterReference($.AMPERSAND);
 
             this.state =
