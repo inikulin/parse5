@@ -1,0 +1,82 @@
+packages/parse5/lib/parser/index.ts
+  s_ee0b775d18f373::t_ff072014e2c619 3249
+  s_ee0b775d18f373::t_dae8f86e5a631f 718
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_ee0b775d18f373::t_d8076e3df4c840 215
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_8ed07babe8eae3::t_ec48c7336a148d 197,200
+packages/parse5/lib/parser/formatting-element-list.ts
+  s_ee0b775d18f373::t_72f4c1d067a03e 104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7bf0fc954e6720aee2bb77b9087446bcccdf61d4",
+  "prompts": {},
+  "sessions": {
+    "s_16b6747ad765f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ec448077-bcbb-4d71-82f9-f75a0356c564",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_2645df099099aa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c7f323b6-9af1-4f60-b9d9-9b60f1598ab7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_2d7759437df752": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "12e9c97f-4131-4af3-901a-233bbe70a84d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_4a47ea71070103": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0b060fd-5f04-4f26-8006-06a03021a51e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    },
+    "s_8ed07babe8eae3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b6a575b-f5f4-4c12-83e1-7856169a423f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_d93819bc4f5d44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1deb7c24-d4ea-42db-a5bb-eb6db499b96f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_ee0b775d18f373": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6886b21e-826e-411d-88a5-a681d43a067e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
