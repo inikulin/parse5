@@ -1,12 +1,13 @@
+import { fileURLToPath } from 'node:url';
 import { it, assert } from 'vitest';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 import { ParserFeedbackSimulator } from '../lib/parser-feedback-simulator.js';
 
-const feedbackPath = new URL('../../../test/data/parser-feedback', import.meta.url);
+const feedbackPath = fileURLToPath(new URL('../../../test/data/parser-feedback', import.meta.url));
 
 generateTokenizationTests(
     'ParserFeedbackSimulator',
-    feedbackPath.pathname,
+    feedbackPath,
     (handler) => new ParserFeedbackSimulator({}, handler).tokenizer,
 );
 
