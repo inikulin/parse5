@@ -117,7 +117,7 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.equal(scriptLocation?.endTag?.startLine, 4);
     });
 
-    it('Regression - location line incorrect after an ampersand followed by a newline', () => {
+    it('counts a newline after an ampersand once', () => {
         const fragment = parseFragment('a &\n<b></b>', { treeAdapter, sourceCodeLocationInfo: true });
         const bEl = treeAdapter.getChildNodes(fragment)[1];
 
