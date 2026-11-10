@@ -1,6 +1,7 @@
 import { it, assert } from 'vitest';
 import * as fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { type TreeAdapterTypeMap, type TreeAdapter, type ParserOptions, type Token, serializeOuter } from 'parse5';
 import {
     removeNewLines,
@@ -101,11 +102,11 @@ export function assertNodeLocation(
 }
 
 function loadParserLocationInfoTestData(): { name: string; data: string }[] {
-    const dataDirPath = new URL('../data/location-info', import.meta.url);
+    const dataDirPath = fileURLToPath(new URL('../data/location-info', import.meta.url));
     const testSetFileDirs = fs.readdirSync(dataDirPath);
 
     return testSetFileDirs.map((dirName) => {
-        const dataFilePath = path.join(dataDirPath.pathname, dirName, 'data.html');
+        const dataFilePath = path.join(dataDirPath, dirName, 'data.html');
         const data = fs.readFileSync(dataFilePath).toString();
 
         return {

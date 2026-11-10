@@ -2,6 +2,7 @@ import { it, assert } from 'vitest';
 import type { ParserOptions, TreeAdapter, TreeAdapterTypeMap, ParserError } from 'parse5';
 import * as fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { serializeToDatFileFormat } from './serialize-to-dat-file-format.js';
 import { generateTestsForEachTreeAdapter } from './common.js';
 import { parseDatFile, type DatFile } from './parse-dat-file.js';
@@ -18,7 +19,7 @@ export function loadTreeConstructionTestData<T extends TreeAdapterTypeMap>(
 ): TreeConstructionTestData<T>[] {
     const tests: TreeConstructionTestData<T>[] = [];
 
-    const dataDirPath = dataDir.pathname;
+    const dataDirPath = fileURLToPath(dataDir);
     const testSetFileNames = fs.readdirSync(dataDir);
     const dirName = path.basename(dataDirPath);
 

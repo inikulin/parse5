@@ -1,4 +1,5 @@
 import { readFileSync, createReadStream, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { Bench } from 'tinybench';
 import { loadTreeConstructionTestData } from 'parse5-test-utils/dist/generate-parsing-tests.js';
 import { loadSAXParserTestData } from 'parse5-test-utils/dist/load-sax-parser-test-data.js';
@@ -48,7 +49,7 @@ function runPages(parser) {
 }
 
 // Stream data
-const files = readdirSync(saxPath).map((dirName) => new URL(`${dirName}/src.html`, saxPath).pathname);
+const files = readdirSync(saxPath).map((dirName) => fileURLToPath(new URL(`${dirName}/src.html`, saxPath)));
 
 // Utils
 async function runBench({ name, workingCopyFn, upstreamFn }) {
