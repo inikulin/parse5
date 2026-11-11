@@ -10,7 +10,7 @@ import {
     type TreeAdapter,
     type DefaultTreeAdapterMap,
 } from 'parse5';
-import type { Element, TextNode } from '../tree-adapters/default.js';
+import type { CommentNode, Element, TextNode } from '../tree-adapters/default.js';
 import { generateParsingTests } from 'parse5-test-utils/utils/generate-parsing-tests.js';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 import type { Htmlparser2TreeAdapterMap } from 'parse5-htmlparser2-tree-adapter';
@@ -208,6 +208,42 @@ describe('parser', () => {
         const fragment = parseFragment('<form><svg><option></form><g>');
 
         assert.strictEqual(serialize(fragment), '<form><svg><option><g></g></option></svg></form>');
+    });
+
+    it('enters the CDATA section state inside an integration point', () => {
+        const onParseError = vi.fn();
+        const document = parse('<svg><title><![CDATA[x]]></title></svg>', { onParseError });
+
+        const svg = (document.childNodes[0] as Element).childNodes[1].childNodes[0] as Element;
+        const title = svg.childNodes[0] as Element;
+
+        expect(title.childNodes).toHaveLength(1);
+        expect(title.childNodes[0].nodeName).toBe('#text');
+        expect((title.childNodes[0] as TextNode).value).toBe('x');
+        expect(onParseError.mock.calls.map(([err]) => err.code)).not.toContain('cdata-in-html-content');
+
+        // The MathML text integration points behave the same.
+        const mathDocument = parse('<math><mi><![CDATA[x]]></mi></math>');
+        const math = (mathDocument.childNodes[0] as Element).childNodes[1].childNodes[0] as Element;
+        const mi = math.childNodes[0] as Element;
+
+        expect(mi.childNodes).toHaveLength(1);
+        expect(mi.childNodes[0].nodeName).toBe('#text');
+        expect((mi.childNodes[0] as TextNode).value).toBe('x');
+
+        // An HTML element inside foreign content is not an integration point: still a comment.
+        const onHtmlParseError = vi.fn();
+        const htmlDocument = parse('<svg><foreignObject><div><![CDATA[x]]></div></foreignObject></svg>', {
+            onParseError: onHtmlParseError,
+        });
+        const svg2 = (htmlDocument.childNodes[0] as Element).childNodes[1].childNodes[0] as Element;
+        const foreignObject = svg2.childNodes[0] as Element;
+        const div = foreignObject.childNodes[0] as Element;
+
+        expect(div.childNodes).toHaveLength(1);
+        expect(div.childNodes[0].nodeName).toBe('#comment');
+        expect((div.childNodes[0] as CommentNode).data).toBe('[CDATA[x]]');
+        expect(onHtmlParseError.mock.calls.map(([err]) => err.code)).toContain('cdata-in-html-content');
     });
 
     describe('Tree adapters', () => {
