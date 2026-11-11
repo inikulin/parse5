@@ -160,6 +160,12 @@ it('Location Info (Tokenizer)', () => {
             inForeignNode: true,
             htmlChunks: ['<a>', '<![CDATA[ ', 'CDATA', ' ]]>', '<test>', ' <![CDATA[ ]]>\n'],
         },
+        {
+            initialMode: TokenizerMode.DATA,
+            lastStartTagName: '',
+            // A chunk ends inside a character reference, and the next chunk starts with a newline.
+            htmlChunks: ['&amp', '\n', '<a>', '&#65', '\r\n', '<b>', '&no', '\n', '<c>'],
+        },
     ];
 
     for (const testCase of testCases) {
