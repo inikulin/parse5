@@ -203,6 +203,15 @@ describe('parser', () => {
     });
 
     // TODO: upstream to html5lib-tests
+    it('reports text in a `noscript` in the head up to the first whitespace', () => {
+        const onParseError = vi.fn();
+        parse('<noscript>a b</noscript>', { scriptingEnabled: false, onParseError });
+        expect(onParseError).toHaveBeenCalledWith(
+            expect.objectContaining({ code: 'disallowed-content-in-noscript-in-head', startCol: 11, endCol: 12 }),
+        );
+    });
+
+    // TODO: upstream to html5lib-tests
     it('end tag in body must not match a foreign element with the same tag ID', () => {
         // `<svg desc>` is foreign, so `</desc>` must not close the open `<b>`.
         const document = parse('<svg><desc><b>x</desc>y');

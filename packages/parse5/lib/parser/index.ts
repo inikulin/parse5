@@ -1413,9 +1413,11 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     canAppendWhitespaceToCharacters(): boolean {
-        // These modes keep whitespace and ignore other characters. Elsewhere, whitespace that follows other characters
-        // is handled as they are: they already went through the "anything else" steps and cleared `framesetOk`.
+        // These modes keep whitespace but not other characters: they ignore them or, in `noscript` in the head, report
+        // and reprocess them. Elsewhere, whitespace that follows other characters is handled as they are: they already
+        // went through the "anything else" steps and cleared `framesetOk`.
         switch (this.insertionMode) {
+            case InsertionMode.IN_HEAD_NO_SCRIPT:
             case InsertionMode.IN_COLUMN_GROUP:
             case InsertionMode.IN_FRAMESET:
             case InsertionMode.AFTER_FRAMESET:
