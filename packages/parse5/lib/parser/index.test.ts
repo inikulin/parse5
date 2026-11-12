@@ -187,6 +187,31 @@ describe('parser', () => {
     });
 
     // TODO: upstream to html5lib-tests
+    it('keeps only the whitespace of text in framesets and in a column group without a `colgroup`', () => {
+        assert.strictEqual(
+            serialize(parse('<frameset>a b\tc</frameset>d e')),
+            '<html><head></head><frameset> \t</frameset> </html>',
+        );
+        assert.strictEqual(
+            serialize(parse('<template><col>a b c</template>')),
+            '<html><head><template><col>  </template></head><body></body></html>',
+        );
+        assert.strictEqual(
+            serialize(parse('<p>a b\nc<table><colgroup>d e</table>')),
+            '<html><head></head><body><p>a b\ncd e<table><colgroup></colgroup></table></p></body></html>',
+        );
+    });
+
+    // TODO: upstream to html5lib-tests
+    it('reports text in a `noscript` in the head up to the first whitespace', () => {
+        const onParseError = vi.fn();
+        parse('<noscript>a b</noscript>', { scriptingEnabled: false, onParseError });
+        expect(onParseError).toHaveBeenCalledWith(
+            expect.objectContaining({ code: 'disallowed-content-in-noscript-in-head', startCol: 11, endCol: 12 }),
+        );
+    });
+
+    // TODO: upstream to html5lib-tests
     it('end tag in body must not match a foreign element with the same tag ID', () => {
         // `<svg desc>` is foreign, so `</desc>` must not close the open `<b>`.
         const document = parse('<svg><desc><b>x</desc>y');
