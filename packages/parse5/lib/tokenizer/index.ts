@@ -530,6 +530,7 @@ export class Tokenizer {
     //Token creation
     protected _createStartTagToken(): void {
         this._flushRun('');
+        this.currentAttrNames = null;
         this.currentToken = {
             type: TokenType.START_TAG,
             tagName: '',
@@ -543,6 +544,7 @@ export class Tokenizer {
 
     protected _createEndTagToken(): void {
         this._flushRun('');
+        this.currentAttrNames = null;
         this.currentToken = {
             type: TokenType.END_TAG,
             tagName: '',

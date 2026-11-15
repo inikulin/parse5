@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { it, assert, describe } from 'vitest';
-import { Tokenizer, TokenizerMode, type Token } from 'parse5';
+import { Tokenizer, TokenizerMode, Token } from 'parse5';
 import { generateTokenizationTests } from 'parse5-test-utils/utils/generate-tokenization-tests.js';
 
 const dataPath = fileURLToPath(new URL('../../../../test/data/html5lib-tests/tokenizer', import.meta.url));
@@ -427,6 +427,133 @@ describe('Tokenizer methods', () => {
 });
 
 describe('Tokenizer attributes', () => {
+    it('should keep a later link URL after switching out of an unfinished tag', () => {
+        const tags: Token.TagToken[] = [];
+        const tokenizer = new Tokenizer(tokenizerOpts, {
+            onStartTag(token): void {
+                tags.push(token);
+            },
+            onEndTag: noop,
+            onCharacter: noop,
+            onNullCharacter: noop,
+            onWhitespaceCharacter: noop,
+            onComment: noop,
+            onDoctype: noop,
+            onEof: noop,
+        });
+        const attrs = Array.from({ length: 65 }, (_, i) => `a${i}="x"`).join(' ');
+
+        // Raw HTML begins a tag but never closes it. Its many attributes populate the name cache.
+        tokenizer.write(`<blockquote><div href="bad" ${attrs}\n\n`, false);
+
+        // `state` is a plain field, not a setter: this changes how the next input is tokenized.
+        // It neither emits the unfinished tag nor clears its attribute cache.
+        // In DATA, the next "<a" starts a new tag; creating that tag must reset the cache.
+        tokenizer.state = TokenizerMode.DATA;
+
+        // The later link must keep its own href, despite the discarded tag's href.
+        tokenizer.write('<a href="https://example.com" title="good">ok</a></blockquote>', true);
+
+        assert.deepStrictEqual(
+            tags.map(({ tagName }) => tagName),
+            ['blockquote', 'a'],
+        );
+        assert.deepStrictEqual(tags[1].attrs, [
+            { name: 'href', value: 'https://example.com' },
+            { name: 'title', value: 'good' },
+        ]);
+    });
+
+    it.each(['<a', '</a'])('should forget discarded attribute names when creating a fresh tag (%s)', (prefix) => {
+        const attrs = Array.from({ length: 65 }, (_, i) => `a${i}="x"`).join(' ');
+        const discarded = `<div href="bad" ${attrs}\n\n`;
+        const input = `${prefix} href="https://example.com" title="go&amp;od" a0=kept>`;
+
+        for (const sourceCodeLocationInfo of [false, true]) {
+            for (const size of [1, 7, input.length]) {
+                const tags: Token.TagToken[] = [];
+                const errors: string[] = [];
+                const onTag = (token: Token.TagToken): void => {
+                    tags.push(token);
+                };
+                const tokenizer = new Tokenizer(
+                    { sourceCodeLocationInfo },
+                    {
+                        onStartTag: onTag,
+                        onEndTag: onTag,
+                        onComment: noop,
+                        onDoctype: noop,
+                        onEof: noop,
+                        onCharacter: noop,
+                        onNullCharacter: noop,
+                        onWhitespaceCharacter: noop,
+                        onParseError(err): void {
+                            errors.push(err.code);
+                        },
+                    },
+                );
+
+                for (const chunk of chunked(discarded, size)) tokenizer.write(chunk, false);
+                assert.isEmpty(tags);
+                assert.strictEqual((Reflect.get(tokenizer, 'currentToken') as Token.TagToken).attrs.length, 66);
+
+                // Leave the unfinished tag without emitting it. The next tag must start with fresh
+                // attribute state even though the previous tag's emit-time cleanup never ran.
+                tokenizer.state = TokenizerMode.DATA;
+
+                const chunks = chunked(input, size);
+                for (const [i, chunk] of chunks.entries()) tokenizer.write(chunk, i === chunks.length - 1);
+
+                assert.strictEqual(tags.length, 1);
+                const [tag] = tags;
+                assert.strictEqual(tag.type, prefix === '<a' ? Token.TokenType.START_TAG : Token.TokenType.END_TAG);
+                assert.strictEqual(tag.tagName, 'a');
+                assert.deepStrictEqual(tag.attrs, [
+                    { name: 'href', value: 'https://example.com' },
+                    { name: 'title', value: 'go&od' },
+                    { name: 'a0', value: 'kept' },
+                ]);
+                assert.deepStrictEqual(errors, prefix === '<a' ? [] : ['end-tag-with-attributes']);
+
+                if (sourceCodeLocationInfo) {
+                    const { attrs: locations, ...location } = tag.location!;
+                    assert.deepStrictEqual(location, {
+                        startLine: 3,
+                        startCol: 1,
+                        startOffset: discarded.length,
+                        endLine: 3,
+                        endCol: input.length + 1,
+                        endOffset: discarded.length + input.length,
+                    });
+                    for (const attr of ['href="https://example.com"', 'title="go&amp;od"', 'a0=kept']) {
+                        const start = input.indexOf(attr);
+                        assert.deepStrictEqual(locations![attr.split('=')[0]], {
+                            startLine: 3,
+                            startCol: start + 1,
+                            startOffset: discarded.length + start,
+                            endLine: 3,
+                            endCol: start + attr.length + 1,
+                            endOffset: discarded.length + start + attr.length,
+                        });
+                    }
+                } else {
+                    assert.isNull(tag.location);
+                }
+            }
+        }
+    });
+
+    it.each([0, 64, 65])('should keep the first href across the attribute-cache threshold (index %s)', (index) => {
+        const attrs = Array.from({ length: 65 }, (_, i) => `a${i}=x`);
+        attrs.splice(index, 0, 'href="https://example.com"');
+        const input = `<a ${attrs.join(' ')} href="javascript:alert(1)">`;
+        const expected = `<a ${attrs.map((attr) => attr.replaceAll('"', '')).join(' ')}>`;
+
+        for (const size of [1, 7, input.length]) {
+            assert.deepStrictEqual(tokenize(chunked(input, size)), [expected]);
+        }
+    });
+
     it('should detect duplicates in a tag with many attributes without scanning them', () => {
         const names = Array.from({ length: 2000 }, (_, i) => `a${i}`);
         const duplicates = [...names.slice(0, 100), ...names.slice(-100)];
