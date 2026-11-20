@@ -1,0 +1,41 @@
+packages/parse5-parser-stream/test/flush.test.ts
+  s_870baa2e2d4acb::t_a9060b6452fde8 116-136
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_870baa2e2d4acb::t_a885b5e9fb9aa4 16-31,44-51,71,97,136-210,247-303,394,407-423
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_870baa2e2d4acb::t_67a121bf3f6124 3,15-33,35-52,68-94
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_870baa2e2d4acb::t_1185813dd959bf 14-24,233-234
+packages/parse5/lib/parser/index.test.ts
+  s_870baa2e2d4acb::t_144ec5f2e366c5 166-175,183-189,231-237
+packages/parse5/lib/parser/index.ts
+  s_870baa2e2d4acb::t_b9907170cc42f9 600-602,605-609,614,927,1001,1362,2651-2655,3306
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_870baa2e2d4acb::t_b179e5ca15a08d 498-501,522-524
+packages/parse5/lib/parser/open-element-stack.ts
+  s_870baa2e2d4acb::t_36c31fbf3b94de 82,671
+packages/parse5/lib/parser/parser-location-info.test.ts
+  s_870baa2e2d4acb::t_10782f4e9d6955 235-266
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_870baa2e2d4acb::t_2a098afa2d61fb 47
+packages/parse5/lib/tokenizer/index.ts
+  s_870baa2e2d4acb::t_8eba35fffa787f 327,333-348,351,360-363,367-368,729-731,733-734
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_870baa2e2d4acb::t_ee6d935d6f4980 222-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "360b218daf6afbeb1cf395e646b5ef4a6a1cbf58",
+  "prompts": {},
+  "sessions": {
+    "s_870baa2e2d4acb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a75268da-be20-477b-ae0b-2f1cb3aecba3",
+        "model": "claude-mythos-5-2"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
