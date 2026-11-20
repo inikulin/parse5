@@ -248,6 +248,15 @@ export class Preprocessor {
         }
     }
 
+    /**
+     * Move back or forward to `pos`, an ASCII code unit that was already read. A line break that was read after it is
+     * counted only once it is read again.
+     */
+    public seek(pos: number): void {
+        this.pos = pos;
+        this.isEol = false;
+    }
+
     public retreat(count: number): void {
         this.pos -= count;
 
