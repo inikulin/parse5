@@ -331,6 +331,18 @@ describe('RewritingStream', () => {
         }),
     );
 
+    it(
+        'Should keep the prefix of adjusted foreign attributes',
+        createRewriterTest({
+            src: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><a xlink:href="#x" xml:lang="en"></a></svg>',
+            expected:
+                '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><a xlink:href="#x" xml:lang="en"></a></svg>',
+            assignTokenHandlers: (rewriter) => {
+                rewriter.on('startTag', (token) => rewriter.emitStartTag(token));
+            },
+        }),
+    );
+
     it('Last text chunk must be flushed (GH-271)', async () => {
         const parser = new RewritingStream();
         let foundText = false;

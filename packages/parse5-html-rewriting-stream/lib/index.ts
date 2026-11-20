@@ -137,7 +137,7 @@ export class RewritingStream extends SAXParser {
         let res = `<${token.tagName}`;
 
         for (const attr of token.attrs) {
-            res += ` ${attr.name}="${escapeAttribute(attr.value)}"`;
+            res += ` ${attr.prefix ? `${attr.prefix}:` : ''}${attr.name}="${escapeAttribute(attr.value)}"`;
         }
 
         res += token.selfClosing ? '/>' : '>';
