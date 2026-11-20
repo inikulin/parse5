@@ -1,0 +1,31 @@
+packages/parse5-html-rewriting-stream/test/rewrite-with-promises.test.ts
+  s_173ca9ea90a33e::t_9449cecbe65b48 2
+  s_173ca9ea90a33e::t_f6cabcf9530a9c 81-86,88,91,94,98-113
+packages/parse5-html-rewriting-stream/examples/rewrite-with-promises.js
+  s_613258d0f258d1::t_ff7079d6c7cd06 1-2,73
+  s_173ca9ea90a33e::t_956f82b4dc37a2 7-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "70c4bc2977d17d9e1eb78e3f8ecbcd228f4e14e7",
+  "prompts": {},
+  "sessions": {
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_613258d0f258d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "49d72e3c-32d4-414e-a466-f95e769dbd10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}
