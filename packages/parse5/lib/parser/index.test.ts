@@ -210,6 +210,7 @@ describe('parser', () => {
         assert.strictEqual(serialize(fragment), '<form><svg><option><g></g></option></svg></form>');
     });
 
+    // TODO: upstream to html5lib-tests
     it.each([
         // Adoption agency: `<search>` becomes the furthest block.
         ['<a><search>x</a>y', '<a></a><search><a>x</a>y</search>'],
