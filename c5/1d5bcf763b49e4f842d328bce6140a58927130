@@ -10,6 +10,8 @@ packages/parse5/lib/parser/open-element-stack.test.ts
 packages/parse5/lib/parser/index.test.ts
   s_173ca9ea90a33e::t_78c51e2e1c354c 226-235
   s_6bbbbbc7cea8e7::t_2a8b9f91ab6650 228-235
+packages/parse5/lib/parser/open-element-stack.ts
+  s_727be7f29cef65::t_3d1896edb82b5b 82,670
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -38,6 +40,14 @@ packages/parse5/lib/parser/index.test.ts
         "tool": "codex",
         "id": "01a16e97-2dbf-7a10-abbd-d842326d8f0c",
         "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_727be7f29cef65": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73454994-bb1a-4d54-a4b5-4f584413852d",
+        "model": "claude-opus-5-5"
       },
       "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
     },
