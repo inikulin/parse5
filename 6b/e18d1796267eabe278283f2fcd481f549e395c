@@ -1,0 +1,43 @@
+eslint.config.js
+  s_4e2eeb13af9fa2::t_57a82209e95621 64
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_4e2eeb13af9fa2::t_d61e5ba85e3806 67,71
+packages/parse5-parser-stream/lib/index.ts
+  s_4e2eeb13af9fa2::t_ce60a8c7de4c95 29,76,110,122
+packages/parse5-plain-text-conversion-stream/lib/index.ts
+  s_4e2eeb13af9fa2::t_3c2d522ceb74ba 28
+packages/parse5-sax-parser/lib/dev-null-stream.ts
+  s_4e2eeb13af9fa2::t_1966847337aa02 4
+packages/parse5-sax-parser/lib/index.ts
+  s_4e2eeb13af9fa2::t_4379e9a1de12fa 54,72,84,132,159,164,169,175,188,199,212
+packages/parse5/lib/parser/open-element-stack.ts
+  s_4e2eeb13af9fa2::t_bf3edaefff68ed 126-128,130,132-133,135,156,160,169,182,187,309,320,340,361,383,388,395,434,441,463-468,541,545,554,559,563,567,574,578,582,586,593,638,643,647,654,705,711,717,723,729,735,741,765,775,785
+packages/parse5/lib/tokenizer/index.ts
+  s_4e2eeb13af9fa2::t_3620542e8b2431 250
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_4e2eeb13af9fa2::t_07a7f545e0f822 33
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_4e2eeb13af9fa2::t_31d0078b209758 16,39,42,45,48,51,54,57,60
+scripts/generate-parser-feedback-test/index.ts
+  s_4e2eeb13af9fa2::t_78ebfe81ea8b0d 53,59,65,80,88,94,100
+test/utils/common.ts
+  s_4e2eeb13af9fa2::t_110b384957c5b5 50,52,56
+test/utils/generate-tokenization-tests.ts
+  s_4e2eeb13af9fa2::t_3ca52049dc8419 25,33,36,39,49,54,57,72,75,78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6be18d1796267eabe278283f2fcd481f549e395c",
+  "prompts": {},
+  "sessions": {
+    "s_4e2eeb13af9fa2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "161dae4b-dbba-4bfe-8c4b-6fbbd37b13aa",
+        "model": "claude-mythos-5-2"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
