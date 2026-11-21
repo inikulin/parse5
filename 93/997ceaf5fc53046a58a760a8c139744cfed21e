@@ -1,0 +1,43 @@
+eslint.config.js
+  s_e096367c8e6b58::t_b381b91cd9ff2c 64
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_e096367c8e6b58::t_62a5a6797657ba 67,71
+packages/parse5-parser-stream/lib/index.ts
+  s_e096367c8e6b58::t_61d69f61d36679 29,76,110,122
+packages/parse5-plain-text-conversion-stream/lib/index.ts
+  s_e096367c8e6b58::t_e7acb46d6b313e 28
+packages/parse5-sax-parser/lib/dev-null-stream.ts
+  s_e096367c8e6b58::t_edd336b5fb4c80 4
+packages/parse5-sax-parser/lib/index.ts
+  s_e096367c8e6b58::t_bd78fd52ccfb8b 54,72,84,132,159,164,169,175,188,199,212
+packages/parse5/lib/parser/open-element-stack.ts
+  s_e096367c8e6b58::t_a5086193d750da 126-128,130,132-133,135,156,160,169,182,187,309,320,340,361,383,388,395,434,441,463-468,541,545,554,559,563,567,574,578,582,586,593,638,643,647,654,705,711,717,723,729,735,741,765,775,785
+packages/parse5/lib/tokenizer/index.ts
+  s_e096367c8e6b58::t_887b372c1b1e70 250
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_e096367c8e6b58::t_c417c54f58f6fc 33
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_e096367c8e6b58::t_e8d3289acbcf0d 16,39,42,45,48,51,54,57,60
+scripts/generate-parser-feedback-test/index.ts
+  s_e096367c8e6b58::t_03d6fd8c42b1b2 53,59,65,80,88,94,100
+test/utils/common.ts
+  s_e096367c8e6b58::t_84ebe9a6167c5b 50,52,56
+test/utils/generate-tokenization-tests.ts
+  s_e096367c8e6b58::t_62ce57576d22a6 25,33,36,39,49,54,57,72,75,78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "93997ceaf5fc53046a58a760a8c139744cfed21e",
+  "prompts": {},
+  "sessions": {
+    "s_e096367c8e6b58": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2ad5d68-8956-4095-8d2e-55bfb2ef1f9b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
