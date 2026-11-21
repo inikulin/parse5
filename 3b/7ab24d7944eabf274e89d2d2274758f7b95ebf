@@ -1,0 +1,25 @@
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_7ace9f630f1af8::t_dc87e1fc1001df 24-43,77-83
+  s_7ace9f630f1af8::t_5c099a2ee79e0b 84
+packages/parse5/lib/parser/index.ts
+  s_7ace9f630f1af8::t_02460b7f75c905 1610
+packages/parse5/lib/parser/formatting-element-list.ts
+  s_7ace9f630f1af8::t_02460b7f75c905 61-66,89,92,97,99-102,186,193
+  s_7ace9f630f1af8::t_dc87e1fc1001df 192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3b7ab24d7944eabf274e89d2d2274758f7b95ebf",
+  "prompts": {},
+  "sessions": {
+    "s_7ace9f630f1af8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "153a63c2-6120-4838-9aee-0d9f9b7850ed",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
