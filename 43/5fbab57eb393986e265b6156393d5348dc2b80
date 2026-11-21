@@ -1,0 +1,39 @@
+packages/parse5-parser-stream/test/flush.test.ts
+  s_95c3a10c8e8424::t_c40cb07812c8fc 116-136
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_95c3a10c8e8424::t_e7e744bdf513e0 16-31,44-51,71,97,136-210,247-303,394,407-423
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_95c3a10c8e8424::t_0c6bb2d4b53fee 3,15-33,35-52,68-94
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_95c3a10c8e8424::t_f599f60b95ef8e 14-24,233-234
+packages/parse5/lib/parser/index.ts
+  s_95c3a10c8e8424::t_21e2cef60e3abe 600-602,605-609,614,927,1001,1362,2651-2655,3306
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_95c3a10c8e8424::t_44692e771cd6b5 498-501,522-524
+packages/parse5/lib/parser/open-element-stack.ts
+  s_95c3a10c8e8424::t_b24d8bb797b18c 82,670
+packages/parse5/lib/parser/parser-location-info.test.ts
+  s_95c3a10c8e8424::t_f96d62dabe085a 235-266
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_95c3a10c8e8424::t_194b83da9b032d 47
+packages/parse5/lib/tokenizer/index.ts
+  s_95c3a10c8e8424::t_f4c7da6247ce2e 327,333-348,351,360-363,367-368,729-731,733-734
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_95c3a10c8e8424::t_4274a47e8d5135 222-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "435fbab57eb393986e265b6156393d5348dc2b80",
+  "prompts": {},
+  "sessions": {
+    "s_95c3a10c8e8424": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28c0e48d-8b52-4d07-a90f-249779d0515b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
