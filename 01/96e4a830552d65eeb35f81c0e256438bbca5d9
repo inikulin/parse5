@@ -1,0 +1,25 @@
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_95c3a10c8e8424::t_5d433fb8ffb2ce 246,365-366,429
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_95c3a10c8e8424::t_cc1fd4b6b076e0 284,286-287,291-301
+packages/parse5/lib/parser/index.ts
+  s_95c3a10c8e8424::t_de972f0a91c809 335-336,339-340
+packages/parse5/lib/tokenizer/index.ts
+  s_95c3a10c8e8424::t_e4d59cd48f7cf3 204-214,2256-2258
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0196e4a830552d65eeb35f81c0e256438bbca5d9",
+  "prompts": {},
+  "sessions": {
+    "s_95c3a10c8e8424": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28c0e48d-8b52-4d07-a90f-249779d0515b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
