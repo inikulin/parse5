@@ -1,0 +1,27 @@
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_19166185b5ffe0::t_7550c4b967f618 246,365-366,429
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_19166185b5ffe0::t_5c867311a476c8 284,286-287,291-301
+packages/parse5/lib/parser/index.test.ts
+  s_19166185b5ffe0::t_0d0e6aef4e3e7c 214-233,306-316
+packages/parse5/lib/parser/index.ts
+  s_19166185b5ffe0::t_e8d6e118388664 335-336,339-340
+packages/parse5/lib/tokenizer/index.ts
+  s_19166185b5ffe0::t_3c2d6de7d37513 204-214,2256-2258
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3fd0577e22084533a017e2b3eb768b0753a3cad8",
+  "prompts": {},
+  "sessions": {
+    "s_19166185b5ffe0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "27b82794-6c7e-43a6-9a90-e2a7332f83f7",
+        "model": "claude-mythos-5-2"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
