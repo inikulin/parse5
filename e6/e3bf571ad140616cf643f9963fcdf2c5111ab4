@@ -1,0 +1,49 @@
+packages/parse5-parser-stream/test/flush.test.ts
+  s_bac6166fc3c857::t_50683032cffdf6 116-136
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_456eca5fc124e4::t_7b01912bf59cde 16-31,44-51,71,97,136-210,247-303,394,407-423
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_bac6166fc3c857::t_d364a9b88c6734 3,15-33,35-52,68-94
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_456eca5fc124e4::t_152980fb4ff7dd 14-24,233-234
+packages/parse5/lib/parser/index.test.ts
+  s_456eca5fc124e4::t_b9825592d45997 166-175,183-189,231-237
+packages/parse5/lib/parser/index.ts
+  s_456eca5fc124e4::t_79f6f0003913f3 602-604,607-611,616,929,1003,1364,2653-2657,3308
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_bac6166fc3c857::t_6cfe4248eff99a 498-501,522-524
+packages/parse5/lib/parser/open-element-stack.ts
+  s_bac6166fc3c857::t_57a624fa8a8cad 82,671
+packages/parse5/lib/parser/parser-location-info.test.ts
+  s_bac6166fc3c857::t_47dfc51673a442 235-266
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_456eca5fc124e4::t_790ec454108725 47
+packages/parse5/lib/tokenizer/index.ts
+  s_456eca5fc124e4::t_edbf4088dd7395 327,333-348,351,360-363,367-368,729-731,733-734
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_bac6166fc3c857::t_d5a354d1148979 222-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e6e3bf571ad140616cf643f9963fcdf2c5111ab4",
+  "prompts": {},
+  "sessions": {
+    "s_456eca5fc124e4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a5d31523-a9ba-4dc1-af78-ac673a119b83",
+        "model": "claude-mythos-5-2"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_bac6166fc3c857": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d87cd53-d8ba-4173-852e-6b32fce895b2",
+        "model": "claude-mythos-5-2"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
