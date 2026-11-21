@@ -1,0 +1,372 @@
+packages/parse5/lib/tokenizer/index.ts
+  s_6bbbbbc7cea8e7::t_0cf1d68ba9f491 729-731,730-731,733-734
+  s_707cd1c5860ad7::t_dc8503eb9c742e 482-483,494-496,512-513
+  s_3131dc3185905e::t_66f6ce8ecbe73f 821-822
+  s_3131dc3185905e::t_73e89b2b3c0bc0 484-493,497-511
+  s_1cdd27ddad6aeb::t_7de2ac8d9dd156 263-265
+  s_6bbbbbc7cea8e7::t_0c0e51ac3695b8 263-265
+  s_1cdd27ddad6aeb::t_0f8c24a1e17a7b 823,1502
+  s_6bbbbbc7cea8e7::t_65a57db15d9adb 823,1502
+  s_6bbbbbc7cea8e7::t_399237032fe717 823,1502
+  s_173ca9ea90a33e::t_ae49ecd70318cc 482-483,494-496,512-513
+  s_6fb21e37865293::t_81394124d0dac7 730-731,733-734
+  s_6bbbbbc7cea8e7::t_98f31143b88997 730-731,733-734
+  s_173ca9ea90a33e::t_d3dd09e8ea1ed8 327,333-348,351,367-368
+  s_173ca9ea90a33e::t_8b939043f107be 327,333-348,351,367-368
+  s_3131dc3185905e::t_63938ef646c983 360-363
+packages/parse5/lib/tokenizer/tokenizer-location-info.test.ts
+  s_6bbbbbc7cea8e7::t_1386726351ac39 222-252,222-223,224-252
+  s_3131dc3185905e::t_66f6ce8ecbe73f 193
+  s_1cdd27ddad6aeb::t_a92b1cee43fa83 184-192,194-221
+  s_6bbbbbc7cea8e7::t_87157297e8dbe2 184-192,194-221
+  s_6bbbbbc7cea8e7::t_6d8b2927bb7e6e 184,189,190-192,194-221
+  s_6fb21e37865293::t_837ac14a4cd681 222-252
+  s_6bbbbbc7cea8e7::t_31d305cdab255f 222-252
+packages/parse5/lib/tokenizer/preprocessor.ts
+  s_d1240ea9997571::t_18551f392cb94c 85
+  s_3131dc3185905e::t_73e89b2b3c0bc0 112-116,119,126
+  s_173ca9ea90a33e::t_f7c4face9891ea 85
+  s_5de6cfc9324149::t_c5d73582915fb2 85
+packages/parse5/lib/tokenizer/index.test.ts
+  s_3131dc3185905e::t_f2186e6c4e175a 340,344-346,349,357,359
+  s_1cdd27ddad6aeb::t_0b9785e132b6e5 337,337-339,341-343,347-348,350-356,358,360-362
+  s_d1240ea9997571::t_95085d90598184 338-339,341-343,347-348,350-356,358,360-362
+  s_3131dc3185905e::t_66f6ce8ecbe73f 420
+  s_3131dc3185905e::t_73e89b2b3c0bc0 273-298
+  s_5de6cfc9324149::t_3c4757f35c692e 338-339,341-343,347-348,350-356,358,360-362
+  s_1cdd27ddad6aeb::t_7523e594504d1c 368,401-419,421-426
+  s_6bbbbbc7cea8e7::t_4c50c9d34ae6b8 368,402-419,421-426
+packages/parse5/lib/parser/stack-complexity.test.ts
+  s_2645df099099aa::t_cc660a03ea98d7 1-3,5-6,8-14,20-24,27-28,57
+  s_16b6747ad765f4::t_6a774a748768a9 4,7,15-19,25-26,29-46,48-55
+  s_16b6747ad765f4::t_6bb41568147138 56
+  s_2645df099099aa::t_69de8f4c5e5094 26-28,40-41,42,57
+  s_4a47ea71070103::t_dc488793f7eb24 1-3,5-6,8-14,20-24,26-28,40-41,42,57
+  s_3131dc3185905e::t_1b50e8489c96b1 40
+  s_3131dc3185905e::t_0f8416a1b88c86 5-6,8-14,20-24,26-28,41,42,57
+  s_3131dc3185905e::t_6128653c288f79 1-3
+  s_173ca9ea90a33e::t_f52057a6704c18 1-3,6,8-14,57
+  s_803c7f838b2674::t_251286e925a03c 47
+packages/parse5/lib/parser/index.ts
+  s_2645df099099aa::t_10a65bb1745a4e 778,782
+  s_2645df099099aa::t_cc660a03ea98d7 37-51
+  s_16b6747ad765f4::t_10018b848d95f0 35-36,52,774-777,779-780,848,850,852-854,879-888,890-892,894-895,897-898,901,1511-1513,1515-1518,1522-1523,1525,1531,1534,1536,1539-1542,1553,1623-1631,1655,1657,1661-1662,1665,1696,2151-2156,2158-2159,2161-2162,2716-2721,2723-2725,3455,3800-3803,3806-3809,3813-3820
+  s_4a47ea71070103::t_abcb10a4671e32 37-49
+  s_4a47ea71070103::t_095d473fdf794d 50-51,782
+  s_ee0b775d18f373::t_dae8f86e5a631f 772
+  s_3131dc3185905e::t_66f6ce8ecbe73f 3598,3797
+  s_3131dc3185905e::t_de73bdde2af503 37-49
+  s_173ca9ea90a33e::t_d3d5568eb46aa3 219,263,818,1848,1894,3558,3564,3570,3577,3583,3599-3603
+  s_173ca9ea90a33e::t_f9a7800feb973c 57
+  s_173ca9ea90a33e::t_c2fb5af7208dad 37-49,778
+  s_173ca9ea90a33e::t_34ddb7450c7113 778
+  s_6fb21e37865293::t_198f46bfc73862 1497,1636-1647
+  s_6fb21e37865293::t_735abff2d7fd16 3798-3799
+  s_6fb21e37865293::t_58f9d380c52e6a 372
+  s_173ca9ea90a33e::t_12ab00ef0dcb15 3306
+  s_6bbbbbc7cea8e7::t_8e421dba65680d 3306
+  s_173ca9ea90a33e::t_9121addc1ddf9b 927,1001,1362
+  s_173ca9ea90a33e::t_dceeeedcef74cc 600-602,605-609,614
+  s_6bbbbbc7cea8e7::t_b92e14990702c0 600-602,605-609,614
+  s_803c7f838b2674::t_251286e925a03c 2651-2655
+packages/parse5/lib/parser/index.test.ts
+  s_2645df099099aa::t_6019e79fd671ed 6,61-87
+  s_16b6747ad765f4::t_d9c77cc66fb1ef 367-372,376-380,384-387,389-391
+  s_173ca9ea90a33e::t_e408d2c77fd14b 6,61-87
+  s_6fb21e37865293::t_07e49f52ad5ed2 148-165
+  s_6fb21e37865293::t_eece4766dd9794 223-229
+  s_6fb21e37865293::t_92ace9884c42c7 89-97
+  s_6bbbbbc7cea8e7::t_1dbe887244e768 90-93,95-97
+  s_6bbbbbc7cea8e7::t_5bdade5c309c17 96-97
+  s_6fb21e37865293::t_d566ece8dca31b 98-105
+  s_6fb21e37865293::t_efc4f9daf70d2f 106-113
+  s_173ca9ea90a33e::t_78c51e2e1c354c 243-252
+  s_6bbbbbc7cea8e7::t_2a8b9f91ab6650 245-252
+  s_3131dc3185905e::t_6644ba3020901d 167,169,172
+  s_6bbbbbc7cea8e7::t_548328348b6448 168,170-171,173-175
+  s_173ca9ea90a33e::t_0d1875b66bd835 166,168,170-171,173-175
+  s_173ca9ea90a33e::t_a10b1c8025cc8b 183,188-189
+  s_6bbbbbc7cea8e7::t_bcefcd8332a22a 6,188-189
+  s_3131dc3185905e::t_b93968bb595403 184-187
+packages/parse5/lib/parser/open-element-stack.ts
+  s_16b6747ad765f4::t_49b55899fb65c6 18-20,24,30-38,41-44,76,78-81,83-85,97-102,149-154,167-170,175,182,202-208,211-214,216-221,233,235,244-245,250-251,256,269,288-291,293-294,297,302-315,320-338,340,345-360,365-367,372-374,377,382-392,395-396,398,405-407,415-416,421,424,428-429,448-449,455-461,521-526,527,529,543,583-596,599-600,602-609,623,627-628,642-643,645,653-659,661-669,671-686,688,702,706,714,718,736
+  s_16b6747ad765f4::t_14cb3b493f4f5e 1,17,21-23,25-29,39-40,45-55,77,86-93,95-96,103-109,116-123,128,130-131,136-147,180-181,183-184,186-187,189-190,209-210,215,222-228,231,242-243,247-249,253-255,257-268,270-287,292,295,298-300,316-319,339,341-344,361-364,368-371,379-380,431-434,436,445-447,462-464,469-475,478-479,484,488-499,504,507-516,569,573,577,598,601,611-612,624,724
+  s_16b6747ad765f4::t_0c6dfa191546fc 56,66-75,148,171-174,176,185,188,191,229-230,232,234,236-241,246,252,296,301,375-376,378,381,422-423,425-427,465-468,476,480-481,483,500-503,505-506,517-518,528,531,536,554,558,597,610,613-619,621-622,625,660,690-692,700-701,707-708,712-713,719-720,725-726,730-732
+  s_1cdd27ddad6aeb::t_ab78d79d606902 698-699
+  s_1cdd27ddad6aeb::t_a624da3c9b49b4 760-764,770-774,783-784
+packages/parse5/lib/parser/open-element-stack.test.ts
+  s_16b6747ad765f4::t_841511f029f0cd 87-88,91-92,94-159,316,323-352
+  s_1cdd27ddad6aeb::t_66bb624f4e1af5 39-40
+  s_1cdd27ddad6aeb::t_47b2c3f56f0001 23-26,28-36,37-38,39-40
+  s_1cdd27ddad6aeb::t_a9759ec5bab3c9 576-589
+  s_6fb21e37865293::t_46e0e7a37f66fd 498-501,522-524
+  s_6bbbbbc7cea8e7::t_8b900e87dbfbcc 498-501,522-524
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_ee0b775d18f373::t_d8076e3df4c840 360-367
+packages/parse5/lib/parser/integration-point.test.ts
+  s_d93819bc4f5d44::t_82fbf5998a447a 2
+  s_173ca9ea90a33e::t_29d67bdeb8c025 1,3-19,23-24,27-29
+  s_98abc3499f7493::t_87051f626b341d 1,3-4,8-19,23-24,27
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_2d7759437df752::t_b24c50de20a38b 274-277,286-287
+  s_8ed07babe8eae3::t_76c86690473eee 253-260,265,267,278
+  s_707cd1c5860ad7::t_e54ba0f25e92ed 169-196,291-303
+  s_3131dc3185905e::t_73e89b2b3c0bc0 197-232,235-236
+  s_173ca9ea90a33e::t_1b3d28921ee2fa 169-196,291-303
+  s_aab3d2a88b40d7::t_aaa771900b3d2d 14-24
+  s_3131dc3185905e::t_bf9fd69412e8bc 233-234
+  s_6fb21e37865293::t_66b91ea05c6c64 14-24
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_2d7759437df752::t_b24c50de20a38b 37
+  s_2d7759437df752::t_ebfe6d6bc24ace 38,62,121,123,357,381,383,386-387,437
+  s_8ed07babe8eae3::t_ec48c7336a148d 39-43,124,132,245-246,315-326,329-343,352-354,371-377,382,384-385,408-409,438,442,444-462
+  s_707cd1c5860ad7::t_2f0356355e2b95 82-84
+  s_173ca9ea90a33e::t_d89dc83a9caf59 82-84
+  s_173ca9ea90a33e::t_b9a13b443569a8 122,130,133,358,467
+  s_aab3d2a88b40d7::t_1afa4c987a1939 72
+  s_6fb21e37865293::t_d405b6af1ba40c 72
+  s_6990067f480e9a::t_1a0753a145a060 23,161,172
+  s_954e1264cddd78::t_6004627621d182 423-429
+  s_173ca9ea90a33e::t_8c3a00b06fa12c 24-31,44,51-52,137-160,162-171,173-211,248,266-307,309-313,421-422,430-436
+  s_613258d0f258d1::t_04ccf67ed8ba37 16,260-264
+  s_6990067f480e9a::t_fd3cf596d0616f 17-22,47-50,98,265,405,418
+  s_77ec9aff0a6a79::t_deff3e8f64186d 45-46,249-259,308,355,419-420
+packages/parse5/lib/parser/formatting-element-list.ts
+  s_ee0b775d18f373::t_e2ef2b7329c8dd 39,100,208,211-212
+  s_ee0b775d18f373::t_72f4c1d067a03e 31-32,40-44,47,61,87,104,175-176,209-210
+packages/parse5/lib/serializer/index.test.ts
+  s_173ca9ea90a33e::t_6753358953891c 4,66-68,72-78
+packages/parse5-html-rewriting-stream/test/rewriting-stream.test.ts
+  s_707cd1c5860ad7::t_33804295a198a5 406,411-441
+  s_3131dc3185905e::t_73e89b2b3c0bc0 409
+  s_173ca9ea90a33e::t_80629b8bf80438 390-404
+  s_173ca9ea90a33e::t_690ce411d3ba9d 391-404
+  s_173ca9ea90a33e::t_dabc892507f62a 323-333
+  s_173ca9ea90a33e::t_cf43d9b2d98f1b 406-408,410-441
+  s_173ca9ea90a33e::t_418657f997ebb1 407-408,410-425
+packages/parse5-sax-parser/lib/index.ts
+  s_3131dc3185905e::t_4e6a4cbc89a557 126,133-136
+  s_173ca9ea90a33e::t_96b30c9654d0f0 126,136
+packages/parse5/lib/serializer/index.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 91,133
+  s_173ca9ea90a33e::t_bc322bd6639983 90,92-99,128,131-132,134-135,137,139-141,143-144,146,148-175
+  s_173ca9ea90a33e::t_ccfb4b74840eaf 90,92-99
+packages/parse5/lib/tree-adapters/default.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 160
+  s_173ca9ea90a33e::t_9b11f5a7eb0503 159,161-166,230-235
+  s_173ca9ea90a33e::t_0768f09fc670c5 270
+  s_98abc3499f7493::t_00b5e1c577cd13 270
+packages/parse5/lib/tree-adapters/foster-parenting.test.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 30
+  s_173ca9ea90a33e::t_3f6b03b891adef 1-29,31-51
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_3131dc3185905e::t_66f6ce8ecbe73f 89
+  s_173ca9ea90a33e::t_0ab0ee457409b0 1,63-65,88,90-96,101-104,155
+test/data/serialization/tests.json
+  s_173ca9ea90a33e::t_195679e30ddcc2 45
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_173ca9ea90a33e::t_1a6214c96d0f60 2,14,34,53-67
+  s_173ca9ea90a33e::t_a385da74258d1f 3,15-33,35-38,68-84,94-95,97-98
+  s_954e1264cddd78::t_6004627621d182 85
+  s_613258d0f258d1::t_04ccf67ed8ba37 39-52,87,96
+  s_6990067f480e9a::t_fd3cf596d0616f 86,88-89
+  s_77ec9aff0a6a79::t_deff3e8f64186d 90-93
+packages/parse5/lib/parser/template-eof.test.ts
+  s_173ca9ea90a33e::t_27074e26fa2561 1-18
+  s_173ca9ea90a33e::t_2a1c3bdd512362 5-16,18
+packages/parse5/lib/parser/template-modes.test.ts
+  s_173ca9ea90a33e::t_6b0ae51ece39fe 1-19
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_173ca9ea90a33e::t_2e18d3c9da77d4 116-118,201
+packages/parse5/lib/parser/parser-location-info.test.ts
+  s_173ca9ea90a33e::t_3205c8819758c0 235-246
+  s_173ca9ea90a33e::t_39619a53085217 247-266
+  s_6bbbbbc7cea8e7::t_a322a1308f0fb8 247-266
+packages/parse5-parser-stream/test/flush.test.ts
+  s_173ca9ea90a33e::t_c2807f17d60648 116-136
+  s_173ca9ea90a33e::t_8b939043f107be 116-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ad69cd0e08376675a33a31e16fb88e3c792ffac3",
+  "prompts": {},
+  "sessions": {
+    "s_16b6747ad765f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ec448077-bcbb-4d71-82f9-f75a0356c564",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_173ca9ea90a33e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "707c2ba5-c81c-46be-ad9b-127e1a683e6c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_1cdd27ddad6aeb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e4f-24a5-7700-92be-e5f89af62c03",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_2645df099099aa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c7f323b6-9af1-4f60-b9d9-9b60f1598ab7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_2d7759437df752": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "12e9c97f-4131-4af3-901a-233bbe70a84d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_3131dc3185905e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0c40802e-c101-4a78-9d59-db77663c8f90",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    },
+    "s_4a47ea71070103": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a0b060fd-5f04-4f26-8006-06a03021a51e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    },
+    "s_5de6cfc9324149": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1063e-14c8-7111-85d3-b8c18c1c9ab6",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_613258d0f258d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "49d72e3c-32d4-414e-a466-f95e769dbd10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    },
+    "s_6990067f480e9a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "86aa1983-2ce3-4d91-9d63-e8a1b73a8049",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6bbbbbc7cea8e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "477ae3a9-56cd-4535-bf0f-8d24ed1686d9",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_6fb21e37865293": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16e97-2dbf-7a10-abbd-d842326d8f0c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_707cd1c5860ad7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f9c130ad-8144-4eca-ae9f-1b1916f35e2d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_77ec9aff0a6a79": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "89f13d6a-700c-467e-9703-6be79053b0c4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_803c7f838b2674": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c92a2979-ad99-4ee4-afc8-f3674bf6352b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_8ed07babe8eae3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b6a575b-f5f4-4c12-83e1-7856169a423f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_954e1264cddd78": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3c0a438a-e066-496f-94b9-b0d813f89f15",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    },
+    "s_98abc3499f7493": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-669a-74b3-b59e-3acc3bc180fe",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_aab3d2a88b40d7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-27d9-7510-9ff1-76615dd6f68d",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_d1240ea9997571": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a103bb-56e9-7a92-9307-b45ce9d7ed51",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_d93819bc4f5d44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1deb7c24-d4ea-42db-a5bb-eb6db499b96f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_ee0b775d18f373": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6886b21e-826e-411d-88a5-a681d43a067e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
