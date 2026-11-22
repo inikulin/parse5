@@ -1,0 +1,21 @@
+packages/parse5/lib/parser/index.ts
+  s_40780765ff5887::t_94181b8e87c3dc 1532-1533
+packages/parse5-parser-stream/lib/index.ts
+  s_40780765ff5887::t_94181b8e87c3dc 121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7cdaa89e1e9dce759372884998be97dbf4e08692",
+  "prompts": {},
+  "sessions": {
+    "s_40780765ff5887": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a204e0-290e-74a1-9515-91a330e7ee54",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
