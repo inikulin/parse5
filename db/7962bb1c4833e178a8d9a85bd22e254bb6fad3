@@ -1,0 +1,30 @@
+packages/parse5-htmlparser2-tree-adapter/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_421659343a3f07 8-9
+packages/parse5-plain-text-conversion-stream/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_421659343a3f07 8
+  s_7ba4ba1ef026a3::t_aa8aef2e68cf18 9-12
+bench/memory/sax-parser.js
+  s_7ba4ba1ef026a3::t_421659343a3f07 4
+packages/parse5-parser-stream/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_421659343a3f07 9-10
+oxlint.config.ts
+  s_7ba4ba1ef026a3::t_421659343a3f07 27,43,255
+packages/parse5-sax-parser/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_421659343a3f07 9-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "db7962bb1c4833e178a8d9a85bd22e254bb6fad3",
+  "prompts": {},
+  "sessions": {
+    "s_7ba4ba1ef026a3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a203e7-f77e-79f3-a278-4c6f7f2d6407",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
