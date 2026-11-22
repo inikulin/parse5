@@ -1529,7 +1529,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
     for (let i = 0, idx = nextIdx; p.openElements.items[idx] !== formattingElement; i++, idx = nextIdx) {
         let element = p.openElements.items[idx];
         // Store the next element for the next loop iteration (this one may be removed from the stack by step 9.5).
-        nextIdx = p.openElements.slotBelow(idx);
+        nextIdx = p.openElements.slotBelow(idx) satisfies /* oxlint-disable-line no-useless-assignment */ number;
 
         const elementEntry = p.activeFormattingElements.getElementEntry(element);
         const counterOverflow = elementEntry && i >= AA_INNER_LOOP_ITER;

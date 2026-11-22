@@ -203,11 +203,7 @@ export default defineConfig({
         {
             // Some parser switches select a subset of tags or tokens and ignore the rest.
             files: ['packages/parse5/lib/parser/index.ts'],
-            rules: {
-                ...off('typescript/switch-exhaustiveness-check'),
-                // Oxlint flags nextIdx in aaInnerLoop even though the for-loop update reads it.
-                'no-useless-assignment': 'warn',
-            },
+            rules: off('typescript/switch-exhaustiveness-check'),
         },
         {
             // Keep the separate type import in the emitted test utility declarations.

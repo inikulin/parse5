@@ -23,8 +23,8 @@
     "scripts": {
         "build": "tsc --build packages/*/tsconfig.build.json test/tsconfig.build.json",
         "build:docs": "typedoc",
-        "format": "oxlint --fix && oxfmt '**/*.{js,ts,md,json,yml}'",
-        "lint": "oxlint && oxfmt '**/*.{js,ts,md,json,yml}' --check && tsc --noEmit",
+        "format": "oxlint --fix && oxfmt '**/*.{js,ts,md,json,yml}' && node scripts/format-lockfile.js",
+        "lint": "oxlint && oxfmt '**/*.{js,ts,md,json,yml}' --check && node scripts/format-lockfile.js --check && tsc --noEmit",
         "unit-tests": "vitest run",
         "unit-tests-coverage": "vitest run --coverage",
         "test": "npm run lint && npm run unit-tests",
@@ -44,6 +44,9 @@
         ],
         "*.{md,json,yml}": [
             "oxfmt --no-error-on-unmatched-pattern"
+        ],
+        "package-lock.json": [
+            "node scripts/format-lockfile.js"
         ]
     }
 }
