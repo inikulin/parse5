@@ -1,8 +1,7 @@
 import { it, assert } from 'vitest';
 import * as fs from 'node:fs';
 import path from 'node:path';
-import type { ParserError, Token } from 'parse5';
-import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5';
+import { type ParserError, type Token, type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5';
 import { makeChunks } from './common.js';
 
 export type HtmlLibToken = [string, string | null, ...unknown[]];
