@@ -1,0 +1,25 @@
+oxlint.config.ts
+  s_7ba4ba1ef026a3::t_4538a23acd4182 225-230
+  s_7ba4ba1ef026a3::t_8d54d95633c3fe 219,222-224
+  s_7ba4ba1ef026a3::t_f730393c3755a2 231
+scripts/smoke-test.js
+  s_7ba4ba1ef026a3::t_c33a738529c3fc 32,87,89
+package.json
+  s_7ba4ba1ef026a3::t_c33a738529c3fc 26-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c668a269d7daca155b7a92f6ea025ac7bb6564e0",
+  "prompts": {},
+  "sessions": {
+    "s_7ba4ba1ef026a3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a203e7-f77e-79f3-a278-4c6f7f2d6407",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
