@@ -1,0 +1,103 @@
+test/utils/generate-tokenization-tests.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 178-179
+packages/parse5/lib/parser/index.ts
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 709
+test/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-13
+packages/parse5/lib/parser/index.test.ts
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 83,101,109,117,370-372
+packages/parse5-sax-parser/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-10
+tsconfig.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 2,5-7,9,13
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 4,8,10-12,15-16
+packages/parse5-htmlparser2-tree-adapter/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-9
+packages/parse5/lib/tokenizer/index.ts
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 627
+packages/parse5/lib/tree-adapters/adopt-attributes.test.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 47
+.gitignore
+  s_7ba4ba1ef026a3::t_18c346277ab14c 8
+packages/parse5-htmlparser2-tree-adapter/lib/index.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 76-77,89-90
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 75
+package.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 24,26,42-43,46
+  s_7ba4ba1ef026a3::t_001994221ed0ce 27,37
+  s_7ba4ba1ef026a3::t_265f8572c3a795 15-17
+packages/parse5-html-rewriting-stream/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-11
+packages/parse5-plain-text-conversion-stream/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-9
+packages/parse5/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-9
+scripts/smoke-test.js
+  s_7ba4ba1ef026a3::t_001994221ed0ce 32-34,89-90,92
+  s_7ba4ba1ef026a3::t_18c346277ab14c 103
+packages/parse5/lib/parser/integration-point.test.ts
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 2-10,50
+oxfmt.config.ts
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-11
+packages/parse5/lib/index.ts
+  s_7ba4ba1ef026a3::t_18c346277ab14c 8
+tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-18
+typedoc.json
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 8-9
+packages/parse5-parser-stream/test/scripting.test.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 9-11,29
+packages/parse5-sax-parser/lib/index.ts
+  s_7ba4ba1ef026a3::t_18c346277ab14c 299
+packages/parse5-sax-parser/test/sax-parser.test.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 3
+  s_7ba4ba1ef026a3::t_7363b0448c5723 75,77
+oxlint.config.ts
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 1,9,12-20,22-43,46-67,69-194,196-197,218-221,224-260
+  s_7ba4ba1ef026a3::t_18c346277ab14c 2-8,10-11,21,195,261
+  s_7ba4ba1ef026a3::t_001994221ed0ce 44-45,68,214-217,222-223
+  s_7ba4ba1ef026a3::t_2715662307b972 198-213
+packages/parse5-html-rewriting-stream/lib/index.ts
+  s_7ba4ba1ef026a3::t_18c346277ab14c 187
+packages/parse5-parser-stream/tsconfig.build.json
+  s_7ba4ba1ef026a3::t_18c346277ab14c 1-10
+packages/parse5/lib/tree-adapters/adopt-nodes.test.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 43
+packages/parse5-parser-stream/lib/index.ts
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 124
+  s_7ba4ba1ef026a3::t_18c346277ab14c 170
+.github/dependabot.yml
+  s_7ba4ba1ef026a3::t_001994221ed0ce 9-14
+packages/parse5/lib/parser/formatting-element-list.test.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 347,367
+  s_7ba4ba1ef026a3::t_cf50455a2aee35 5,47
+  s_7ba4ba1ef026a3::t_93ab85c23ae495 4
+packages/parse5-sax-parser/test/parser-feedback-simulator.test.ts
+  s_7ba4ba1ef026a3::t_001994221ed0ce 15-17
+package-lock.json
+  s_51859c924ef265::t_91ec7ef0008f99 18-20,163-166,180-183,197-200,214-217,231-234,248-251,265-285,302-305,322-325,342-345,347,362-365,367,371,382-385,387,391,402-405,407,410-412,416,422-425,427,430-432,436,442-445,447,453,459-465,468-473,476-482,484-490,493-499,501-507,510-516,518-522,524-530,533-536,538-544,546-550,552-558,560-564,566-572,574-578,580-586,588-592,594-600,602-608,611-617,620-623,625,628-634,637-640,642,645-651,654-657,659,662-668,671-674,676,679-685,688-691,693,696-702,705-708,710,713-719,721-723,725-728,730,733-739,741-743,745-748,750,753-759,761-763,765-768,770,773-779,781-788,790,793-799,801-803,805-808,810,813-819,821-823,825-828,830,833-839,841-848,850,853-859,861-863,865-870,873-879,882-885,887,890-896,899-902,904,907-913,916-919,921,924-930,933-938,941-947,950-954,956,959-965,967-974,977-983,985-990,992,995-1001,1003-1010,1013-1019,1022-1026,1028,1031-1037,1040-1046,1049-1055,1057-1065,1067,1070-1076,1078-1086,1088,1091-1097,1099-1101,1103-1107,1109,1112-1118,1120-1121,1124-1128,1130,1133-1139,1141-1143,1145-1151,1154-1160,1162-1163,1165-1173,1175-1181,1184-1188,1190,1193-1199,1201-1204,1206-1218,1220-1224,1226,1229-1308,1312-1313,1316-1319,1321,1323-1326,1328,1330-1333,1336,1339-1342,1344,1346,1349-1358,1361-1373,1375-1376,1379,1384-1387,1389,1391,1394-1397,1399,1401,1404-1409,1411,1414,1417-1420,1423-1427,1430-1442,1445-1448,1451-1452,1455-1458,1460-1461,1463-1464,1467-1470,1473,1476-1491,1493-1495,1498-1501,1505-1507,1510-1513,1516,1519-1522,1524,1526,1529,1532-1535,1537,1539,1542-1546,1548-1551,1554,1556,1559-1562,1565,1568-1577,1579,1582-1585,1587,1590,1593-1594,1597-1601,1603,1606,1609-1612,1614,2146-2155,2157,2159-2162,2165-2205,2208-2211,2213-2215,2218,2221-2254,2257-2260,2262-2264,2266-2272,2312-2313,2454-2457,2461,2464-2467,2471,2891,2894-2906,2951-3258,3585,3588-3591,3594-3596,3599-3608,3611,3614-3618,3620-3623,3922-3925,3928-3980,3983-3988,4053-4054,4139-4144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d91837902ff167b194c622ff5eb1261f365720fa",
+  "prompts": {},
+  "sessions": {
+    "s_51859c924ef265": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7774c80e-963b-48eb-a5c5-56abab76a282",
+        "model": "unknown"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    },
+    "s_7ba4ba1ef026a3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a203e7-f77e-79f3-a278-4c6f7f2d6407",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
