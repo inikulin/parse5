@@ -118,7 +118,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
 
     // TODO [engine:node@>=16]: Due to issues with Node < 16, we are overriding `end` instead of `_final`.
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript/no-explicit-any
     override end(chunk?: any, encoding?: any, callback?: any): any {
         this.lastChunkWritten = true;
         super.end(chunk || '', encoding as BufferEncoding, callback as (() => void) | undefined);
