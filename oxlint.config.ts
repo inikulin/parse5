@@ -25,6 +25,7 @@ export default defineConfig({
     rules: {
         eqeqeq: ['error', 'smart'],
         'no-undef': 'error',
+        'no-useless-assignment': 'error',
         'one-var': ['error', 'never'],
         'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
         'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
@@ -202,7 +203,11 @@ export default defineConfig({
         {
             // Some parser switches select a subset of tags or tokens and ignore the rest.
             files: ['packages/parse5/lib/parser/index.ts'],
-            rules: off('typescript/switch-exhaustiveness-check'),
+            rules: {
+                ...off('typescript/switch-exhaustiveness-check'),
+                // Oxlint flags nextIdx in aaInnerLoop even though the for-loop update reads it.
+                'no-useless-assignment': 'warn',
+            },
         },
         {
             // Keep the separate type import in the emitted test utility declarations.
