@@ -1,0 +1,25 @@
+scripts/format-lockfile.js
+  s_7ba4ba1ef026a3::t_89cae191a075f1 1-15
+oxlint.config.ts
+  s_7ba4ba1ef026a3::t_89cae191a075f1 206
+package.json
+  s_7ba4ba1ef026a3::t_89cae191a075f1 26-27,47-49
+packages/parse5/lib/parser/index.ts
+  s_7ba4ba1ef026a3::t_89cae191a075f1 1532
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "875660afb89371f6682213393f5136505bf00582",
+  "prompts": {},
+  "sessions": {
+    "s_7ba4ba1ef026a3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a203e7-f77e-79f3-a278-4c6f7f2d6407",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
