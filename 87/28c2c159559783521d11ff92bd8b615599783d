@@ -1,0 +1,21 @@
+test/utils/generate-tokenization-tests.ts
+  s_40780765ff5887::t_c339f622e433c2 4
+oxlint.config.ts
+  s_40780765ff5887::t_c339f622e433c2 191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8728c2c159559783521d11ff92bd8b615599783d",
+  "prompts": {},
+  "sessions": {
+    "s_40780765ff5887": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a204e0-290e-74a1-9515-91a330e7ee54",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
