@@ -175,8 +175,8 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 
         const filePath = path.join(dataDirPath, fileName);
         const testSetJson = fs.readFileSync(filePath).toString();
-        const testSet = JSON.parse(testSetJson);
-        const testDescrs: TestDescription[] = testSet.tests;
+        const testSet = JSON.parse(testSetJson) as { tests?: TestDescription[] };
+        const testDescrs = testSet.tests;
 
         if (!testDescrs) {
             continue;

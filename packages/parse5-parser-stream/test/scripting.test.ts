@@ -6,7 +6,9 @@ import { makeChunks, generateTestsForEachTreeAdapter, finished } from 'parse5-te
 import { runInNewContext } from 'node:vm';
 
 function pause(): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, 5));
+    return new Promise((resolve) => {
+        setTimeout(resolve, 5);
+    });
 }
 
 const suitePath = new URL('../../../test/data/tree-construction-scripting', import.meta.url);
@@ -24,6 +26,7 @@ generateParsingTests(
             ? ParserStream.getFragmentStream(test.fragmentContext, opts)
             : new ParserStream(opts);
 
+        // oxlint-disable-next-line typescript/no-misused-promises -- The stream stays paused until resume() is called.
         parser.on('script', async (scriptElement, documentWrite, resume) => {
             const scriptTextNode = opts.treeAdapter.getChildNodes(scriptElement)[0];
             const script = scriptTextNode ? opts.treeAdapter.getTextNodeContent(scriptTextNode) : '';

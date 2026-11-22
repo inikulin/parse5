@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.build.json",
     "compilerOptions": {
         "rootDir": "lib",
         "types": ["node"],
@@ -7,5 +7,5 @@
     },
     "include": ["**/*.ts"],
     "exclude": ["**/*.test.ts", "dist"],
-    "references": [{ "path": "../parse5/tsconfig.json" }, { "path": "../parse5-sax-parser/tsconfig.json" }]
+    "references": [{ "path": "../parse5/tsconfig.build.json" }, { "path": "../parse5-sax-parser/tsconfig.build.json" }]
 }

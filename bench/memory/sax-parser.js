@@ -3,8 +3,6 @@ import { finished } from 'node:stream/promises';
 import format from 'human-format';
 import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
 
-/* eslint-disable no-console */
-
 const usageStart = process.memoryUsage().heapUsed;
 
 const startDate = new Date();

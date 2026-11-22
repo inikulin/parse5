@@ -8,32 +8,23 @@
         "test"
     ],
     "devDependencies": {
-        "@eslint/js": "^10.0.1",
         "@vitest/coverage-v8": "^5.1.0",
-        "eslint": "^10.15.0",
-        "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-unicorn-x": "^3.2.1",
-        "globals": "^17.14.0",
         "husky": "^9.1.7",
         "nano-staged": "^1.0.2",
         "outdent": "^0.8.0",
-        "prettier": "^3.10.1",
+        "oxfmt": "^0.79.0",
+        "oxlint": "^1.94.0",
+        "oxlint-tsgolint": "^7.0.2008",
         "ts-node": "^10.9.2",
         "typedoc": "^0.28.20",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.73.0",
         "vitest": "^5.1.0"
     },
     "scripts": {
-        "build": "tsc --build packages/* test",
+        "build": "tsc --build packages/*/tsconfig.build.json test/tsconfig.build.json",
         "build:docs": "typedoc",
-        "prettier": "prettier '**/*.{js,ts,md,json,yml}' --log-level warn",
-        "format": "npm run format:es && npm run format:prettier",
-        "format:es": "npm run lint:es -- --fix",
-        "format:prettier": "npm run prettier -- --write",
-        "lint": "npm run lint:es && npm run lint:prettier",
-        "lint:es": "eslint .",
-        "lint:prettier": "npm run prettier -- --check",
+        "format": "oxlint --fix && oxfmt '**/*.{js,ts,md,json,yml}'",
+        "lint": "oxlint && oxfmt '**/*.{js,ts,md,json,yml}' --check && tsc --noEmit",
         "unit-tests": "vitest run",
         "unit-tests-coverage": "vitest run --coverage",
         "test": "npm run lint && npm run unit-tests",
@@ -43,16 +34,16 @@
         "preversion": "npm test",
         "pre-commit": "nano-staged",
         "publish": "npm publish --workspaces",
-        "prepare": "husky install",
+        "prepare": "husky",
         "prepublish": "npm run build"
     },
     "nano-staged": {
         "*.{js,ts}": [
-            "prettier --write",
-            "eslint --fix"
+            "oxlint --fix --no-error-on-unmatched-pattern",
+            "oxfmt --no-error-on-unmatched-pattern"
         ],
         "*.{md,json,yml}": [
-            "prettier --write"
+            "oxfmt --no-error-on-unmatched-pattern"
         ]
     }
 }

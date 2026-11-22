@@ -80,7 +80,7 @@ describe('parser', () => {
 
         it('foreign fragment context', () => {
             const svg = parseFragment('<svg><select>').childNodes[0] as Element;
-            const fragment = parseFragment(svg.childNodes[0] as Element, '<p><table></table><div>x');
+            const fragment = parseFragment(svg.childNodes[0] as Element, '<p><table></table><div>x', {});
 
             expect(serialize(fragment)).toBe('<p></p><table></table><div>x</div>');
         });
@@ -98,7 +98,7 @@ describe('parser', () => {
     // TODO: upstream to html5lib-tests
     it('an unmatched foreign end tag at the root of a fragment is handed to the HTML rules', () => {
         const div = parseFragment('<div>').childNodes[0] as Element;
-        const fragment = parseFragment(div, '<div><form></div><svg></form></svg><form>x');
+        const fragment = parseFragment(div, '<div><form></div><svg></form></svg><form>x', {});
 
         expect(serialize(fragment)).toBe('<div><form></form></div><svg></svg><form>x</form>');
     });
@@ -106,7 +106,7 @@ describe('parser', () => {
     it('a foreign `form` ancestor of the fragment context is not the form element pointer', () => {
         const svg = parseFragment('<svg><form><desc>').childNodes[0] as Element;
         const form = svg.childNodes[0] as Element;
-        const fragment = parseFragment(form.childNodes[0] as Element, '<form>x');
+        const fragment = parseFragment(form.childNodes[0] as Element, '<form>x', {});
 
         expect(serialize(fragment)).toBe('<form>x</form>');
     });
@@ -114,7 +114,7 @@ describe('parser', () => {
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
             // @ts-expect-error Adding unknown prototype method
-            Object.prototype.heyYo = 123;
+            Object.prototype.heyYo = 123; // oxlint-disable-line no-extend-native -- Exercise inherited properties.
         });
 
         afterEach(() => {
@@ -367,5 +367,7 @@ it.each([0, 64])('closes elements in a fragment context outside HTML, SVG and Ma
     const context = defaultTreeAdapter.createElement('c', html.NS.XML, []);
     const open = '<y>'.repeat(depth);
 
-    expect(serialize(parseFragment(context, `${open}<x></x>after`))).toBe(`${open}<x></x>after${'</y>'.repeat(depth)}`);
+    expect(serialize(parseFragment(context, `${open}<x></x>after`, {}))).toBe(
+        `${open}<x></x>after${'</y>'.repeat(depth)}`,
+    );
 });

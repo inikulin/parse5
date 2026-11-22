@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import assert from 'node:assert/strict';
 
 const checks = [
@@ -30,7 +29,9 @@ const checks = [
             const { SAXParser } = await import('parse5-sax-parser');
             const parser = new SAXParser();
             const tags = [];
-            parser.on('startTag', (tag) => tags.push(tag.tagName));
+            parser.on('startTag', (tag) => {
+                tags.push(tag.tagName);
+            });
             await new Promise((resolve, reject) => {
                 parser.on('finish', resolve);
                 parser.on('error', reject);
@@ -85,9 +86,10 @@ const checks = [
 ];
 
 let failures = 0;
-for (const { name, run } of checks) {
+for (const check of checks) {
+    const { name } = check;
     try {
-        await run();
+        await check.run();
         console.log(`ok - ${name}`);
     } catch (error) {
         failures++;
@@ -98,7 +100,7 @@ for (const { name, run } of checks) {
 
 if (failures > 0) {
     console.error(`\n${failures} smoke test(s) failed`);
-    // eslint-disable-next-line unicorn-x/no-process-exit
+    // oxlint-disable-next-line unicorn/no-process-exit -- The failure count determines the exit status.
     process.exit(1);
 }
 

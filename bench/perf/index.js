@@ -8,8 +8,6 @@ import * as workingCopy from '../../packages/parse5/dist/index.js';
 import { ParserStream as WorkingCopyParserStream } from '../../packages/parse5-parser-stream/dist/index.js';
 import * as upstreamParser from 'parse5';
 
-/* eslint-disable no-console */
-
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
 const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);
 const saxPath = new URL('../../test/data/sax/', import.meta.url);

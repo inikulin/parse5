@@ -624,7 +624,7 @@ export class Tokenizer {
             token.attrs.push(this.currentAttr);
 
             if (token.location && this.currentAttrLocation) {
-                const attrLocations = (token.location.attrs ??= Object.create(null));
+                const attrLocations = (token.location.attrs ??= Object.create(null) as Record<string, Location>);
                 attrLocations[this.currentAttr.name] = this.currentAttrLocation;
 
                 // Set end location

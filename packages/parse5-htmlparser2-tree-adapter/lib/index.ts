@@ -72,9 +72,9 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     },
 
     createElement(tagName: string, namespaceURI: html.NS, attrs: Token.Attribute[]): Element {
-        const attribs = Object.create(null);
-        const attribsNamespace = Object.create(null);
-        const attribsPrefix = Object.create(null);
+        const attribs = Object.create(null) as Element['attribs'];
+        const attribsNamespace = Object.create(null) as Record<string, string | undefined>;
+        const attribsPrefix = Object.create(null) as Record<string, string | undefined>;
 
         for (let i = 0; i < attrs.length; i++) {
             const attrName = attrs[i].name;
@@ -86,8 +86,8 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
 
         const node = new Element(tagName, attribs, []);
         node.namespace = namespaceURI;
-        node['x-attribsNamespace'] = attribsNamespace;
-        node['x-attribsPrefix'] = attribsPrefix;
+        node['x-attribsNamespace'] = attribsNamespace as Element['x-attribsNamespace'];
+        node['x-attribsPrefix'] = attribsPrefix as Element['x-attribsPrefix'];
         return node;
     },
 

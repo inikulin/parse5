@@ -1,10 +1,9 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.build.json",
     "compilerOptions": {
         "rootDir": "lib",
-        "types": ["node"],
         "outDir": "dist"
     },
     "include": ["**/*.ts"],
-    "exclude": ["**/*.test.ts", "dist", "test"]
+    "exclude": ["**/*.test.ts", "dist"]
 }

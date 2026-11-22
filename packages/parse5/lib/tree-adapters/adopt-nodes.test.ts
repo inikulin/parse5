@@ -40,6 +40,7 @@ it.each(adapters)('detaches the last child and any other child (%s)', (_name, tr
     const remaining: unknown = children[1];
 
     if (typeof remaining === 'object' && remaining !== null && 'prev' in remaining && 'next' in remaining) {
+        // oxlint-disable-next-line vitest/no-conditional-expect -- Only the htmlparser2 adapter has sibling pointers.
         expect([remaining.prev, remaining.next]).toEqual([null, null]);
     }
 });

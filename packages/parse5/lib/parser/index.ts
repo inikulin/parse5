@@ -706,7 +706,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         const ns = this.treeAdapter.getNamespaceURI(element);
 
         if (tid === $.ANNOTATION_XML && ns === NS.MATHML && foreignNS !== NS.MATHML) {
-            const verdicts = (this.annotationXmlIntegrationPoints ??= new Map());
+            const verdicts = (this.annotationXmlIntegrationPoints ??= new Map<T['element'], boolean>());
             let isIntegrationPoint = verdicts.get(element);
 
             if (isIntegrationPoint === undefined) {
