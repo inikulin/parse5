@@ -5,7 +5,7 @@
         "types": ["node"],
         "outDir": "dist"
     },
-    "include": ["**/*.ts"],
+    "include": ["utils"],
     "references": [
         { "path": "../packages/parse5/tsconfig.build.json" },
         { "path": "../packages/parse5-htmlparser2-tree-adapter/tsconfig.build.json" }

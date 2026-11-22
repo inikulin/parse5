@@ -5,7 +5,7 @@
         "types": ["node"],
         "outDir": "dist"
     },
-    "include": ["**/*.ts"],
-    "exclude": ["**/*.test.ts", "dist", "test"],
+    "include": ["lib"],
+    "exclude": ["**/*.test.ts"],
     "references": [{ "path": "../parse5/tsconfig.build.json" }]
 }

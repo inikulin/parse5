@@ -105,7 +105,7 @@ export default defineConfig({
         // Text is encoded in UTF-16 code units.
         ...off('unicorn/prefer-code-point'),
         // The parser and tree adapters use null and undefined as distinct sentinel values.
-        ...off('unicorn/no-null', 'no-undefined', 'unicorn/no-useless-undefined'),
+        ...off('unicorn/no-null', 'no-undefined'),
         // Modern syntax and the runtime's features are fine.
         ...off(
             'oxc/no-async-await',
@@ -119,7 +119,6 @@ export default defineConfig({
             'unicorn/no-array-reduce',
             'no-await-in-loop',
             'promise/avoid-new',
-            'promise/prefer-await-to-then',
             'node/no-top-level-await',
             'node/no-sync',
             'import/no-nodejs-modules',
@@ -163,15 +162,8 @@ export default defineConfig({
             'typescript/no-unsafe-type-assertion',
             'typescript/promise-function-async',
         ),
-        // Method signatures, mapped types, `{}` and type aliases are chosen for how they check and infer.
-        ...off(
-            'typescript/method-signature-style',
-            'typescript/consistent-indexed-object-style',
-            'typescript/consistent-type-definitions',
-            'typescript/ban-types',
-        ),
-        // Functions converting values declare the types they convert.
-        ...off('unicorn/prefer-native-coercion-functions'),
+        // Preserve the existing method signature syntax.
+        ...off('typescript/method-signature-style'),
         // Data-driven tests share helpers and use explicit boolean expectations.
         ...off(
             'vitest/prefer-expect-assertions',
