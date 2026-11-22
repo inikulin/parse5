@@ -216,8 +216,18 @@ export default defineConfig({
             rules: off('no-promise-executor-return'),
         },
         {
-            files: ['bench/**/*.js', 'scripts/smoke-test.js'],
+            files: ['bench/**/*.js'],
             rules: off('no-console'),
+        },
+        {
+            // The smoke script reports failures, calls receiver-free checks and ignores listener return values.
+            files: ['scripts/smoke-test.js'],
+            rules: off(
+                'no-console',
+                'unicorn/no-process-exit',
+                'typescript/unbound-method',
+                'typescript/strict-void-return',
+            ),
         },
         {
             files: ['bench/perf/index.js'],
