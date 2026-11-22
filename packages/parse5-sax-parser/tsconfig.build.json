@@ -6,5 +6,6 @@
         "outDir": "dist"
     },
     "include": ["**/*.ts"],
-    "exclude": ["**/*.test.ts", "dist", "test"]
+    "exclude": ["**/*.test.ts", "dist", "test"],
+    "references": [{ "path": "../parse5/tsconfig.build.json" }]
 }

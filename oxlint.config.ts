@@ -24,6 +24,7 @@ export default defineConfig({
     ignorePatterns: ['test/data/', 'packages/*/dist/', 'test/dist/', 'docs/build/', 'coverage/'],
     rules: {
         eqeqeq: ['error', 'smart'],
+        'no-undef': 'error',
         'one-var': ['error', 'never'],
         'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
         'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
@@ -39,6 +40,7 @@ export default defineConfig({
         'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
         'unicorn/numeric-separators-style': ['error', { hexadecimal: { onlyIfContainsSeparator: true } }],
         'typescript/explicit-function-return-type': ['error', { allowExpressions: true }],
+        'typescript/no-non-null-assertion': 'warn',
         'typescript/no-confusing-void-expression': ['error', { ignoreArrowShorthand: true }],
         'typescript/switch-exhaustiveness-check': ['error', { considerDefaultExhaustiveForUnions: true }],
         // Keep implicit public members pending the repository's accessibility convention.
@@ -158,7 +160,6 @@ export default defineConfig({
             'jsdoc/require-throws-type',
             'typescript/prefer-readonly-parameter-types',
             'typescript/no-unsafe-type-assertion',
-            'typescript/no-non-null-assertion',
             'typescript/promise-function-async',
         ),
         // Method signatures, mapped types, `{}` and type aliases are chosen for how they check and infer.
@@ -167,7 +168,6 @@ export default defineConfig({
             'typescript/consistent-indexed-object-style',
             'typescript/consistent-type-definitions',
             'typescript/ban-types',
-            'no-redeclare',
         ),
         // Functions converting values declare the types they convert.
         ...off('unicorn/prefer-native-coercion-functions'),
@@ -252,6 +252,7 @@ export default defineConfig({
             rules: off(
                 'typescript/explicit-function-return-type',
                 'typescript/explicit-module-boundary-types',
+                'typescript/no-non-null-assertion',
                 'typescript/strict-void-return',
                 'vitest/expect-expect',
                 'vitest/valid-title',
