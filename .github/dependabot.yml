@@ -6,6 +6,12 @@ updates:
           interval: daily
       open-pull-requests-limit: 10
       versioning-strategy: increase
+      groups:
+          oxc:
+              patterns:
+                  - 'oxlint'
+                  - 'oxlint-tsgolint'
+                  - 'oxfmt'
     - package-ecosystem: 'github-actions'
       directory: '/'
       schedule:

@@ -5,7 +5,7 @@ import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
 
 export { type DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/default.js';
 import type * as DefaultTreeAdapter from './tree-adapters/default.js';
-// eslint-disable-next-line @typescript-eslint/no-namespace
+// oxlint-disable-next-line typescript/no-namespace
 export namespace DefaultTreeAdapterTypes {
     export type Document = DefaultTreeAdapter.Document;
     export type DocumentFragment = DefaultTreeAdapter.DocumentFragment;
@@ -83,7 +83,7 @@ export function parse<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
 export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     fragmentContext: T['parentNode'] | null,
     html: string,
-    options: ParserOptions<T>,
+    options?: ParserOptions<T>,
 ): T['documentFragment'];
 export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     html: string,

@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/switch-exhaustiveness-check -- The parser handles selected tags and tokens in some switches. */
 import { Tokenizer, TokenizerMode, type TokenHandler } from '../tokenizer/index.js';
 import { OpenElementStack, type StackHandler } from './open-element-stack.js';
 import { FormattingElementList, EntryType, type ElementEntry, type Entry } from './formatting-element-list.js';
@@ -706,7 +707,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         const ns = this.treeAdapter.getNamespaceURI(element);
 
         if (tid === $.ANNOTATION_XML && ns === NS.MATHML && foreignNS !== NS.MATHML) {
-            const verdicts = (this.annotationXmlIntegrationPoints ??= new Map());
+            const verdicts = (this.annotationXmlIntegrationPoints ??= new Map<T['element'], boolean>());
             let isIntegrationPoint = verdicts.get(element);
 
             if (isIntegrationPoint === undefined) {
@@ -1421,7 +1422,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                     return;
                 }
 
-                token.chars = token.chars.substr(1);
+                token.chars = token.chars.slice(1);
             }
         }
 
@@ -1529,6 +1530,7 @@ function aaInnerLoop<T extends TreeAdapterTypeMap>(
     for (let i = 0, idx = nextIdx; p.openElements.items[idx] !== formattingElement; i++, idx = nextIdx) {
         let element = p.openElements.items[idx];
         // Store the next element for the next loop iteration (this one may be removed from the stack by step 9.5).
+        // oxlint-disable-next-line no-useless-assignment -- The for-loop update reads nextIdx.
         nextIdx = p.openElements.slotBelow(idx);
 
         const elementEntry = p.activeFormattingElements.getElementEntry(element);

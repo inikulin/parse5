@@ -1,8 +1,8 @@
 import { it, assert, expect } from 'vitest';
 import { TAG_NAMES as $, NS, getTagID } from '../common/html.js';
 import { type Attribute, type TagToken, TokenType } from '../common/token.js';
-import { type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
-import { type TreeAdapterTypeMap } from '../tree-adapters/interface.js';
+import type { DefaultTreeAdapterMap } from '../tree-adapters/default.js';
+import type { TreeAdapterTypeMap } from '../tree-adapters/interface.js';
 import { FormattingElementList, EntryType, type ElementEntry, type Entry } from './formatting-element-list.js';
 import { Parser } from './index.js';
 import { generateTestsForEachTreeAdapter } from 'parse5-test-utils/utils/common.js';
@@ -44,7 +44,7 @@ function newestB<T extends TreeAdapterTypeMap>(list: FormattingElementList<T>, t
 
 generateTestsForEachTreeAdapter('FormattingElementList', (treeAdapter) => {
     it('Releases the bookmark once an entry was inserted after it', () => {
-        const list = new FormattingElementList<DefaultTreeAdapterMap>();
+        const list = new FormattingElementList();
         const element = treeAdapter.createElement($.B, NS.HTML, []);
         const token = createToken($.B);
 
@@ -344,6 +344,7 @@ it.each([
         for (const [key, value] of Object.entries(entry)) {
             let current: unknown = value;
             Object.defineProperty(entry, key, {
+                // oxlint-disable-next-line no-loop-func -- Every accessor shares the same counters.
                 get(): unknown {
                     if (isCounting) reads++;
                     return current;
@@ -363,5 +364,6 @@ it('drops an attribute group from the index with its last entry', () => {
 
     parser.tokenizer.write(`<b><b><b>${seq(100, (i) => `<b a=${i}></b>`)}`, false);
     // The three `b`s without attributes are the only group left.
+    // oxlint-disable-next-line typescript/dot-notation -- Bracket notation accesses the private index in this test.
     expect(parser.activeFormattingElements['index']?.arks.size).toBe(1);
 });

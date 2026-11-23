@@ -114,7 +114,7 @@ describe('parser', () => {
     describe("Regression - Don't inherit from Object when creating collections (GH-119)", () => {
         beforeEach(() => {
             // @ts-expect-error Adding unknown prototype method
-            Object.prototype.heyYo = 123;
+            Object.prototype.heyYo = 123; // oxlint-disable-line no-extend-native -- Exercise inherited properties.
         });
 
         afterEach(() => {
@@ -367,5 +367,6 @@ it.each([0, 64])('closes elements in a fragment context outside HTML, SVG and Ma
     const context = defaultTreeAdapter.createElement('c', html.NS.XML, []);
     const open = '<y>'.repeat(depth);
 
-    expect(serialize(parseFragment(context, `${open}<x></x>after`))).toBe(`${open}<x></x>after${'</y>'.repeat(depth)}`);
+    const fragment = parseFragment(context, `${open}<x></x>after`);
+    expect(serialize(fragment)).toBe(`${open}<x></x>after${'</y>'.repeat(depth)}`);
 });

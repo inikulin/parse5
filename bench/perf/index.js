@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/no-unsafe-argument, typescript/no-unsafe-assignment, typescript/no-unsafe-call, typescript/no-unsafe-member-access -- The benchmark compares implementations through dynamic JavaScript adapters. */
 import { readFileSync, createReadStream, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Bench } from 'tinybench';
@@ -7,8 +8,6 @@ import { treeAdapters, WritableStreamStub, finished } from 'parse5-test-utils/di
 import * as workingCopy from '../../packages/parse5/dist/index.js';
 import { ParserStream as WorkingCopyParserStream } from '../../packages/parse5-parser-stream/dist/index.js';
 import * as upstreamParser from 'parse5';
-
-/* eslint-disable no-console */
 
 const hugePagePath = new URL('../../test/data/huge-page/huge-page.html', import.meta.url);
 const treeConstructionPath = new URL('../../test/data/html5lib-tests/tree-construction', import.meta.url);

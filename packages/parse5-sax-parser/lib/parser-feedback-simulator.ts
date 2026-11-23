@@ -61,7 +61,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
                 return;
             }
 
-            token.chars = token.chars.substr(1);
+            token.chars = token.chars.slice(1);
         }
 
         this.handler.onWhitespaceCharacter(token);

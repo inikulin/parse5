@@ -327,8 +327,9 @@ export class OpenElementStack<T extends TreeAdapterTypeMap> {
         }
 
         for (let i = this.stackTop; i >= 0; i--) {
-            if (tagIDs.includes(this.tagIDs[i]) && this.treeAdapter.getNamespaceURI(this.items[i]) === NS.HTML)
+            if (tagIDs.includes(this.tagIDs[i]) && this.treeAdapter.getNamespaceURI(this.items[i]) === NS.HTML) {
                 return i;
+            }
         }
 
         return -1;

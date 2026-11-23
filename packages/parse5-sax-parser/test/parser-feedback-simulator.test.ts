@@ -12,7 +12,9 @@ generateTokenizationTests(
 );
 
 it('does constant work per namespace push and pop', () => {
-    const noop = (): void => {};
+    const noop = (): void => {
+        // These handlers only satisfy the simulator interface.
+    };
     const simulator = new ParserFeedbackSimulator(
         {},
         {

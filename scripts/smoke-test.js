@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console, unicorn/no-process-exit, typescript/unbound-method, typescript/strict-void-return -- The smoke script reports failures, calls receiver-free checks and ignores listener return values. */
 import assert from 'node:assert/strict';
 
 const checks = [
@@ -98,7 +98,6 @@ for (const { name, run } of checks) {
 
 if (failures > 0) {
     console.error(`\n${failures} smoke test(s) failed`);
-    // eslint-disable-next-line unicorn-x/no-process-exit
     process.exit(1);
 }
 

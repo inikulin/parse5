@@ -39,6 +39,7 @@ export interface SAXParserOptions {
  *     });
  * ```
  */
+// oxlint-disable-next-line typescript/no-unsafe-declaration-merging -- The stream class merges with an interface that describes its event overloads.
 export class SAXParser extends Transform implements TokenHandler {
     protected options: SAXParserOptions;
     /** @internal */
@@ -296,6 +297,6 @@ export interface SAXParser {
      * @param event Name of the event
      * @param handler Event handler
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript/no-explicit-any
     on(event: string, handler: (...args: any[]) => void): this;
 }

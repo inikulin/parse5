@@ -44,6 +44,7 @@ it.each<[string, (element: Element) => void, string]>([
     [
         'an entry becomes a hole',
         (element): void => {
+            // oxlint-disable-next-line typescript/no-array-delete -- The test needs a sparse array.
             delete element.attrs[0];
         },
         'b=2 a=3 c=3 d=3',

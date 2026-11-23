@@ -1,5 +1,13 @@
 import { it, expect } from 'vitest';
-import { parse, parseFragment, Parser, html, defaultTreeAdapter, type TreeAdapter } from 'parse5';
+import {
+    parse,
+    parseFragment,
+    Parser,
+    html,
+    defaultTreeAdapter,
+    type TreeAdapter,
+    type DefaultTreeAdapterMap,
+} from 'parse5';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 
 it.each(Object.entries(treeAdapters) as [string, TreeAdapter][])(
@@ -39,7 +47,7 @@ it.each([
     ['children of the fragment context', '', '<i></i>', encodedContext],
 ])('reads the attributes of an annotation-xml element once: %s', (_name, start, repeated, context) => {
     let reads = 0;
-    const treeAdapter: TreeAdapter = {
+    const treeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         ...defaultTreeAdapter,
         getAttrList(element) {
             reads++;

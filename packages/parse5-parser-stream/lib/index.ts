@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/no-unsafe-declaration-merging, typescript/explicit-module-boundary-types -- The stream merges event overloads into the class and uses any in its end override. */
 import { Writable } from 'node:stream';
 import { Parser, type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAdapterMap } from 'parse5';
 
@@ -118,10 +119,10 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
 
     // TODO [engine:node@>=16]: Due to issues with Node < 16, we are overriding `end` instead of `_final`.
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript/no-explicit-any
     override end(chunk?: any, encoding?: any, callback?: any): any {
         this.lastChunkWritten = true;
-        super.end(chunk || '', encoding, callback);
+        super.end(chunk || '', encoding as BufferEncoding, callback as (() => void) | undefined);
     }
 }
 
@@ -167,6 +168,6 @@ export interface ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterM
      * @param event Name of the event
      * @param handler Event handler
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript/no-explicit-any
     on(event: string, handler: (...args: any[]) => void): this;
 }

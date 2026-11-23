@@ -129,5 +129,6 @@ export function getSubstringByLineCol(lines: string[], loc: Token.Location): str
 // TODO [engine:node@>=16]: Replace this with `finished` from 'node:stream/promises'.
 
 export function finished(stream: Writable | Readable): Promise<void> {
+    // oxlint-disable-next-line no-promise-executor-return -- The Promise adapter intentionally ignores the stream listener's cleanup function.
     return new Promise((resolve, reject) => finishedCb(stream, (err) => (err ? reject(err) : resolve())));
 }

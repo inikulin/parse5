@@ -1,8 +1,7 @@
 import { it, assert } from 'vitest';
 import * as fs from 'node:fs';
 import path from 'node:path';
-import type { ParserError, Token } from 'parse5';
-import { type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5';
+import { type ParserError, type Token, type Tokenizer, TokenizerMode, type TokenHandler } from 'parse5';
 import { makeChunks } from './common.js';
 
 export type HtmlLibToken = [string, string | null, ...unknown[]];
@@ -175,8 +174,8 @@ function loadTests(dataDirPath: string): LoadedTest[] {
 
         const filePath = path.join(dataDirPath, fileName);
         const testSetJson = fs.readFileSync(filePath).toString();
-        const testSet = JSON.parse(testSetJson);
-        const testDescrs: TestDescription[] = testSet.tests;
+        const testSet = JSON.parse(testSetJson) as { tests?: TestDescription[] };
+        const testDescrs = testSet.tests;
 
         if (!testDescrs) {
             continue;

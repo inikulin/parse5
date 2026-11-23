@@ -1,9 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { finished } from 'node:stream/promises';
 import format from 'human-format';
-import { SAXParser } from '../../packages/parse5-sax-parser/dist/index.js';
-
-/* eslint-disable no-console */
+import { SAXParser } from 'parse5-sax-parser';
 
 const usageStart = process.memoryUsage().heapUsed;
 

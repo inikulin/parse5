@@ -1,0 +1,13 @@
+{
+    "extends": "../tsconfig.build.json",
+    "compilerOptions": {
+        "rootDir": "utils",
+        "types": ["node"],
+        "outDir": "dist"
+    },
+    "include": ["utils"],
+    "references": [
+        { "path": "../packages/parse5/tsconfig.build.json" },
+        { "path": "../packages/parse5-htmlparser2-tree-adapter/tsconfig.build.json" }
+    ]
+}
