@@ -1,4 +1,4 @@
-/* oxlint-disable typescript/switch-exhaustiveness-check, typescript/no-deprecated -- The parser handles selected tags and tokens in some switches and preserves legacy substr semantics. */
+/* oxlint-disable typescript/switch-exhaustiveness-check -- The parser handles selected tags and tokens in some switches. */
 import { Tokenizer, TokenizerMode, type TokenHandler } from '../tokenizer/index.js';
 import { OpenElementStack, type StackHandler } from './open-element-stack.js';
 import { FormattingElementList, EntryType, type ElementEntry, type Entry } from './formatting-element-list.js';
@@ -1422,7 +1422,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
                     return;
                 }
 
-                token.chars = token.chars.substr(1);
+                token.chars = token.chars.slice(1);
             }
         }
 
