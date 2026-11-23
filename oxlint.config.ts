@@ -188,11 +188,6 @@ export default defineConfig({
     },
     overrides: [
         {
-            // Keep the existing compact dispatch branches in this PR.
-            files: ['packages/parse5/lib/parser/open-element-stack.ts', 'packages/parse5/lib/tokenizer/index.ts'],
-            rules: off('curly'),
-        },
-        {
             // Some parser switches select a subset of tags or tokens and ignore the rest.
             files: ['packages/parse5/lib/parser/index.ts'],
             rules: off('typescript/switch-exhaustiveness-check'),
