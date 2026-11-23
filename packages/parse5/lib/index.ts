@@ -83,7 +83,7 @@ export function parse<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
 export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     fragmentContext: T['parentNode'] | null,
     html: string,
-    options: ParserOptions<T>,
+    options?: ParserOptions<T>,
 ): T['documentFragment'];
 export function parseFragment<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap>(
     html: string,

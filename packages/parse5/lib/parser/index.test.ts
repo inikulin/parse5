@@ -80,7 +80,6 @@ describe('parser', () => {
 
         it('foreign fragment context', () => {
             const svg = parseFragment('<svg><select>').childNodes[0] as Element;
-            // @ts-expect-error The context overload requires options in its declaration.
             const fragment = parseFragment(svg.childNodes[0] as Element, '<p><table></table><div>x');
 
             expect(serialize(fragment)).toBe('<p></p><table></table><div>x</div>');
@@ -99,7 +98,6 @@ describe('parser', () => {
     // TODO: upstream to html5lib-tests
     it('an unmatched foreign end tag at the root of a fragment is handed to the HTML rules', () => {
         const div = parseFragment('<div>').childNodes[0] as Element;
-        // @ts-expect-error The context overload requires options in its declaration.
         const fragment = parseFragment(div, '<div><form></div><svg></form></svg><form>x');
 
         expect(serialize(fragment)).toBe('<div><form></form></div><svg></svg><form>x</form>');
@@ -108,7 +106,6 @@ describe('parser', () => {
     it('a foreign `form` ancestor of the fragment context is not the form element pointer', () => {
         const svg = parseFragment('<svg><form><desc>').childNodes[0] as Element;
         const form = svg.childNodes[0] as Element;
-        // @ts-expect-error The context overload requires options in its declaration.
         const fragment = parseFragment(form.childNodes[0] as Element, '<form>x');
 
         expect(serialize(fragment)).toBe('<form>x</form>');
@@ -370,7 +367,6 @@ it.each([0, 64])('closes elements in a fragment context outside HTML, SVG and Ma
     const context = defaultTreeAdapter.createElement('c', html.NS.XML, []);
     const open = '<y>'.repeat(depth);
 
-    // @ts-expect-error The context overload requires options in its declaration.
     const fragment = parseFragment(context, `${open}<x></x>after`);
     expect(serialize(fragment)).toBe(`${open}<x></x>after${'</y>'.repeat(depth)}`);
 });
