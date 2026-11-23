@@ -1,0 +1,19 @@
+packages/parse5/lib/index.ts
+  s_85e3d16e23d959::t_4b184db7acdf72 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eb08d59affcc5c748bc6ac0f018504844a9c3328",
+  "prompts": {},
+  "sessions": {
+    "s_85e3d16e23d959": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "de91401b-d95e-420e-95cc-de8b4da48051",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
