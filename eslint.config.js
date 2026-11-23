@@ -8,14 +8,7 @@ const { configs: eslintConfigs } = eslintjs;
 
 const sourceFiles = ['bench/**/*.js', 'scripts/**/*.ts', 'packages/*/lib/**/*.ts'];
 const testFiles = ['test/**/*.{ts,js}', '**/*.test.ts'];
-const ignoreFiles = [
-    'test/data/html5lib-tests',
-    'test/data/html5lib-tests-fork',
-    'packages/*/dist/',
-    'test/dist/',
-    'docs/build/',
-    'coverage/',
-];
+const ignoreFiles = ['test/data/html5lib-tests', 'packages/*/dist/', 'test/dist/', 'docs/build/', 'coverage/'];
 const allFiles = [...sourceFiles, ...testFiles];
 
 export default [

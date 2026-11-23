@@ -1,0 +1,16 @@
+#data
+<!DOCTYPE root-element [SYSTEM OR PUBLIC FPI] "uri" [
+<!-- internal declarations -->
+]>
+#errors
+(1,23): expected-space-or-right-bracket-in-doctype
+(2,30): unknown-doctype
+#new-errors
+(1:24) invalid-character-sequence-after-doctype-name
+(1:1-2:31) non-conforming-doctype
+#document
+| <!DOCTYPE root-element>
+| <html>
+|   <head>
+|   <body>
+|     "]>"
