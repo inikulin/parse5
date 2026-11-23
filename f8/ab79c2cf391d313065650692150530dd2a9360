@@ -1,0 +1,21 @@
+packages/parse5-sax-parser/lib/parser-feedback-simulator.ts
+  s_09d9d12d2129a1::t_8771aafb0c47b1 64
+packages/parse5/lib/parser/index.ts
+  s_09d9d12d2129a1::t_8771aafb0c47b1 1,1425
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f8ab79c2cf391d313065650692150530dd2a9360",
+  "prompts": {},
+  "sessions": {
+    "s_09d9d12d2129a1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20627-2778-7311-90a9-73d57a7efae0",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "Felix Boehm <188768+fb55@users.noreply.github.com>"
+    }
+  }
+}
