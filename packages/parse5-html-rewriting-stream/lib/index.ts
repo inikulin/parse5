@@ -59,6 +59,7 @@ import { escapeText, escapeAttribute } from 'entities/escape';
  * });
  * ```
  */
+// oxlint-disable-next-line typescript/no-unsafe-declaration-merging -- The stream class merges with an interface that describes its event overloads.
 export class RewritingStream extends SAXParser {
     /** Whether text is currently tokenized without decoding character references. */
     private inRawText = false;

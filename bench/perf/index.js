@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/no-unsafe-argument, typescript/no-unsafe-assignment, typescript/no-unsafe-call, typescript/no-unsafe-member-access -- The benchmark compares implementations through dynamic JavaScript adapters. */
 import { readFileSync, createReadStream, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Bench } from 'tinybench';

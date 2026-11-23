@@ -61,6 +61,7 @@ export class ParserFeedbackSimulator implements TokenHandler {
                 return;
             }
 
+            // oxlint-disable-next-line typescript/no-deprecated -- Preserve legacy substr semantics.
             token.chars = token.chars.substr(1);
         }
 

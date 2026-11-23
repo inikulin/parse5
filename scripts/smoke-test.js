@@ -1,3 +1,4 @@
+/* oxlint-disable no-console, unicorn/no-process-exit, typescript/unbound-method, typescript/strict-void-return -- The smoke script reports failures, calls receiver-free checks and ignores listener return values. */
 import assert from 'node:assert/strict';
 
 const checks = [

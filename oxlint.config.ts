@@ -188,56 +188,8 @@ export default defineConfig({
     },
     overrides: [
         {
-            // Some parser switches select a subset of tags or tokens and ignore the rest.
-            files: ['packages/parse5/lib/parser/index.ts'],
-            rules: off('typescript/switch-exhaustiveness-check'),
-        },
-        {
-            // The Promise adapter intentionally ignores the stream listener's cleanup function.
-            files: ['test/utils/common.ts'],
-            rules: off('no-promise-executor-return'),
-        },
-        {
             files: ['bench/**/*.js'],
             rules: off('no-console'),
-        },
-        {
-            // The smoke script reports failures, calls receiver-free checks and ignores listener return values.
-            files: ['scripts/smoke-test.js'],
-            rules: off(
-                'no-console',
-                'unicorn/no-process-exit',
-                'typescript/unbound-method',
-                'typescript/strict-void-return',
-            ),
-        },
-        {
-            files: ['bench/perf/index.js'],
-            // The benchmark compares implementations through dynamic JavaScript adapters.
-            rules: off(
-                'typescript/no-unsafe-argument',
-                'typescript/no-unsafe-assignment',
-                'typescript/no-unsafe-call',
-                'typescript/no-unsafe-member-access',
-                'typescript/no-unsafe-return',
-            ),
-        },
-        {
-            // The stream classes merge interfaces to describe their event overloads.
-            files: [
-                'packages/parse5-html-rewriting-stream/lib/index.ts',
-                'packages/parse5-parser-stream/lib/index.ts',
-                'packages/parse5-sax-parser/lib/index.ts',
-            ],
-            rules: off('typescript/no-unsafe-declaration-merging', 'typescript/explicit-module-boundary-types'),
-        },
-        {
-            // Preserve legacy substr semantics in the HTML parser and SAX feedback simulator.
-            files: [
-                'packages/parse5/lib/parser/index.ts',
-                'packages/parse5-sax-parser/lib/parser-feedback-simulator.ts',
-            ],
-            rules: off('typescript/no-deprecated'),
         },
         {
             // Fixture helpers register data-driven assertions that Oxlint cannot trace.

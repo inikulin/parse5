@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/no-unsafe-declaration-merging, typescript/explicit-module-boundary-types -- The stream merges event overloads into the class and uses any in its end override. */
 import { Writable } from 'node:stream';
 import { Parser, type ParserOptions, type TreeAdapterTypeMap, type DefaultTreeAdapterMap } from 'parse5';
 
