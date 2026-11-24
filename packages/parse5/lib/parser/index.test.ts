@@ -295,6 +295,28 @@ describe('parser', () => {
         });
     });
 
+    describe('noscript fragment context', () => {
+        let noscript: Element;
+
+        beforeEach(() => {
+            noscript = (parseFragment('<noscript>') as { childNodes: Element[] }).childNodes[0];
+        });
+
+        it('parses its content as text when scripting is enabled', () => {
+            const fragment = parseFragment(noscript, '<p>a</p>', { scriptingEnabled: true });
+
+            expect(fragment.childNodes.map((child) => child.nodeName)).toEqual(['#text']);
+            expect(serialize(fragment)).toBe('&lt;p&gt;a&lt;/p&gt;');
+        });
+
+        it('parses its content as markup when scripting is disabled', () => {
+            const fragment = parseFragment(noscript, '<p>a</p><b>x</b>', { scriptingEnabled: false });
+
+            expect(fragment.childNodes.map((child) => child.nodeName)).toEqual(['p', 'b']);
+            expect(serialize(fragment)).toBe('<p>a</p><b>x</b>');
+        });
+    });
+
     describe('rawtext parsing', () => {
         it.each([
             ['iframe'],

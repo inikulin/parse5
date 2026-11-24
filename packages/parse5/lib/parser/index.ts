@@ -393,9 +393,14 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
             case $.XMP:
             case $.IFRAME:
             case $.NOEMBED:
-            case $.NOFRAMES:
-            case $.NOSCRIPT: {
+            case $.NOFRAMES: {
                 this.tokenizer.state = TokenizerMode.RAWTEXT;
+                break;
+            }
+            case $.NOSCRIPT: {
+                if (this.options.scriptingEnabled) {
+                    this.tokenizer.state = TokenizerMode.RAWTEXT;
+                }
                 break;
             }
             case $.SCRIPT: {
