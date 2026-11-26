@@ -36,6 +36,32 @@ generateTestsForEachTreeAdapter('location-info-parser', (treeAdapter) => {
         assert.strictEqual(html.substring(firstPLocation.startOffset, firstPLocation.endOffset), '<p>1');
     });
 
+    it('Regression - endOffset of an element closed by a text token', () => {
+        const html = '<head><title>x</title>Hello';
+
+        const document = parse(html, { treeAdapter, sourceCodeLocationInfo: true });
+        const htmlElement = treeAdapter.getChildNodes(document)[0];
+        const head = treeAdapter.getChildNodes(htmlElement)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(head);
+
+        assert.ok(location);
+        assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<head><title>x</title>');
+        assert.strictEqual(location.endCol, location.endOffset + 1);
+    });
+
+    it('Regression - endOffset of a text element left open at the end of the input', () => {
+        const html = '<div><script>x';
+
+        const fragment = parseFragment(html, { treeAdapter, sourceCodeLocationInfo: true });
+        const div = treeAdapter.getChildNodes(fragment)[0];
+        const script = treeAdapter.getChildNodes(div)[0];
+        const location = treeAdapter.getNodeSourceCodeLocation(script);
+
+        assert.ok(location);
+        assert.strictEqual(html.substring(location.startOffset, location.endOffset), '<script>x');
+        assert.strictEqual(location.endCol, html.length + 1);
+    });
+
     it('Regression - Incorrect LocationInfo.endOffset for element with closing tag (GH-159)', () => {
         const html = '<i>1</i>2';
 
