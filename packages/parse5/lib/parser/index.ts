@@ -29,6 +29,7 @@ import {
     type LocationWithAttributes,
     type ElementLocation,
     type Attribute,
+    type Location,
 } from '../common/token.js';
 
 //Misc constants
@@ -102,6 +103,11 @@ interface InsertionLocation<T extends TreeAdapterTypeMap> {
     beforeElement: T['element'] | null;
 }
 
+interface PendingText<T extends TreeAdapterTypeMap> extends InsertionLocation<T> {
+    chars: string;
+    location: Location | null;
+}
+
 export interface ParserOptions<T extends TreeAdapterTypeMap> {
     /**
      * The [scripting flag](https://html.spec.whatwg.org/multipage/parsing.html#scripting-flag). If set
@@ -153,6 +159,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     protected currentToken: Token | null = null;
     public options: Required<ParserOptions<T>>;
     public document: T['document'];
+    private pendingText: PendingText<T> | null = null;
 
     public constructor(
         options?: ParserOptions<T>,
@@ -477,6 +484,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         attrs: Attribute[],
         intendedParent: T['parentNode'],
     ): T['element'] {
+        this._flushPendingText();
         const element = this.treeAdapter.createElement(tagName, namespaceURI, attrs);
 
         this.treeAdapter.onElementCreated?.(element, {
@@ -552,24 +560,51 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @protected */
     _insertCharacters(token: CharacterToken): void {
-        let parent;
-        let beforeElement;
+        if (token.chars.length === 0) return;
 
-        if (this._shouldFosterParentOnInsertion()) {
-            ({ parent, beforeElement } = this._findFosterParentingLocation());
+        const { parent, beforeElement } = this._getInsertionLocation();
 
-            if (beforeElement) {
-                this.treeAdapter.insertTextBefore(parent, token.chars, beforeElement);
-            } else {
-                this.treeAdapter.insertText(parent, token.chars);
-            }
-        } else {
-            parent = this.openElements.currentTmplContentOrNode;
-
-            this.treeAdapter.insertText(parent, token.chars);
+        if (
+            this.pendingText &&
+            (this.pendingText.parent !== parent || this.pendingText.beforeElement !== beforeElement)
+        ) {
+            this._flushPendingText();
         }
 
-        if (!token.location) return;
+        if (parent === this.document || (beforeElement && this.treeAdapter.getParentNode(beforeElement) !== parent)) {
+            return;
+        }
+
+        if (this.pendingText) {
+            this.pendingText.chars += token.chars;
+            if (this.pendingText.location && token.location) {
+                const { endLine, endCol, endOffset } = token.location;
+                Object.assign(this.pendingText.location, { endLine, endCol, endOffset });
+            }
+        } else {
+            this.pendingText = {
+                parent,
+                beforeElement,
+                chars: token.chars,
+                location: token.location && { ...token.location },
+            };
+        }
+    }
+
+    /** @internal */
+    _flushPendingText(): void {
+        if (!this.pendingText) return;
+
+        const { parent, beforeElement, chars, location } = this.pendingText;
+        this.pendingText = null;
+
+        if (beforeElement) {
+            this.treeAdapter.insertTextBefore(parent, chars, beforeElement);
+        } else {
+            this.treeAdapter.insertText(parent, chars);
+        }
+
+        if (!location) return;
 
         const siblings = this.treeAdapter.getChildNodes(parent);
         const textNodeIdx = beforeElement ? siblings.lastIndexOf(beforeElement) : siblings.length;
@@ -579,10 +614,10 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
         const tnLoc = this.treeAdapter.getNodeSourceCodeLocation(textNode);
 
         if (tnLoc) {
-            const { endLine, endCol, endOffset } = token.location;
+            const { endLine, endCol, endOffset } = location;
             this.treeAdapter.updateNodeSourceCodeLocation(textNode, { endLine, endCol, endOffset });
         } else if (this.options.sourceCodeLocationInfo) {
-            this.treeAdapter.setNodeSourceCodeLocation(textNode, token.location);
+            this.treeAdapter.setNodeSourceCodeLocation(textNode, location);
         }
     }
 
@@ -1054,6 +1089,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     onComment(token: CommentToken): void {
+        this._flushPendingText();
         this.skipNextNewLine = false;
 
         if (this.currentNotInHTML) {
@@ -1102,6 +1138,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     onDoctype(token: DoctypeToken): void {
+        this._flushPendingText();
         this.skipNextNewLine = false;
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
@@ -1125,6 +1162,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     onStartTag(token: TagToken): void {
+        this._flushPendingText();
         this.skipNextNewLine = false;
         this.currentToken = token;
 
@@ -1249,6 +1287,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     onEndTag(token: TagToken): void {
+        this._flushPendingText();
         this.skipNextNewLine = false;
         this.currentToken = token;
 
@@ -1355,6 +1394,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     onEof(token: EOFToken): void {
+        this._flushPendingText();
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
                 tokenInInitialMode(this, token);
@@ -3046,6 +3086,7 @@ function tokenInTableText<T extends TreeAdapterTypeMap>(p: Parser<T>, token: Tok
         }
     }
 
+    p._flushPendingText();
     p.insertionMode = p.originalInsertionMode;
     p._processToken(token);
 }

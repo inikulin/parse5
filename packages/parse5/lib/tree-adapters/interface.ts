@@ -212,6 +212,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
     /**
      * Inserts text into a node. If the last child of the node is a text node, the provided text will be appended to the
      * text node content. Otherwise, inserts a new text node with the given text.
+     * The parser calls this once per flushed pending-text run, not once per character token.
      *
      * @param parentNode - Node to insert text into.
      * @param text - Text to insert.
@@ -222,6 +223,7 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
      * Inserts text into a sibling node that goes before the reference node. If this sibling node is the text node,
      * the provided text will be appended to the text node content. Otherwise, inserts a new sibling text node with
      * the given text before the reference node.
+     * The parser calls this once per flushed pending-text run, not once per character token.
      *
      * @param parentNode - Node to insert text into.
      * @param text - Text to insert.

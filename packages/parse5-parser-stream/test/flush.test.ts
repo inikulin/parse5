@@ -75,7 +75,7 @@ generateTestsForEachTreeAdapter('flushCharacters', (treeAdapter) => {
                 ...treeAdapter,
                 insertText(parent, text): void {
                     calls++;
-                    assert.throws(() => stream.flushCharacters(), 'Cannot flush characters from a tokenizer callback');
+                    assert.throws(() => stream.flushCharacters(), 'Cannot flush characters recursively');
                     treeAdapter.insertText(parent, text);
                 },
             },
