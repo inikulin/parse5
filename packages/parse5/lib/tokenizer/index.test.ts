@@ -424,6 +424,165 @@ describe('Tokenizer methods', () => {
         assert.strictEqual(chars, '<\u20D2text');
         assert.deepStrictEqual(tagNames, ['a']);
     });
+
+    it('should append whitespace to the characters before it only if the handler allows it', () => {
+        const input = 'a\tb\nc <p> d\r\ne<script>f g</script>';
+
+        for (const appendWhitespace of [false, true]) {
+            for (const size of [1, 3, input.length]) {
+                const tokens: string[] = [];
+                const tokenizer = new Tokenizer(tokenizerOpts, {
+                    onStartTag(t): void {
+                        tokens.push(`<${t.tagName}>`);
+                        if (t.tagName === 'script') tokenizer.state = TokenizerMode.SCRIPT_DATA;
+                    },
+                    onEndTag(t): void {
+                        tokens.push(`</${t.tagName}>`);
+                    },
+                    onCharacter(t): void {
+                        tokens.push(`c:${t.chars}`);
+                    },
+                    onWhitespaceCharacter(t): void {
+                        tokens.push(`w:${t.chars}`);
+                    },
+                    onNullCharacter: noop,
+                    onComment: noop,
+                    onDoctype: noop,
+                    onEof: noop,
+                    canAppendWhitespaceToCharacters(): boolean {
+                        return appendWhitespace;
+                    },
+                });
+
+                for (const [i, chunk] of chunked(input, size).entries()) {
+                    tokenizer.write(chunk, i * size + chunk.length === input.length);
+                }
+
+                assert.deepStrictEqual(
+                    tokens,
+                    appendWhitespace
+                        ? ['c:a\tb\nc ', '<p>', 'w: ', 'c:d\ne', '<script>', 'c:f g', '</script>']
+                        : [
+                              'c:a',
+                              'w:\t',
+                              'c:b',
+                              'w:\n',
+                              'c:c',
+                              'w: ',
+                              '<p>',
+                              'w: ',
+                              'c:d',
+                              'w:\n',
+                              'c:e',
+                              '<script>',
+                              'c:f',
+                              'w: ',
+                              'c:g',
+                              '</script>',
+                          ],
+                    `appendWhitespace: ${appendWhitespace}, chunk size: ${size}`,
+                );
+            }
+        }
+    });
+    it('should keep errors and locations in unquoted attribute values and indentation in any chunking', () => {
+        const input = '<a x=ab"c y=d=e`f z=g<h w=\u00E9\u65E5\u{1F600}>\n  \t <b>\r\n    </b>\n\t</a>';
+
+        for (let size = 1; size <= input.length; size++) {
+            const tokens: string[] = [];
+            const tokenizer = new Tokenizer(tokenizerOpts, {
+                onStartTag(t): void {
+                    tokens.push(`<${t.tagName} ${t.attrs.map(({ name, value }) => `${name}=${value}`).join(' ')}>`);
+                },
+                onEndTag(t): void {
+                    tokens.push(`</${t.tagName}>`);
+                },
+                onWhitespaceCharacter({ chars, location }): void {
+                    const { startLine, startCol, endLine, endCol } = location!;
+                    tokens.push(`w:${JSON.stringify(chars)} ${startLine}:${startCol}-${endLine}:${endCol}`);
+                },
+                onParseError({ code, startLine, startCol }): void {
+                    tokens.push(`!${code} ${startLine}:${startCol}`);
+                },
+                onCharacter: noop,
+                onNullCharacter: noop,
+                onComment: noop,
+                onDoctype: noop,
+                onEof: noop,
+            });
+
+            for (const [i, chunk] of chunked(input, size).entries()) {
+                tokenizer.write(chunk, i * size + chunk.length === input.length);
+            }
+
+            assert.deepStrictEqual(
+                tokens,
+                [
+                    '!unexpected-character-in-unquoted-attribute-value 1:8',
+                    '!unexpected-character-in-unquoted-attribute-value 1:14',
+                    '!unexpected-character-in-unquoted-attribute-value 1:16',
+                    '!unexpected-character-in-unquoted-attribute-value 1:22',
+                    '<a x=ab"c y=d=e`f z=g<h w=\u00E9\u65E5\u{1F600}>',
+                    String.raw`w:"\n  \t " 1:32-2:5`,
+                    '<b >',
+                    String.raw`w:"\n    " 2:8-3:5`,
+                    '</b>',
+                    String.raw`w:"\n\t" 3:9-4:2`,
+                    '</a>',
+                ],
+                `chunk size: ${size}`,
+            );
+        }
+    });
+
+    it('should keep tag and attribute names, errors and locations in any chunking', () => {
+        const input =
+            '<My-Elem data-X_y="1 2" :c=\'\' a"b="x&amp;y" q\0r="\n" A\u00E9B=5 \u{1F600}=\'\u{1F600}\'>\n' +
+            '<dIV\tID="x"/><x-Y.z\r\nq="a"></X-Y z>';
+
+        for (let size = 1; size <= input.length; size++) {
+            const tokens: string[] = [];
+            const tokenizer = new Tokenizer(tokenizerOpts, {
+                onStartTag({ tagName, attrs, location }): void {
+                    const attrList = attrs.map(({ name, value }) => {
+                        const { startLine, startCol, endLine, endCol } = location!.attrs![name];
+                        return `${name}=${value} ${startLine}:${startCol}-${endLine}:${endCol}`;
+                    });
+                    tokens.push(`<${tagName} ${attrList.join(' ')}>`);
+                },
+                onEndTag(t): void {
+                    tokens.push(`</${t.tagName}>`);
+                },
+                onParseError({ code, startLine, startCol }): void {
+                    tokens.push(`!${code} ${startLine}:${startCol}`);
+                },
+                onCharacter: noop,
+                onWhitespaceCharacter: noop,
+                onNullCharacter: noop,
+                onComment: noop,
+                onDoctype: noop,
+                onEof: noop,
+            });
+
+            for (const [i, chunk] of chunked(input, size).entries()) {
+                tokenizer.write(chunk, i * size + chunk.length === input.length);
+            }
+
+            assert.deepStrictEqual(
+                tokens,
+                [
+                    '!unexpected-character-in-attribute-name 1:32',
+                    '!unexpected-null-character 1:46',
+                    '<my-elem data-x_y=1 2 1:10-1:24 :c= 1:25-1:30 a"b=x&y 1:31-1:44 q\uFFFDr=\n 1:45-2:2 a\u00E9b=5 2:3-2:8 \u{1F600}=\u{1F600} 2:9-2:16>',
+                    '<div id=x 3:6-3:12>',
+                    '<x-y.z q=a 4:1-4:6>',
+                    '!end-tag-with-attributes 4:14',
+                    '</x-y>',
+                ],
+                `chunk size: ${size}`,
+            );
+        }
+    });
 });
 
 describe('Tokenizer attributes', () => {

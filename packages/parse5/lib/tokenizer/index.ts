@@ -149,6 +149,29 @@ function isWhitespace(cp: number): boolean {
     );
 }
 
+/** Code points that end a tag or attribute name, or are a parse error in an attribute name. */
+function isNameEnd(cp: number): boolean {
+    return (
+        cp === $.SOLIDUS ||
+        cp === $.GREATER_THAN_SIGN ||
+        cp === $.EQUALS_SIGN ||
+        cp === $.QUOTATION_MARK ||
+        cp === $.APOSTROPHE ||
+        cp === $.LESS_THAN_SIGN
+    );
+}
+
+/** Code points that are a parse error in an unquoted attribute value, but are still part of it. */
+function isUnquotedAttrValueError(cp: number): boolean {
+    return (
+        cp === $.QUOTATION_MARK ||
+        cp === $.APOSTROPHE ||
+        cp === $.LESS_THAN_SIGN ||
+        cp === $.EQUALS_SIGN ||
+        cp === $.GRAVE_ACCENT
+    );
+}
+
 function isScriptDataDoubleEscapeSequenceEnd(cp: number): boolean {
     return isWhitespace(cp) || cp === $.SOLIDUS || cp === $.GREATER_THAN_SIGN;
 }
@@ -182,6 +205,11 @@ export interface TokenHandler {
     onCharacter(token: CharacterToken): void;
     onNullCharacter(token: CharacterToken): void;
     onWhitespaceCharacter(token: CharacterToken): void;
+    /**
+     * Whether whitespace that follows other characters can be part of their character token, rather than a
+     * whitespace token of its own. If not implemented, it never is.
+     */
+    canAppendWhitespaceToCharacters?(): boolean;
 
     onParseError?: ParserErrorHandler | null;
 }
@@ -844,11 +872,155 @@ export class Tokenizer {
               : TokenType.CHARACTER;
         const token = this.currentCharacterToken;
 
-        if (token === null || token.type !== type) {
+        if (
+            token === null ||
+            (token.type !== type &&
+                !(
+                    type === TokenType.WHITESPACE_CHARACTER &&
+                    token.type === TokenType.CHARACTER &&
+                    this.handler.canAppendWhitespaceToCharacters?.()
+                ))
+        ) {
             this._ensureCharacterToken(type);
         }
 
         this._extendRun(cp);
+    }
+
+    /** Having emitted `cp` in a text state, emit the input that follows it in the same character token at once. */
+    protected _emitTextRun(cp: number): void {
+        const token = this.currentCharacterToken;
+
+        if (token !== null && cp !== $.LINE_FEED) {
+            if (token.type === TokenType.CHARACTER) {
+                this._extendRunToSpecial($.LESS_THAN_SIGN, this.handler.canAppendWhitespaceToCharacters?.() === true);
+            } else if (token.type === TokenType.WHITESPACE_CHARACTER) {
+                this._extendRunOverSpaces();
+            }
+        }
+    }
+
+    /** Extend the run by the spaces and tabs after the current code point, such as the rest of an indentation. */
+    protected _extendRunOverSpaces(): void {
+        const { preprocessor } = this;
+        const { html } = preprocessor;
+        const start = preprocessor.pos;
+        let pos = start;
+
+        for (;;) {
+            const code = html.charCodeAt(pos + 1);
+
+            if (code === $.SPACE || code === $.TABULATION) {
+                pos++;
+            } else {
+                break;
+            }
+        }
+
+        if (pos !== start) {
+            preprocessor.pos = pos;
+            this.runEnd = pos + 1;
+        }
+    }
+
+    /**
+     * Extend the run by the input after the current code point up to `stop`, `&`, or one that a state has to look at
+     * (NUL, a line break, a code point that is checked for parse errors), and spaces and tabs only if `withSpaces`.
+     */
+    protected _extendRunToSpecial(stop: number, withSpaces: boolean): void {
+        const { preprocessor } = this;
+        const { html } = preprocessor;
+        const start = preprocessor.pos;
+        let pos = start;
+
+        for (;;) {
+            const code = html.charCodeAt(pos + 1);
+
+            if (
+                (code > $.SPACE && code < 0x7f && code !== stop && code !== $.AMPERSAND) ||
+                (code >= 0xa0 && code < 0xd8_00) ||
+                (withSpaces && (code === $.SPACE || code === $.TABULATION))
+            ) {
+                pos++;
+            } else {
+                break;
+            }
+        }
+
+        if (pos !== start) {
+            preprocessor.pos = pos;
+            this.runEnd = pos + 1;
+        }
+    }
+
+    /**
+     * Extend the run by the unquoted attribute value after the current code point, up to whitespace, `>`, `&`, or a
+     * code point that is checked for parse errors.
+     */
+    protected _extendRunInUnquotedAttrValue(): void {
+        const { preprocessor } = this;
+        const { html } = preprocessor;
+        const start = preprocessor.pos;
+        let pos = start;
+
+        for (;;) {
+            const code = html.charCodeAt(pos + 1);
+
+            if (
+                (code > $.SPACE &&
+                    code < 0x7f &&
+                    code !== $.GREATER_THAN_SIGN &&
+                    code !== $.AMPERSAND &&
+                    !isUnquotedAttrValueError(code)) ||
+                (code >= 0xa0 && code < 0xd8_00)
+            ) {
+                pos++;
+            } else {
+                break;
+            }
+        }
+
+        if (pos !== start) {
+            preprocessor.pos = pos;
+            this.runEnd = pos + 1;
+        }
+    }
+
+    /**
+     * Consume the current code point, read as `cp`, and the name characters after it that are appended as is (ASCII
+     * other than uppercase letters, whitespace and `/ > = " ' <`), and return them as the next part of a tag or
+     * attribute name.
+     */
+    protected _consumeName(cp: number): string {
+        const { preprocessor } = this;
+        const { html } = preprocessor;
+        const start = preprocessor.pos;
+        let pos = start;
+
+        for (;;) {
+            const code = html.charCodeAt(pos + 1);
+
+            if (code > $.SPACE && code < 0x7f && !isAsciiUpper(code) && !isNameEnd(code)) {
+                pos++;
+            } else {
+                break;
+            }
+        }
+
+        const first = String.fromCodePoint(isAsciiUpper(cp) ? toAsciiLower(cp) : cp);
+
+        if (pos === start) {
+            return first;
+        }
+
+        preprocessor.pos = pos;
+
+        // The common lowercase name is one slice of the input.
+        const name =
+            cp < 0x7f && !isAsciiUpper(cp) ? html.slice(start, pos + 1) : first + html.slice(start + 1, pos + 1);
+
+        // Like a run in `_flushRun`, a long name gets a buffer of its own rather than keeping the input alive.
+        return pos - start < 12 ? name : ` ${name}`.slice(1);
     }
 
     //NOTE: used when we emit characters explicitly.
@@ -1224,6 +1396,7 @@ export class Tokenizer {
             }
             default: {
                 this._emitCodePoint(cp);
+                this._emitTextRun(cp);
             }
         }
     }
@@ -1251,6 +1424,7 @@ export class Tokenizer {
             }
             default: {
                 this._emitCodePoint(cp);
+                this._emitTextRun(cp);
             }
         }
     }
@@ -1274,6 +1448,7 @@ export class Tokenizer {
             }
             default: {
                 this._emitCodePoint(cp);
+                this._emitTextRun(cp);
             }
         }
     }
@@ -1297,6 +1472,7 @@ export class Tokenizer {
             }
             default: {
                 this._emitCodePoint(cp);
+                this._emitTextRun(cp);
             }
         }
     }
@@ -1421,7 +1597,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                token.tagName += String.fromCodePoint(isAsciiUpper(cp) ? toAsciiLower(cp) : cp);
+                token.tagName += this._consumeName(cp);
             }
         }
     }
@@ -1951,7 +2127,7 @@ export class Tokenizer {
                 break;
             }
             default: {
-                this.currentAttr.name += String.fromCodePoint(isAsciiUpper(cp) ? toAsciiLower(cp) : cp);
+                this.currentAttr.name += this._consumeName(cp);
             }
         }
     }
@@ -2049,6 +2225,10 @@ export class Tokenizer {
             }
             default: {
                 this._extendRun(cp);
+
+                if (cp !== $.LINE_FEED) {
+                    this._extendRunToSpecial($.QUOTATION_MARK, true);
+                }
             }
         }
     }
@@ -2077,6 +2257,10 @@ export class Tokenizer {
             }
             default: {
                 this._extendRun(cp);
+
+                if (cp !== $.LINE_FEED) {
+                    this._extendRunToSpecial($.APOSTROPHE, true);
+                }
             }
         }
     }
@@ -2124,6 +2308,7 @@ export class Tokenizer {
             }
             default: {
                 this._extendRun(cp);
+                this._extendRunInUnquotedAttrValue();
             }
         }
     }
