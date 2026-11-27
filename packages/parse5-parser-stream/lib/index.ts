@@ -37,6 +37,7 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
 
     private lastChunkWritten = false;
     private writeCallback: undefined | (() => void) = undefined;
+    private flushingCharacters = false;
 
     private pendingHtmlInsertions: string[] = [];
     /** The resulting document node. */
@@ -48,9 +49,11 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     }
 
     /**
-     * Synchronously delivers buffered character tokens to the tree builder without ending the input stream.
+     * Synchronously delivers buffered character tokens and inserts pending text without ending the input stream.
      * Incomplete tags and character references are retained for subsequent writes. This does not resume a
      * suspended script or process queued writes, and must not be called from a parser callback.
+     * Call this at an observable input boundary, such as the end of a `document.write()` call or a networking task.
+     * Ordinary stream writes do not flush pending text, so splitting input across writes does not split text runs.
      *
      * Flushing splits character-token runs. Their source locations do not extend through subsequently
      * ignored input, such as CDATA delimiters or the leading newline in a `pre` element, so text-node
@@ -67,7 +70,16 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
      * ```
      */
     public flushCharacters(): void {
-        this.parser.tokenizer.flushCharacters();
+        if (this.flushingCharacters) {
+            throw new Error('Cannot flush characters recursively');
+        }
+        this.flushingCharacters = true;
+        try {
+            this.parser.tokenizer.flushCharacters();
+            this.parser._flushPendingText();
+        } finally {
+            this.flushingCharacters = false;
+        }
     }
 
     /**
@@ -80,6 +92,8 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
         super({ decodeStrings: false });
 
         const resume = (): void => {
+            if (this.destroyed) return;
+
             for (let i = this.pendingHtmlInsertions.length - 1; i >= 0; i--) {
                 this.parser.tokenizer.insertHtmlAtCurrentPos(this.pendingHtmlInsertions[i]);
             }
@@ -107,6 +121,13 @@ export class ParserStream<T extends TreeAdapterTypeMap = DefaultTreeAdapterMap> 
     }
 
     //WritableStream implementation
+    override _destroy(error: Error | null, callback: (error: Error | null) => void): void {
+        this.parser.stopped = true;
+        this.parser.tokenizer.pause();
+        this.parser._flushPendingText();
+        callback(error);
+    }
+
     override _write(chunk: string, _encoding: string, callback: () => void): void {
         if (typeof chunk !== 'string') {
             throw new TypeError('Parser can work only with string streams.');
