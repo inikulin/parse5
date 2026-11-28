@@ -3158,7 +3158,11 @@ export class Tokenizer {
     // Character reference state
     //------------------------------------------------------------------
     protected _stateCharacterReference(): void {
-        let length = this.entityDecoder.write(this.preprocessor.html, this.preprocessor.pos);
+        // The decoder reads the buffer itself: hand back the code point the parsing loop consumed,
+        // so that a line break is counted only when it is read again.
+        this.preprocessor.retreat(1);
+
+        let length = this.entityDecoder.write(this.preprocessor.html, this.preprocessor.pos + 1);
 
         if (length < 0) {
             if (this.preprocessor.lastChunkWritten) {
