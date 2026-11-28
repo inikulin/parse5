@@ -921,6 +921,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
 
     /** @internal */
     onCharacter(token: CharacterToken): void {
+        this.currentToken = token;
         this.skipNextNewLine = false;
 
         if (this.tokenizer.inForeignNode) {
@@ -994,6 +995,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     onNullCharacter(token: CharacterToken): void {
+        this.currentToken = token;
         this.skipNextNewLine = false;
 
         if (this.tokenizer.inForeignNode) {
@@ -1355,6 +1357,7 @@ export class Parser<T extends TreeAdapterTypeMap> implements TokenHandler, Stack
     }
     /** @internal */
     onEof(token: EOFToken): void {
+        this.currentToken = token;
         switch (this.insertionMode) {
             case InsertionMode.INITIAL: {
                 tokenInInitialMode(this, token);
