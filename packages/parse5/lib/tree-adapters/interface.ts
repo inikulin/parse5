@@ -54,6 +54,18 @@ export interface TreeAdapter<T extends TreeAdapterTypeMap = TreeAdapterTypeMap> 
     adoptAttributes(recipient: T['element'], attrs: Attribute[]): void;
 
     /**
+     * Optional. Moves all children of `donor` to the end of `recipient`. Array-backed adapters can copy the child
+     * list, detach from the last child, then append in order so the array is not shifted once per child.
+     *
+     * If omitted, the parser detaches and appends from the first child, which is the cheap order for a linked sibling
+     * list. The order of `detachNode` calls is observable.
+     *
+     * @param donor - Parent whose children are moved.
+     * @param recipient - Parent that receives the children, in the same order.
+     */
+    adoptChildren?: (donor: T['parentNode'], recipient: T['parentNode']) => void;
+
+    /**
      * Appends a child node to the given parent node.
      *
      * @param parentNode - Parent node.

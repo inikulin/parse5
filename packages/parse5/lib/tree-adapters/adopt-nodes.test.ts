@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest';
-import { Parser, parse, html, type TreeAdapter, type TreeAdapterTypeMap } from 'parse5';
+import { Parser, parse, parseFragment, html, type TreeAdapter, type TreeAdapterTypeMap } from 'parse5';
 import { treeAdapters } from 'parse5-test-utils/utils/common.js';
 
 const adapters = Object.entries(treeAdapters) as unknown as [string, TreeAdapter][];
@@ -80,4 +80,82 @@ it.each(adapters)("moves the furthest block's children without shifting them (%s
     expect(adapter.getChildNodes(newAnchor)).toHaveLength(n);
     expect(counts.reads).toBeLessThan(8 * n);
     expect(counts.writes).toBe(n + 1);
+});
+
+/**
+ * Drops an optional bulk move so the parser uses its default first-child detach loop.
+ * Third-party adapters (jsdom) do not implement a bulk method.
+ */
+function withoutBulkMove(treeAdapter: TreeAdapter, overrides: Partial<TreeAdapter> = {}): TreeAdapter {
+    const adapter: TreeAdapter = { ...treeAdapter, ...overrides };
+    delete adapter.adoptChildren;
+    return adapter;
+}
+
+it('detaches fragment children from the first child when the adapter has no bulk move', () => {
+    const detached: string[] = [];
+    const base = treeAdapters.default;
+    const adapter = withoutBulkMove(base, {
+        detachNode(node) {
+            if (base.isElementNode(node)) {
+                detached.push(base.getTagName(node));
+            }
+            base.detachNode(node);
+        },
+    });
+    const fragment = parseFragment('<a></a><b></b><c></c>', { treeAdapter: adapter });
+
+    expect(detached).toEqual(['a', 'b', 'c']);
+    expect(
+        adapter.getChildNodes(fragment).map((node) => base.getTagName(node as TreeAdapterTypeMap['element'])),
+    ).toEqual(['a', 'b', 'c']);
+});
+
+it('moves children through adoptChildren when the adapter provides it', () => {
+    let calls = 0;
+    const base = treeAdapters.default;
+    const adapter: TreeAdapter = {
+        ...base,
+        adoptChildren(donor, recipient) {
+            calls++;
+            base.adoptChildren!(donor, recipient);
+        },
+    };
+    const fragment = parseFragment('<a></a><b></b>', { treeAdapter: adapter });
+
+    expect(calls).toBe(1);
+    expect(adapter.getChildNodes(fragment)).toHaveLength(2);
+});
+
+it('adopts many children in linear time for a linked-sibling detachNode', () => {
+    const base = treeAdapters.default;
+    let walks = 0;
+    const adapter = withoutBulkMove(base, {
+        detachNode(node) {
+            const parent = base.getParentNode(node);
+
+            if (parent) {
+                const children = base.getChildNodes(parent);
+                let index = 0;
+
+                // Like a sibling-linked tree with no index cache: last-child detach is O(n).
+                while (index < children.length && children[index] !== node) {
+                    index++;
+                }
+
+                walks += index + 1;
+            }
+
+            base.detachNode(node);
+        },
+    });
+    const parser = Parser.getFragmentParser(null, { treeAdapter: adapter });
+
+    parser.tokenizer.write('<a></a>'.repeat(n), true);
+    walks = 0;
+    const fragment = parser.getFragment();
+
+    expect(adapter.getChildNodes(fragment)).toHaveLength(n);
+    // First-child detach walks 1 sibling per child. Last-to-first walks n(n+1)/2.
+    expect(walks).toBeLessThan(8 * n);
 });

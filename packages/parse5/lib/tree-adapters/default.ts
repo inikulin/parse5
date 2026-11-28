@@ -205,7 +205,7 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
     detachNode(node: ChildNode): void {
         if (node.parentNode) {
             const { childNodes } = node.parentNode;
-            // The parser detaches from the end when it moves children, so check the last child first.
+            // adoptChildren detaches from the end, so check the last child first.
             const idx = childNodes[childNodes.length - 1] === node ? childNodes.length - 1 : childNodes.indexOf(node);
 
             childNodes.splice(idx, 1);
@@ -283,6 +283,19 @@ export const defaultTreeAdapter: TreeAdapter<DefaultTreeAdapterMap> = {
         // A list with a repeated name is indexed again on the next merge.
         if (recipientAttrsMap.size !== recipient.attrs.length) {
             attrListIndexes.delete(recipient.attrs);
+        }
+    },
+
+    // Copy, detach from the end, append in order so the array is not shifted once per child.
+    adoptChildren(donor: ParentNode, recipient: ParentNode): void {
+        const children = [...donor.childNodes];
+
+        for (let i = children.length - 1; i >= 0; i--) {
+            defaultTreeAdapter.detachNode(children[i]);
+        }
+
+        for (const child of children) {
+            defaultTreeAdapter.appendChild(recipient, child);
         }
     },
 

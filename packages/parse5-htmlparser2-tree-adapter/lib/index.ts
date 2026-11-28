@@ -167,7 +167,7 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
     detachNode(node: ChildNode): void {
         if (node.parent) {
             const { children } = node.parent;
-            // The parser detaches from the end when it moves children, so check the last child first.
+            // adoptChildren detaches from the end, so check the last child first.
             const idx = children[children.length - 1] === node ? children.length - 1 : children.indexOf(node);
             const { prev, next } = node;
 
@@ -216,6 +216,19 @@ export const adapter: TreeAdapter<Htmlparser2TreeAdapterMap> = {
                 recipient['x-attribsNamespace']![attrName] = attrs[i].namespace!;
                 recipient['x-attribsPrefix']![attrName] = attrs[i].prefix!;
             }
+        }
+    },
+
+    // Copy, detach from the end, append in order so the array is not shifted once per child.
+    adoptChildren(donor: ParentNode, recipient: ParentNode): void {
+        const children = [...donor.children];
+
+        for (let i = children.length - 1; i >= 0; i--) {
+            adapter.detachNode(children[i]);
+        }
+
+        for (const child of children) {
+            adapter.appendChild(recipient, child);
         }
     },
 
