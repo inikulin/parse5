@@ -39,6 +39,29 @@ await pipeline(Readable.from(['<p>Hello, world!</p>']), rewriter);
 console.log(output); // <p>HELLO, WORLD!</p>
 ```
 
+## Rewriting with Promises
+
+Event listeners run synchronously: returning a Promise from a `text` listener
+does not delay the stream's completion. The [runnable Promise recipe](examples/rewrite-with-promises.js)
+queues every token type so that tags, comments, and doctypes stay in order with
+the text being rewritten. Its local subclass waits for the queue in the normal
+transform and finalization callbacks, including trailing text emitted at EOF.
+Rejected Promises and thrown errors reach the ordinary `pipeline` error handler.
+
+From a repository checkout, run:
+
+```sh
+npm ci
+npm run build
+node packages/parse5-html-rewriting-stream/examples/rewrite-with-promises.js
+# <!doctype html><p>Hello, universe!</p>tail
+```
+
+The example's text callback receives raw HTML, including the original entity
+spellings, and returns raw HTML for `emitRaw`. It serializes the queued work for
+each input chunk before accepting the next chunk. The stream events and package
+exports keep their existing synchronous API.
+
 ---
 
 <p align="center">
